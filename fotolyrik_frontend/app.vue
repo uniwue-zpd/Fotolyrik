@@ -1,4 +1,7 @@
 <template>
+  <AppHeader/>
+  <MainContent/>
+  <AppFooter/>
   <div>
     <NuxtRouteAnnouncer />
     <NuxtWelcome />
