@@ -1,0 +1,27 @@
+.idea
+
+# Backend
+**/target/
+**/.mvn/
+**/*.log
+**/*.tmp
+**/*.bak
+**/*.swp
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+**/HELP.md
+
+# Frontend
+fotolyrik_frontend/node_modules/
+fotolyrik_frontend/dist/
+fotolyrik_frontend/.nuxt/
+fotolyrik_frontend/.output/
+fotolyrik_frontend/.cache/
+
+# Environment variables
+.env
+
+# OS
+.DS_Store
+Thumbs.db
