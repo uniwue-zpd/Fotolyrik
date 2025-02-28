@@ -1,11 +1,5 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-
+  <main class="grow">
+    <slot/>
+  </main>
 </template>
-
-<style scoped>
-
-</style>
