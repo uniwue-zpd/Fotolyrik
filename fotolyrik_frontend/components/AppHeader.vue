@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import Button from 'primevue/button'
-import Popover from 'primevue/popover';
 import 'primeicons/primeicons.css';
 import { ref } from 'vue';
 
@@ -10,7 +8,7 @@ const toggle = (event: any) => op.value.toggle(event)
 
 <template>
   <header class="bg-[#063D79]">
-    <div class="flex flex-row justify-between items-center max-w-[1140px] mx-auto p-4">
+    <div class="flex flex-row justify-between items-center max-w-[1140px] mx-auto p-3">
       <NuxtLink to="/">
         <img class="h-[40px] w-auto" src="../public/fl_wortmarke-blaugrau.svg" alt="logo">
       </NuxtLink>
