@@ -1,0 +1,8 @@
+services:
+  frontend:
+    image: fotolyrik_frontend
+    container_name: fotolyrik_frontend
+    build:
+      context: ./fotolyrik_frontend
+    ports:
+        - "3000:3000"
