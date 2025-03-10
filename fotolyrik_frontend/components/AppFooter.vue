@@ -41,13 +41,13 @@ function copy_to_clipboard(copy_item: string) {
         </div>
         <div class="flex flex-row space-x-10 justify-end">
           <div class="flex flex-col justify-center">
-            <a href="https://www.uni-wuerzburg.de/" target="_blank">
-              <img class="h-[40px]" src="../public/unilogo4cohne_w.jpg" alt="unilogo"/>
+            <a href="https://www.dfg.de/de" target="_blank">
+              <img class="h-[40px]" src="../public/dfg_logo_schriftzug_weiss.png" alt="dfglogo"/>
             </a>
           </div>
           <div class="flex flex-col justify-center">
-            <a href="https://www.dfg.de/de" target="_blank">
-              <img class="h-[40px]" src="../public/dfg_logo_schriftzug_weiss.png" alt="dfglogo"/>
+            <a href="https://www.uni-wuerzburg.de/" target="_blank">
+              <img class="h-[40px]" src="../public/unilogo4cohne_w.jpg" alt="unilogo"/>
             </a>
           </div>
         </div>
