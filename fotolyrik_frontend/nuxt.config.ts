@@ -1,6 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-
-import tailwindcss from "@tailwindcss/vite";
 import Aura from '@primevue/themes/aura';
 
 export default defineNuxtConfig({
@@ -17,8 +15,7 @@ export default defineNuxtConfig({
   },
   modules: [
     '@pinia/nuxt',
-    '@primevue/nuxt-module',
-    '@nuxt/fonts',
+    '@primevue/nuxt-module'
   ],
   primevue: {
     options: {
@@ -28,10 +25,11 @@ export default defineNuxtConfig({
     },
     autoImport: true
   },
-  css: ['~/assets/css/main.css'],
-  vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+  css: ['./assets/css/main.css'],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
   },
 })
