@@ -15,7 +15,8 @@ export default defineNuxtConfig({
   },
   modules: [
     '@pinia/nuxt',
-    '@primevue/nuxt-module'
+    '@primevue/nuxt-module',
+    '@formkit/nuxt'
   ],
   primevue: {
     options: {
@@ -23,6 +24,9 @@ export default defineNuxtConfig({
         preset: Aura
       }
     },
+    autoImport: true
+  },
+  formkit: {
     autoImport: true
   },
   css: ['./assets/css/main.css'],
