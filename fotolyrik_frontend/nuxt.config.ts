@@ -27,7 +27,7 @@ export default defineNuxtConfig({
     autoImport: true
   },
   formkit: {
-    autoImport: true
+    configFile: './formkit.config.ts'
   },
   css: ['./assets/css/main.css'],
   postcss: {
