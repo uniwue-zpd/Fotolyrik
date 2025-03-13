@@ -20,6 +20,7 @@
     "nuxt": "^3.15.4",
     "pinia": "^3.0.1",
     "primeicons": "^7.0.0",
+    "tify": "^0.32.0",
     "vue": "latest",
     "vue-router": "latest"
   },
