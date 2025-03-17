@@ -58,6 +58,11 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-spatial</artifactId>
+			<version>6.4.2.Final</version>
+		</dependency>
     </dependencies>
 
 	<build>
