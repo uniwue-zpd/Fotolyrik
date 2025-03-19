@@ -3,13 +3,12 @@
 </script>
 
 <template>
-  <div class="columns-1 w-[800px]">
     <div>
-      <img src= "https://unsplash.it/800/200"/>
+      <img src= "https://unsplash.it/1200/200"/>
   </div>
   <br>
   <div class="grid grid-flow-row auto-rows-max">
-  <h1>Kontakt</h1>
+  <h1 class="text-4xl font-bold">Kontakt</h1>
   <br>
   <div>
     <p>Lorem ipsum dolor sit amet, consetetur</p>
@@ -67,7 +66,6 @@
     </div>
     </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
