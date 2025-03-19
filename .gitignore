@@ -11,6 +11,7 @@
 !**/src/main/**/target/
 !**/src/test/**/target/
 **/HELP.md
+**/src/main/resources/application.properties
 
 # Frontend
 fotolyrik_frontend/node_modules/
@@ -25,3 +26,7 @@ fotolyrik_frontend/.cache/
 # OS
 .DS_Store
 Thumbs.db
+
+# Database files and dumps
+db_data
+/*.sql

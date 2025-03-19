@@ -6,3 +6,17 @@ services:
       context: ./fotolyrik_frontend
     ports:
       - "3000:3000"
+
+  database:
+    image: postgres:17-alpine
+    container_name: fotolyrik_db
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      # In case you have a database dump, uncomment the following line and change the file name
+      # - ./<your_dump>.sql:/docker-entrypoint-initdb.d/<your_dump>.sql
+      - ./db_data:/var/lib/postgresql/data
