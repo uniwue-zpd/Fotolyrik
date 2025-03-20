@@ -40,7 +40,7 @@
         </FormKit>
       </div>
     </div>
-  <div class="grid grid-cols-1">
+  <div class="flex flex-col">
     <div class="...">
   <FormKit type="textarea"
            rows="2"
@@ -50,6 +50,7 @@
            validation-visibility="live">
   </FormKit> <!-- Größe von Textfeld ändern?-->
   </div>
+    <div class="flex flex-col">
     <div class="...">
       <FormKit
         type="checkbox"
@@ -58,6 +59,7 @@
         validation="required"
       > <!-- Farbe der Checkbox ändern? -->
       </FormKit>
+    </div>
     </div>
     </div>
     </FormKit>
