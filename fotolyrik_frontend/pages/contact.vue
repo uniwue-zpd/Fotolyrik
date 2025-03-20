@@ -4,7 +4,7 @@
 
 <template>
     <div>
-      <img src= "https://unsplash.it/1200/200"/>
+      <img src= "https://unsplash.it/1200/200" alt=""/>
   </div>
   <br>
   <div class="grid grid-flow-row auto-rows-max">
@@ -19,10 +19,13 @@
     <p>sadipscing elitr, sed diam.</p>
   </div>
     <br>
+    <FormKit type="form" @submit="senden" submit-label="Senden">
     <div class="flex flex-row gap-4">
       <div class="...">
     <FormKit
       type="text"
+      name="name"
+      id="name"
       label="Name"
       placeholder="Name"
     />
@@ -55,16 +58,9 @@
         validation="required"
       > <!-- Farbe der Checkbox ändern? -->
       </FormKit>
-      <pre wrap>{{ value }}</pre>
-    </div>
-    <br>
-    <div class="...">
-      <FormKit
-      type="button">
-        Senden
-      </FormKit>
     </div>
     </div>
+    </FormKit>
     </div>
 </template>
 
