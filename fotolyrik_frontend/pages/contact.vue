@@ -19,7 +19,7 @@
     <p>sadipscing elitr, sed diam.</p>
   </div>
     <br>
-    <FormKit type="form" @submit="senden" submit-label="Senden">
+    <FormKit type="form" @submit="senden" submit-label="Senden" #default ="{ value }">
     <div class="flex flex-row gap-4">
       <div class="...">
     <FormKit
@@ -54,10 +54,12 @@
     <div class="...">
       <FormKit
         type="checkbox"
-      label="Ich habe die Datenschutzerklärung zur Kenntnis genommen."
+        label="Ich habe die Datenschutzerklärung zur Kenntnis genommen."
         name="Datenschutzerklärung"
+        :value="false"
         validation="required"
       > <!-- Farbe der Checkbox ändern? -->
+      <pre wrap>{{ value }}</pre>
       </FormKit>
     </div>
     </div>
