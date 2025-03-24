@@ -12,3 +12,12 @@ export interface Place extends Auditable {
     latitude: number,
     longitude: number
 }
+
+export interface Person extends Auditable {
+    firstName: string,
+    lastName: string,
+    pseudonym?: string,
+    birthYear?: string,
+    deathYear?: string,
+    sex?: "MALE" | "FEMALE"
+}

@@ -2,7 +2,7 @@
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { ref, onMounted } from  'vue';
-import type { Place } from '@/utils/types';
+import type { Place } from '~/utils/types';
 import apiClient from "~/service/api";
 
 const router = useRoute();
