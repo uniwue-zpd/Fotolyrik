@@ -40,9 +40,9 @@ services:
       - ./db_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]
-      interval: 15s
+      interval: 30s
       retries: 10
-      start_period: 20s
+      start_period: 60s
     networks:
       - fotolyrik_network
 
