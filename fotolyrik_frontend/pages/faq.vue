@@ -1,23 +1,19 @@
 <script setup lang="ts">
-import Accordion from 'primevue/accordion';
-import AccordionPanel from 'primevue/accordionpanel';
-import AccordionHeader from 'primevue/accordionheader';
-import AccordionContent from 'primevue/accordioncontent';
 </script>
 
 <template>
   <div class="columns-1 w-[800px]">
-  <h1>FAQ</h1>
+  <h1 class="text-4xl font-bold">FAQ</h1>
   <br>
   <div >
-  <h1>"Themenblock"</h1>
+  <h1 class="text-4xl font-bold">Themenblock</h1>
   <br>
   <div id="accordion">
     <div class="card">
       <!-- Farbänderung mit Tailwind nicht möglich? -->
       <Accordion  value="0">
         <AccordionPanel class="bg-white" value="0" >
-          <AccordionHeader >Frage I</AccordionHeader>
+          <AccordionHeader>Frage I</AccordionHeader>
           <AccordionContent>
             <p class="m-0">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -47,7 +43,7 @@ import AccordionContent from 'primevue/accordioncontent';
     </div>
   </div>
     <br>
-    <h1>"Themenblock"</h1>
+    <h1 class="text-4xl font-bold">Themenblock</h1>
   </div>
   </div>
 </template>
