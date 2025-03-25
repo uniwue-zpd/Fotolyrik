@@ -21,3 +21,11 @@ export interface Person extends Auditable {
     deathYear?: string,
     sex?: "MALE" | "FEMALE"
 }
+
+export interface PhotoPoem extends Auditable {
+    title: string,
+    author?: Person,
+    iiifManifest: string
+
+    //TODO: Add other required fields
+}

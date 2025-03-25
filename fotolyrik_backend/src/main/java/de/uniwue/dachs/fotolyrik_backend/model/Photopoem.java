@@ -16,5 +16,8 @@ public class Photopoem extends BaseEntity {
     @JoinColumn(name = "person_id")
     private Person author;
 
+    @Column(name = "has_iiif_manifest")
+    private String iiifManifest;
+
     //TODO: Add other required fields
 }

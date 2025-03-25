@@ -1,23 +1,38 @@
 <script setup lang="ts">
 import 'tify'
 import 'tify/dist/tify.css'
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
+import type { PhotoPoem } from "~/utils/types";
+import apiClient from "~/service/api";
 
-onMounted(() => {
-  new Tify({
-    container: '#tify-photopoem',
-    manifestUrl: 'https://iiif.slub-dresden.de/iiif/2/358216435-19340200/manifest.json', //placeholder link
-  })
+const route = useRoute();
+const photopoem_id = route.params.id;
+const photopoem_item = ref<PhotoPoem>({} as PhotoPoem);
+const has_iiif_manifest = ref(false);
+const data_fetched = ref(false);
+
+onMounted(async () => {
+  try {
+    const response = await apiClient.get<PhotoPoem>(`/photopoems/${photopoem_id}`);
+    photopoem_item.value = response.data;
+    data_fetched.value = true;
+
+    if (photopoem_item.value.iiifManifest) {
+      has_iiif_manifest.value = true;
+      new Tify({
+        container: '#tify-photopoem',
+        manifestUrl: photopoem_item.value.iiifManifest,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 });
 </script>
 
-<template>
+<template v-show="data_fetched">
   <div class="flex flex-col gap-2">
-    <h1 class="text-3xl font-bold outfit-headline">Fotogedicht</h1>
-    <div id="tify-photopoem" class="h-[500px]"/>
+    <h1 class="text-3xl font-bold outfit-headline">{{ photopoem_item.title }}</h1>
+    <div v-show="has_iiif_manifest" id="tify-photopoem" class="h-[500px]"/>
   </div>
 </template>
-
-<style scoped>
-
-</style>
