@@ -9,6 +9,7 @@ const route = useRoute();
 const photopoem_id = route.params.id;
 const photopoem_item = ref<PhotoPoem>({} as PhotoPoem);
 const has_iiif_manifest = ref(false);
+const has_pages = ref(false);
 const data_fetched = ref(false);
 
 onMounted(async () => {
@@ -19,9 +20,11 @@ onMounted(async () => {
 
     if (photopoem_item.value.iiifManifest) {
       has_iiif_manifest.value = true;
+      has_pages.value = photopoem_item.value.pageNumber !== undefined;
       new Tify({
         container: '#tify-photopoem',
         manifestUrl: photopoem_item.value.iiifManifest,
+        pages: has_pages.value ? [photopoem_item.value.pageNumber] : [1]
       });
     }
   } catch (error) {

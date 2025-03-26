@@ -38,6 +38,15 @@ public class PhotopoemController {
                 photopoem.setAuthor(newAuthor);
             }
         }
+        if (photopoem.getPhotographer() != null) {
+            if (photopoem.getPhotographer().getId() != null) {
+                Person existingPhotographer = personRepository.findById(photopoem.getPhotographer().getId()).orElse(null);
+                photopoem.setPhotographer(existingPhotographer);
+            } else {
+                Person newPhotographer = personRepository.save(photopoem.getPhotographer());
+                photopoem.setPhotographer(newPhotographer);
+            }
+        }
         Photopoem savedPhotopoem = photopoemRepository.save(photopoem);
         return ResponseEntity.ok(savedPhotopoem);
     }

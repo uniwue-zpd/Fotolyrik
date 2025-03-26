@@ -24,7 +24,13 @@ export interface Person extends Auditable {
 
 export interface PhotoPoem extends Auditable {
     title: string,
+    volume?: string,
+    issue?: string,
+    pageNumber?: number,
+    publicationDate?: string,
     author?: Person,
+    photographer?: Person,
+    link?: string,
     iiifManifest: string
 
     //TODO: Add other required fields
