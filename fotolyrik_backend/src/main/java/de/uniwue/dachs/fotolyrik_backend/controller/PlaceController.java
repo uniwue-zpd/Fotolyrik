@@ -2,15 +2,17 @@ package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import de.uniwue.dachs.fotolyrik_backend.repository.PlaceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/places")
 public class PlaceController {
-    @Autowired
-    private PlaceRepository placeRepository;
+    private final PlaceRepository placeRepository;
+
+    public PlaceController(PlaceRepository placeRepository) {
+        this.placeRepository = placeRepository;
+    }
 
     @GetMapping
     public Iterable<Place> getAllPlaces() {

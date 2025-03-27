@@ -1,55 +1,56 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
-import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
-import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
-import de.uniwue.dachs.fotolyrik_backend.repository.PhotopoemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.uniwue.dachs.fotolyrik_backend.service.PhotopoemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/photopoems")
 public class PhotopoemController {
-    @Autowired
-    private PhotopoemRepository photopoemRepository;
+    private final PhotopoemService photopoemService;
 
-    @Autowired
-    private PersonRepository personRepository;
+    public PhotopoemController(PhotopoemService photopoemService) {
+        this.photopoemService = photopoemService;
+    }
 
     @GetMapping
-    public Iterable<Photopoem> getPhotopoems() {
-        return photopoemRepository.findAll();
+    public ResponseEntity<List<Photopoem>> getPhotopoems() {
+        List<Photopoem> photopoems = photopoemService.getAllPhotopoems();
+        return ResponseEntity.ok(photopoems);
     }
 
     @GetMapping("/{id}")
-    public Photopoem getPhotopoemById(@PathVariable Long id) {
-        return photopoemRepository.findById(id).orElse(null);
+    public ResponseEntity<Photopoem> getPhotopoemById(@PathVariable Long id) {
+        return photopoemService.getPhotopoemById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
     public ResponseEntity<Photopoem> savePhotopoem(@RequestBody Photopoem photopoem) {
-        if (photopoem.getAuthor() != null) {
-            if (photopoem.getAuthor().getId() != null) {
-                Person existingAuthor = personRepository.findById(photopoem.getAuthor().getId()).orElse(null);
-                photopoem.setAuthor(existingAuthor);
-            } else {
-                Person newAuthor = personRepository.save(photopoem.getAuthor());
-                photopoem.setAuthor(newAuthor);
-            }
-        }
-        if (photopoem.getPhotographer() != null) {
-            if (photopoem.getPhotographer().getId() != null) {
-                Person existingPhotographer = personRepository.findById(photopoem.getPhotographer().getId()).orElse(null);
-                photopoem.setPhotographer(existingPhotographer);
-            } else {
-                Person newPhotographer = personRepository.save(photopoem.getPhotographer());
-                photopoem.setPhotographer(newPhotographer);
-            }
-        }
-        Photopoem savedPhotopoem = photopoemRepository.save(photopoem);
-        return ResponseEntity.ok(savedPhotopoem);
+        Photopoem savedPhotopoem = photopoemService.savePhotopoem(photopoem);
+        return ResponseEntity.status(201).body(savedPhotopoem);
     }
 
-    //TODO: Implement PUT and DELETE methods
+    @PutMapping("/{id}")
+    public ResponseEntity<Photopoem> updatePhotopoem(@PathVariable Long id, @RequestBody Photopoem photopoem) {
+        try {
+            Photopoem updatedPhotopoem = photopoemService.updatePhotopoem(id, photopoem);
+            return ResponseEntity.ok(updatedPhotopoem);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePhotopoem(@PathVariable Long id) {
+        try {
+            photopoemService.deletePhotopoem(id);
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
 }
