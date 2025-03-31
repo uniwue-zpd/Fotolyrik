@@ -7,7 +7,7 @@
       <img src= "https://unsplash.it/1200/200" alt=""/>
   </div>
   <br>
-  <div class="grid grid-flow-row auto-rows-max">
+  <div class="grid place-content-center">
   <h1 class="text-3xl outfit-headline font-bold">Kontakt</h1>
   <br>
   <div>
@@ -43,8 +43,6 @@
   <div class="flex flex-col">
     <div class="...">
   <FormKit type="textarea"
-           class="w-full"
-           rows="2"
            name="message"
            label="Nachricht"
            placeholder="Ihre Nachricht"
@@ -66,7 +64,7 @@
     </div>
     </div>
     </FormKit>
-    </div>
+  </div>
 </template>
 
 <style scoped>
