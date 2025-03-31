@@ -1,4 +1,5 @@
 import type { FormKitNode } from '@formkit/core'
+import '@formkit/themes/genesis'
 
 /**
   * @privateRemarks
