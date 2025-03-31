@@ -8,7 +8,7 @@
   </div>
   <br>
   <div class="grid grid-flow-row auto-rows-max">
-  <h1 class="text-4xl font-bold">Kontakt</h1>
+  <h1 class="text-3xl outfit-headline font-bold">Kontakt</h1>
   <br>
   <div>
     <p>Lorem ipsum dolor sit amet, consetetur</p>
@@ -43,6 +43,7 @@
   <div class="flex flex-col">
     <div class="...">
   <FormKit type="textarea"
+           class="w-full"
            rows="2"
            name="message"
            label="Nachricht"
