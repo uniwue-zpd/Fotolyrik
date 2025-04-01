@@ -28,6 +28,10 @@ public class Photopoem extends BaseEntity {
     private LocalDate publicationDate;
 
     @ManyToOne
+    @JoinColumn(name = "pub_medium_id")
+    private PubMedium publicationMedium;
+
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private Person author;
 
@@ -42,4 +46,5 @@ public class Photopoem extends BaseEntity {
     private String iiifManifest;
 
     //TODO: Add other required fields
+    //TODO: Rename fields according to one general scheme
 }

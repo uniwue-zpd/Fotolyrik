@@ -2,8 +2,10 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
+import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PhotopoemRepository;
+import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -13,10 +15,14 @@ import java.util.Optional;
 public class PhotopoemService {
     private final PhotopoemRepository photopoemRepository;
     private final PersonRepository personRepository;
+    private final PubMediumRepository pubMediumRepository;
 
-    public PhotopoemService(PhotopoemRepository photopoemRepository, PersonRepository personRepository) {
+    public PhotopoemService(PhotopoemRepository photopoemRepository,
+                            PersonRepository personRepository,
+                            PubMediumRepository pubMediumRepository) {
         this.photopoemRepository = photopoemRepository;
         this.personRepository = personRepository;
+        this.pubMediumRepository = pubMediumRepository;
     }
 
     public List<Photopoem> getAllPhotopoems() {
@@ -31,6 +37,7 @@ public class PhotopoemService {
     public Photopoem savePhotopoem(Photopoem photopoem) {
         photopoem.setAuthor(getOrSavePerson(photopoem.getAuthor()));
         photopoem.setPhotographer(getOrSavePerson(photopoem.getPhotographer()));
+        photopoem.setPublicationMedium(getOrSavePubMedium(photopoem.getPublicationMedium()));
         return photopoemRepository.save(photopoem);
     }
 
@@ -51,6 +58,9 @@ public class PhotopoemService {
             }
             if (updatedPhotopoem.getPublicationDate() != null) {
                 field.setPublicationDate(updatedPhotopoem.getPublicationDate());
+            }
+            if (updatedPhotopoem.getPublicationMedium() != null) {
+                field.setPublicationMedium(getOrSavePubMedium(updatedPhotopoem.getPublicationMedium()));
             }
             if (updatedPhotopoem.getAuthor() != null) {
                 field.setAuthor(getOrSavePerson(updatedPhotopoem.getAuthor()));
@@ -85,5 +95,16 @@ public class PhotopoemService {
             return personRepository.findById(person.getId()).orElse(null);
         }
         return personRepository.save(person);
+    }
+
+    // Helper method to set an existing publication medium or save a new one
+    private PubMedium getOrSavePubMedium(PubMedium pubMedium) {
+        if (pubMedium == null) {
+            return null;
+        }
+        if (pubMedium.getId() != null) {
+            return pubMediumRepository.findById(pubMedium.getId()).orElse(null);
+        }
+        return pubMediumRepository.save(pubMedium);
     }
 }

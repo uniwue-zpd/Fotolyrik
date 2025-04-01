@@ -28,6 +28,7 @@ export interface PhotoPoem extends Auditable {
     issue?: string,
     pageNumber?: number,
     publicationDate?: string,
+    publicationMedium?: string,
     author?: Person,
     photographer?: Person,
     link?: string,
