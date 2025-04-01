@@ -25,7 +25,7 @@ public class PubMedium extends BaseEntity {
             joinColumns = @JoinColumn(name = "pub_medium_id"),
             inverseJoinColumns = @JoinColumn(name = "pub_place_id")
     )
-    private Set<Place> publicationPlaces = new HashSet<>();
+    private Set<Place> publication_places = new HashSet<>();
 
     @Column(name = "publisher")
     private String publisher;
@@ -36,11 +36,11 @@ public class PubMedium extends BaseEntity {
 
     @Column(name = "start_year")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private LocalDate startYear;
+    private LocalDate start_year;
 
     @Column(name = "end_year")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private LocalDate endYear;
+    private LocalDate end_year;
 
     @Column(name = "amount_volumes")
     private Integer amount_volumes;

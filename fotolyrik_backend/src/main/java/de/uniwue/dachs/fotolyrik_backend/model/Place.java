@@ -11,15 +11,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Place extends BaseEntity {
-    @Column(name = "has_name", unique = true, nullable = false)
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @Column(name = "has_description")
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "has_longitude")
+    @Column(name = "longitude")
     private double longitude;
 
-    @Column(name = "has_latitude")
+    @Column(name = "latitude")
     private double latitude;
 }

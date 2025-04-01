@@ -37,7 +37,7 @@ public class PhotopoemService {
     public Photopoem savePhotopoem(Photopoem photopoem) {
         photopoem.setAuthor(getOrSavePerson(photopoem.getAuthor()));
         photopoem.setPhotographer(getOrSavePerson(photopoem.getPhotographer()));
-        photopoem.setPublicationMedium(getOrSavePubMedium(photopoem.getPublicationMedium()));
+        photopoem.setPublication_medium(getOrSavePubMedium(photopoem.getPublication_medium()));
         return photopoemRepository.save(photopoem);
     }
 
@@ -53,14 +53,14 @@ public class PhotopoemService {
             if (updatedPhotopoem.getIssue() != null) {
                 field.setIssue(updatedPhotopoem.getIssue());
             }
-            if (updatedPhotopoem.getPageNumber() != null) {
-                field.setPageNumber(updatedPhotopoem.getPageNumber());
+            if (updatedPhotopoem.getPage_number() != null) {
+                field.setPage_number(updatedPhotopoem.getPage_number());
             }
-            if (updatedPhotopoem.getPublicationDate() != null) {
-                field.setPublicationDate(updatedPhotopoem.getPublicationDate());
+            if (updatedPhotopoem.getPublication_date() != null) {
+                field.setPublication_date(updatedPhotopoem.getPublication_date());
             }
-            if (updatedPhotopoem.getPublicationMedium() != null) {
-                field.setPublicationMedium(getOrSavePubMedium(updatedPhotopoem.getPublicationMedium()));
+            if (updatedPhotopoem.getPublication_medium() != null) {
+                field.setPublication_medium(getOrSavePubMedium(updatedPhotopoem.getPublication_medium()));
             }
             if (updatedPhotopoem.getAuthor() != null) {
                 field.setAuthor(getOrSavePerson(updatedPhotopoem.getAuthor()));
@@ -71,8 +71,8 @@ public class PhotopoemService {
             if (updatedPhotopoem.getLink() != null) {
                 field.setLink(updatedPhotopoem.getLink());
             }
-            if (updatedPhotopoem.getIiifManifest() != null) {
-                field.setIiifManifest(updatedPhotopoem.getIiifManifest());
+            if (updatedPhotopoem.getIiif_manifest() != null) {
+                field.setIiif_manifest(updatedPhotopoem.getIiif_manifest());
             }
             return photopoemRepository.save(field);
         }).orElseThrow(() -> new RuntimeException("Photopoem with id '" + id + "' does not exist"));

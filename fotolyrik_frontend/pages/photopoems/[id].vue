@@ -18,13 +18,13 @@ onMounted(async () => {
     photopoem_item.value = response.data;
     data_fetched.value = true;
 
-    if (photopoem_item.value.iiifManifest) {
+    if (photopoem_item.value.iiif_manifest) {
       has_iiif_manifest.value = true;
-      has_pages.value = photopoem_item.value.pageNumber !== undefined;
+      has_pages.value = photopoem_item.value.page_number !== undefined;
       new Tify({
         container: '#tify-photopoem',
-        manifestUrl: photopoem_item.value.iiifManifest,
-        pages: has_pages.value ? [photopoem_item.value.pageNumber] : [1]
+        manifestUrl: photopoem_item.value.iiif_manifest,
+        pages: has_pages.value ? [photopoem_item.value.page_number] : [1]
       });
     }
   } catch (error) {

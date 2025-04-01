@@ -23,15 +23,15 @@ public abstract class BaseEntity implements Serializable {
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
+    private Date created_date;
 
     @CreatedBy
-    private String createdBy;
+    private String created_by;
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
+    private Date last_modified_date;
 
     @LastModifiedBy
-    protected String lastModifiedBy;
+    protected String last_modified_by;
 }

@@ -11,25 +11,25 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Photopoem extends BaseEntity {
-    @Column(name = "has_title", nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "has_volume")
+    @Column(name = "volume")
     private Long volume;
 
-    @Column(name = "has_issue")
+    @Column(name = "issue")
     private Long issue;
 
-    @Column(name = "has_pagenumber")
-    private Long pageNumber;
+    @Column(name = "page_number")
+    private Long page_number;
 
-    @Column(name = "has_publication_date")
+    @Column(name = "publication_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-    private LocalDate publicationDate;
+    private LocalDate publication_date;
 
     @ManyToOne
     @JoinColumn(name = "pub_medium_id")
-    private PubMedium publicationMedium;
+    private PubMedium publication_medium;
 
     @ManyToOne
     @JoinColumn(name = "author_id")
@@ -39,11 +39,11 @@ public class Photopoem extends BaseEntity {
     @JoinColumn(name = "photographer_id")
     private Person photographer;
 
-    @Column(name = "has_link")
+    @Column(name = "link")
     private String link;
 
-    @Column(name = "has_iiif_manifest")
-    private String iiifManifest;
+    @Column(name = "iiif_manifest")
+    private String iiif_manifest;
 
     //TODO: Add other required fields
     //TODO: Rename fields according to one general scheme

@@ -23,18 +23,18 @@ onMounted(async () => {
 <template>
   <Card>
     <template #title>
-      <h1 class="text-3xl font-bold outfit-headline">{{ person_item.firstName }} {{ person_item.lastName }}</h1>
+      <h1 class="text-3xl font-bold outfit-headline">{{ person_item.first_name }} {{ person_item.last_name }}</h1>
     </template>
     <template #content>
       <table class="min-w-full divide-y divide-gray-200 roboto-plain">
         <tbody class="bg-white divide-y divide-gray-200">
-        <tr v-if="person_item.birthYear">
+        <tr v-if="person_item.birth_year">
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Geburtsjahr</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.birthYear }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.birth_year }}</td>
         </tr>
-        <tr v-if="person_item.deathYear">
+        <tr v-if="person_item.death_year">
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Sterbejahr</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.deathYear }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.death_year }}</td>
         </tr>
         <tr v-if="person_item.pseudonym">
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Pseudonym</td>

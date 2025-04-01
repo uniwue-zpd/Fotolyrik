@@ -35,10 +35,10 @@ public class PersonController {
         if (existingPerson == null) {
             return null;
         }
-        existingPerson.setFirstName(person.getFirstName());
-        existingPerson.setLastName(person.getLastName());
-        existingPerson.setBirthYear(person.getBirthYear());
-        existingPerson.setDeathYear(person.getDeathYear());
+        existingPerson.setFirst_name(person.getFirst_name());
+        existingPerson.setLast_name(person.getLast_name());
+        existingPerson.setBirth_year(person.getBirth_year());
+        existingPerson.setDeath_year(person.getDeath_year());
         existingPerson.setPseudonym(person.getPseudonym());
         existingPerson.setSex(person.getSex());
 

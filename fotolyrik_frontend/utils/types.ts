@@ -1,9 +1,9 @@
 export interface Auditable {
     id: number,
-    createdDate: string,
-    createdBy: string,
-    lastModifiedDate: string,
-    lastModifiedBy: string
+    created_date: string,
+    created_by: string,
+    last_modified_date: string,
+    last_modified_by: string
 }
 
 export interface Place extends Auditable {
@@ -14,11 +14,11 @@ export interface Place extends Auditable {
 }
 
 export interface Person extends Auditable {
-    firstName: string,
-    lastName: string,
+    first_name: string,
+    last_name: string,
     pseudonym?: string,
-    birthYear?: string,
-    deathYear?: string,
+    birth_year?: string,
+    death_year?: string,
     sex?: "MALE" | "FEMALE"
 }
 
@@ -26,13 +26,25 @@ export interface PhotoPoem extends Auditable {
     title: string,
     volume?: string,
     issue?: string,
-    pageNumber?: number,
-    publicationDate?: string,
-    publicationMedium?: string,
+    page_number?: number,
+    publication_date?: string,
+    publication_medium?: string,
     author?: Person,
     photographer?: Person,
     link?: string,
-    iiifManifest: string
+    iiif_manifest: string
 
     //TODO: Add other required fields
+}
+
+export interface PubMedium extends Auditable {
+    title: string,
+    subtitle?: string,
+    publication_places?: Place[],
+    publisher?: string,
+    pub_rhytm?: "W" | "M" | "HM",
+    start_year?: string,
+    end_year?: string,
+    amount_volumes?: number,
+    amount_issues?: number,
 }

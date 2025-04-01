@@ -9,22 +9,22 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Person extends BaseEntity {
-    @Column(name = "has_first_name")
-    private String firstName;
+    @Column(name = "first_name")
+    private String first_name;
 
-    @Column(name = "has_last_name")
-    private String lastName;
+    @Column(name = "last_name")
+    private String last_name;
 
-    @Column(name = "has_pseudonym")
+    @Column(name = "pseudonym")
     private String pseudonym;
 
-    @Column(name = "has_birth_year", length = 4)
-    private Integer birthYear;
+    @Column(name = "birth_year", length = 4)
+    private Integer birth_year;
 
-    @Column(name = "has_death_year", length = 4)
-    private Integer deathYear;
+    @Column(name = "death_year", length = 4)
+    private Integer death_year;
 
-    @Column(name = "has_sex")
+    @Column(name = "sex")
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
