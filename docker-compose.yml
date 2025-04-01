@@ -8,6 +8,7 @@ services:
       - backend
     networks:
       - fotolyrik_network
+    restart: unless-stopped
 
   backend:
     image: fotolyrik_backend
@@ -24,6 +25,7 @@ services:
         condition: service_healthy
     networks:
       - fotolyrik_network
+    restart: unless-stopped
 
   database:
     image: postgres:17-alpine
@@ -39,7 +41,7 @@ services:
     volumes:
       # In case you have a database dump, uncomment the following line and change the file name
       # - ./<your_dump>.sql:/docker-entrypoint-initdb.d/<your_dump>.sql
-      - ./db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]
       interval: 30s
@@ -47,6 +49,7 @@ services:
       start_period: 60s
     networks:
       - fotolyrik_network
+    restart: unless-stopped
 
   nginx:
     image: nginx:alpine-slim
@@ -60,7 +63,11 @@ services:
       - backend
     networks:
       - fotolyrik_network
+    restart: unless-stopped
 
 networks:
   fotolyrik_network:
     driver: bridge
+
+volumes:
+  db_data:
