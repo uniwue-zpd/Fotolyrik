@@ -28,5 +28,4 @@ fotolyrik_frontend/.cache/
 Thumbs.db
 
 # Database files and dumps
-db_data
 /*.sql
