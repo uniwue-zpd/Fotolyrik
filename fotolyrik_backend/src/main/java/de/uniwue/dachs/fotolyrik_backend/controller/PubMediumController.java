@@ -1,38 +1,47 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
-import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
+import de.uniwue.dachs.fotolyrik_backend.service.PubMediumService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/publication_media")
 public class PubMediumController {
-    private final PubMediumRepository pubMediumRepository;
+    private final PubMediumService pubMediumService;
 
-    public PubMediumController(PubMediumRepository pubMediumRepository) {
-        this.pubMediumRepository = pubMediumRepository;
+    public PubMediumController(PubMediumService pubMediumService) {
+        this.pubMediumService = pubMediumService;
     }
 
     @GetMapping
     public ResponseEntity<Iterable<PubMedium>> getPubMediums() {
-        Iterable<PubMedium> pubMediums = pubMediumRepository.findAll();
+        Iterable<PubMedium> pubMediums = pubMediumService.getAllPubMedia();
         return ResponseEntity.ok(pubMediums);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PubMedium> getPubMediumById(@PathVariable Long id) {
-        return pubMediumRepository.findById(id)
+        return pubMediumService.getPubMediumById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
     public ResponseEntity<PubMedium> savePubMedium(@RequestBody PubMedium pubMedium) {
-        PubMedium savedPubMedium = pubMediumRepository.save(pubMedium);
+        PubMedium savedPubMedium = pubMediumService.savePubMedium(pubMedium);
         return ResponseEntity.status(201).body(savedPubMedium);
     }
 
-    //TODO: Implement both PUT and DELETE mappings
-    //TODO: Implement service layer for PubMedium
+    //TODO: Implement PUT mapping
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePubMedium(@PathVariable Long id) {
+        try {
+            pubMediumService.deletePubPlace(id);
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
 }

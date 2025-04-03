@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
+import java.time.Year;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,11 +36,11 @@ public class PubMedium extends BaseEntity {
 
     @Column(name = "start_year")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private LocalDate start_year;
+    private Year start_year;
 
     @Column(name = "end_year")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private LocalDate end_year;
+    private Year end_year;
 
     @Column(name = "amount_volumes")
     private Integer amount_volumes;
@@ -49,6 +49,6 @@ public class PubMedium extends BaseEntity {
     private Integer amount_issues;
 
     public enum PublicationRhytm {
-        W, M, HM
+        M, HM, W, HW, DIVERS
     }
 }
