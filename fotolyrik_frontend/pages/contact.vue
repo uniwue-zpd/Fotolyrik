@@ -43,6 +43,7 @@
   <div class="flex flex-col">
     <div class="...">
   <FormKit type="textarea"
+           auto-height
            name="message"
            label="Nachricht"
            placeholder="Ihre Nachricht"
