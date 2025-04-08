@@ -56,6 +56,7 @@
         type="checkbox"
         label="Ich habe die Datenschutzerklärung zur Kenntnis genommen."
         name="Datenschutzerklärung"
+        decorator-icon="check"
         :value="false"
         validation="required"
       > <!-- Farbe der Checkbox ändern? -->

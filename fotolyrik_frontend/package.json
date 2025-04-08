@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@formkit/addons": "^1.6.9",
+    "@formkit/icons": "^1.6.9",
     "@formkit/nuxt": "^1.6.9",
     "@pinia/nuxt": "^0.10.1",
     "@primevue/nuxt-module": "^4.3.1",
