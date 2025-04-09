@@ -3,17 +3,16 @@
 
 <template>
   <div class="columns-1 w-[800px]">
-  <h1 class="text-4xl font-bold">FAQ</h1>
+  <h1 class="text-3xl outfit-headline font-bold">FAQ</h1>
   <br>
   <div >
-  <h1 class="text-4xl font-bold">Themenblock</h1>
+  <h2 class="text-2xl outfit-headline font-bold">Themenblock</h2>
   <br>
   <div id="accordion">
     <div class="card">
-      <!-- Farbänderung mit Tailwind nicht möglich? -->
       <Accordion  value="0">
-        <AccordionPanel class="bg-white" value="0" >
-          <AccordionHeader>Frage I</AccordionHeader>
+        <AccordionPanel value="0" >
+          <AccordionHeader><div class="text-lg outfit-headline">Frage I</div></AccordionHeader>
           <AccordionContent>
             <p class="m-0">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -22,7 +21,7 @@
           </AccordionContent>
         </AccordionPanel>
         <AccordionPanel value="1">
-          <AccordionHeader>Frage II</AccordionHeader>
+          <AccordionHeader><div class="text-lg outfit-headline">Frage II</div></AccordionHeader>
           <AccordionContent>
             <p class="m-0">
               Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
@@ -31,7 +30,7 @@
           </AccordionContent>
         </AccordionPanel>
         <AccordionPanel value="2">
-          <AccordionHeader>Frage III</AccordionHeader>
+          <AccordionHeader><div class="text-lg outfit-headline">Frage III</div></AccordionHeader>
           <AccordionContent>
             <p class="m-0">
               At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
@@ -43,7 +42,7 @@
     </div>
   </div>
     <br>
-    <h1 class="text-4xl font-bold">Themenblock</h1>
+    <h2 class="text-2xl outfit-headline font-bold">Themenblock</h2>
   </div>
   </div>
 </template>
