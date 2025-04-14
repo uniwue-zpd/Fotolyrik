@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div class="columns-1 w-[800px]">
+  <div class="columns-1 w-full">
   <h1 class="text-3xl outfit-headline font-bold">FAQ</h1>
   <br>
   <div >
