@@ -51,10 +51,12 @@
 .themed-accordion {
   --p-accordion-header-color: black;
   --p-accordion-header-active-color: black;
+  --p-accordion-header-hover-color: black;
   --p-accordion-header-active-background: #E8E8E8;
   --p-accordion-header-active-hover-background: #F0F0F0;
   --p-accordion-header-hover-background: #F0F0F0;
   --p-accordion-content-border-width: 1px;
   --p-accordion-content-border-color: #F0F0F0;
+  --p-accordion-content-padding: 1%;
 }
 </style>
