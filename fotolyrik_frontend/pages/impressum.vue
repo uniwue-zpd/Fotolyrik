@@ -3,7 +3,7 @@
 </script>
 
 <template>
-
+<div class="mb-[0.5%]">
 <h1 class="text-3xl outfit-headline font-bold">Impressum</h1>
     <br>
   <div>
@@ -22,8 +22,15 @@
   <div>
   <h2 class="text-1xl outfit-headline font-bold">Weiteres</h2>
   <p>Zuständige Aufsichtsbehörde: Lorem ipsum dolor sit amet</p>
+    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr,</p>
+      <p>sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,</p>
+      <p>sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, </p>
+     <p> no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, </p>
+      <p>sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. </p>
+      <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, </p>
+      <p>no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
   </div>
-  <br> <!-- Ständiger Abstand zum Footer? -->
+</div>
 </template>
 
 <style scoped>
