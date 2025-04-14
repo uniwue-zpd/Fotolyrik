@@ -3,6 +3,7 @@
 </script>
 
 <template>
+<div class="mb-[0.5%]">
 <h1 class="text-3xl outfit-headline font-bold">Datenschutzerklärung</h1>
   <br>
   <div>
@@ -21,6 +22,7 @@
     <p>Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr.</p>
   </div>
+</div>
 </template>
 
 <style scoped>
