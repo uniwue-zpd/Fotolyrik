@@ -10,7 +10,7 @@
   <br>
   <div id="accordion">
     <div class="card">
-      <Accordion class="themed-accordion"  value="0">
+      <Accordion class="themed-accordion"  value="0" expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
         <AccordionPanel value="0" >
           <AccordionHeader><div class="text-lg outfit-headline">Frage I</div></AccordionHeader>
           <AccordionContent>
