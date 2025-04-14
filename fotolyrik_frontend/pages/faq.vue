@@ -10,7 +10,7 @@
   <br>
   <div id="accordion">
     <div class="card">
-      <Accordion  value="0">
+      <Accordion class="themed-accordion"  value="0">
         <AccordionPanel value="0" >
           <AccordionHeader><div class="text-lg outfit-headline">Frage I</div></AccordionHeader>
           <AccordionContent>
@@ -48,5 +48,13 @@
 </template>
 
 <style scoped>
-
+.themed-accordion {
+  --p-accordion-header-color: black;
+  --p-accordion-header-active-color: black;
+  --p-accordion-header-active-background: #E8E8E8;
+  --p-accordion-header-active-hover-background: #F0F0F0;
+  --p-accordion-header-hover-background: #F0F0F0;
+  --p-accordion-content-border-width: 1px;
+  --p-accordion-content-border-color: #F0F0F0;
+}
 </style>
