@@ -37,7 +37,6 @@ function senden(values) {
         type="email"
         label="Email"
         validation="required"
-        validation-visibility="live"
         placeholder="Email">
         </FormKit>
       </div>
@@ -49,7 +48,7 @@ function senden(values) {
            name="message"
            label="Nachricht"
            placeholder="Ihre Nachricht"
-           validation-visibility="live">
+           validation="required">
   </FormKit> <!-- Größe von Textfeld ändern?-->
   </div>
     <div class="flex flex-col">
