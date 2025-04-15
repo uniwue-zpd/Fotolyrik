@@ -1,5 +1,7 @@
 <script setup lang="ts">
-
+function senden(values) {
+  console.log(values);
+}
 </script>
 
 <template>
@@ -59,8 +61,7 @@
         decorator-icon="check"
         :value="false"
         validation="required"
-      > <!-- Farbe der Checkbox ändern? -->
-      <pre wrap>{{ value }}</pre>
+      >
       </FormKit>
     </div>
     </div>
