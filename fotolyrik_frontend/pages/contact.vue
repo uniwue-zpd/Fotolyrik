@@ -21,7 +21,7 @@ function senden(values) {
     <p>sadipscing elitr, sed diam.</p>
   </div>
     <br>
-    <FormKit type="form" @submit="senden" submit-label="Senden" #default ="{ value }">
+    <FormKit type="form" @submit="senden" submit-label="Senden" #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
     <div class="flex flex-row gap-4">
       <div class="...">
     <FormKit
@@ -30,14 +30,21 @@ function senden(values) {
       id="name"
       label="Name"
       placeholder="Name"
+      validation="required"
+      :validation-messages="{
+          required: 'Bitte geben Sie einen Namen an.'
+        }"
     />
       </div>
       <div class="...">
         <FormKit
         type="email"
         label="Email"
+        placeholder="Email"
         validation="required"
-        placeholder="Email">
+        :validation-messages="{
+          required: 'Bitte geben Sie eine gültige E-Mail-Adresse an.'
+        }">
         </FormKit>
       </div>
     </div>
@@ -48,7 +55,10 @@ function senden(values) {
            name="message"
            label="Nachricht"
            placeholder="Ihre Nachricht"
-           validation="required">
+           validation="required"
+           :validation-messages="{
+            required: 'Bitte geben Sie eine Nachricht ein.'
+           }">
   </FormKit> <!-- Größe von Textfeld ändern?-->
   </div>
     <div class="flex flex-col">
@@ -59,7 +69,10 @@ function senden(values) {
         name="Datenschutzerklärung"
         decorator-icon="check"
         :value="false"
-        validation="required"
+        validation="accepted"
+        :validation-messages="{
+          accepted: 'Datenschutzerklärung bitte bestätigen.'
+        }"
       >
       </FormKit>
     </div>
