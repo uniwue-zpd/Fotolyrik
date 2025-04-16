@@ -13,6 +13,11 @@ export default defineNuxtConfig({
       }
     }
   },
+  routeRules: {
+    '/photopoems/**': {
+      ssr: false
+    }
+  },
   modules: [
     '@pinia/nuxt',
     '@primevue/nuxt-module',
