@@ -16,8 +16,7 @@ function senden(values) {
       <p>und klicken Sie anschließend auf den Senden-Button.</p>
     </div>
     <FormKit type="form" @submit="senden" submit-label="Senden" #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
-    <div class="flex flex-row gap-4">
-      <div>
+      <div class="flex flex-row gap-4">
         <FormKit
             type="text"
             name="name"
@@ -27,43 +26,34 @@ function senden(values) {
             validation="required"
             :validation-messages="{required: 'Bitte geben Sie einen Namen an.'}"
         />
-      </div>
-      <div>
         <FormKit
             type="email"
             label="Email"
             placeholder="Email"
             validation="required"
-            :validation-messages="{
-          required: 'Bitte geben Sie eine gültige E-Mail-Adresse an.'}"
+            :validation-messages="{required: 'Bitte geben Sie eine gültige E-Mail-Adresse an.'}"
         />
       </div>
-    </div>
       <div class="flex flex-col">
-        <div>
-          <FormKit
-              type="textarea"
-              auto-height
-              name="message"
-              label="Nachricht"
-              placeholder="Ihre Nachricht"
-              validation="required"
-              :validation-messages="{required: 'Bitte geben Sie eine Nachricht ein.'}"
-          /> <!-- Größe von Textfeld ändern?-->
-        </div>
-        <div class="flex flex-col">
-          <div>
-            <FormKit
-                type="checkbox"
-                label="Ich habe die Datenschutzerklärung zur Kenntnis genommen."
-                name="Datenschutzerklärung"
-                decorator-icon="check"
-                :value="false"
-                validation="accepted"
-                :validation-messages="{accepted: 'Datenschutzerklärung bitte bestätigen.'}"
-            />
-          </div>
-        </div>
+        <FormKit
+            outer-class="max-w-[30rem]"
+            type="textarea"
+            auto-height
+            name="message"
+            label="Nachricht"
+            placeholder="Ihre Nachricht"
+            validation="required"
+            :validation-messages="{required: 'Bitte geben Sie eine Nachricht ein.'}"
+        />
+        <FormKit
+            type="checkbox"
+            label="Ich habe die Datenschutzerklärung zur Kenntnis genommen."
+            name="Datenschutzerklärung"
+            decorator-icon="check"
+            :value="false"
+            validation="accepted"
+            :validation-messages="{accepted: 'Datenschutzerklärung bitte bestätigen.'}"
+        />
       </div>
     </FormKit>
   </div>
