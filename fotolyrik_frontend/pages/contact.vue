@@ -1,6 +1,10 @@
 <script setup lang="ts">
-function senden(values) {
-  console.log(values);
+import { ref } from "vue";
+
+const input = ref<string>("");
+function send(input_body: string) {
+  input.value = input_body;
+  console.log(input.value);
 }
 </script>
 
@@ -15,7 +19,7 @@ function senden(values) {
       <p>Füllen Sie bitte dafür die untenstehenden Felder aus</p>
       <p>und klicken Sie anschließend auf den Senden-Button.</p>
     </div>
-    <FormKit type="form" @submit="senden" submit-label="Senden" #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
+    <FormKit type="form" @submit="send" submit-label="Senden" #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
       <div class="flex flex-row gap-4">
         <FormKit
             type="text"
