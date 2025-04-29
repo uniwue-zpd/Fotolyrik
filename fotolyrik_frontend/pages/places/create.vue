@@ -36,7 +36,7 @@ const submit = async (formData: Partial<PlaceInput>) => {
         #default="{ value }"
         :actions="false"
     >
-      <div class="grid place-content-center gap-2 border-2 border-solid rounded-md p-5 bg-[#F1F2F2]">
+      <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-[#F1F2F2]">
         <FormKit
             type="text"
             name="name"
@@ -52,7 +52,7 @@ const submit = async (formData: Partial<PlaceInput>) => {
             label="Beschreibung"
             placeholder="Hauptstadt Deutschlands"
             prefix-icon="textarea"
-            outer-class="max-w-full"
+            outer-class="max-w-full min-w-[0%]"
         />
         <div class="flex flex-row space-x-5">
           <FormKit
