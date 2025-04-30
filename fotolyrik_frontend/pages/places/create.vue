@@ -75,7 +75,7 @@ const submit = async (formData: Partial<PlaceInput>) => {
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>
           <hr>
-          <pre>{{ value }}</pre>
+          <pre wrap class="text-sm md:text-base">{{ value }}</pre>
         </div>
         <FormKit
             type="submit"
