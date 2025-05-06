@@ -55,4 +55,11 @@ export interface File extends Auditable {
     size: number | null
 }
 
+export interface ContactForm extends Auditable {
+    name: string | null,
+    email: string | null,
+    subject: string | null,
+    message: string | null
+}
+
 // TODO: @miriku98 Add an interface for the contact form
