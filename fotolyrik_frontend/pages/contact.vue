@@ -41,6 +41,18 @@ function send(input_body: string) {
       <div class="flex flex-col">
         <FormKit
             outer-class="max-w-[30rem]"
+            type="text"
+            name="subject"
+            id="subject"
+            label="Betreff"
+            placeholder="Ihr Betreff"
+            validation="required"
+            :validation-messages="{required: 'Bitte geben Sie einen Betreff an.'}"
+        />
+      </div>
+      <div class="flex flex-col">
+        <FormKit
+            outer-class="max-w-[30rem]"
             type="textarea"
             auto-height
             name="message"
