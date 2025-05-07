@@ -1,15 +1,14 @@
 <script setup lang="ts">
-// import { ref } from "vue";
-
-// const input = ref<string>("");
-// function send(input_body: string) {
-//  input.value = input_body;
-//  console.log(input.value);
-
+import { ref } from "vue";
+import apiClient from "~/service/api";
 import type {ContactForm} from "~/utils/types";
 
 const formData = {
 }
+
+const toast = useToast();
+
+const submitted = ref(false);
 
 const submit = async (formData: Partial<ContactForm>) => {
   try {
