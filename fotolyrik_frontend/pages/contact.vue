@@ -10,9 +10,9 @@ const toast = useToast();
 
 const submitted = ref(false);
 
-const submit = async (formData: Partial<ContactForm>) => {
+const submit = async (formData: ContactForm) => {
   try {
-    const response = await apiClient.post('/contact', formData)  // wird automatisch in JSON angegeben ?
+    await apiClient.post('/contact', formData)
     submitted.value = true;
     toast.add({severity: 'success', detail: 'Erfolgreich zugestellt', life: 3000})
     navigateTo('/contact');
@@ -34,7 +34,7 @@ const submit = async (formData: Partial<ContactForm>) => {
       <p>Füllen Sie dafür bitte die unteren Felder aus</p>
       <p>und klicken Sie anschließend auf den Senden-Button.</p>
     </div>
-    <FormKit type="form" @submit="send" v-model="formData" submit-label="Senden" #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
+    <FormKit type="form" @submit="submit" submit-label="Senden" #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
       <div class="flex flex-row gap-4">
         <FormKit
             type="text"
