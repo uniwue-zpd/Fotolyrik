@@ -32,10 +32,10 @@ const submit = async (formData: Partial<ContactForm>) => {
     <h1 class="text-3xl outfit-headline font-bold">Kontakt</h1>
     <div>
       <p>Hier können Sie Ihre Nachricht an uns hinterlassen.</p>
-      <p>Füllen Sie bitte dafür die untenstehenden Felder aus</p>
+      <p>Füllen Sie dafür bitte die unteren Felder aus</p>
       <p>und klicken Sie anschließend auf den Senden-Button.</p>
     </div>
-    <FormKit type="form" @submit="send" submit-label="Senden" #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
+    <FormKit type="form" @submit="send" v-model="formData" submit-label="Senden" #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
       <div class="flex flex-row gap-4">
         <FormKit
             type="text"
@@ -48,6 +48,7 @@ const submit = async (formData: Partial<ContactForm>) => {
         />
         <FormKit
             type="email"
+            name="email"
             label="Email"
             placeholder="Email"
             validation="required"
