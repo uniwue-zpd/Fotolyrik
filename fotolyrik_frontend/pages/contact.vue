@@ -15,11 +15,11 @@ const submit = async (formData: Partial<ContactForm>) => {
   try {
     const response = await apiClient.post('/contact', formData)  // wird automatisch in JSON angegeben ?
     submitted.value = true;
-    toast.add({severity: 'success', detail: 'Erfolgreich erstellt', life: 3000})
+    toast.add({severity: 'success', detail: 'Erfolgreich zugestellt', life: 3000})
     navigateTo('/contact');
   } catch (error) {
     console.log(error)
-    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Erstellen des Ortes', life: 3000})
+    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Senden der Nachricht', life: 3000})
   }
 };
 </script>
