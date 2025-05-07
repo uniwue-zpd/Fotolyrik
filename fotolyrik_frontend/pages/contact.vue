@@ -1,11 +1,27 @@
 <script setup lang="ts">
-import { ref } from "vue";
+// import { ref } from "vue";
 
-const input = ref<string>("");
-function send(input_body: string) {
-  input.value = input_body;
-  console.log(input.value);
+// const input = ref<string>("");
+// function send(input_body: string) {
+//  input.value = input_body;
+//  console.log(input.value);
+
+import type {ContactForm} from "~/utils/types";
+
+const formData = {
 }
+
+const submit = async (formData: Partial<ContactForm>) => {
+  try {
+    const response = await apiClient.post('/contact', formData)  // wird automatisch in JSON angegeben ?
+    submitted.value = true;
+    toast.add({severity: 'success', detail: 'Erfolgreich erstellt', life: 3000})
+    navigateTo('/contact');
+  } catch (error) {
+    console.log(error)
+    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Erstellen des Ortes', life: 3000})
+  }
+};
 </script>
 
 <template>
