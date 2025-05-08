@@ -18,11 +18,19 @@ public class ContactService {
     private String owner;
 
     public void sendEmail(ContactDTO contactDTO) {
+        // Send email to the owner
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(owner);
         message.setSubject(contactDTO.getSubject());
         message.setText(contactDTO.getMessage());
         message.setReplyTo(contactDTO.getEmail());
         mailSender.send(message);
+
+        // Send confirmation email to the user
+        SimpleMailMessage replyMessage = new SimpleMailMessage();
+        replyMessage.setTo(contactDTO.getEmail());
+        replyMessage.setSubject("Bestätigung: Ihre Nachricht ist bei uns eingegangen");
+        replyMessage.setText("Vielen Dank für Ihre Nachricht! Wir werden uns so schnell wie möglich bei Ihnen melden.");
+        mailSender.send(replyMessage);
     }
 }
