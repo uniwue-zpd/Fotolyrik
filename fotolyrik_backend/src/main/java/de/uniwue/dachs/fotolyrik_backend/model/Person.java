@@ -28,6 +28,12 @@ public class Person extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
+    @Transient
+    public String getFull_name() {
+        return (first_name != null ? first_name : "") + " " +
+                (last_name != null ? last_name : "");
+    }
+
     public enum Sex {
         MALE, FEMALE
     }

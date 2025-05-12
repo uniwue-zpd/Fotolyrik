@@ -16,6 +16,7 @@ export interface Place extends Auditable {
 export interface Person extends Auditable {
     first_name: string | null,
     last_name: string | null,
+    full_name: string | null,
     pseudonym: string | null,
     birth_year: string | null,
     death_year: string | null,
