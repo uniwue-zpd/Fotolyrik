@@ -55,12 +55,41 @@ const images = ref([
     src: new URL('@/assets/images/k-10.jpg', import.meta.url).href,
   }
 ])
+
+const responsiveOptions = ref([
+  {
+    breakpoint: '1400px',
+    numVisible: 2,
+    numScroll: 1
+  },
+  {
+    breakpoint: '1199px',
+    numVisible: 3,
+    numScroll: 1
+  },
+  {
+    breakpoint: '767px',
+    numVisible: 2,
+    numScroll: 1
+  },
+  {
+    breakpoint: '575px',
+    numVisible: 1,
+    numScroll: 1
+  }
+]);
 </script>
 
 <template>
   <div class="flex flex-col gap-2">
     <div class="carousel bg-[#F1F2F2] p-5">
-      <Carousel :num-visible="3"/>
+      <Carousel :value="images" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
+        <template #item="{ data }">
+          <div class="p-2">
+            <img :src="data" alt="Bild im Carousel" class="w-full rounded shadow-md" />
+          </div>
+        </template>
+      </Carousel>
     </div>
     <div class="intro p-5">
       <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">
