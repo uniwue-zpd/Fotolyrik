@@ -4,56 +4,16 @@
 import { ref } from 'vue'
 
 const images = ref([
-  {
-    id: 1,
-    title: 'Image 1',
-    src: new URL('@/assets/images/k-1.jpg', import.meta.url).href,
-  },
-  {
-    id: 2,
-    title: 'Image 2',
-    src: new URL('@/assets/images/k-2.jpg', import.meta.url).href,
-  },
-  {
-    id: 3,
-    title: 'Image 3',
-    src: new URL('@/assets/images/k-3.jpg', import.meta.url).href,
-  },
-  {
-    id: 4,
-    title: 'Image 4',
-    src: new URL('@/assets/images/k-4.jpg', import.meta.url).href,
-  },
-  {
-    id: 5,
-    title: 'Image 5',
-    src: new URL('@/assets/images/k-5.jpg', import.meta.url).href,
-  },
-  {
-    id: 6,
-    title: 'Image 6',
-    src: new URL('@/assets/images/k-6.jpg', import.meta.url).href,
-  },
-  {
-    id: 7,
-    title: 'Image 7',
-    src: new URL('@/assets/images/k-7.jpg', import.meta.url).href,
-  },
-  {
-    id: 8,
-    title: 'Image 8',
-    src: new URL('@/assets/images/k-8.jpg', import.meta.url).href,
-  },
-  {
-    id: 9,
-    title: 'Image 9',
-    src: new URL('@/assets/images/k-9.jpg', import.meta.url).href,
-  },
-  {
-    id: 10,
-    title: 'Image 10',
-    src: new URL('@/assets/images/k-10.jpg', import.meta.url).href,
-  }
+    new URL('../../assets/images/k-1.jpg', import.meta.url).href,
+    new URL('../assets/images/k-2.jpg', import.meta.url).href,
+    new URL('../assets/images/k-3.jpg', import.meta.url).href,
+    new URL('../assets/images/k-4.jpg', import.meta.url).href,
+    new URL('../assets/images/k-5.jpg', import.meta.url).href,
+    new URL('../assets/images/k-6.jpg', import.meta.url).href,
+    new URL('../assets/images/k-7.jpg', import.meta.url).href,
+    new URL('../assets/images/k-8.jpg', import.meta.url).href,
+    new URL('../assets/images/k-9.jpg', import.meta.url).href,
+    new URL('../assets/images/k-10.jpg', import.meta.url).href
 ])
 
 const responsiveOptions = ref([
