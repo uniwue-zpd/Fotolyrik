@@ -4,16 +4,16 @@
 import { ref } from 'vue'
 
 const images = ref([
-    new URL('../../assets/images/k-1.jpg', import.meta.url).href,
-    new URL('../assets/images/k-2.jpg', import.meta.url).href,
-    new URL('../assets/images/k-3.jpg', import.meta.url).href,
-    new URL('../assets/images/k-4.jpg', import.meta.url).href,
-    new URL('../assets/images/k-5.jpg', import.meta.url).href,
-    new URL('../assets/images/k-6.jpg', import.meta.url).href,
-    new URL('../assets/images/k-7.jpg', import.meta.url).href,
-    new URL('../assets/images/k-8.jpg', import.meta.url).href,
-    new URL('../assets/images/k-9.jpg', import.meta.url).href,
-    new URL('../assets/images/k-10.jpg', import.meta.url).href
+    'k-1.jpg',
+    'k-2.jpg',
+    'k-3.jpg',
+    'k-4.jpg',
+    'k-5.jpg',
+    'k-6.jpg',
+    'k-7.jpg',
+    'k-8.jpg',
+    'k-9.jpg',
+    'k-10.jpg'
 ])
 
 const responsiveOptions = ref([
@@ -46,7 +46,7 @@ const responsiveOptions = ref([
       <Carousel :value="images" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
         <template #item="{ data }">
           <div class="p-2">
-            <img :src="data" alt="Bild im Carousel" class="w-full rounded shadow-md" />
+            <img :src="data" alt="image in carousel" class="w-full rounded shadow-md" />
           </div>
         </template>
       </Carousel>
