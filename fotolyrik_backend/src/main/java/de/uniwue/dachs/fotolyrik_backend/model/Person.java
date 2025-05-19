@@ -30,7 +30,7 @@ public class Person extends BaseEntity {
 
     @Transient
     public String getFull_name() {
-        return (first_name != null ? first_name : "") + " " +
+        return (first_name != null ? first_name + " " : "") +
                 (last_name != null ? last_name : "");
     }
 
