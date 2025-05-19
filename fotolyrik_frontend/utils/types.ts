@@ -8,43 +8,50 @@ export interface Auditable {
 
 export interface Place extends Auditable {
     name: string,
-    description: string,
-    latitude: number,
-    longitude: number
+    description: string | null,
+    latitude: number | null,
+    longitude: number | null
 }
 
 export interface Person extends Auditable {
-    first_name: string,
-    last_name: string,
-    pseudonym?: string,
-    birth_year?: string,
-    death_year?: string,
-    sex?: "MALE" | "FEMALE"
+    first_name: string | null,
+    last_name: string | null,
+    full_name: string | null,
+    pseudonym: string | null,
+    birth_year: string | null,
+    death_year: string | null,
+    sex: "MALE" | "FEMALE" | null
 }
 
 export interface PhotoPoem extends Auditable {
     title: string,
-    volume?: string,
-    issue?: string,
-    page_number?: number,
-    publication_date?: string,
-    publication_medium?: PubMedium,
-    author?: Person,
-    photographer?: Person,
-    link?: string,
-    iiif_manifest: string
-
-    //TODO: Add other required fields
+    volume: string | null,
+    issue: string | null,
+    page_number: number | null,
+    publication_date: string | null,
+    publication_medium: PubMedium | null,
+    author: Person | null,
+    photographer: Person | null,
+    link: string | null,
+    iiif_manifest: string | null,
+    images: File[] | []
 }
 
 export interface PubMedium extends Auditable {
     title: string,
-    subtitle?: string,
-    publication_places?: Place[],
-    publisher?: string,
-    pub_rhytm?: "W" | "M" | "HM",
-    start_year?: string,
-    end_year?: string,
-    amount_volumes?: number,
-    amount_issues?: number,
+    subtitle: string | null,
+    publication_places: Place[] | [],
+    publisher: string | null,
+    pub_rhytm: "M" | "HM" | "W" | "HW" | "DIVERS" | null,
+    start_year: string | null,
+    end_year: string | null,
+    amount_volumes: number | null,
+    amount_issues: number | null,
+}
+
+export interface File extends Auditable {
+    filename: string | null,
+    path: string | null,
+    type: string | null,
+    size: number | null
 }

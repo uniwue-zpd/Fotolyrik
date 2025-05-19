@@ -3,26 +3,34 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
+import de.uniwue.dachs.fotolyrik_backend.model.File;
+import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PhotopoemRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PhotopoemService {
     private final PhotopoemRepository photopoemRepository;
     private final PersonRepository personRepository;
     private final PubMediumRepository pubMediumRepository;
+    private final FileRepository fileRepository;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             PersonRepository personRepository,
-                            PubMediumRepository pubMediumRepository) {
+                            PubMediumRepository pubMediumRepository,
+                            FileRepository fileRepository) {
         this.photopoemRepository = photopoemRepository;
         this.personRepository = personRepository;
         this.pubMediumRepository = pubMediumRepository;
+        this.fileRepository = fileRepository;
     }
 
     public List<Photopoem> getAllPhotopoems() {
@@ -43,38 +51,19 @@ public class PhotopoemService {
 
     @Transactional
     public Photopoem updatePhotopoem(Long id, Photopoem updatedPhotopoem) {
-        return photopoemRepository.findById(id).map(field -> {
-            if (updatedPhotopoem.getTitle() != null) {
-                field.setTitle(updatedPhotopoem.getTitle());
-            }
-            if (updatedPhotopoem.getVolume() != null) {
-                field.setVolume(updatedPhotopoem.getVolume());
-            }
-            if (updatedPhotopoem.getIssue() != null) {
-                field.setIssue(updatedPhotopoem.getIssue());
-            }
-            if (updatedPhotopoem.getPage_number() != null) {
-                field.setPage_number(updatedPhotopoem.getPage_number());
-            }
-            if (updatedPhotopoem.getPublication_date() != null) {
-                field.setPublication_date(updatedPhotopoem.getPublication_date());
-            }
-            if (updatedPhotopoem.getPublication_medium() != null) {
-                field.setPublication_medium(getOrSavePubMedium(updatedPhotopoem.getPublication_medium()));
-            }
-            if (updatedPhotopoem.getAuthor() != null) {
-                field.setAuthor(getOrSavePerson(updatedPhotopoem.getAuthor()));
-            }
-            if (updatedPhotopoem.getPhotographer() != null) {
-                field.setPhotographer(getOrSavePerson(updatedPhotopoem.getPhotographer()));
-            }
-            if (updatedPhotopoem.getLink() != null) {
-                field.setLink(updatedPhotopoem.getLink());
-            }
-            if (updatedPhotopoem.getIiif_manifest() != null) {
-                field.setIiif_manifest(updatedPhotopoem.getIiif_manifest());
-            }
-            return photopoemRepository.save(field);
+        return photopoemRepository.findById(id).map(entity -> {
+            if (updatedPhotopoem.getAuthor() != null) entity.setTitle(updatedPhotopoem.getTitle());
+            entity.setVolume((updatedPhotopoem.getVolume() != null) ? updatedPhotopoem.getVolume() : null);
+            entity.setIssue((updatedPhotopoem.getIssue() != null) ? updatedPhotopoem.getIssue() : null);
+            entity.setPage_number((updatedPhotopoem.getPage_number() != null) ? updatedPhotopoem.getPage_number() : null);
+            entity.setPublication_date((updatedPhotopoem.getPublication_date() != null) ? updatedPhotopoem.getPublication_date() : null);
+            entity.setPublication_medium((updatedPhotopoem.getPublication_medium() != null) ? getOrSavePubMedium(updatedPhotopoem.getPublication_medium()) : null);
+            entity.setAuthor((updatedPhotopoem.getAuthor() != null) ? getOrSavePerson(updatedPhotopoem.getAuthor()) : null);
+            entity.setPhotographer((updatedPhotopoem.getPhotographer() != null) ? getOrSavePerson(updatedPhotopoem.getPhotographer()) : null);
+            entity.setLink((updatedPhotopoem.getLink() != null) ? updatedPhotopoem.getLink() : null);
+            entity.setIiif_manifest((updatedPhotopoem.getIiif_manifest() != null) ? updatedPhotopoem.getIiif_manifest() : null);
+            entity.setImages((updatedPhotopoem.getImages() != null) ? getFiles(updatedPhotopoem.getImages()) : null);
+            return photopoemRepository.save(entity);
         }).orElseThrow(() -> new RuntimeException("Photopoem with id '" + id + "' does not exist"));
     }
 
@@ -106,5 +95,19 @@ public class PhotopoemService {
             return pubMediumRepository.findById(pubMedium.getId()).orElse(null);
         }
         return pubMediumRepository.save(pubMedium);
+    }
+
+    // Helper method to assign existing files to the photopoem
+    private Set<File> getFiles(Set<File> files) {
+        if (files == null) {
+            return null;
+        }
+        Set<File> newFiles = new HashSet<>();
+        for (File file : files) {
+            if (file.getId() != null) {
+                fileRepository.findById(file.getId()).ifPresent(newFiles::add);
+            }
+        }
+        return newFiles;
     }
 }

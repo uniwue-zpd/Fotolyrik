@@ -3,6 +3,8 @@ package de.uniwue.dachs.fotolyrik_backend.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,6 +47,9 @@ public class Photopoem extends BaseEntity {
     @Column(name = "iiif_manifest")
     private String iiif_manifest;
 
+    @OneToMany
+    @JoinColumn(name = "photopoem_id")
+    private Set<File> images = new HashSet<>();
+
     //TODO: Add other required fields
-    //TODO: Rename fields according to one general scheme
 }
