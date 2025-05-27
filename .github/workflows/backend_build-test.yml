@@ -1,8 +1,5 @@
 name: Spring Boot Backend Build Test
-on:
-  push:
-    paths:
-      - 'fotolyrik_backend/**'
+on: [push]
 
 jobs:
   build:
