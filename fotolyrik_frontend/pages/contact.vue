@@ -1,24 +1,28 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import apiClient from "~/service/api";
+import { getNode } from '@formkit/core';
 import type {ContactForm} from "~/utils/types";
 
-const formData = {
-}
+const formData = {}
 
 const toast = useToast();
 
 const submitted = ref(false);
 
 const submit = async (formData: ContactForm) => {
+  const form = getNode('contact-form');
+  form.reset();
   try {
     await apiClient.post('/contact', formData)
     submitted.value = true;
-    toast.add({severity: 'success', detail: 'Erfolgreich zugestellt', life: 3000})
-    navigateTo('/contact');
+    toast.add({severity: 'success', detail: 'Erfolgreich zugestellt', life: 3000});
+    await new Promise((r) => setTimeout(r, 1000));
   } catch (error) {
     console.log(error)
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Senden der Nachricht', life: 3000})
+  } finally {
+    form?.reset();
   }
 };
 </script>
@@ -34,7 +38,7 @@ const submit = async (formData: ContactForm) => {
       <p>Füllen Sie dafür bitte die unteren Felder aus</p>
       <p>und klicken Sie anschließend auf den Senden-Button.</p>
     </div>
-    <FormKit type="form" @submit="submit" submit-label="Senden" #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
+    <FormKit type="form" id='submitForm' @submit="submit" submit-label="Senden"  #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
       <div class="flex flex-row gap-4">
         <FormKit
             type="text"
