@@ -8,7 +8,6 @@ import { getNode } from '@formkit/core';
 const toast = useToast();
 
 type PersonInput = Omit<Person, 'id' | 'created_by' | 'created_date' | 'last_modified_by' | 'last_modified_date'>;
-const form = getNode('person_creation');
 const submitted = ref(false);
 
 const submit = async (formData: Partial<PersonInput>) => {
@@ -16,7 +15,10 @@ const submit = async (formData: Partial<PersonInput>) => {
     await apiClient.post('/persons', formData);
     submitted.value = true;
     toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich erstellt', life: 3000});
-    form.reset();
+    const form = getNode('person_creation');
+    if (form) {
+      form.reset();
+    }
   } catch (error) {
     console.log(error)
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Erstellen des Person-Objektes', life: 3000});
