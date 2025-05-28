@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import type { Person } from "~/utils/types";
 import apiClient from "~/service/api";
+import PageToolbar from "~/components/pagetools/PageToolbar.vue";
 
 const router = useRoute();
 const person_id = router.params.id;
@@ -23,7 +24,13 @@ onMounted(async () => {
 <template>
   <Card>
     <template #title>
-      <h1 class="text-3xl font-bold outfit-headline">{{ person_item.first_name }} {{ person_item.last_name }}</h1>
+      <div class="flex flex-row justify-between">
+        <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ person_item.first_name }} {{ person_item.last_name }}</h1>
+        <PageToolbar
+          :page_url="`http://fotolyrik.de${router.fullPath}`"
+          :api_url="`http://localhost:8080/persons/${person_id}`"
+        />
+      </div>
     </template>
     <template #content>
       <table class="min-w-full divide-y divide-gray-200 roboto-plain">
@@ -50,3 +57,13 @@ onMounted(async () => {
     </template>
   </Card>
 </template>
+
+<style>
+.speeddialbutton > .p-button {
+  background: #063D79;
+}
+
+.speeddialbutton > .p-button:hover {
+  background: rgba(6, 61, 121, 0.8);
+}
+</style>
