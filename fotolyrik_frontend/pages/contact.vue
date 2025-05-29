@@ -11,18 +11,18 @@ const toast = useToast();
 const submitted = ref(false);
 
 const submit = async (formData: ContactForm) => {
-  const form = getNode('contact-form');
-  form.reset();
   try {
     await apiClient.post('/contact', formData)
     submitted.value = true;
     toast.add({severity: 'success', detail: 'Erfolgreich zugestellt', life: 3000});
     await new Promise((r) => setTimeout(r, 1000));
+    const form = getNode('submitForm');
+    if (form) {
+      form.reset();
+    }
   } catch (error) {
     console.log(error)
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Senden der Nachricht', life: 3000})
-  } finally {
-    form?.reset();
   }
 };
 </script>
