@@ -31,67 +31,72 @@ const submit = async (formData: ContactForm) => {
   <div class="mb-2">
     <img src= "https://unsplash.it/1200/200" alt=""/>
   </div>
-  <div class="grid place-content-center gap-2">
-    <h1 class="text-3xl outfit-headline font-bold">Kontakt</h1>
-    <div>
-      <p>Hier können Sie Ihre Nachricht an uns hinterlassen.</p>
-      <p>Füllen Sie dafür bitte die unteren Felder aus</p>
-      <p>und klicken Sie anschließend auf den Senden-Button.</p>
+  <div class="columns-1 w-[40%] mx-auto">
+    <div class="flex flex-col gap-5 place-content-center">
+      <h1 class="mt-4 text-3xl outfit-headline font-bold">Kontakt</h1>
+      <div>
+        <p>Hier können Sie Ihre Nachricht an uns hinterlassen.
+        Füllen Sie dafür bitte die unteren Felder aus
+        und klicken Sie anschließend auf den Senden-Button.</p>
+      </div>
+      <FormKit type="form" id='submitForm' @submit="submit" submit-label="Senden"  #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
+        <div class="flex flex-row gap-4">
+          <FormKit
+              type="text"
+              name="name"
+              id="name"
+              label="Name*"
+              placeholder="Name"
+              validation="required"
+              :validation-messages="{required: 'Bitte geben Sie einen Namen an.'}"
+          />
+          <FormKit
+              type="email"
+              name="email"
+              label="Email*"
+              placeholder="Email"
+              validation="required"
+              :validation-messages="{required: 'Bitte geben Sie eine gültige E-Mail-Adresse an.'}"
+          />
+        </div>
+        <div class="flex flex-col">
+          <FormKit
+              outer-class="max-w-[30rem]"
+              type="text"
+              name="subject"
+              id="subject"
+              label="Betreff*"
+              placeholder="Ihr Betreff"
+              validation="required"
+              :validation-messages="{required: 'Bitte geben Sie einen Betreff an.'}"
+          />
+        </div>
+        <div class="flex flex-col">
+          <FormKit
+              outer-class="max-w-[30rem]"
+              input-class="min-h-[10rem]"
+              type="textarea"
+              name="message"
+              label="Nachricht*"
+              placeholder="Ihre Nachricht"
+              validation="required"
+              :validation-messages="{required: 'Bitte geben Sie eine Nachricht ein.'}"
+          />
+          <FormKit
+              type="checkbox"
+              name="Datenschutzerklärung"
+              decorator-icon="check"
+              :value="false"
+              validation="accepted"
+              :validation-messages="{accepted: 'Datenschutzerklärung bitte bestätigen.'}"
+          >
+            <template #label="context">
+              <span :class="context.classes.label">Ich habe die <NuxtLink to="/data-protection" class="text-[#0073C9] font-bold">Datenschutzerklärung</NuxtLink> zur Kenntnis genommen.</span>
+            </template>
+          </FormKit>
+        </div>
+      </FormKit>
     </div>
-    <FormKit type="form" id='submitForm' @submit="submit" submit-label="Senden"  #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
-      <div class="flex flex-row gap-4">
-        <FormKit
-            type="text"
-            name="name"
-            id="name"
-            label="Name"
-            placeholder="Name"
-            validation="required"
-            :validation-messages="{required: 'Bitte geben Sie einen Namen an.'}"
-        />
-        <FormKit
-            type="email"
-            name="email"
-            label="Email"
-            placeholder="Email"
-            validation="required"
-            :validation-messages="{required: 'Bitte geben Sie eine gültige E-Mail-Adresse an.'}"
-        />
-      </div>
-      <div class="flex flex-col">
-        <FormKit
-            outer-class="max-w-[30rem]"
-            type="text"
-            name="subject"
-            id="subject"
-            label="Betreff"
-            placeholder="Ihr Betreff"
-            validation="required"
-            :validation-messages="{required: 'Bitte geben Sie einen Betreff an.'}"
-        />
-      </div>
-      <div class="flex flex-col">
-        <FormKit
-            outer-class="max-w-[30rem]"
-            type="textarea"
-            auto-height
-            name="message"
-            label="Nachricht"
-            placeholder="Ihre Nachricht"
-            validation="required"
-            :validation-messages="{required: 'Bitte geben Sie eine Nachricht ein.'}"
-        />
-        <FormKit
-            type="checkbox"
-            label="Ich habe die Datenschutzerklärung zur Kenntnis genommen."
-            name="Datenschutzerklärung"
-            decorator-icon="check"
-            :value="false"
-            validation="accepted"
-            :validation-messages="{accepted: 'Datenschutzerklärung bitte bestätigen.'}"
-        />
-      </div>
-    </FormKit>
   </div>
 </template>
 
