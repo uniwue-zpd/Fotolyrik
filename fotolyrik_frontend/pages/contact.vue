@@ -51,6 +51,22 @@ const submit = async (formData: ContactForm) => {
               :validation-messages="{required: 'Bitte geben Sie einen Namen an.'}"
           />
           <FormKit
+              type="select"
+              name="appellation"
+              label="Anrede"
+              placeholder="Anrede"
+              select-icon="down"
+              :options="[
+                  {label: 'Herr', value: 'm'},
+                  {label: 'Frau', value: 'f'},
+                  {label: 'Keine Angabe', value: null},
+                  {label: '', value:null}
+              ]"
+            />
+          </div>
+        <div class="flex flex-col">
+          <FormKit
+              outer-class="max-w-[30rem]"
               type="email"
               name="email"
               label="Email*"
