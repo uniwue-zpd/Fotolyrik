@@ -28,8 +28,7 @@ onMounted(async () => {
         <div class="flex flex-row justify-between">
           <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ person_item.first_name }} {{ person_item.last_name }}</h1>
           <PageToolbar
-              :page_url="`http://fotolyrik.de${router.fullPath}`"
-              :api_url="`http://localhost:8080/persons/${person_id}`"
+              :page_url="`${router.fullPath}`"
           />
         </div>
       </template>

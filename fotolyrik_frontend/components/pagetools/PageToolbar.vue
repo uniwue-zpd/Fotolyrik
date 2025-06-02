@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useConfirm } from 'primevue/useconfirm';
+import apiClient from '~/service/api';
 
 const props = defineProps<{
   page_url: string;
-  api_url: string;
 }>();
 
+const confirm = useConfirm();
+const router = useRouter();
 const toast = useToast();
 const items = ref([
   {
@@ -19,7 +22,25 @@ const items = ref([
     label: 'Delete',
     icon: 'pi pi-trash',
     command: () => {
-      toast.add({ severity: 'info', summary: 'Löschvorgang', detail: 'Der Eintrag wurde erfolgreich gelöscht', life: 3000 });
+      confirm.require({
+        message: 'Möchten Sie diesen Eintrag wirklich löschen?',
+        header: 'Löschvorgang bestätigen',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Ja',
+        rejectLabel: 'Nein',
+        accept: async () => {
+          try {
+            await apiClient.delete(props.page_url);
+            toast.add({ severity: 'success', summary: 'Gelöscht', detail: 'Eintrag erfolgreich gelöscht', life: 3000 });
+            router.push(props.page_url.substring(0, props.page_url.lastIndexOf('/')));
+          } catch (error) {
+            toast.add({ severity: 'error', summary: 'Fehler', detail: 'Eintrag konnte nicht gelöscht werden', life: 3000 });
+          }
+        },
+        reject: () => {
+          toast.add({ severity: 'info', summary: 'Abgebrochen', detail: 'Löschvorgang abgebrochen', life: 3000 });
+        }
+      });
     }
   },
   {
@@ -34,7 +55,7 @@ const items = ref([
     label: 'API',
     icon: 'pi pi-code',
     command: () => {
-      window.open(props.api_url, '_blank');
+      window.open(`/api${props.page_url}`, '_blank');
     }
   }
 ]);
@@ -55,6 +76,7 @@ const items = ref([
       </div>
     </template>
   </SpeedDial>
+  <ConfirmDialog class="confirm_deletion"/>
 </template>
 
 <style>
@@ -66,5 +88,17 @@ const items = ref([
 .pagetoolbar > .p-button:hover {
   background: none;
   border: none;
+}
+
+.confirm_deletion .p-button {
+  background: none;
+  border: none;
+  color: black
+}
+
+.confirm_deletion .p-button:hover {
+  background: none;
+  border: none;
+  color: black;
 }
 </style>
