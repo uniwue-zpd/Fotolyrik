@@ -15,7 +15,7 @@ const items = ref([
     label: 'Edit',
     icon: 'pi pi-file-edit',
     command: () => {
-      toast.add({ severity: 'info', summary: 'Änderung', detail: 'Der Eintrag wurde erfolgreich geändert', life: 3000 });
+      router.push(`${props.page_url}/edit`);
     }
   },
   {
