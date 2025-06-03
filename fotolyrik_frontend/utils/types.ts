@@ -18,8 +18,8 @@ export interface Person extends Auditable {
     last_name: string | null,
     full_name: string | null,
     pseudonym: string | null,
-    birth_year: string | null,
-    death_year: string | null,
+    birth_year: number | null,
+    death_year: number | null,
     sex: "MALE" | "FEMALE" | null
 }
 
