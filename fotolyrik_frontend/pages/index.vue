@@ -54,7 +54,7 @@ const responsiveOptions = ref([
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-4">
     <div class="carousel bg-[#F1F2F2] p-5">
       <Carousel :value="images" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
         <template #item="{ data }">
@@ -65,10 +65,10 @@ const responsiveOptions = ref([
       </Carousel>
     </div>
     <div class="intro p-5">
-      <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">
+      <h1 class="text-3xl outfit-headline font-bold text-[#063D79] px-10">
         Fotolyrik in illustrierten Zeitschriften zwischen 1895 und 1945
       </h1>
-      <div class="columns-2">
+      <div class="grid grid-cols-2 gap-x-10 gap-y-5 p-10">
         <div>
           Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
           tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
@@ -78,9 +78,29 @@ const responsiveOptions = ref([
           At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
           sanctus est Lorem ipsum dolor sit amet.
         </div>
-        <NuxtLink to="/project" class="border-2 border-solid border-[#F04E30] text-[#F04E30] averia-layout p-1">
-          das Projekt
-        </NuxtLink>
+        <div>
+          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+          tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
+          accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
+          Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+          sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+          At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+          sanctus est Lorem ipsum dolor sit amet.
+        </div>
+        <div>
+          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+          tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
+          accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
+          Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+          sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+          At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+          sanctus est Lorem ipsum dolor sit amet.
+        </div>
+        <div class="justify-self-center pt-5">
+        <NuxtLink to="/project" class="text-2xl border-2 border-solid border-spacing-2 border-[#F04E30] text-[#F04E30] averia-layout p-1">
+        das Projekt
+      </NuxtLink>
+        </div>
       </div>
     </div>
     <div class="collection bg-[#F1F2F2] p-5">
