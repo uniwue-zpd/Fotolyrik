@@ -14,7 +14,20 @@ const images = ref([
     'k-8.jpg',
     'k-9.jpg',
     'k-10.jpg'
-])
+]);
+
+const topics = ref([
+    't-1.jpg',
+    't-2.jpg',
+    't-3.jpg',
+    't-4.jpg',
+    't-5.jpg',
+    't-6.jpg',
+    't-7.jpg',
+    't-8.jpg',
+    't-9.jpg',
+    't-10.jpg'
+]);
 
 const responsiveOptions = ref([
   {
@@ -109,7 +122,13 @@ const responsiveOptions = ref([
     <div class="topics bg-[#F1F2F2] p-5">
       <div class="flex flex-col gap-2">
         <h2 class="text-2xl averia-layout italic text-[#063D79]">Themen</h2>
-        <Carousel :num-visible="4"/>
+        <Carousel :value="topics" :numVisible="4" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
+          <template #item="{ data }">
+            <div class="p-2">
+              <img :src="data" alt="image in carousel" class="w-full rounded shadow-md" />
+            </div>
+          </template>
+        </Carousel>
         <div class="flex flex-row justify-center">
           <NuxtLink to="/topics" class="outfit-headline text-[#F04E30] bg-white p-1">
             alle Themen
