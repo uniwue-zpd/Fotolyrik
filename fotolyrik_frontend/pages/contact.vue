@@ -4,8 +4,6 @@ import apiClient from "~/service/api";
 import { getNode } from '@formkit/core';
 import type {ContactForm} from "~/utils/types";
 
-const formData = {}
-
 const toast = useToast();
 
 const submitted = ref(false);
@@ -57,10 +55,9 @@ const submit = async (formData: ContactForm) => {
               placeholder="Anrede"
               select-icon="down"
               :options="[
-                  {label: 'Herr', value: 'm'},
-                  {label: 'Frau', value: 'f'},
-                  {label: 'Keine Angabe', value: null},
-                  {label: '', value:null}
+                  {label: 'Herr', value: 'Herr'},
+                  {label: 'Frau', value: 'Frau'},
+                  {label: 'Keine Angabe', value: null}
               ]"
             />
           </div>

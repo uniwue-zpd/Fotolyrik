@@ -22,7 +22,11 @@ public class ContactService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(owner);
         message.setSubject(contactDTO.getSubject());
-        message.setText(contactDTO.getMessage());
+        message.setText("Neue Anfrage von: "
+                + contactDTO.getName()
+                + (contactDTO.getAppellation() != null ? " (" + contactDTO.getAppellation() + ")\n" : "\n")
+                + "Nachricht: " + contactDTO.getMessage()
+                + "\n");
         message.setReplyTo(contactDTO.getEmail());
         mailSender.send(message);
 
