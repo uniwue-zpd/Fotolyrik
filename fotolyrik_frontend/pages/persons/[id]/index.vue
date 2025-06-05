@@ -7,10 +7,14 @@ const router = useRoute();
 const person_id = Number(router.params.id);
 const store = usePersonStore();
 const person_item = ref<Person | null>(null);
+const previous_person = ref<Person | null>(null);
+const next_person = ref<Person | null>(null);
 
 onMounted(async () => {
   await store.fetchPersonById(person_id);
   person_item.value = store.currentPerson;
+  previous_person.value = store.previousPerson();
+  next_person.value = store.nextPerson();
 });
 </script>
 
@@ -50,13 +54,27 @@ onMounted(async () => {
       </template>
     </Card>
     <div class="flex flex-row justify-between">
-      <div class="flex flex-row space-x-2">
-        <i class="pi pi-arrow-left"/>
-        <div class="leading-none">Vorheriger Eintrag</div>
+      <div class="previus">
+        <div v-if="previous_person" class="p-2 border-[1px] border-solid rounded-md hover:shadow-md">
+          <NuxtLink
+              :to="`/persons/${previous_person.id}`"
+              class="flex flex-row items-center space-x-2"
+          >
+            <i class="pi pi-arrow-left"/>
+            <div class="text-[#063D79] roboto-plain">Vorheriger Eintrag</div>
+          </NuxtLink>
+        </div>
       </div>
-      <div class="flex flex-row space-x-2">
-        <div class="leading-none">Nächster Eintrag</div>
-        <i class="pi pi-arrow-right"/>
+      <div class="next">
+        <div v-if="next_person" class="p-2 border-[1px] border-solid rounded-md hover:shadow-md">
+          <NuxtLink
+              :to="`/persons/${next_person.id}`"
+              class="flex flex-row items-center space-x-2"
+          >
+            <div class="text-[#063D79] roboto-plain">Nächster Eintrag</div>
+            <i class="pi pi-arrow-right"/>
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </div>

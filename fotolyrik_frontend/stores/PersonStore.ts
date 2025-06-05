@@ -39,6 +39,25 @@ export const usePersonStore = defineStore('person', () => {
             }
         }
     }
+        // Navigation left
+    function previousPerson() {
+        const currentIndex = persons.value.findIndex(p => p.id === currentPerson.value?.id);
+        if (currentIndex !== -1 && currentIndex) {
+            return persons.value[currentIndex - 1] as Person;
+        } else {
+            return null;
+        }
+    }
+
+        // Navigation right
+    function nextPerson() {
+        const currentIndex = persons.value.findIndex(p => p.id === currentPerson.value?.id);
+        if (currentIndex !== -1 && currentIndex < persons.value.length - 1) {
+            return persons.value[currentIndex + 1] as Person;
+        } else {
+            return null;
+        }
+    }
 
         // Clear current person
     function clearPerson() {
@@ -81,6 +100,8 @@ export const usePersonStore = defineStore('person', () => {
         isLoaded,
         fetchAllPersons,
         fetchPersonById,
+        previousPerson,
+        nextPerson,
         clearPerson,
         createPerson,
         updatePerson
