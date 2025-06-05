@@ -1,23 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import type { Person } from "~/utils/types";
-import apiClient from "~/service/api";
 import PageToolbar from "~/components/pagetools/PageToolbar.vue";
 
 const router = useRoute();
-const person_id = router.params.id;
-const person_item = ref<Person>({} as Person);
-const data_fetched = ref(false);
+const person_id = Number(router.params.id);
+const store = usePersonStore();
+const person_item = ref<Person | null>(null);
 
 onMounted(async () => {
-  try {
-    const response = await apiClient.get(`persons/${person_id}`)
-    person_item.value = response.data;
-    data_fetched.value = true;
-  }
-  catch(error) {
-    console.log(error);
-  }
+  await store.fetchPersonById(person_id);
+  person_item.value = store.currentPerson;
 });
 </script>
 
@@ -26,7 +19,7 @@ onMounted(async () => {
     <Card>
       <template #title>
         <div class="flex flex-row justify-between">
-          <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ person_item.first_name }} {{ person_item.last_name }}</h1>
+          <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ person_item?.first_name }} {{ person_item?.last_name }}</h1>
           <PageToolbar
               :page_url="`${router.fullPath}`"
           />
@@ -34,7 +27,7 @@ onMounted(async () => {
       </template>
       <template #content>
         <table class="min-w-full divide-y divide-gray-200 roboto-plain">
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody v-if="person_item" class="bg-white divide-y divide-gray-200">
           <tr v-if="person_item.birth_year">
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Geburtsjahr</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.birth_year }}</td>

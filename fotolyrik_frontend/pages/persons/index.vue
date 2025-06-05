@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
-import type { Person } from "~/utils/types";
-import apiClient from "~/service/api";
-import {FilterMatchMode} from "@primevue/core";
+import { FilterMatchMode } from "@primevue/core";
+import { usePersonStore } from "~/stores/PersonStore";
 
-const router = useRoute();
-const currentPath = ref('');
-const persons = ref<Person[] | null>([]);
+const store = usePersonStore();
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -14,15 +11,8 @@ const filters = ref({
 });
 
 onMounted(async () => {
-  currentPath.value = router.path;
-  try {
-    const response = await apiClient.get<Person[]>('/persons');
-    persons.value = response.data;
-  }
-  catch (error) {
-    console.log(error)
-  }
-});
+  await store.fetchAllPersons();
+})
 </script>
 
 <template>
@@ -35,7 +25,7 @@ onMounted(async () => {
           v-model:filters="filters"
           filter-display="row"
           :global-filter-fields="['full_name', 'sex', 'birth_year', 'death_year']"
-          :value="persons"
+          :value="store.persons"
       >
         <template #header>
           <div class="flex justify-end">
