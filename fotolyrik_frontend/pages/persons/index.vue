@@ -28,7 +28,13 @@ onMounted(async () => {
           :value="store.persons"
       >
         <template #header>
-          <div class="flex justify-end">
+          <div class="flex flex-row justify-between items-center">
+            <div class="p-2 border-[1px] border-solid rounded-md hover:shadow-md">
+              <NuxtLink to="/persons/create" class="flex items-center">
+                <i class="pi pi-pen-to-square mr-2"/>
+                <div class="text-[#063D79] roboto-plain">Neu anlegen</div>
+              </NuxtLink>
+            </div>
             <IconField>
               <InputIcon>
                 <i class="pi pi-search"/>
