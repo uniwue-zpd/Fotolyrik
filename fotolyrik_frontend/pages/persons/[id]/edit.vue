@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import type { Person } from "~/utils/types";
-import apiClient from "~/service/api";
 import PersonForm from "~/components/forms/PersonForm.vue";
 
 const route = useRoute();
-const id = route.params.id;
-const person_item = ref<Person>({} as Person);
+const person_id = Number(route.params.id);
+const store = usePersonStore();
+const person_item = ref<Person |null>(null);
 
 onMounted(async () => {
-  try {
-    const response = await apiClient.get(`persons/${id}`);
-    person_item.value = response.data;
-  } catch (error) {
-    console.log(error);
-  }
+  await store.fetchPersonById(person_id);
+  person_item.value = store.currentPerson;
 });
 </script>
 
@@ -22,7 +18,7 @@ onMounted(async () => {
   <PersonForm
       action="edit"
       header="Person-Objekt bearbeiten"
-      :person="person_item ? person_item : undefined"
+      :person="person_item ?? undefined"
   />
 </template>
 

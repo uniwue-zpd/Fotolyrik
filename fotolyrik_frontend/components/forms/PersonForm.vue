@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { getNode } from '@formkit/core';
-import apiClient from "~/service/api";
 import type { Person } from "~/utils/types";
 
 const props = defineProps<{
@@ -13,22 +12,22 @@ const props = defineProps<{
 
 const toast = useToast();
 const submitted = ref(false);
+const store = usePersonStore();
 
 type PersonInput = Omit<Person, 'id' | 'created_by' | 'created_date' | 'last_modified_by' | 'last_modified_date'>;
 
 const submit = async (formData: Partial<PersonInput>) => {
   try {
     if (props.action === 'create') {
-      await apiClient.post('/persons', formData);
+      await store.createPerson(formData);
       submitted.value = true;
       toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich erstellt', life: 3000});
       const form = getNode('person_creation');
-      if (form) {
-        form.reset();
-      }
-    } else if (props.action === 'edit') {
-      await apiClient.put(`/persons/${props.person?.id}`, formData);
+      form?.reset();
+    } else if (props.action === 'edit' && props.person?.id) {
+      await store.updatePerson(formData, props.person.id)
       submitted.value = true;
+      toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich upgedated', life: 3000});
       navigateTo(`/persons/${props.person?.id}`);
     }
   } catch (error) {

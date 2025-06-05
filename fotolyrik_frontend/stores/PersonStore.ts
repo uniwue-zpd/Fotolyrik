@@ -12,6 +12,7 @@ export const usePersonStore = defineStore('person', () => {
     const isLoaded = computed(() => persons.value.length > 0);
 
     // Actions
+        // Fetch all persons
     async function fetchAllPersons() {
         if (!isLoaded.value) {
             try {
@@ -22,7 +23,7 @@ export const usePersonStore = defineStore('person', () => {
             }
         }
     }
-
+        // Fetch person by ID
     async function fetchPersonById(id: number) {
         if (!currentPerson.value || currentPerson.value.id !== id) {
             const cachedPerson = persons.value.find(p => p.id === id);
@@ -39,8 +40,39 @@ export const usePersonStore = defineStore('person', () => {
         }
     }
 
+        // Clear current person
     function clearPerson() {
         currentPerson.value = null;
+    }
+
+        // Create new person
+    async function createPerson(payload: Partial<Person>) {
+        try {
+            const response = await apiClient.post('/persons', payload);
+            persons.value.push(response.data);
+            return response.data;
+        } catch (error) {
+            console.log('Error creating person:', error);
+            throw error;
+        }
+    }
+
+        // Update existing person
+    async function updatePerson(payload: Partial<Person>, id: number) {
+        try {
+            const response = await apiClient.put(`/persons/${id}`, payload);
+            const index = persons.value.findIndex(p => p.id === id);
+            if (index !== -1) {
+                persons.value[index] = response.data;
+            }
+            if (currentPerson.value?.id === id) {
+                currentPerson.value = response.data;
+            }
+            return response.data;
+        } catch (error) {
+            console.log('Error updating person:', error);
+            throw error;
+        }
     }
 
     return {
@@ -49,7 +81,9 @@ export const usePersonStore = defineStore('person', () => {
         isLoaded,
         fetchAllPersons,
         fetchPersonById,
-        clearPerson
+        clearPerson,
+        createPerson,
+        updatePerson
     }
 });
 
