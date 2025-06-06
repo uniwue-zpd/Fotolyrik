@@ -52,7 +52,7 @@ public class PhotopoemService {
     @Transactional
     public Photopoem updatePhotopoem(Long id, Photopoem updatedPhotopoem) {
         return photopoemRepository.findById(id).map(entity -> {
-            if (updatedPhotopoem.getAuthor() != null) entity.setTitle(updatedPhotopoem.getTitle());
+            entity.setTitle(updatedPhotopoem.getTitle());
             entity.setVolume((updatedPhotopoem.getVolume() != null) ? updatedPhotopoem.getVolume() : null);
             entity.setIssue((updatedPhotopoem.getIssue() != null) ? updatedPhotopoem.getIssue() : null);
             entity.setPage_number((updatedPhotopoem.getPage_number() != null) ? updatedPhotopoem.getPage_number() : null);
