@@ -3,7 +3,9 @@ package de.uniwue.dachs.fotolyrik_backend.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +27,9 @@ public class Photopoem extends BaseEntity {
     @Column(name = "page_number")
     private Long page_number;
 
+    @Column(name = "page_count")
+    private Long page_count;
+
     @Column(name = "publication_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate publication_date;
@@ -40,6 +45,10 @@ public class Photopoem extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "photographer_id")
     private Person photographer;
+
+    @ElementCollection(targetClass = String.class)
+    @CollectionTable(name = "photopoem_topics", joinColumns = @JoinColumn(name = "photopoem_id"))
+    private List<String> topics = new ArrayList<>();
 
     @Column(name = "link")
     private String link;

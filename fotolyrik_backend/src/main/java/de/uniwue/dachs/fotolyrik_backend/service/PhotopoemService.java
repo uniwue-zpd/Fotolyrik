@@ -56,10 +56,12 @@ public class PhotopoemService {
             entity.setVolume((updatedPhotopoem.getVolume() != null) ? updatedPhotopoem.getVolume() : null);
             entity.setIssue((updatedPhotopoem.getIssue() != null) ? updatedPhotopoem.getIssue() : null);
             entity.setPage_number((updatedPhotopoem.getPage_number() != null) ? updatedPhotopoem.getPage_number() : null);
+            entity.setPage_count((updatedPhotopoem.getPage_count() != null) ? updatedPhotopoem.getPage_count() : null);
             entity.setPublication_date((updatedPhotopoem.getPublication_date() != null) ? updatedPhotopoem.getPublication_date() : null);
             entity.setPublication_medium((updatedPhotopoem.getPublication_medium() != null) ? getOrSavePubMedium(updatedPhotopoem.getPublication_medium()) : null);
             entity.setAuthor((updatedPhotopoem.getAuthor() != null) ? getOrSavePerson(updatedPhotopoem.getAuthor()) : null);
             entity.setPhotographer((updatedPhotopoem.getPhotographer() != null) ? getOrSavePerson(updatedPhotopoem.getPhotographer()) : null);
+            entity.setTopics((updatedPhotopoem.getTopics() != null) ? updatedPhotopoem.getTopics() : null);
             entity.setLink((updatedPhotopoem.getLink() != null) ? updatedPhotopoem.getLink() : null);
             entity.setIiif_manifest((updatedPhotopoem.getIiif_manifest() != null) ? updatedPhotopoem.getIiif_manifest() : null);
             entity.setImages((updatedPhotopoem.getImages() != null) ? getFiles(updatedPhotopoem.getImages()) : null);
