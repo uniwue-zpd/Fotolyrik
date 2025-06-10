@@ -31,7 +31,10 @@ const props = defineProps<{
             placeholder="Telephon-Tragödie"
             prefix-icon="text"
             outer-class="max-w-full"
+            validation="required"
+            validation-visibility="live"
         />
+        <Divider/>
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
@@ -84,6 +87,7 @@ const props = defineProps<{
             outer-class="max-w-full"
             select-icon="select"
         />
+        <Divider/>
         <div class="flex flex-row space-x-5">
           <FormKit
               type="select"
@@ -99,7 +103,47 @@ const props = defineProps<{
               outer-class="max-w-full"
               select-icon="select"
           />
+          <FormKit
+              type="select"
+              multiple
+              name="other_contributors"
+              label="Sonstige Mitwirkende"
+              outer-class="max-w-full"
+              select-icon="select"
+          />
         </div>
+        <Divider/>
+        <div class="flex flex-col gap-2">
+          <FormKit type="list" :value="[]" name="themes" dynamic #default="{ items, node, value }">
+            <FormKit
+                v-for="(item, index) in items"
+                :key="item"
+                :index="index"
+                label="Thematik"
+                placeholder="Philosophie"
+                suffix-icon="trash"
+                @suffix-icon-click="() => node.input(value?.filter((_, i) => i !== index))"
+                :sections-schema="{ suffixIcon: { $el: 'button' } }"
+                outer-class="max-w-full"
+            />
+            <FormKit type="button" @click="() => node.input(value?.concat(''))">Thematik hinzufügen</FormKit>
+          </FormKit>
+          <FormKit type="list" :value="[]" name="topics" dynamic #default="{ items, node, value }">
+            <FormKit
+                v-for="(item, index) in items"
+                :key="item"
+                :index="index"
+                label="Kategorie"
+                placeholder="Verkehr"
+                suffix-icon="trash"
+                @suffix-icon-click="() => node.input(value?.filter((_, i) => i !== index))"
+                :sections-schema="{ suffixIcon: { $el: 'button' } }"
+                outer-class="max-w-full"
+            />
+            <FormKit type="button" @click="() => node.input(value?.concat(''))">Kategorien hinzufügen</FormKit>
+          </FormKit>
+        </div>
+        <Divider/>
         <div class="flex flex-row space-x-5">
           <FormKit
               type="url"
@@ -118,6 +162,7 @@ const props = defineProps<{
               outer-class="max-w-full"
           />
         </div>
+        <Divider/>
         <FormKit
             type="file"
             name="images"
@@ -128,6 +173,48 @@ const props = defineProps<{
             no-files-icon="fileImage"
             file-remove-icon="trash"
             outer-class="max-w-full"
+        />
+        <Divider/>
+        <div class="flex flex-row space-x-5">
+          <FormKit
+              type="select"
+              name="copyright_status_image"
+              label="Urheberrechtsstatus Bild"
+              outer-class="max-w-full"
+              select-icon="select"
+              :options="[
+                  {label: '', value: null},
+                  {label: 'Ungeklärt', value: 'Ungeklärt'},
+                  {label: 'rechtefrei 70 Jahre', value: 'rechtefrei 70 Jahre'},
+                  {label: 'eingeholt (schriftlich)', value: 'eingeholt (schriftlich)'}
+              ]"
+          />
+          <FormKit
+              type="select"
+              name="copyright_status_text"
+              label="Urheberrechtsstatus Text"
+              outer-class="max-w-full"
+              select-icon="select"
+              :options="[
+                  {label: '', value: null},
+                  {label: 'Ungeklärt', value: 'Ungeklärt'},
+                  {label: 'rechtefrei 70 Jahre', value: 'rechtefrei 70 Jahre'},
+                  {label: 'eingeholt (schriftlich)', value: 'eingeholt (schriftlich)'}
+              ]"
+          />
+        </div>
+        <FormKit
+            type="select"
+            name="language"
+            label="Sprache"
+            outer-class="max-w-full"
+            select-icon="select"
+            :options="[
+                {label: '', value: null},
+                {label: 'Deutsch', value: 'German'},
+                {label: 'Englisch', value: 'English'},
+                {label: 'Französisch', value: 'French'}
+              ]"
         />
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>

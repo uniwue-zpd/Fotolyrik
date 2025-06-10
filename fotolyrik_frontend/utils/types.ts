@@ -33,10 +33,15 @@ export interface PhotoPoem extends Auditable {
     publication_medium: PubMedium | null;
     author: Person | null;
     photographer: Person | null;
+    other_contributors: Person[] | [];
+    themes: [string] | [];
     topics: [string] | [];
     link: string | null;
     iiif_manifest: string | null;
     images: File[] | []
+    copyright_status_image: string | null;
+    copyright_status_text: string | null;
+    language: string | null;
 }
 
 export interface PubMedium extends Auditable {

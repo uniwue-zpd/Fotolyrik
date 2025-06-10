@@ -46,6 +46,18 @@ public class Photopoem extends BaseEntity {
     @JoinColumn(name = "photographer_id")
     private Person photographer;
 
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_other_contributors",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id")
+    )
+    private Set<Person> other_contributors = new HashSet<>();
+
+    @ElementCollection(targetClass = String.class)
+    @CollectionTable(name = "photopoem_themes", joinColumns = @JoinColumn(name = "photopoem_id"))
+    private List<String> themes = new ArrayList<>();
+
     @ElementCollection(targetClass = String.class)
     @CollectionTable(name = "photopoem_topics", joinColumns = @JoinColumn(name = "photopoem_id"))
     private List<String> topics = new ArrayList<>();
@@ -59,6 +71,15 @@ public class Photopoem extends BaseEntity {
     @OneToMany
     @JoinColumn(name = "photopoem_id")
     private Set<File> images = new HashSet<>();
+
+    @Column(name = "copyright_status_image")
+    private String copyright_status_image;
+
+    @Column(name = "copyright_status_text")
+    private String copyright_status_text;
+
+    @Column(name = "language")
+    private String language;
 
     //TODO: Add other required fields
 }
