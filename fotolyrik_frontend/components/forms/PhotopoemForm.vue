@@ -6,6 +6,9 @@ const props = defineProps<{
   header: string;
   photopoem?: PhotoPoem;
 }>();
+
+const personstore = usePersonStore();
+personstore.fetchAllPersons();
 </script>
 
 <template>
@@ -95,6 +98,7 @@ const props = defineProps<{
               label="Autor:in"
               outer-class="max-w-full"
               select-icon="select"
+              :options="personstore.persons.map(p => ({ label: `${p.full_name}`, value: { id: p.id } }))"
           />
           <FormKit
               type="select"
@@ -102,6 +106,7 @@ const props = defineProps<{
               label="Fotograf:in"
               outer-class="max-w-full"
               select-icon="select"
+              :options="personstore.persons.map(p => ({ label: `${p.full_name}`, value: { id: p.id } }))"
           />
           <FormKit
               type="select"
@@ -110,6 +115,8 @@ const props = defineProps<{
               label="Sonstige Mitwirkende"
               outer-class="max-w-full"
               select-icon="select"
+              :options="personstore.persons.map(p => ({ label: `${p.full_name}`, value: { id: p.id } }))"
+              help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
         </div>
         <Divider/>
