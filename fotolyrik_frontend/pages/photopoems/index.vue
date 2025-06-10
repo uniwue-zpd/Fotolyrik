@@ -1,23 +1,17 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import type { PhotoPoem } from "~/utils/types";
-import apiClient from "~/service/api";
-import {FilterMatchMode} from "@primevue/core";
+import { FilterMatchMode } from "@primevue/core";
+import { usePhotopoemStore } from "~/stores/PhotopoemStore";
 
-const photopoems = ref<PhotoPoem[]>([] as PhotoPoem[]);
+const store = usePhotopoemStore();
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   title: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
 });
 
-onMounted(async ()=> {
-  try {
-    const response = await apiClient.get<PhotoPoem[]>("/photopoems");
-    photopoems.value = response.data;
-  } catch (error) {
-    console.log(error);
-  }
+onMounted(async () => {
+  await store.fetchAllPhotopoems();
 });
 </script>
 
@@ -31,7 +25,7 @@ onMounted(async ()=> {
           v-model:filters="filters"
           filter-display="row"
           :global-filter-fields="['title', 'volume', 'issue', 'page_number', 'author.full_name', 'photographer.full_name']"
-          :value="photopoems"
+          :value="store.photopoems"
       >
         <template #header>
           <div class="flex justify-end">

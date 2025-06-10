@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted} from "vue";
+import { ref, onMounted } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 import { usePersonStore } from "~/stores/PersonStore";
 
