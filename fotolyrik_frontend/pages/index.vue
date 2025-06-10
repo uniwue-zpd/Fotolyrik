@@ -97,7 +97,7 @@ const responsiveOptions = ref([
           sanctus est Lorem ipsum dolor sit amet.
         </div>
         <div class="justify-self-center pt-5">
-        <NuxtLink to="/project" class="text-2xl border-2 border-solid border-spacing-2 border-[#F04E30] text-[#F04E30] averia-layout p-1">
+        <NuxtLink to="/project" class="text-xl border-2 border-solid border-spacing-2 border-[#F04E30] text-[#F04E30] averia-layout px-6 py-2">
         das Projekt
       </NuxtLink>
         </div>
@@ -133,7 +133,7 @@ const responsiveOptions = ref([
             At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
             sanctus est Lorem ipsum dolor sit amet.
           </div>
-          <NuxtLink to="/collection" class="border-2 border-solid border-[#F04E30] text-[#F04E30] averia-layout p-1">
+          <NuxtLink to="/collection" class="text-xl border-2 border-solid border-spacing-2 border-[#F04E30] text-[#F04E30] averia-layout px-6 py-2">
             zur Sammlung
           </NuxtLink>
         </div>
