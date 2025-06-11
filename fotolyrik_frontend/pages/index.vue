@@ -65,9 +65,11 @@ const responsiveOptions = ref([
       </Carousel>
     </div>
     <div class="intro p-5">
-      <h1 class="text-3xl outfit-headline font-bold text-[#063D79] px-10">
+      <div class="px-10">
+      <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">
         Fotolyrik in illustrierten Zeitschriften zwischen 1895 und 1945
       </h1>
+      </div>
       <div class="grid grid-cols-2 gap-x-10 gap-y-5 p-10">
         <div>
           Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
@@ -103,9 +105,11 @@ const responsiveOptions = ref([
         </div>
       </div>
     </div>
+    <div class="px-10">
+      <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Sammlung</h1>
+    </div>
     <div class="collection bg-[#F1F2F2] p-5">
       <div class="flex flex-col gap-2">
-        <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Sammlung</h1>
         <h2 class="text-2xl averia-layout italic text-[#063D79]">Highlight</h2>
         <div class="flex flex-row space-x-5">
           <div class="basis-1/3 bg-white font-bold">Text placeholder</div>
