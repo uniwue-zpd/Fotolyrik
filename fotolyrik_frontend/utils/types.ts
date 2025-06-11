@@ -62,3 +62,11 @@ export interface File extends Auditable {
     type: string | null;
     size: number | null
 }
+
+export interface ContactForm {
+    name: string | null,
+    appellation: string | null,
+    email: string | null,
+    subject: string | null,
+    message: string | null
+}
