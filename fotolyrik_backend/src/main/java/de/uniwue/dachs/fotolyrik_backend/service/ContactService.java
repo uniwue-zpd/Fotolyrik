@@ -2,15 +2,15 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.ContactDTO;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ContactService {
-    private final MailSender mailSender;
+    private final JavaMailSender mailSender;
 
-    public ContactService(MailSender mailSender) {
+    public ContactService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
