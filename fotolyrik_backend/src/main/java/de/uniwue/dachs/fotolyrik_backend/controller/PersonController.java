@@ -1,57 +1,57 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
-import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
+import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/persons")
 public class PersonController {
-    private final PersonRepository personRepository;
+    private final PersonService personService;
 
-    public PersonController(PersonRepository personRepository) {
-        this.personRepository = personRepository;
+    public PersonController(PersonService personService) {
+        this.personService = personService;
     }
 
     @GetMapping
-    public Iterable<Person> getAllPersons() {
-        return personRepository.findAll();
+    public ResponseEntity<List<Person>> getAllPersons() {
+        List<Person> persons = personService.getAllPersons();
+        return ResponseEntity.ok(persons);
     }
 
     @GetMapping("/{id}")
-    public Person getPersonById(@PathVariable Long id) {
-        return personRepository.findById(id).orElse(null);
+    public ResponseEntity<Person> getPersonById(@PathVariable Long id) {
+        return personService.getPersonById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public Person addPerson(@RequestBody Person person) {
-        return this.personRepository.save(person);
+    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+        Person createdPerson = personService.createPerson(person);
+        return ResponseEntity.status(201).body(createdPerson);
     }
 
     @PutMapping("/{id}")
-    public Person updatePerson(@PathVariable Long id, @RequestBody Person person) {
-        Person existingPerson = personRepository.findById(id).orElse(null);
-        if (existingPerson == null) {
-            return null;
+    public ResponseEntity<Person> updatePerson(@PathVariable Long id, @RequestBody Person updatedPerson) {
+        Person person = personService.updatePerson(id, updatedPerson);
+        if (person != null) {
+            return ResponseEntity.status(201).body(person);
+        } else {
+            return ResponseEntity.status(404).build();
         }
-        existingPerson.setFirst_name(person.getFirst_name());
-        existingPerson.setLast_name(person.getLast_name());
-        existingPerson.setBirth_year(person.getBirth_year());
-        existingPerson.setDeath_year(person.getDeath_year());
-        existingPerson.setPseudonym(person.getPseudonym());
-        existingPerson.setSex(person.getSex());
-
-        return personRepository.save(existingPerson);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePerson(@PathVariable Long id) {
-        if (personRepository.existsById(id)) {
-            personRepository.deleteById(id);
-            return ResponseEntity.ok("Person with id '" + id + "' deleted successfully");
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
+        try {
+            personService.deletePerson(id);
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(404).build();
         }
     }
 }
