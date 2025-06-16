@@ -71,8 +71,8 @@ const responsiveOptions = ref([
       </h1>
       </div>
       <div class="grid grid-cols-2 gap-x-10 gap-y-5 p-10">
-        <div>
-          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+        <div class="order-first">
+          1 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
           tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
           accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
           Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
@@ -81,7 +81,7 @@ const responsiveOptions = ref([
           sanctus est Lorem ipsum dolor sit amet.
         </div>
         <div>
-          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+          2 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
           tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
           accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
           Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
@@ -90,27 +90,34 @@ const responsiveOptions = ref([
           sanctus est Lorem ipsum dolor sit amet.
         </div>
         <div>
-          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+          3 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
           tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
           accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
           Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
           sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
           At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+          sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+          sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+          At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
           sanctus est Lorem ipsum dolor sit amet.
         </div>
-        <div class="justify-self-center pt-5">
+        <div class="justify-self-center pt-5 order-last">
         <NuxtLink to="/project" class="text-xl border-2 border-solid border-spacing-2 border-[#F04E30] text-[#F04E30] averia-layout px-6 py-2">
         das Projekt
       </NuxtLink>
         </div>
       </div>
     </div>
-    <div class="px-10">
-      <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Sammlung</h1>
+    <div class="intro p-5">
+      <div class="px-10">
+        <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Sammlung</h1>
+      </div>
     </div>
-    <div class="collection bg-[#F1F2F2] p-5">
-      <div class="flex flex-col gap-2">
+    <div class="collection bg-[#F1F2F2]">
+      <div class="px-14">
         <h2 class="text-2xl averia-layout italic text-[#063D79]">Highlight</h2>
+      </div>
+      <div class="flex flex-col gap-2 p-14">
         <div class="flex flex-row space-x-5">
           <div class="basis-1/3 bg-white font-bold">Text placeholder</div>
           <div class="basis-2/3 font-bold">
