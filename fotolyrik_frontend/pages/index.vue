@@ -114,8 +114,7 @@ const responsiveOptions = ref([
         <div class="flex flex-row space-x-5">
           <div class="basis-1/3 bg-white font-bold">Text placeholder</div>
           <div class="basis-2/3 font-bold">
-            Image placeholder
-            <i class="pi pi-image"/>
+            <img src="../public/s-1.jpg"/>
           </div>
         </div>
       </div>
