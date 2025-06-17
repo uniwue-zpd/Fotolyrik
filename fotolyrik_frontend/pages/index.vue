@@ -64,13 +64,13 @@ const responsiveOptions = ref([
         </template>
       </Carousel>
     </div>
-    <div class="intro p-5">
-      <div class="px-10">
+    <div class="intro py-5 px-[3.75rem]">
       <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">
         Fotolyrik in illustrierten Zeitschriften zwischen 1895 und 1945
       </h1>
-      </div>
-      <div class="grid grid-cols-2 gap-x-10 gap-y-5 p-10">
+    </div>
+    <div class="intro px-[3.75rem]">
+      <div class="grid grid-cols-2 gap-x-10 gap-y-5">
         <div class="order-first">
           1 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
           tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
@@ -108,27 +108,30 @@ const responsiveOptions = ref([
         </div>
       </div>
     </div>
-    <div class="intro p-5">
-      <div class="px-10">
-        <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Sammlung</h1>
-      </div>
+    <div class="py-5 px-[3.75rem]">
+      <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Sammlung</h1>
     </div>
     <div class="collection bg-[#F1F2F2]">
-      <div class="px-14">
-        <h2 class="text-2xl averia-layout italic text-[#063D79]">Highlight</h2>
-      </div>
-      <div class="flex flex-col gap-2 p-14">
+      <div class="flex flex-col gap-2 px-[3.75rem] py-14">
+        <div class="pb-3">
+          <h2 class="text-2xl averia-layout italic text-[#063D79]">Highlight</h2>
+        </div>
         <div class="flex flex-row space-x-5">
-          <div class="basis-1/3 bg-white font-bold">Text placeholder</div>
-          <div class="basis-2/3 font-bold">
+          <div class="basis-1/4 bg-white font-bold">Text placeholder</div>
+          <div class="basis-3/4 font-bold">
             <img src="../public/s-1.jpg"/>
           </div>
         </div>
       </div>
     </div>
-    <div class="analytics p-5">
+    <div class="title py-5 px-[3.75rem]">
+      <h2 class="text-2xl averia-layout italic text-[#063D79]">Fotolyrik in Zahlen</h2>
+    </div>
+    <div>
+
+    </div>
+    <div class="analytics px-[3.75rem]">
       <div class="flex flex-col gap-2">
-        <h2 class="text-2xl averia-layout italic text-[#063D79]">Fotolyrik in Zahlen</h2>
         <div class="font-bold">
           Bar chart placeholder
           <i class="pi pi-chart-bar"/>
