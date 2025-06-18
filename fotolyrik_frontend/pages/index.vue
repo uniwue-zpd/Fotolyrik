@@ -224,9 +224,11 @@ const setChartOptions = () => {
             At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
             sanctus est Lorem ipsum dolor sit amet.
           </div>
+          <div class="justify-self-center pt-5 order-last">
           <NuxtLink to="/collection" class="text-xl border-2 border-solid border-spacing-2 border-[#F04E30] text-[#F04E30] averia-layout px-6 py-2">
             zur Sammlung
           </NuxtLink>
+          </div>
         </div>
       </div>
     </div>
