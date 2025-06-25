@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 import { usePhotopoemStore } from "~/stores/PhotopoemStore";
 
@@ -8,10 +8,6 @@ const store = usePhotopoemStore();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   title: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
-});
-
-onMounted(async () => {
-  await store.fetchAllPhotopoems();
 });
 </script>
 

@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import { ref, computed } from "vue";
 import apiClient from "~/service/api";
 
-const usePubMediumStore = defineStore('pubMedium', () => {
+export const usePubMediumStore = defineStore('pubMedium', () => {
     // State
     const pub_media = ref<PubMedium[]>([] as PubMedium[]);
     const current_pub_medium = ref<PubMedium | null>(null);

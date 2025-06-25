@@ -13,7 +13,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
 
     // Actions
         // Fetch all photopoems
-    async function fetchAllPhotopoems() {
+    async function fetchPhotopoems() {
         if (!isLoaded.value) {
             try {
                 const response = await apiClient.get<PhotoPoem[]>('/photopoems');
@@ -100,7 +100,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         photopoems,
         currentPhotopoem,
         isLoaded,
-        fetchAllPhotopoems,
+        fetchPhotopoems,
         fetchPhtotopoemById,
         previousPhotopoem,
         nextPhotopem,

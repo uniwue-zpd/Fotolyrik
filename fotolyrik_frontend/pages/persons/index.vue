@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 import { usePersonStore } from "~/stores/PersonStore";
 
@@ -9,10 +9,6 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   full_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
 });
-
-onMounted(async () => {
-  await store.fetchAllPersons();
-})
 </script>
 
 <template>

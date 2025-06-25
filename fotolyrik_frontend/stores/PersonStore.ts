@@ -13,7 +13,7 @@ export const usePersonStore = defineStore('person', () => {
 
     // Actions
         // Fetch all persons
-    async function fetchAllPersons() {
+    async function fetchPersons() {
         if (!isLoaded.value) {
             try {
                 const response = await apiClient.get<Person[]>('/persons');
@@ -98,7 +98,7 @@ export const usePersonStore = defineStore('person', () => {
         persons,
         currentPerson,
         isLoaded,
-        fetchAllPersons,
+        fetchPersons,
         fetchPersonById,
         previousPerson,
         nextPerson,
