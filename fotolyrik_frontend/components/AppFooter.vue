@@ -16,8 +16,8 @@ function copy_to_clipboard(copy_item: string) {
 <template>
   <footer class="flex flex-col">
     <div class="bg-[#063D79]">
-      <div class="flex flex-row justify-between max-w-[1140px] text-white p-3 mx-auto">
-        <div class="flex flex-row space-x-10">
+      <div class="flex flex-col gap-2 md:flex-row md:justify-between max-w-[1140px] text-white p-3 mx-auto">
+        <div class="flex flex-row justify-between md:space-x-10">
           <div class="flex flex-col gap-2">
             <p class="text-xl outfit-headline">Fotolyrik</p>
             <NuxtLink to="/project" class="text-white">Projekt</NuxtLink>
@@ -39,15 +39,15 @@ function copy_to_clipboard(copy_item: string) {
             <NuxtLink to="/contact" class="text-white">Kontaktformular</NuxtLink>
           </div>
         </div>
-        <div class="flex flex-row space-x-10 justify-end">
+        <div class="flex flex-row justify-between md:space-x-10 md:justify-end">
           <div class="flex flex-col justify-center">
             <a href="https://www.dfg.de/de" target="_blank">
-              <img class="h-[40px]" src="../public/dfg_logo_schriftzug_weiss.png" alt="dfglogo"/>
+              <img class="h-[30px] md:h-[40px]" src="../public/dfg_logo_schriftzug_weiss.png" alt="dfglogo"/>
             </a>
           </div>
           <div class="flex flex-col justify-center">
             <a href="https://www.uni-wuerzburg.de/" target="_blank">
-              <img class="h-[40px]" src="../public/unilogo4cohne_w.jpg" alt="unilogo"/>
+              <img class="h-[30px] md:h-[40px]" src="../public/unilogo4cohne_w.jpg" alt="unilogo"/>
             </a>
           </div>
         </div>
