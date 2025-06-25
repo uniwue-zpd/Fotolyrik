@@ -62,6 +62,9 @@ public class Photopoem extends BaseEntity {
     @CollectionTable(name = "photopoem_topics", joinColumns = @JoinColumn(name = "photopoem_id"))
     private List<String> topics = new ArrayList<>();
 
+    @Column(name = "form")
+    private String form;
+
     @Column(name = "link")
     private String link;
 

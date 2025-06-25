@@ -25,16 +25,14 @@ public class Person extends BaseEntity {
     private Integer death_year;
 
     @Column(name = "sex")
-    @Enumerated(EnumType.STRING)
-    private Sex sex;
+    private String sex;
+
+    @Column(name = "gnd_id")
+    private String gnd_id;
 
     @Transient
     public String getFull_name() {
         return (first_name != null ? first_name + " " : "") +
                 (last_name != null ? last_name : "");
-    }
-
-    public enum Sex {
-        MALE, FEMALE
     }
 }

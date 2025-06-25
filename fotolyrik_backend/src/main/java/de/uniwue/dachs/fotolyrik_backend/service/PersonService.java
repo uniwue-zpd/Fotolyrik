@@ -43,6 +43,7 @@ public class PersonService {
                     existingPerson.setDeath_year(updatedPerson.getDeath_year());
                     existingPerson.setPseudonym(updatedPerson.getPseudonym());
                     existingPerson.setSex(updatedPerson.getSex());
+                    existingPerson.setGnd_id(updatedPerson.getGnd_id());
                     return personRepository.save(existingPerson);
                 })
                 .orElse(null);

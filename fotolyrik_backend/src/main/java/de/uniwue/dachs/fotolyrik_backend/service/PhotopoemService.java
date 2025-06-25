@@ -65,6 +65,7 @@ public class PhotopoemService {
             entity.setOther_contributors((updatedPhotopoem.getOther_contributors() != null) ? getOrSavePersons(updatedPhotopoem.getOther_contributors()) : new HashSet<>());
             entity.setThemes((updatedPhotopoem.getThemes() != null) ? updatedPhotopoem.getThemes() : null);
             entity.setTopics((updatedPhotopoem.getTopics() != null) ? updatedPhotopoem.getTopics() : null);
+            entity.setForm((updatedPhotopoem.getForm() != null) ? updatedPhotopoem.getForm() : null);
             entity.setLink((updatedPhotopoem.getLink() != null) ? updatedPhotopoem.getLink() : null);
             entity.setIiif_manifest((updatedPhotopoem.getIiif_manifest() != null) ? updatedPhotopoem.getIiif_manifest() : null);
             entity.setImages((updatedPhotopoem.getImages() != null) ? getFiles(updatedPhotopoem.getImages()) : null);

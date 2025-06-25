@@ -20,7 +20,8 @@ export interface Person extends Auditable {
     pseudonym: string | null;
     birth_year: number | null;
     death_year: number | null;
-    sex: "MALE" | "FEMALE" | null
+    sex: "MALE" | "FEMALE" | null;
+    gnd_id: string | null;
 }
 
 export interface PhotoPoem extends Auditable {
@@ -36,6 +37,7 @@ export interface PhotoPoem extends Auditable {
     other_contributors: Person[] | [];
     themes: [string] | [];
     topics: [string] | [];
+    form: string | null;
     link: string | null;
     iiif_manifest: string | null;
     images: File[] | []

@@ -109,9 +109,17 @@ const submit = async (formData: Partial<PersonInput>) => {
             outer-class="max-w-full"
             :options="[
                 { label: 'Unbekannt', value: null},
-                { label: 'Weiblich', value: 'FEMALE'},
-                { label: 'Männlich', value: 'MALE'}
+                { label: 'Weiblich', value: 'weiblich'},
+                { label: 'Männlich', value: 'männlich'}
             ]"
+        />
+        <FormKit
+            type="text"
+            name="gnd_id"
+            label="GND-ID"
+            placeholder="118540238"
+            prefix-icon="number"
+            outer-class="max-w-full"
         />
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>
