@@ -41,6 +41,36 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         }
     }
 
+        // Create new photopoem
+    async function createPhotopoem(payload: Partial<PhotoPoem>) {
+        try {
+            const response = await apiClient.post('/photopoems', payload);
+            photopoems.value.push(response.data);
+            return response.data;
+        } catch (error) {
+            console.log('Error creating photopoem:', error);
+            throw error;
+        }
+    }
+
+        // Update existing photopoem
+    async function updatePhotopoem(payload: Partial<PhotoPoem>, id: number) {
+        try {
+            const response = await apiClient.put(`/photopoems/${id}`, payload);
+            const index = photopoems.value.findIndex(p => p.id === id);
+            if (index !== -1) {
+                photopoems.value[index] = response.data;
+            }
+            if (currentPhotopoem.value?.id === id) {
+                currentPhotopoem.value = response.data;
+            }
+            return response.data;
+        } catch (error) {
+            console.log('Error updating photopoem:', error);
+            throw error;
+        }
+    }
+
         // Navigation left
     function previousPhotopoem() {
         const currentIndex = photopoems.value.findIndex(p => p.id === currentPhotopoem.value?.id);
@@ -64,36 +94,6 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         // Clear current photopoem
     function clearPhotopoem() {
         currentPhotopoem.value = null;
-    }
-
-        // Create new photopoem
-    async function createPhotopoem(payload: Partial<PhotoPoem>) {
-        try {
-            const response = await apiClient.post('/photopoems', payload);
-            photopoems.value.push(response.data);
-            return response.data;
-        } catch (error) {
-            console.log('Error creating photopoem:', error);
-            throw error;
-        }
-    }
-
-        // Update existing person
-    async function updatePhotopoem(payload: Partial<PhotoPoem>, id: number) {
-        try {
-            const response = await apiClient.put(`/photopoems/${id}`, payload);
-            const index = photopoems.value.findIndex(p => p.id === id);
-            if (index !== -1) {
-                photopoems.value[index] = response.data;
-            }
-            if (currentPhotopoem.value?.id === id) {
-                currentPhotopoem.value = response.data;
-            }
-            return response.data;
-        } catch (error) {
-            console.log('Error updating person:', error);
-            throw error;
-        }
     }
 
     return {
