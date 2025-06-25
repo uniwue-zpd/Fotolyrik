@@ -149,7 +149,7 @@ const setChartOptions = () => {
     </div>
     <div class="intro px-[3.75rem]">
       <div class="grid grid-cols-2 gap-x-10 gap-y-5">
-        <div class="order-first">
+        <div>
           1 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
           tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
           accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
@@ -214,6 +214,7 @@ const setChartOptions = () => {
           Bar chart placeholder
           <i class="pi pi-chart-bar"/>
         </div>
+        <div class="py-5">
         <div class="columns-2">
           <div>
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
@@ -230,11 +231,14 @@ const setChartOptions = () => {
           </NuxtLink>
           </div>
         </div>
+        </div>
       </div>
+    </div>
+    <div class="title py-5 px-[3.75rem]">
+      <h2 class="text-2xl averia-layout italic text-[#063D79]">Themen</h2>
     </div>
     <div class="topics bg-[#F1F2F2] p-5">
       <div class="flex flex-col gap-2">
-        <h2 class="text-2xl averia-layout italic text-[#063D79]">Themen</h2>
         <Carousel :value="topics" :numVisible="4" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
           <template #item="{ data }">
             <div class="p-2">
