@@ -8,7 +8,6 @@ const props = defineProps<{
 }>();
 
 const personstore = usePersonStore();
-personstore.fetchAllPersons();
 </script>
 
 <template>
