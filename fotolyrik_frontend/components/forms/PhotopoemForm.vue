@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import { useToast } from "primevue/usetoast";
+import { getNode } from '@formkit/core';
 import type { PhotoPoem } from "~/utils/types";
 
 const props = defineProps<{
@@ -7,7 +10,37 @@ const props = defineProps<{
   photopoem?: PhotoPoem;
 }>();
 
-const personstore = usePersonStore();
+const toast = useToast();
+const submitted = ref(false);
+const person_store = usePersonStore();
+const photopoem_store = usePhotopoemStore();
+
+type PhotoPoemInput = Omit<PhotoPoem, 'id' | 'created_by' | 'created_date' | 'last_modified_by' | 'last_modified_date'>;
+
+const submit = async (formData: Partial<PhotoPoemInput>) => {
+  try {
+    if (props.action === 'create') {
+      await photopoem_store.createPhotopoem(formData);
+      submitted.value = true;
+      toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich erstellt', life: 3000});
+      const form = getNode('photopoem_creation');
+      form?.reset();
+    } else if (props.action === 'edit' && props.photopoem?.id) {
+      await photopoem_store.updatePhotopoem(formData, props.photopoem.id);
+      submitted.value = true;
+      toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich upgedated', life: 3000});
+      navigateTo(`/photopoems/${props.photopoem?.id}`);
+    }
+  } catch (error) {
+    console.log(error)
+    toast.add({
+      severity: 'error',
+      summary: 'Fehler',
+      detail: 'Fehler beim Erstellen des Fotogedicht-Objektes',
+      life: 3000
+    });
+  }
+};
 </script>
 
 <template>
@@ -20,6 +53,7 @@ const personstore = usePersonStore();
         type="form"
         id="photopoem_creation"
         submit-label="Erstellen"
+        @submit="submit"
         :actions="false"
         :value="props.photopoem ? props.photopoem : {}"
         :key="props.photopoem?.id || 'create'"
@@ -97,7 +131,10 @@ const personstore = usePersonStore();
               label="Autor:in"
               outer-class="max-w-full"
               select-icon="select"
-              :options="personstore.persons.map(p => ({ label: `${p.full_name}`, value: { id: p.id } }))"
+              :options="[
+                  {label: '', value: null},
+                  ...person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))
+                  ]"
           />
           <FormKit
               type="select"
@@ -105,7 +142,10 @@ const personstore = usePersonStore();
               label="Fotograf:in"
               outer-class="max-w-full"
               select-icon="select"
-              :options="personstore.persons.map(p => ({ label: `${p.full_name}`, value: { id: p.id } }))"
+              :options="[
+                  {label: '', value: null},
+                  ...person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))
+                  ]"
           />
           <FormKit
               type="select"
@@ -114,7 +154,7 @@ const personstore = usePersonStore();
               label="Sonstige Mitwirkende"
               outer-class="max-w-full"
               select-icon="select"
-              :options="personstore.persons.map(p => ({ label: `${p.full_name}`, value: { id: p.id } }))"
+              :options="person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
         </div>
