@@ -39,30 +39,6 @@ export const usePersonStore = defineStore('person', () => {
             }
         }
     }
-        // Navigation left
-    function previousPerson() {
-        const currentIndex = persons.value.findIndex(p => p.id === currentPerson.value?.id);
-        if (currentIndex !== -1 && currentIndex) {
-            return persons.value[currentIndex - 1] as Person;
-        } else {
-            return null;
-        }
-    }
-
-        // Navigation right
-    function nextPerson() {
-        const currentIndex = persons.value.findIndex(p => p.id === currentPerson.value?.id);
-        if (currentIndex !== -1 && currentIndex < persons.value.length - 1) {
-            return persons.value[currentIndex + 1] as Person;
-        } else {
-            return null;
-        }
-    }
-
-        // Clear current person
-    function clearPerson() {
-        currentPerson.value = null;
-    }
 
         // Create new person
     async function createPerson(payload: Partial<Person>) {
@@ -94,17 +70,57 @@ export const usePersonStore = defineStore('person', () => {
         }
     }
 
+        // DELETE existing person
+    async function deletePerson(id: number) {
+        try {
+            await apiClient.delete(`/persons/${id}`);
+            persons.value = persons.value.filter(p => p.id !== id);
+            if (currentPerson.value?.id === id) {
+                currentPerson.value = null;
+            }
+        } catch (error) {
+            console.log('Error deleting person:', error);
+            throw error;
+        }
+    }
+
+        // Navigation left
+    function previousPerson() {
+        const currentIndex = persons.value.findIndex(p => p.id === currentPerson.value?.id);
+        if (currentIndex !== -1 && currentIndex) {
+            return persons.value[currentIndex - 1] as Person;
+        } else {
+            return null;
+        }
+    }
+
+        // Navigation right
+    function nextPerson() {
+        const currentIndex = persons.value.findIndex(p => p.id === currentPerson.value?.id);
+        if (currentIndex !== -1 && currentIndex < persons.value.length - 1) {
+            return persons.value[currentIndex + 1] as Person;
+        } else {
+            return null;
+        }
+    }
+
+        // Clear current person
+    function clearPerson() {
+        currentPerson.value = null;
+    }
+
     return {
         persons,
         currentPerson,
         isLoaded,
         fetchPersons,
         fetchPersonById,
+        createPerson,
+        updatePerson,
+        deletePerson,
         previousPerson,
         nextPerson,
-        clearPerson,
-        createPerson,
-        updatePerson
+        clearPerson
     }
 });
 

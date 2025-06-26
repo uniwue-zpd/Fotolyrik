@@ -25,6 +25,9 @@ onMounted(async () => {
         <div class="flex flex-row justify-between">
           <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ person_item?.first_name }} {{ person_item?.last_name }}</h1>
           <PageToolbar
+              v-if="person_item"
+              :id="person_item.id"
+              entity_type="person"
               :page_url="`${router.fullPath}`"
           />
         </div>

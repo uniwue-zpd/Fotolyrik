@@ -71,6 +71,20 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         }
     }
 
+        // DELETE existing photopoem
+    async function deletePhotopoem(id: number) {
+        try {
+            await apiClient.delete(`/photopoems/${id}`);
+            photopoems.value = photopoems.value.filter(p => p.id !== id);
+            if (currentPhotopoem.value?.id === id) {
+                currentPhotopoem.value = null;
+            }
+        } catch (error) {
+            console.log('Error deleting person:', error);
+            throw error;
+        }
+    }
+
         // Navigation left
     function previousPhotopoem() {
         const currentIndex = photopoems.value.findIndex(p => p.id === currentPhotopoem.value?.id);
@@ -102,10 +116,11 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         isLoaded,
         fetchPhotopoems,
         fetchPhtotopoemById,
+        createPhotopoem,
+        updatePhotopoem,
+        deletePhotopoem,
         previousPhotopoem,
         nextPhotopem,
-        clearPhotopoem,
-        createPhotopoem,
-        updatePhotopoem
+        clearPhotopoem
     }
 })
