@@ -148,7 +148,7 @@ const setChartOptions = () => {
       </h1>
     </div>
     <div class="intro px-[3.75rem]">
-      <div class="grid grid-cols-2 gap-x-10 gap-y-5">
+      <div class="columns-2 space-y-8 gap-x-10 text-justify">
         <div>
           1 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
           tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
