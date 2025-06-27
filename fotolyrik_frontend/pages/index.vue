@@ -2,8 +2,8 @@
 // TODO: Define functions to parse data for the carousel and the bar chart
 
 import Chart from 'primevue/chart';
-
 import { ref, onMounted } from 'vue';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 const images = ref([
     'k-1.jpg',
@@ -129,6 +129,21 @@ const setChartOptions = () => {
 };
 
 // end of bar chart example
+// start map example
+const mapContainer = ref<HTMLElement>()
+
+onMounted(async () => {
+  const maplibregl = (await import('maplibre-gl')).default
+
+  const map = new maplibregl.Map({
+    container: mapContainer.value!,
+    style: 'https://demotiles.maplibre.org/style.json',
+    center: [10.447683, 51.163361],
+    zoom: 5
+  })
+  map.addControl(new maplibregl.NavigationControl())
+})
+//end map example
 </script>
 
 <template>
@@ -235,6 +250,12 @@ const setChartOptions = () => {
       </div>
     </div>
     <div class="title py-5 px-[3.75rem]">
+      <h2 class="text-3xl averia-layout italic text-[#063D79]">Karte</h2>
+    </div>
+    <client-only>
+      <div ref="mapContainer" class="h-[500px] w-full rounded-md"></div>
+    </client-only>
+    <div class="title py-5 px-[3.75rem]">
       <h2 class="text-3xl averia-layout italic text-[#063D79]">Themen</h2>
     </div>
     <div class="topics bg-[#F1F2F2] p-5">
@@ -257,5 +278,4 @@ const setChartOptions = () => {
 </template>
 
 <style scoped>
-
 </style>
