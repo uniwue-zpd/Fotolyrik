@@ -215,7 +215,7 @@ const setChartOptions = () => {
           <i class="pi pi-chart-bar"/>
         </div>
         <div class="py-5">
-        <div class="columns-2">
+        <div class="columns-2 space-y-8 gap-x-10 text-justify">
           <div>
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
             tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
