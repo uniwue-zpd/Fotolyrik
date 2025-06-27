@@ -192,7 +192,7 @@ const setChartOptions = () => {
     <div class="collection bg-[#F1F2F2]">
       <div class="flex flex-col gap-2 px-[3.75rem] py-14">
         <div class="pb-3">
-          <h2 class="text-2xl averia-layout italic text-[#063D79]">Highlight</h2>
+          <h2 class="text-3xl averia-layout italic text-[#063D79]">Highlight</h2>
         </div>
         <div class="flex flex-row space-x-5">
           <div class="basis-1/4 bg-white font-bold">Text placeholder</div>
@@ -203,7 +203,7 @@ const setChartOptions = () => {
       </div>
     </div>
     <div class="title py-5 px-[3.75rem]">
-      <h2 class="text-2xl averia-layout italic text-[#063D79]">Fotolyrik in Zahlen</h2>
+      <h2 class="text-3xl averia-layout italic text-[#063D79]">Fotolyrik in Zahlen</h2>
     </div>
     <div>
       <Chart type="bar" :data="chartData" :options="chartOptions" class="h-[30rem]" />
@@ -235,7 +235,7 @@ const setChartOptions = () => {
       </div>
     </div>
     <div class="title py-5 px-[3.75rem]">
-      <h2 class="text-2xl averia-layout italic text-[#063D79]">Themen</h2>
+      <h2 class="text-3xl averia-layout italic text-[#063D79]">Themen</h2>
     </div>
     <div class="topics bg-[#F1F2F2] p-5">
       <div class="flex flex-col gap-2">
