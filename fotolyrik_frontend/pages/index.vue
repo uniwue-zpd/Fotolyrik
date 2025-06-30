@@ -261,11 +261,17 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="title py-5 px-[3.75rem]">
-      <h2 class="text-3xl averia-layout italic text-[#063D79]">Karte</h2>
-    </div>
-    <div>
-      <div id="map" class="h-[500px] w-full rounded-md"/>
+    <div class="py-10">
+      <div class="collection bg-[#F1F2F2]">
+        <div class="flex flex-col px-[3.75rem] py-14">
+          <div class="title pb-5">
+            <h2 class="text-3xl averia-layout italic text-[#063D79]">Karte</h2>
+          </div>
+          <div class="flex flex-row justify-center">
+            <div id="map" class="h-[549px] w-[996px]"/>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="title py-5 px-[3.75rem]">
       <h2 class="text-3xl averia-layout italic text-[#063D79]">Themen</h2>
