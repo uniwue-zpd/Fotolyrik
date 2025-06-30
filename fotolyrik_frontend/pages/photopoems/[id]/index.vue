@@ -43,7 +43,58 @@ onMounted(async () => {
         </div>
       </template>
       <template #content>
-        <div v-show="has_iiif_manifest" id="tify-photopoem" class="h-[500px]"/>
+        <div class="flex flex-col gap-2">
+          <div v-show="has_iiif_manifest" id="tify-photopoem" class="h-[500px]"/>
+          <Accordion value="null">
+            <AccordionPanel value="0">
+              <AccordionHeader>
+                <h2 class="text-2xl font-semibold text-[#063D79] outfit-headline">Details</h2>
+              </AccordionHeader>
+              <AccordionContent>
+                <Card>
+                  <template #content>
+                    <table class="min-w-full divide-y divide-gray-200 roboto-plain">
+                      <tbody v-if="photopoem_item" class="bg-white divide-y divide-gray-200">
+                      <tr v-if="photopoem_item.volume">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Jahrgang</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.volume }}</td>
+                      </tr>
+                      <tr v-if="photopoem_item.issue">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Ausgabe</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.issue }}</td>
+                      </tr>
+                      <tr v-if="photopoem_item.page_number">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Seite</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.page_number }}</td>
+                      </tr>
+                      <tr v-if="photopoem_item.publication_date">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Erscheinungsdatum</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.publication_date }}</td>
+                      </tr>
+                      <tr v-if="photopoem_item.publication_medium">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsmedium</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.publication_medium.title }}</td>
+                      </tr>
+                      <tr v-if="photopoem_item.link">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Link</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                          <NuxtLink :to="photopoem_item.link" target="_blank" class="text-[#063D79]">
+                            {{ photopoem_item.link }}
+                          </NuxtLink>
+                        </td>
+                      </tr>
+                      <tr v-if="photopoem_item.language">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Sprache</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.language }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </template>
+                </Card>
+              </AccordionContent>
+            </AccordionPanel>
+          </Accordion>
+        </div>
       </template>
     </Card>
   </div>
