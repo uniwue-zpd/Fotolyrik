@@ -73,14 +73,20 @@ const submit = async (formData: Partial<PersonInput>) => {
               outer-class="max-w-full"
           />
         </div>
-        <FormKit
-            type="text"
-            name="pseudonym"
-            label="Pseudonym"
-            placeholder="Filippo Möller"
-            prefix-icon="text"
-            outer-class="max-w-full"
-        />
+        <FormKit type="list" :value="[]" name="pseudonyms" dynamic #default="{ items, node, value }">
+          <FormKit
+              v-for="(item, index) in items"
+              :key="item"
+              :index="index"
+              label="Pseudonyme"
+              placeholder="Filippo Möller"
+              suffix-icon="trash"
+              @suffix-icon-click="() => node.input(value?.filter((_, i) => i !== index))"
+              :sections-schema="{ suffixIcon: { $el: 'button', attrs: { type: 'button' } } }"
+              outer-class="max-w-full"
+          />
+          <FormKit type="button" @click="() => node.input(value?.concat(''))">Pseudonym hinzufügen</FormKit>
+        </FormKit>
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"

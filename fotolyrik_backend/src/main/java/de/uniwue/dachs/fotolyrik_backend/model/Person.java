@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "person")
 @Getter
@@ -15,8 +18,9 @@ public class Person extends BaseEntity {
     @Column(name = "last_name")
     private String last_name;
 
-    @Column(name = "pseudonym")
-    private String pseudonym;
+    @ElementCollection(targetClass = String.class)
+    @CollectionTable(name = "person_pseudonymes", joinColumns = @JoinColumn(name = "person_id"))
+    private List<String> pseudonyms = new ArrayList<>();
 
     @Column(name = "birth_year", length = 4)
     private Integer birth_year;

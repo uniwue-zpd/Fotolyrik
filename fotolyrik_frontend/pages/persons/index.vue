@@ -62,10 +62,10 @@ const filters = ref({
         </Column>
         <Column field="first_name" header="Vorname" class="roboto-plain"/>
         <Column field="last_name" header="Nachname" class="roboto-plain"/>
-        <Column field="pseudonym" header="Pseudonym" class="roboto-plain">
+        <Column field="pseudonyms" header="Pseudonyme" class="roboto-plain">
           <template #body="slotProps">
-            <div v-if="slotProps.data.pseudonym != null">
-              <div class="roboto-plain">{{ slotProps.data.pseudonym }}</div>
+            <div v-if="slotProps.data.pseudonyms.length > 0">
+              <div class="roboto-plain">{{ slotProps.data.pseudonyms.join(', ') }}</div>
             </div>
             <div v-else>
               <span class="roboto-italic text-gray-500">Unbekannt</span>

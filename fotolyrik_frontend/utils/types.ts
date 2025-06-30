@@ -17,10 +17,10 @@ export interface Person extends Auditable {
     first_name: string | null;
     last_name: string | null;
     full_name: string | null;
-    pseudonym: string | null;
+    pseudonyms: [string] | [];
     birth_year: number | null;
     death_year: number | null;
-    sex: "MALE" | "FEMALE" | null;
+    sex: "weiblich" | "männlich" | null;
     gnd_id: string | null;
 }
 

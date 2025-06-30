@@ -41,7 +41,7 @@ public class PersonService {
                     existingPerson.setLast_name(updatedPerson.getLast_name());
                     existingPerson.setBirth_year(updatedPerson.getBirth_year());
                     existingPerson.setDeath_year(updatedPerson.getDeath_year());
-                    existingPerson.setPseudonym(updatedPerson.getPseudonym());
+                    existingPerson.setPseudonyms(updatedPerson.getPseudonyms());
                     existingPerson.setSex(updatedPerson.getSex());
                     existingPerson.setGnd_id(updatedPerson.getGnd_id());
                     return personRepository.save(existingPerson);

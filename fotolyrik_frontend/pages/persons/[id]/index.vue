@@ -43,13 +43,13 @@ onMounted(async () => {
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Sterbejahr</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.death_year }}</td>
           </tr>
-          <tr v-if="person_item.pseudonym">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Pseudonym</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.pseudonym }}</td>
+          <tr v-if="person_item.pseudonyms.length > 0">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Pseudonyme</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.pseudonyms.join(', ') }}</td>
           </tr>
           <tr v-if="person_item.sex">
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Geschlecht</td>
-            <td v-if="person_item.sex === 'MALE'" class="px-6 py-4 whitespace-nowrap text-sm">Männlich</td>
+            <td v-if="person_item.sex === 'männlich'" class="px-6 py-4 whitespace-nowrap text-sm">Männlich</td>
             <td v-else class="px-6 py-4 whitespace-nowrap text-sm">Weiblich</td>
           </tr>
           </tbody>
