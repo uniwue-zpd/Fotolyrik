@@ -20,7 +20,7 @@ const filters = ref({
       <DataTable
           v-model:filters="filters"
           filter-display="row"
-          :global-filter-fields="['title', 'volume', 'issue', 'page_number', 'author.full_name', 'photographer.full_name']"
+          :global-filter-fields="['title', 'volume', 'issue', 'page_number', 'publication_date', 'publication_medium.title']"
           :value="store.photopoems"
       >
         <template #header>
@@ -74,29 +74,33 @@ const filters = ref({
             </div>
           </template>
         </Column>
-        <Column header ="Autor" field="author.full_name" :sortable="true">
+        <Column header ="Autor:innen" field="authors">
           <template #body="slotProps">
-            <div v-if="slotProps.data.author != null">
-              <NuxtLink :to="`/persons/${slotProps.data.author.id}`"
-                        class="roboto-plain">
-                {{ slotProps.data.author.full_name }}
-              </NuxtLink>
+            <div v-if="slotProps.data.authors != null && slotProps.data.authors.length > 0">
+              <span v-for="(author, index) in slotProps.data.authors" :key="author.id">
+                <NuxtLink :to="`/persons/${author.id}`" class="roboto-plain">
+                  {{ author.full_name }}
+                </NuxtLink>
+                <span v-if="index < slotProps.data.authors.length -1">, </span>
+              </span>
             </div>
             <div v-else>
               <span class="roboto-italic text-gray-500">Unbekannt</span>
             </div>
           </template>
         </Column>
-        <Column header="Fotograf" field="photographer.full_name" :sortable="true">
+        <Column header ="Fotograf:innen" field="photographers">
           <template #body="slotProps">
-            <div v-if="slotProps.data.photographer != null">
-              <NuxtLink :to="`/persons/${slotProps.data.photographer.id}`"
-                        class="roboto-plain">
-                {{ slotProps.data.photographer.full_name }}
-              </NuxtLink>
+            <div v-if="slotProps.data.photographers != null && slotProps.data.photographers.length > 0">
+              <span v-for="(photographer, index) in slotProps.data.photographers" :key="photographer.id">
+                <NuxtLink :to="`/persons/${photographer.id}`" class="roboto-plain">
+                  {{ photographer.full_name }}
+                </NuxtLink>
+                <span v-if="index < slotProps.data.photographers.length -1">, </span>
+              </span>
             </div>
             <div v-else>
-              <span class="roboto-italic text-gray-500 italic">Unbekannt</span>
+              <span class="roboto-italic text-gray-500">Unbekannt</span>
             </div>
           </template>
         </Column>

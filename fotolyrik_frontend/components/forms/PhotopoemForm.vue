@@ -127,25 +127,23 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="select"
-              name="author"
-              label="Autor:in"
+              multiple
+              name="authors"
+              label="Autor:innen"
               outer-class="max-w-full"
               select-icon="select"
-              :options="[
-                  {label: '', value: null},
-                  ...person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))
-                  ]"
+              :options="person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))"
+              help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
           <FormKit
               type="select"
-              name="photographer"
-              label="Fotograf:in"
+              multiple
+              name="photographers"
+              label="Fotograf:innen"
               outer-class="max-w-full"
               select-icon="select"
-              :options="[
-                  {label: '', value: null},
-                  ...person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))
-                  ]"
+              :options="person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))"
+              help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
           <FormKit
               type="select"

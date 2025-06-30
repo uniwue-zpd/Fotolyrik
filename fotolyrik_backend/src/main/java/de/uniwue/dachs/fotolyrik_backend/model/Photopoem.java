@@ -38,13 +38,21 @@ public class Photopoem extends BaseEntity {
     @JoinColumn(name = "pub_medium_id")
     private PubMedium publication_medium;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private Person author;
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_authors",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id")
+    )
+    private Set<Person> authors = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "photographer_id")
-    private Person photographer;
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_photographers",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id")
+    )
+    private Set<Person> photographers = new HashSet<>();
 
     @ManyToMany
     @JoinTable(

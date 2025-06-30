@@ -32,8 +32,8 @@ export interface PhotoPoem extends Auditable {
     page_count: number | null;
     publication_date: string | null;
     publication_medium: PubMedium | null;
-    author: Person | null;
-    photographer: Person | null;
+    authors: Person[] | [];
+    photographers: Person[] | [];
     other_contributors: Person[] | [];
     themes: [string] | [];
     topics: [string] | [];

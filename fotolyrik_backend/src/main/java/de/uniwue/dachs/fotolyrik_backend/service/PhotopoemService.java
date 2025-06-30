@@ -43,8 +43,8 @@ public class PhotopoemService {
 
     @Transactional
     public Photopoem savePhotopoem(Photopoem photopoem) {
-        photopoem.setAuthor(getOrSavePerson(photopoem.getAuthor()));
-        photopoem.setPhotographer(getOrSavePerson(photopoem.getPhotographer()));
+        photopoem.setAuthors(getOrSavePersons(photopoem.getAuthors()));
+        photopoem.setPhotographers(getOrSavePersons(photopoem.getPhotographers()));
         photopoem.setOther_contributors(getOrSavePersons(photopoem.getOther_contributors()));
         photopoem.setPublication_medium(getOrSavePubMedium(photopoem.getPublication_medium()));
         return photopoemRepository.save(photopoem);
@@ -60,8 +60,8 @@ public class PhotopoemService {
             entity.setPage_count((updatedPhotopoem.getPage_count() != null) ? updatedPhotopoem.getPage_count() : null);
             entity.setPublication_date((updatedPhotopoem.getPublication_date() != null) ? updatedPhotopoem.getPublication_date() : null);
             entity.setPublication_medium((updatedPhotopoem.getPublication_medium() != null) ? getOrSavePubMedium(updatedPhotopoem.getPublication_medium()) : null);
-            entity.setAuthor((updatedPhotopoem.getAuthor() != null) ? getOrSavePerson(updatedPhotopoem.getAuthor()) : null);
-            entity.setPhotographer((updatedPhotopoem.getPhotographer() != null) ? getOrSavePerson(updatedPhotopoem.getPhotographer()) : null);
+            entity.setAuthors((updatedPhotopoem.getAuthors() != null) ? getOrSavePersons(updatedPhotopoem.getAuthors()) : null);
+            entity.setPhotographers((updatedPhotopoem.getPhotographers() != null) ? getOrSavePersons(updatedPhotopoem.getPhotographers()) : null);
             entity.setOther_contributors((updatedPhotopoem.getOther_contributors() != null) ? getOrSavePersons(updatedPhotopoem.getOther_contributors()) : new HashSet<>());
             entity.setThemes((updatedPhotopoem.getThemes() != null) ? updatedPhotopoem.getThemes() : null);
             entity.setTopics((updatedPhotopoem.getTopics() != null) ? updatedPhotopoem.getTopics() : null);
@@ -82,17 +82,6 @@ public class PhotopoemService {
             throw new RuntimeException("Photopoem with id '" + id + "' does not exist");
         }
         photopoemRepository.deleteById(id);
-    }
-
-    // Helper method to set an existing person or save a new one
-    private Person getOrSavePerson(Person person) {
-        if (person == null) {
-            return null;
-        }
-        if (person.getId() != null) {
-            return personRepository.findById(person.getId()).orElse(null);
-        }
-        return personRepository.save(person);
     }
 
     // Helper method to set existing persons or save new ones
