@@ -26,6 +26,8 @@
     - Response: `204 No Content`
     - Response on error: `404 Not Found`
 
+---
+
 ### `/photopoems`
 - **Method**: `GET`
     - Description: Fetch a list of photopoems.
@@ -48,6 +50,8 @@
     - Description: Delete a photopoem by ID.
     - Response: `204 No Content`
     - Response on error: `404 Not Found`
+
+---
 
 ### `/publication_media`
 - **Method**: `GET`
@@ -73,6 +77,8 @@
     - Response: `204 No Content`
     - Response on error: `404 Not Found`
 
+---
+
 ### `/places`
 - **Method**: `GET`
     - Description: Fetch a list of places.
@@ -97,8 +103,31 @@
     - Response: `204 No Content`
     - Response on error: `404 Not Found`
 
+---
+
 ### `/contact`
 - **Method**: `POST`
   - Description: Send a contact message.
   - Request Body: JSON object with contact details.
   - Response: `200 OK`
+
+---
+
+### `/files`
+- **Method**: `GET`
+  - Description: Fetch a list of files.
+  - Response: `200 OK`
+- **Method**: `POST`
+  - Description: Upload new file.
+  - Request Body: `multipart/form-data` with `file` parameter.
+  - Response: `201 Created`
+
+#### `/files/{id}`
+- **Method**: `GET`
+  - Description: Fetch a file by ID.
+  - Response: `200 OK`
+  - Response on error: `404 Not Found`
+- **Method**: `DELETE`
+  - Description: Delete a file by ID.
+  - Response: `204 No Content`
+  - Response on error: `404 Not Found`
