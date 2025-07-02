@@ -49,7 +49,7 @@
     - Response: `204 No Content`
     - Response on error: `404 Not Found`
 
-### `publication_media`
+### `/publication_media`
 - **Method**: `GET`
     - Description: Fetch a list of publication media.
     - Response: `200 OK`
@@ -96,3 +96,9 @@
     - Description: Delete a place by ID.
     - Response: `204 No Content`
     - Response on error: `404 Not Found`
+
+### `/contact`
+- **Method**: `POST`
+  - Description: Send a contact message.
+  - Request Body: JSON object with contact details.
+  - Response: `200 OK`
