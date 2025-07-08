@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,18 +37,27 @@ public class FileController {
     }
 
     @PostMapping
-    public ResponseEntity<File> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-            Path path = Paths.get("/uploads/", file.getOriginalFilename());
-            Files.createDirectories(path.getParent());
-            Files.write(path, file.getBytes());
+    public ResponseEntity<List<File>> uploadFiles(@RequestParam("file") MultipartFile[] files) throws IOException {
+        if (files == null || files.length == 0 || files[0].isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<File> savedFiles = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (file != null && !file.isEmpty()) {
+                Path path = Paths.get("/uploads/", file.getOriginalFilename());
+                Files.createDirectories(path.getParent());
+                Files.write(path, file.getBytes());
 
-            File savedFile = new File();
-            savedFile.setFilename(file.getOriginalFilename());
-            savedFile.setPath(path.toString());
-            savedFile.setType(file.getContentType());
-            savedFile.setSize(file.getSize());
-            fileRepository.save(savedFile);
-            return ResponseEntity.status(201).body(savedFile);
+                File savedFile = new File();
+                savedFile.setFilename(file.getOriginalFilename());
+                savedFile.setPath(path.toString());
+                savedFile.setType(file.getContentType());
+                savedFile.setSize(file.getSize());
+                fileRepository.save(savedFile);
+                savedFiles.add(savedFile);
+            }
+        }
+        return ResponseEntity.status(201).body(savedFiles);
     }
 
     @DeleteMapping("/{id}")
