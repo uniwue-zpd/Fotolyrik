@@ -52,15 +52,6 @@ public class FullTextService {
         return fullTextRepository.save(fullText);
     }
 
-    // POST method to save full text by photopoem ID
-    @Transactional
-    public FullText saveFullTextByPhotopoemId(Long photopoemId, String fullTextContent) {
-        FullText fullText = new FullText();
-        fullText.setPhotopoem(getPhotopoem(photopoemId));
-        fullText.setFull_text(fullTextContent);
-        return fullTextRepository.save(fullText);
-    }
-
     // PUT method to update full text by ID
     @Transactional
     public FullText updateFullText(Long id, FullText fullText) {
@@ -69,6 +60,15 @@ public class FullTextService {
             entity.setPhotopoem(getPhotopoem(fullText.getPhotopoem().getId()));
             return fullTextRepository.save(entity);
         }).orElseThrow(() -> new RuntimeException("FullText with id '" + id + "' does not exist"));
+    }
+
+    // PUT method to update full text by photopoem ID
+    @Transactional
+    public FullText updateFullTextByPhotopoemId(Long photopoemId, String fullTextContent) {
+        return fullTextRepository.findByPhotopoemId(photopoemId).map(entity -> {
+            entity.setFull_text(fullTextContent);
+            return fullTextRepository.save(entity);
+        }).orElseThrow(() -> new RuntimeException("FullText for Photopoem with id '" + photopoemId + "' does not exist"));
     }
 
     // DELETE method to delete full text by ID

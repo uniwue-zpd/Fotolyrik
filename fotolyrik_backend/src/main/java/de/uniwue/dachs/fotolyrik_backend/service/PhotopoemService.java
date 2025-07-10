@@ -22,15 +22,17 @@ public class PhotopoemService {
     private final PersonRepository personRepository;
     private final PubMediumRepository pubMediumRepository;
     private final FileRepository fileRepository;
+    private final FullTextService fullTextService;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             PersonRepository personRepository,
                             PubMediumRepository pubMediumRepository,
-                            FileRepository fileRepository) {
+                            FileRepository fileRepository, FullTextService fullTextService) {
         this.photopoemRepository = photopoemRepository;
         this.personRepository = personRepository;
         this.pubMediumRepository = pubMediumRepository;
         this.fileRepository = fileRepository;
+        this.fullTextService = fullTextService;
     }
 
     public List<Photopoem> getAllPhotopoems() {
@@ -81,6 +83,7 @@ public class PhotopoemService {
         if (!photopoemRepository.existsById(id)) {
             throw new RuntimeException("Photopoem with id '" + id + "' does not exist");
         }
+        fullTextService.deleteFullTextByPhotopoemID(id);
         photopoemRepository.deleteById(id);
     }
 

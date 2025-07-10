@@ -14,6 +14,6 @@ public class FullText extends BaseEntity {
     @JoinColumn(name = "photopoem_id", nullable = false)
     private Photopoem photopoem;
 
-    @Column(name = "full_text", length = 3000)
+    @Column(name = "full_text", columnDefinition = "TEXT")
     private String full_text;
 }
