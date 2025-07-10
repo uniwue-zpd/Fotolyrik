@@ -16,8 +16,4 @@ public class FullText extends BaseEntity {
 
     @Column(name = "full_text", length = 3000)
     private String full_text;
-
-    @Column(name = "full_text_vector", columnDefinition = "tsvector", insertable = false, updatable = false)
-    private String full_text_vector;
-
 }
