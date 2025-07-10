@@ -6,11 +6,30 @@ export interface Auditable {
     last_modified_by: string;
 }
 
-export interface Place extends Auditable {
-    name: string;
-    description: string | null;
-    latitude: number | null;
-    longitude: number | null
+export interface ContactForm {
+    name: string | null,
+    appellation: string | null,
+    email: string | null,
+    subject: string | null,
+    message: string | null
+}
+
+export interface File extends Auditable {
+    filename: string | null;
+    path: string | null;
+    type: string | null;
+    size: number | null
+}
+
+export interface FullText extends Auditable {
+    photopoem: PhotoPoem;
+    full_text: string | null;
+}
+
+export interface FullTextSearchResult {
+    photopoem_id: number;
+    photopoem_title: string;
+    query_result: string;
 }
 
 export interface Person extends Auditable {
@@ -46,6 +65,13 @@ export interface PhotoPoem extends Auditable {
     language: string | null;
 }
 
+export interface Place extends Auditable {
+    name: string;
+    description: string | null;
+    latitude: number | null;
+    longitude: number | null
+}
+
 export interface PubMedium extends Auditable {
     title: string;
     subtitle: string | null;
@@ -56,19 +82,4 @@ export interface PubMedium extends Auditable {
     end_year: string | null;
     amount_volumes: number | null;
     amount_issues: number | null;
-}
-
-export interface File extends Auditable {
-    filename: string | null;
-    path: string | null;
-    type: string | null;
-    size: number | null
-}
-
-export interface ContactForm {
-    name: string | null,
-    appellation: string | null,
-    email: string | null,
-    subject: string | null,
-    message: string | null
 }
