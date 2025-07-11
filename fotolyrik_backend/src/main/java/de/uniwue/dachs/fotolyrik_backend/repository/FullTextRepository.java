@@ -22,10 +22,10 @@ public interface FullTextRepository extends JpaRepository<FullText, Long> {
 SELECT
     ft.photopoem_id,
     p.title AS photopoem_title,
-    ts_headline('german', ft.full_text, plainto_tsquery('german', :query)) AS query_result
+    ts_headline('german', ft.full_text, websearch_to_tsquery('german', :query)) AS query_result
 FROM full_text ft
 JOIN photopoem p ON ft.photopoem_id = p.id
-WHERE ft.full_text_vector @@ plainto_tsquery('german', :query)""", nativeQuery = true)
+WHERE ft.full_text_vector @@ websearch_to_tsquery('german', :query)""", nativeQuery = true)
     List<FullTextSearchResult> searchFullText(@Param("query") String query);
 
     Optional<FullText> findByPhotopoemId(Long photopoemId);

@@ -42,7 +42,8 @@ public class FullTextService {
         if (query == null || query.isBlank()) {
             return List.of();
         }
-        return fullTextRepository.searchFullText(query);
+        String sanitized_query = query.replaceAll("[^\\p{L}\\p{N}\\s\"'-]", "");
+        return fullTextRepository.searchFullText(sanitized_query);
     }
 
     // POST method to save full text for a photopoem
