@@ -59,7 +59,7 @@ const submit = async (formData: { query: string}) => {
           <div class="flex flex-col gap-2">
             <div class="roboto-plain">Es wurden insgesamt <b>{{ results.length }}</b> Gedichte gefunden</div>
             <div v-for="(result, index) in results" :key="result.photopoem_id">
-              <Panel>
+              <Panel class="hover:shadow-md">
                 <template #header>
                   <div class="flex flex-row justify-center space-x-5">
                     <div class="roboto-plain">{{ index + 1 }}</div>
