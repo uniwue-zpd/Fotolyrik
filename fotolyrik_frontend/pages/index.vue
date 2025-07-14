@@ -287,7 +287,7 @@ onMounted(async () => {
           </template>
         </Carousel>
         <div class="flex flex-row justify-center">
-          <NuxtLink to="/topics" class="border-2 boarder-none border-spacing-2 px-8 py-2 outfit-headline text-[#F04E30] bg-white p-1">
+          <NuxtLink to="/topics" class="inline-block px-8 py-2 outfit-headline font-semibold text-[#F04E30] bg-white p-1">
             alle Themen
           </NuxtLink>
         </div>
