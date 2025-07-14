@@ -75,6 +75,28 @@ onMounted(async () => {
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsmedium</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.publication_medium.title }}</td>
                       </tr>
+                      <tr v-if="photopoem_item.authors.length > 0">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Author:innen</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                          <span v-for="(author, index) in photopoem_item.authors" :key="author.id">
+                          <NuxtLink :to="`/persons/${author.id}`" class="roboto-plain">
+                            {{ author.full_name }}
+                          </NuxtLink>
+                          <span v-if="index < photopoem_item.authors.length -1">, </span>
+                        </span>
+                        </td>
+                      </tr>
+                      <tr v-if="photopoem_item.photographers.length > 0">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Fotograf:innen</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                          <span v-for="(photographer, index) in photopoem_item.photographers" :key="author.id">
+                          <NuxtLink :to="`/persons/${photographer.id}`" class="roboto-plain">
+                            {{ photographer.full_name }}
+                          </NuxtLink>
+                          <span v-if="index < photopoem_item.authors.length -1">, </span>
+                        </span>
+                        </td>
+                      </tr>
                       <tr v-if="photopoem_item.link">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Link</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">

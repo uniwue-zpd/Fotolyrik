@@ -10,11 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class FullTextService {
     private final FullTextRepository fullTextRepository;
     private final PhotopoemRepository photopoemRepository;
+
+    private static final Pattern HTML_TAG_PATTERN = Pattern.compile("<[^>]*>");
+    private static final Pattern SPECIAL_CHAR_PATTERN = Pattern.compile("[^\\p{L}\\p{N}\\s\"'-]");
 
     public FullTextService(FullTextRepository fullTextRepository,
                            PhotopoemRepository photopoemRepository) {
@@ -42,7 +46,9 @@ public class FullTextService {
         if (query == null || query.isBlank()) {
             return List.of();
         }
-        String sanitized_query = query.replaceAll("[^\\p{L}\\p{N}\\s\"'-]", "");
+        String sanitized_query = query
+                .replaceAll(HTML_TAG_PATTERN.pattern(), "")
+                .replaceAll(SPECIAL_CHAR_PATTERN.pattern(), "");
         return fullTextRepository.searchFullText(sanitized_query);
     }
 
