@@ -169,12 +169,12 @@ onMounted(async () => {
         </template>
       </Carousel>
     </div>
-    <div class="intro py-5 px-[3.75rem]">
+    <div class="intro py-10 px-[3.75rem]">
       <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">
         Fotolyrik in illustrierten Zeitschriften zwischen 1895 und 1945
       </h1>
     </div>
-    <div class="intro px-[3.75rem]">
+    <div class="intro px-24 px-[3.75rem]">
       <div class="columns-2 space-y-8 gap-x-10 text-justify">
         <div>
           1 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
@@ -213,7 +213,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="py-5 px-[3.75rem]">
+    <div class="py-8 px-[3.75rem]">
       <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Sammlung</h1>
     </div>
     <div class="collection bg-[#F1F2F2]">
@@ -229,8 +229,8 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="title py-5 px-[3.75rem]">
-      <h2 class="text-3xl averia-layout italic text-[#063D79]">Fotolyrik in Zahlen</h2>
+    <div class="title py-8 pt-7 px-[3.75rem]">
+      <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Fotolyrik in Zahlen</h2>
     </div>
     <div>
       <Chart type="bar" :data="chartData" :options="chartOptions" class="h-[30rem]" />
@@ -241,7 +241,7 @@ onMounted(async () => {
           Bar chart placeholder
           <i class="pi pi-chart-bar"/>
         </div>
-        <div class="py-5">
+        <div class="py-10">
         <div class="columns-2 space-y-8 gap-x-10 text-justify">
           <div>
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
@@ -261,7 +261,9 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="py-10">
+    <div class="py-8 px-[3.75rem]">
+      <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Karte</h1>
+    </div>
       <div class="collection bg-[#F1F2F2]">
         <div class="flex flex-col px-[3.75rem] py-14">
           <div class="title pb-5">
@@ -272,9 +274,8 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-    </div>
-    <div class="title py-5 px-[3.75rem]">
-      <h2 class="text-3xl averia-layout italic text-[#063D79]">Themen</h2>
+    <div class="title pt-20 pb-4 px-[3.75rem]">
+      <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Themen</h2>
     </div>
     <div class="topics bg-[#F1F2F2] p-5">
       <div class="flex flex-col gap-2">
