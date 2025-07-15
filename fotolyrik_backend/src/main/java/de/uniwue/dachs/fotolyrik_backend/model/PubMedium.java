@@ -31,8 +31,7 @@ public class PubMedium extends BaseEntity {
     private String publisher;
 
     @Column(name = "pub_rhytm")
-    @Enumerated(EnumType.STRING)
-    private PublicationRhytm pub_rhytm;
+    private String pub_rhytm;
 
     @Column(name = "start_year")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
@@ -47,8 +46,4 @@ public class PubMedium extends BaseEntity {
 
     @Column(name = "amount_issues")
     private Integer amount_issues;
-
-    public enum PublicationRhytm {
-        M, HM, W, HW, DIVERS
-    }
 }

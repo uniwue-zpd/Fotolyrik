@@ -77,7 +77,7 @@ export interface PubMedium extends Auditable {
     subtitle: string | null;
     publication_places: Place[] | [];
     publisher: string | null;
-    pub_rhytm: "M" | "HM" | "W" | "HW" | "DIVERS" | null;
+    pub_rhytm: string | null;
     start_year: string | null;
     end_year: string | null;
     amount_volumes: number | null;
