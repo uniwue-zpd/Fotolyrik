@@ -3,7 +3,7 @@
 
 <template>
   <div class="columns-1 w-full">
-  <h1 class="text-3xl outfit-headline font-bold">FAQ</h1>
+  <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">FAQ</h1>
   <br>
   <div >
   <h2 class="text-2xl outfit-headline font-bold">Themenblock</h2>

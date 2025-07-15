@@ -31,7 +31,7 @@ const submit = async (formData: ContactForm) => {
   </div>
   <div class="columns-1 w-[40%] mx-auto">
     <div class="flex flex-col gap-5 place-content-center">
-      <h1 class="mt-4 text-3xl outfit-headline font-bold">Kontakt</h1>
+      <h1 class="mt-4 text-3xl outfit-headline font-bold text-[#063D79]">Kontakt</h1>
       <div>
         <p>Hier können Sie Ihre Nachricht an uns hinterlassen.
         Füllen Sie dafür bitte die unteren Felder aus

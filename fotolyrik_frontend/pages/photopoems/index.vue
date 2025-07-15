@@ -14,7 +14,7 @@ const filters = ref({
 <template>
   <Card>
     <template #title>
-      <h1 class="text-3xl font-bold outfit-headline">Fotogedichte</h1>
+      <h1 class="text-3xl font-bold outfit-headline text-[#063D79]">Fotogedichte</h1>
     </template>
     <template #content>
       <DataTable
