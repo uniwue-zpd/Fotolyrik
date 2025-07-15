@@ -7,10 +7,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class PubMediumService {
@@ -36,11 +33,27 @@ public class PubMediumService {
     // POST
     @Transactional
     public PubMedium savePubMedium(PubMedium pubMedium) {
-        pubMedium.setPublication_places(getOrSavePubPlace(pubMedium.getPublication_places()));
+        pubMedium.setPublication_places(getOrSavePubPlaces(pubMedium.getPublication_places()));
         return pubMediumRepository.save(pubMedium);
     }
 
-    //TODO: Implement method for PUT Mapping
+    // PUT
+    public PubMedium updatePubMedium(Long id, PubMedium updatedPubMedium) {
+        return pubMediumRepository.findById(id)
+                .map(existingPubMedium -> {
+                    existingPubMedium.setTitle(updatedPubMedium.getTitle());
+                    existingPubMedium.setSubtitle(updatedPubMedium.getSubtitle());
+                    existingPubMedium.setPublication_places(getOrSavePubPlaces(updatedPubMedium.getPublication_places()));
+                    existingPubMedium.setPublisher(updatedPubMedium.getPublisher());
+                    existingPubMedium.setPub_rhytm(updatedPubMedium.getPub_rhytm());
+                    existingPubMedium.setStart_year(updatedPubMedium.getStart_year());
+                    existingPubMedium.setEnd_year(updatedPubMedium.getEnd_year());
+                    existingPubMedium.setAmount_volumes(updatedPubMedium.getAmount_volumes());
+                    existingPubMedium.setAmount_issues(updatedPubMedium.getAmount_issues());
+                    return pubMediumRepository.save(existingPubMedium);
+                })
+                .orElseThrow(() -> new NoSuchElementException("PubMedium with id '" + id + "' does not exist"));
+    }
 
     // DELETE
     @Transactional
@@ -54,7 +67,7 @@ public class PubMediumService {
     }
 
     // Helper
-    private Set<Place> getOrSavePubPlace(Set<Place> pub_places) {
+    private Set<Place> getOrSavePubPlaces(Set<Place> pub_places) {
         if (pub_places == null || pub_places.isEmpty()) {
             return new HashSet<>();
         }

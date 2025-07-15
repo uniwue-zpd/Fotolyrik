@@ -89,11 +89,11 @@ onMounted(async () => {
                       <tr v-if="photopoem_item.photographers.length > 0">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Fotograf:innen</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                          <span v-for="(photographer, index) in photopoem_item.photographers" :key="author.id">
+                          <span v-for="(photographer, index) in photopoem_item.photographers" :key="photographer.id">
                           <NuxtLink :to="`/persons/${photographer.id}`" class="roboto-plain">
                             {{ photographer.full_name }}
                           </NuxtLink>
-                          <span v-if="index < photopoem_item.authors.length -1">, </span>
+                          <span v-if="index < photopoem_item.photographers.length -1">, </span>
                         </span>
                         </td>
                       </tr>
