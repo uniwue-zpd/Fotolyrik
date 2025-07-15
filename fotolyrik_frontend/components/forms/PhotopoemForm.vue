@@ -74,6 +74,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
+              number
               name="volume"
               label="Jahrgang"
               placeholder="5"
@@ -82,6 +83,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
           />
           <FormKit
               type="number"
+              number
               name="issue"
               label="Ausgabe"
               placeholder="1"
@@ -92,6 +94,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
+              number
               name="page_number"
               label="Seite"
               placeholder="23"
@@ -100,6 +103,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
           />
           <FormKit
               type="number"
+              number
               name="page_count"
               label="Seitenanzahl"
               placeholder="2"

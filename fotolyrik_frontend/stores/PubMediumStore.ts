@@ -70,6 +70,20 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         }
     }
 
+        // DELETE existing publication medium
+    async function deletePubMedium(id: number) {
+        try {
+            await apiClient.delete(`/publication_media/${id}`);
+            pub_media.value = pub_media.value.filter(p => p.id !== id);
+            if (current_pub_medium.value?.id === id) {
+                current_pub_medium.value = null;
+            }
+        } catch (error) {
+            console.log('Error deleting publication medium:', error);
+            throw error;
+        }
+    }
+
         // Navigation left
     function previousPubMedium() {
         const currentIndex = pub_media.value.findIndex(p => p.id === current_pub_medium.value?.id);
@@ -100,6 +114,9 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         current_pub_medium,
         fetchPubMedia,
         fetchPubMediumById,
+        createPubMedium,
+        updatePubMedium,
+        deletePubMedium,
         previousPubMedium,
         nextPubMedium,
         clearPubMedium,
