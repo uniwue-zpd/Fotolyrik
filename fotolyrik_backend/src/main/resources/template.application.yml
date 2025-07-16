@@ -5,6 +5,11 @@ spring:
   application:
     name: fotolyrik_backend
 
+  servlet:
+    multipart:
+      max-file-size: 10MB  # Maximum size allowed per individual file
+      max-request-size: 500MB  # Maximum size allowed for the entire request (all files + form data)
+
   datasource:
     url: jdbc:postgresql://localhost:5432/ #database_name
     username: #db_user
@@ -29,3 +34,8 @@ spring:
           auth: true
           starttls:
             enable: true
+
+config:
+  files:
+    upload-dir: /uploads
+
