@@ -87,8 +87,8 @@ const submit = async (formData: Partial<PubMediumInput>) => {
         <FormKit
             type="text"
             name="publisher"
-            label="Girardet"
-            placeholder="Herausgeber des Mediums"
+            label="Herausgeber"
+            placeholder="Girardet"
             prefix-icon="text"
             outer-class="max-w-full"
         />
@@ -130,7 +130,7 @@ const submit = async (formData: Partial<PubMediumInput>) => {
               type="number"
               number
               name="amount_volumes"
-              label="Anzahl Bände"
+              label="Anzahl Jahrgänge"
               placeholder="18"
               prefix-icon="number"
               outer-class="max-w-full"
@@ -152,7 +152,7 @@ const submit = async (formData: Partial<PubMediumInput>) => {
         </div>
         <FormKit
             type="submit"
-            label="Erstellen"
+            :label="props.action === 'create' ? 'Erstellen' : 'Aktualisieren'"
         />
       </div>
     </FormKit>
