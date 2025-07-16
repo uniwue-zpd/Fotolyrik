@@ -44,13 +44,26 @@ const filters = ref({
           </div>
         </template>
         <Column field="title" header="Titel" sortable>
-          <template #body="slotProps">
-            <NuxtLink
-                :to="`/photopoems/${slotProps.data.id}`"
-                class="roboto-plain font-semibold"
-            >
-              {{ slotProps.data.title }}
-            </NuxtLink>
+          <template #body="{ data }">
+            <div class="flex flex-row space-x-5 items-center">
+              <NuxtLink
+                  :to="`/photopoems/${data.id}`"
+                  class="roboto-plain font-semibold"
+              >
+                {{ data.title }}
+              </NuxtLink>
+              <AvatarGroup>
+                <div v-if="data.images.length > 0">
+                  <Avatar
+                      v-for="image in data.images"
+                      :key="image.id"
+                      :image="`api/uploads/${image.filename}`"
+                      shape="circle"
+                      oncontextmenu="return false;"
+                  />
+                </div>
+              </AvatarGroup>
+            </div>
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <InputText
