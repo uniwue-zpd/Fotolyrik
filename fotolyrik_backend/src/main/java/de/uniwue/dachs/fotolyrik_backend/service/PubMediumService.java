@@ -50,6 +50,7 @@ public class PubMediumService {
                     existingPubMedium.setEnd_year(updatedPubMedium.getEnd_year());
                     existingPubMedium.setAmount_volumes(updatedPubMedium.getAmount_volumes());
                     existingPubMedium.setAmount_issues(updatedPubMedium.getAmount_issues());
+                    existingPubMedium.setZdb_id(updatedPubMedium.getZdb_id());
                     return pubMediumRepository.save(existingPubMedium);
                 })
                 .orElseThrow(() -> new NoSuchElementException("PubMedium with id '" + id + "' does not exist"));

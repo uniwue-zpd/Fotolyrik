@@ -82,4 +82,5 @@ export interface PubMedium extends Auditable {
     end_year: string | null;
     amount_volumes: number | null;
     amount_issues: number | null;
+    zdb_id: string | null;
 }

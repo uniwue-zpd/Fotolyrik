@@ -145,6 +145,14 @@ const submit = async (formData: Partial<PubMediumInput>) => {
               outer-class="max-w-full"
           />
         </div>
+        <FormKit
+            type="text"
+            name="zdb_id"
+            label="ZDB-ID"
+            placeholder="2650224-0"
+            prefix-icon="text"
+            outer-class="max-w-full"
+        />
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>
           <hr>

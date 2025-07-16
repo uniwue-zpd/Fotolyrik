@@ -46,4 +46,7 @@ public class PubMedium extends BaseEntity {
 
     @Column(name = "amount_issues")
     private Integer amount_issues;
+
+    @Column(name = "zdb_id")
+    private String zdb_id;
 }
