@@ -4,6 +4,7 @@ import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PlaceRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,14 +54,14 @@ public class PubMediumService {
                     existingPubMedium.setZdb_id(updatedPubMedium.getZdb_id());
                     return pubMediumRepository.save(existingPubMedium);
                 })
-                .orElseThrow(() -> new NoSuchElementException("PubMedium with id '" + id + "' does not exist"));
+                .orElseThrow(() -> new EntityNotFoundException("PubMedium with id '" + id + "' does not exist"));
     }
 
     // DELETE
     @Transactional
     public void deletePubPlace(Long id) {
         if (!pubMediumRepository.existsById(id)) {
-            throw new RuntimeException("Photopoem with id '" + id + "' does not exist");
+            throw new EntityNotFoundException("Photopoem with id '" + id + "' does not exist");
         }
         else {
             pubMediumRepository.deleteById(id);

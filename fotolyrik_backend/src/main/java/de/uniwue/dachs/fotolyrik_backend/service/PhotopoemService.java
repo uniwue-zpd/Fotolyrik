@@ -8,6 +8,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PhotopoemRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,13 +76,13 @@ public class PhotopoemService {
             entity.setCopyright_status_text((updatedPhotopoem.getCopyright_status_text() != null) ? updatedPhotopoem.getCopyright_status_text() : null);
             entity.setLanguage((updatedPhotopoem.getLanguage() != null) ? updatedPhotopoem.getLanguage() : null);
             return photopoemRepository.save(entity);
-        }).orElseThrow(() -> new RuntimeException("Photopoem with id '" + id + "' does not exist"));
+        }).orElseThrow(() -> new EntityNotFoundException("Photopoem with id '" + id + "' does not exist"));
     }
 
     @Transactional
     public void deletePhotopoem(Long id) {
         if (!photopoemRepository.existsById(id)) {
-            throw new RuntimeException("Photopoem with id '" + id + "' does not exist");
+            throw new EntityNotFoundException("Photopoem with id '" + id + "' does not exist");
         }
         fullTextService.deleteFullTextByPhotopoemID(id);
         photopoemRepository.deleteById(id);

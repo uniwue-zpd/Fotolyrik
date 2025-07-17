@@ -2,6 +2,7 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +54,7 @@ public class PersonService {
     @Transactional
     public void deletePerson(Long id) {
         if (!personRepository.existsById(id)) {
-            throw new IllegalArgumentException("Person with id '" + id + "' does not exist");
+            throw new EntityNotFoundException("Person with id '" + id + "' does not exist");
         }
         personRepository.deleteById(id);
     }
