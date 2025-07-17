@@ -93,13 +93,13 @@ public class PhotopoemService {
             return new HashSet<>();
         }
         Set<Person> savedPersons = new HashSet<>();
-        for (Person person : persons) {
+        persons.forEach(person -> {
             if (person.getId() != null) {
                 savedPersons.add(personRepository.findById(person.getId()).orElse(null));
             } else {
                 savedPersons.add(personRepository.save(person));
             }
-        }
+        });
         return savedPersons;
     }
 
@@ -120,11 +120,11 @@ public class PhotopoemService {
             return null;
         }
         Set<File> newFiles = new HashSet<>();
-        for (File file : files) {
+        files.forEach(file -> {
             if (file.getId() != null) {
                 fileRepository.findById(file.getId()).ifPresent(newFiles::add);
             }
-        }
+        });
         return newFiles;
     }
 }

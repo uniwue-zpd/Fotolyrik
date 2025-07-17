@@ -73,14 +73,13 @@ public class PubMediumService {
             return new HashSet<>();
         }
         Set<Place> savedPlaces = new HashSet<>();
-        for (Place place : pub_places) {
+        pub_places.forEach(place -> {
             if (place.getId() != null) {
                 savedPlaces.add(placeRepository.findById(place.getId()).orElse(null));
-            }
-            else {
+            } else {
                 savedPlaces.add(placeRepository.save(place));
             }
-        }
+        });
         return savedPlaces;
     }
 }
