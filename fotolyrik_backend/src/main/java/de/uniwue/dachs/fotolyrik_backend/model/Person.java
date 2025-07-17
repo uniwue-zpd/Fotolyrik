@@ -34,6 +34,10 @@ public class Person extends BaseEntity {
     @Column(name = "gnd_id")
     private String gnd_id;
 
+    @OneToOne
+    @JoinColumn(name = "file_id")
+    private File image;
+
     @Transient
     public String getFull_name() {
         return (first_name != null ? first_name + " " : "") +

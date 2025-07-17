@@ -41,6 +41,7 @@ export interface Person extends Auditable {
     death_year: number | null;
     sex: "weiblich" | "männlich" | null;
     gnd_id: string | null;
+    image: File | null;
 }
 
 export interface PhotoPoem extends Auditable {

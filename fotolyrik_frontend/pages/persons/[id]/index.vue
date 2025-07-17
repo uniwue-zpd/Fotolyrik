@@ -33,6 +33,19 @@ onMounted(async () => {
         </div>
       </template>
       <template #content>
+        <div v-if="person_item" class="flex flex-row space-x-5 justify-between p-4">
+          <div class="p-3 bg-[#F1F2F2]">
+            <div v-if="person_item.image">
+              <img :src="`api/uploads/${person_item.image.filename}`" alt="image"/>
+            </div>
+            <div v-else>
+              <Avatar icon="pi pi-user" size="xlarge"/>
+            </div>
+          </div>
+          <div class="p-3 bg-[#F1F2F3]">
+            <i class="pi pi-chart-line"/>
+          </div>
+        </div>
         <table class="min-w-full divide-y divide-gray-200 roboto-plain">
           <tbody v-if="person_item" class="bg-white divide-y divide-gray-200">
           <tr v-if="person_item.birth_year">

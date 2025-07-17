@@ -127,6 +127,14 @@ const submit = async (formData: Partial<PersonInput>) => {
             prefix-icon="number"
             outer-class="max-w-full"
         />
+        <!-- <FormKit
+            type="select"
+            name="image"
+            label="Bild"
+            outer-class="max-w-full"
+            select-icon="select"
+            :options="file_store.files.map(p => ({ label: `${p.filename}`, value: p }))"
+        /> -->
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>
           <hr>

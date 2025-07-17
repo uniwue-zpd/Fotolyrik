@@ -1,6 +1,8 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
+import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,9 +14,11 @@ import java.util.Optional;
 @Service
 public class PersonService {
     private final PersonRepository personRepository;
+    private final FileRepository fileRepository;
 
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository, FileRepository fileRepository) {
         this.personRepository = personRepository;
+        this.fileRepository = fileRepository;
     }
 
     // GET all persons
@@ -30,6 +34,9 @@ public class PersonService {
     // POST create new person
     @Transactional
     public Person createPerson(Person person) {
+        person.setImage(person.getImage() != null
+                ? getImage(person.getImage().getId())
+                : null);
         return personRepository.save(person);
     }
 
@@ -45,6 +52,9 @@ public class PersonService {
                     existingPerson.setPseudonyms(updatedPerson.getPseudonyms());
                     existingPerson.setSex(updatedPerson.getSex());
                     existingPerson.setGnd_id(updatedPerson.getGnd_id());
+                    existingPerson.setImage(updatedPerson.getImage() != null
+                            ? getImage(updatedPerson.getImage().getId())
+                            : null);
                     return personRepository.save(existingPerson);
                 })
                 .orElse(null);
@@ -57,5 +67,14 @@ public class PersonService {
             throw new EntityNotFoundException("Person with id '" + id + "' does not exist");
         }
         personRepository.deleteById(id);
+    }
+
+    private File getImage(Long id) {
+        if (id == null) {
+            throw  new IllegalArgumentException();
+        }
+        return fileRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Image with id '" + id + "' does not exist")
+        );
     }
 }
