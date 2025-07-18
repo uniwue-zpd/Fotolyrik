@@ -34,7 +34,7 @@ public class PubMediumService {
     // POST
     @Transactional
     public PubMedium savePubMedium(PubMedium pubMedium) {
-        pubMedium.setPublication_places(getOrSavePubPlaces(pubMedium.getPublication_places()));
+        pubMedium.setPublicationPlaces(getOrSavePubPlaces(pubMedium.getPublicationPlaces()));
         return pubMediumRepository.save(pubMedium);
     }
 
@@ -44,14 +44,14 @@ public class PubMediumService {
                 .map(existingPubMedium -> {
                     existingPubMedium.setTitle(updatedPubMedium.getTitle());
                     existingPubMedium.setSubtitle(updatedPubMedium.getSubtitle());
-                    existingPubMedium.setPublication_places(getOrSavePubPlaces(updatedPubMedium.getPublication_places()));
+                    existingPubMedium.setPublicationPlaces(getOrSavePubPlaces(updatedPubMedium.getPublicationPlaces()));
                     existingPubMedium.setPublisher(updatedPubMedium.getPublisher());
-                    existingPubMedium.setPub_rhytm(updatedPubMedium.getPub_rhytm());
-                    existingPubMedium.setStart_year(updatedPubMedium.getStart_year());
-                    existingPubMedium.setEnd_year(updatedPubMedium.getEnd_year());
-                    existingPubMedium.setAmount_volumes(updatedPubMedium.getAmount_volumes());
-                    existingPubMedium.setAmount_issues(updatedPubMedium.getAmount_issues());
-                    existingPubMedium.setZdb_id(updatedPubMedium.getZdb_id());
+                    existingPubMedium.setPubRhytm(updatedPubMedium.getPubRhytm());
+                    existingPubMedium.setStartYear(updatedPubMedium.getStartYear());
+                    existingPubMedium.setEndYear(updatedPubMedium.getEndYear());
+                    existingPubMedium.setAmountVolumes(updatedPubMedium.getAmountVolumes());
+                    existingPubMedium.setAmountIssues(updatedPubMedium.getAmountIssues());
+                    existingPubMedium.setZdbId(updatedPubMedium.getZdbId());
                     return pubMediumRepository.save(existingPubMedium);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("PubMedium with id '" + id + "' does not exist"));

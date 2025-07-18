@@ -75,7 +75,7 @@ public class PhotopoemController {
     @PutMapping("/{id}/fulltext")
     public ResponseEntity<FullText> updateFullTextByPhotopoem(@PathVariable Long id, @RequestBody FullText fullText) {
         try {
-            FullText updatedFullText = fullTextService.updateFullTextByPhotopoemId(id, fullText.getFull_text());
+            FullText updatedFullText = fullTextService.updateFullTextByPhotopoemId(id, fullText.getFullText());
             return ResponseEntity.ok(updatedFullText);
         } catch (Exception e) {
             return ResponseEntity.status(404).build();

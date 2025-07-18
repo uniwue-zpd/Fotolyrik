@@ -60,8 +60,8 @@ public class PhotopoemService {
     public Photopoem savePhotopoem(Photopoem photopoem) {
         photopoem.setAuthors(getOrSavePersons(photopoem.getAuthors()));
         photopoem.setPhotographers(getOrSavePersons(photopoem.getPhotographers()));
-        photopoem.setOther_contributors(getOrSavePersons(photopoem.getOther_contributors()));
-        photopoem.setPublication_medium(getOrSavePubMedium(photopoem.getPublication_medium()));
+        photopoem.setOtherContributors(getOrSavePersons(photopoem.getOtherContributors()));
+        photopoem.setPublicationMedium(getOrSavePubMedium(photopoem.getPublicationMedium()));
         return photopoemRepository.save(photopoem);
     }
 
@@ -71,21 +71,21 @@ public class PhotopoemService {
             entity.setTitle(updatedPhotopoem.getTitle());
             entity.setVolume((updatedPhotopoem.getVolume() != null) ? updatedPhotopoem.getVolume() : null);
             entity.setIssue((updatedPhotopoem.getIssue() != null) ? updatedPhotopoem.getIssue() : null);
-            entity.setPage_number((updatedPhotopoem.getPage_number() != null) ? updatedPhotopoem.getPage_number() : null);
-            entity.setPage_count((updatedPhotopoem.getPage_count() != null) ? updatedPhotopoem.getPage_count() : null);
-            entity.setPublication_date((updatedPhotopoem.getPublication_date() != null) ? updatedPhotopoem.getPublication_date() : null);
-            entity.setPublication_medium((updatedPhotopoem.getPublication_medium() != null) ? getOrSavePubMedium(updatedPhotopoem.getPublication_medium()) : null);
+            entity.setPageNumber((updatedPhotopoem.getPageNumber() != null) ? updatedPhotopoem.getPageNumber() : null);
+            entity.setPageCount((updatedPhotopoem.getPageCount() != null) ? updatedPhotopoem.getPageCount() : null);
+            entity.setPublicationDate((updatedPhotopoem.getPublicationDate() != null) ? updatedPhotopoem.getPublicationDate() : null);
+            entity.setPublicationMedium((updatedPhotopoem.getPublicationMedium() != null) ? getOrSavePubMedium(updatedPhotopoem.getPublicationMedium()) : null);
             entity.setAuthors((updatedPhotopoem.getAuthors() != null) ? getOrSavePersons(updatedPhotopoem.getAuthors()) : null);
             entity.setPhotographers((updatedPhotopoem.getPhotographers() != null) ? getOrSavePersons(updatedPhotopoem.getPhotographers()) : null);
-            entity.setOther_contributors((updatedPhotopoem.getOther_contributors() != null) ? getOrSavePersons(updatedPhotopoem.getOther_contributors()) : new HashSet<>());
+            entity.setOtherContributors((updatedPhotopoem.getOtherContributors() != null) ? getOrSavePersons(updatedPhotopoem.getOtherContributors()) : new HashSet<>());
             entity.setThemes((updatedPhotopoem.getThemes() != null) ? updatedPhotopoem.getThemes() : null);
             entity.setTopics((updatedPhotopoem.getTopics() != null) ? updatedPhotopoem.getTopics() : null);
             entity.setForm((updatedPhotopoem.getForm() != null) ? updatedPhotopoem.getForm() : null);
             entity.setLink((updatedPhotopoem.getLink() != null) ? updatedPhotopoem.getLink() : null);
-            entity.setIiif_manifest((updatedPhotopoem.getIiif_manifest() != null) ? updatedPhotopoem.getIiif_manifest() : null);
+            entity.setIiifManifest((updatedPhotopoem.getIiifManifest() != null) ? updatedPhotopoem.getIiifManifest() : null);
             entity.setImages((updatedPhotopoem.getImages() != null) ? getFiles(updatedPhotopoem.getImages()) : null);
-            entity.setCopyright_status_image((updatedPhotopoem.getCopyright_status_image() != null) ? updatedPhotopoem.getCopyright_status_image() : null);
-            entity.setCopyright_status_text((updatedPhotopoem.getCopyright_status_text() != null) ? updatedPhotopoem.getCopyright_status_text() : null);
+            entity.setCopyrightStatusImage((updatedPhotopoem.getCopyrightStatusImage() != null) ? updatedPhotopoem.getCopyrightStatusImage() : null);
+            entity.setCopyrightStatusText((updatedPhotopoem.getCopyrightStatusText() != null) ? updatedPhotopoem.getCopyrightStatusText() : null);
             entity.setLanguage((updatedPhotopoem.getLanguage() != null) ? updatedPhotopoem.getLanguage() : null);
             return photopoemRepository.save(entity);
         }).orElseThrow(() -> new EntityNotFoundException("Photopoem with id '" + id + "' does not exist"));
