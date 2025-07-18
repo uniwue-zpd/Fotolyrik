@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import PageToolbar from "~/components/pagetools/PageToolbar.vue";
+import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 
 const router = useRoute();
 const store = usePubMediumStore();

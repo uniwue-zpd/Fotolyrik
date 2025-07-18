@@ -1,20 +1,26 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import type { Person } from "~/utils/types";
-import PageToolbar from "~/components/pagetools/PageToolbar.vue";
+import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
+import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 
 const router = useRoute();
 const person_id = Number(router.params.id);
-const store = usePersonStore();
+const person_store = usePersonStore();
+const photopoem_store = usePhotopoemStore();
 const person_item = ref<Person | null>(null);
 const previous_person = ref<Person | null>(null);
 const next_person = ref<Person | null>(null);
+const author_photopoems = ref<PhotoPoem[] | []>([]);
+const photographer_photopoems = ref<PhotoPoem[] | []>([]);
 
 onMounted(async () => {
-  await store.fetchPersonById(person_id);
-  person_item.value = store.currentPerson;
-  previous_person.value = store.previousPerson();
-  next_person.value = store.nextPerson();
+  await person_store.fetchPersonById(person_id);
+  person_item.value = person_store.currentPerson;
+  previous_person.value = person_store.previousPerson();
+  next_person.value = person_store.nextPerson();
+  author_photopoems.value = await photopoem_store.fetchPhotopoemsBy({ author_id: person_id });
+  photographer_photopoems.value = await photopoem_store.fetchPhotopoemsBy({ photographer_id: person_id });
 });
 </script>
 
@@ -36,7 +42,7 @@ onMounted(async () => {
         <div v-if="person_item" class="flex flex-row space-x-5 justify-between p-4">
           <div class="p-3 bg-[#F1F2F2]">
             <div v-if="person_item.image">
-              <img :src="`api/uploads/${person_item.image.filename}`" alt="image"/>
+              <img :src="`/api/uploads/${person_item.image.filename}`" alt="image"/>
             </div>
             <div v-else>
               <Avatar icon="pi pi-user" size="xlarge"/>
@@ -67,6 +73,29 @@ onMounted(async () => {
           </tr>
           </tbody>
         </table>
+        <Divider/>
+        <div class="flex flex-col gap-2">
+          <div v-if="author_photopoems.length > 0">
+            <div class="flex flex-col gap-2">
+              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotogedichte vom Autor</h2>
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-4 md:justify-items-center">
+                <div v-for="photopoem in author_photopoems" :key="photopoem.id">
+                  <PhotopoemPreview :photopoem="photopoem"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="photographer_photopoems.length > 0">
+            <div class="flex flex-col gap-2">
+              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotogedichte vom Fotografen</h2>
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-4 md:justify-items-center">
+                <div v-for="photopoem in photographer_photopoems" :key="photopoem.id">
+                  <PhotopoemPreview :photopoem="photopoem"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </template>
     </Card>
     <div class="flex flex-row justify-between">

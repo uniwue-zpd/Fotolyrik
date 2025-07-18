@@ -3,7 +3,7 @@ import 'tify'
 import 'tify/dist/tify.css'
 import { ref, onMounted } from "vue";
 import type { PhotoPoem } from "~/utils/types";
-import PageToolbar from "~/components/pagetools/PageToolbar.vue";
+import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 
 const router = useRoute();
 const photopoem_id = Number(router.params.id);
@@ -73,7 +73,11 @@ onMounted(async () => {
                       </tr>
                       <tr v-if="photopoem_item.publication_medium">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsmedium</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.publication_medium.title }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                          <NuxtLink :to="`/publication_media/${photopoem_item.publication_medium.id}`">
+                            {{ photopoem_item.publication_medium.title }}
+                          </NuxtLink>
+                        </td>
                       </tr>
                       <tr v-if="photopoem_item.authors.length > 0">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Author:innen</td>

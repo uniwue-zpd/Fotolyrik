@@ -57,7 +57,7 @@ const filters = ref({
                   <Avatar
                       v-for="image in data.images"
                       :key="image.id"
-                      :image="`api/uploads/${image.filename}`"
+                      :image="`/api/uploads/${image.filename}`"
                       shape="circle"
                       oncontextmenu="return false;"
                   />
@@ -80,7 +80,9 @@ const filters = ref({
         <Column field="publication_medium.title" header="Publikationsmedium" :sortable="true">
           <template #body="slotProps">
             <div v-if="slotProps.data.publication_medium != null">
-              <div class="roboto-plain">{{ slotProps.data.publication_medium.title }}</div>
+              <NuxtLink :to="`/publication_media/${slotProps.data.publication_medium.id}`" class="roboto-plain">
+                {{ slotProps.data.publication_medium.title }}
+              </NuxtLink>
             </div>
             <div v-else>
               <span class="roboto-italic text-gray-500">Unbekannt</span>
