@@ -44,6 +44,18 @@ public class PhotopoemService {
         return photopoemRepository.findById(id);
     }
 
+    public List<Photopoem> getPhotopoemsByAuthorId(Long author_id) {
+        return photopoemRepository.findAllByAuthors_Id(author_id);
+    }
+
+    public List<Photopoem> getPhotopoemsByPhotographerId(Long photographer_id) {
+        return photopoemRepository.findAllByPhotographers_Id(photographer_id);
+    }
+
+    public List<Photopoem> getPhotopoemsByAuthorIdAndPhotographerId(Long author_id, Long photographer_id) {
+        return photopoemRepository.findAllByAuthors_IdAndPhotographers_id(author_id, photographer_id);
+    }
+
     @Transactional
     public Photopoem savePhotopoem(Photopoem photopoem) {
         photopoem.setAuthors(getOrSavePersons(photopoem.getAuthors()));

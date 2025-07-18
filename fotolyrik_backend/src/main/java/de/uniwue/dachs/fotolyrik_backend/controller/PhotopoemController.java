@@ -6,6 +6,8 @@ import de.uniwue.dachs.fotolyrik_backend.service.FullTextService;
 import de.uniwue.dachs.fotolyrik_backend.service.PhotopoemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,11 +34,26 @@ public class PhotopoemController {
                 .orElse(ResponseEntity.status(404).build());
     }
 
-    @GetMapping("{id}/fulltext")
+    @GetMapping("/{id}/fulltext")
     public ResponseEntity<FullText> getFullTextByPhotopoemId(@PathVariable Long id) {
         return fullTextService.getFullTextByPhotopoemId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<Photopoem>> filterByAuthorPhotographer(
+            @RequestParam (value = "author_id", required = false) Long author_id,
+            @RequestParam (value = "photographer_id", required = false) Long photographer_id) {
+        List<Photopoem> photopoems = new ArrayList<>();
+        if (author_id != null && photographer_id != null) {
+            photopoems = photopoemService.getPhotopoemsByAuthorIdAndPhotographerId(author_id, photographer_id);
+        } else if (author_id != null) {
+            photopoems = photopoemService.getPhotopoemsByAuthorId(author_id);
+        } else if (photographer_id != null) {
+            photopoems = photopoemService.getPhotopoemsByPhotographerId(photographer_id);
+        }
+        return ResponseEntity.ok(photopoems);
     }
 
     @PostMapping
