@@ -1,9 +1,9 @@
 export interface Auditable {
     id: number;
-    created_date: string;
-    created_by: string;
-    last_modified_date: string;
-    last_modified_by: string;
+    createdDate: string;
+    createdBy: string;
+    lastModifiedDate: string;
+    lastModifiedBy: string;
 }
 
 export interface ContactForm {
@@ -33,14 +33,14 @@ export interface FullTextSearchResult {
 }
 
 export interface Person extends Auditable {
-    first_name: string | null;
-    last_name: string | null;
-    full_name: string | null;
+    firstName: string | null;
+    lastName: string | null;
+    fullName: string | null;
     pseudonyms: [string] | [];
-    birth_year: number | null;
-    death_year: number | null;
+    birthYear: number | null;
+    deathYear: number | null;
     sex: "weiblich" | "männlich" | null;
-    gnd_id: string | null;
+    gndId: string | null;
     image: File | null;
 }
 

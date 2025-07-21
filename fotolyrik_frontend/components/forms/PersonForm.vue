@@ -14,7 +14,7 @@ const toast = useToast();
 const submitted = ref(false);
 const store = usePersonStore();
 
-type PersonInput = Omit<Person, 'id' | 'created_by' | 'created_date' | 'last_modified_by' | 'last_modified_date'>;
+type PersonInput = Omit<Person, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
 
 const submit = async (formData: Partial<PersonInput>) => {
   try {
@@ -58,7 +58,7 @@ const submit = async (formData: Partial<PersonInput>) => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="text"
-              name="first_name"
+              name="firstName"
               label="Vorname"
               placeholder="Johann Wolfgang"
               prefix-icon="text"
@@ -66,7 +66,7 @@ const submit = async (formData: Partial<PersonInput>) => {
           />
           <FormKit
               type="text"
-              name="last_name"
+              name="lastName"
               label="Nachname"
               placeholder="von Goethe"
               prefix-icon="text"
@@ -91,7 +91,7 @@ const submit = async (formData: Partial<PersonInput>) => {
           <FormKit
               type="number"
               :number="true"
-              name="birth_year"
+              name="birthYear"
               label="Geburtsjahr"
               placeholder="1749"
               prefix-icon="date"
@@ -100,7 +100,7 @@ const submit = async (formData: Partial<PersonInput>) => {
           <FormKit
               type="number"
               :number="true"
-              name="death_year"
+              name="deathYear"
               label="Sterbejahr"
               placeholder="1832"
               prefix-icon="date"
@@ -121,7 +121,7 @@ const submit = async (formData: Partial<PersonInput>) => {
         />
         <FormKit
             type="text"
-            name="gnd_id"
+            name="gndId"
             label="GND-ID"
             placeholder="118540238"
             prefix-icon="number"
