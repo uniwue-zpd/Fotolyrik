@@ -23,13 +23,13 @@ export interface File extends Auditable {
 
 export interface FullText extends Auditable {
     photopoem: PhotoPoem;
-    full_text: string | null;
+    fullText: string | null;
 }
 
 export interface FullTextSearchResult {
-    photopoem_id: number;
-    photopoem_title: string;
-    query_result: string;
+    photopoemId: number;
+    photopoemTitle: string;
+    queryResult: string;
 }
 
 export interface Person extends Auditable {
