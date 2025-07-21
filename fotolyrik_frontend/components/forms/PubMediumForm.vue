@@ -15,7 +15,7 @@ const submitted = ref(false);
 const pub_media_store = usePubMediumStore();
 const place_store = usePlaceStore();
 
-type PubMediumInput = Omit<PubMedium, 'id' | 'created_by' | 'created_date' | 'last_modified_by' | 'last_modified_date'>;
+type PubMediumInput = Omit<PubMedium, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
 
 const submit = async (formData: Partial<PubMediumInput>) => {
   try {
@@ -77,7 +77,7 @@ const submit = async (formData: Partial<PubMediumInput>) => {
         <FormKit
             type="select"
             multiple
-            name="publication_places"
+            name="publicationPlaces"
             label="Publikationsorte"
             outer-class="max-w-full"
             select-icon="select"
@@ -94,7 +94,7 @@ const submit = async (formData: Partial<PubMediumInput>) => {
         />
         <FormKit
             type="select"
-            name="pub_rhytm"
+            name="pubRhytm"
             label="Publikationsrhythmus"
             outer-class="max-w-full"
             select-icon="select"
@@ -110,7 +110,7 @@ const submit = async (formData: Partial<PubMediumInput>) => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="text"
-              name="start_year"
+              name="startYear"
               label="Startjahr"
               placeholder="1924"
               prefix-icon="text"
@@ -118,7 +118,7 @@ const submit = async (formData: Partial<PubMediumInput>) => {
           />
           <FormKit
               type="text"
-              name="end_year"
+              name="endYear"
               label="Endjahr"
               placeholder="1938"
               prefix-icon="text"
@@ -129,7 +129,7 @@ const submit = async (formData: Partial<PubMediumInput>) => {
           <FormKit
               type="number"
               number
-              name="amount_volumes"
+              name="amountVolumes"
               label="Anzahl Jahrgänge"
               placeholder="18"
               prefix-icon="number"
@@ -138,7 +138,7 @@ const submit = async (formData: Partial<PubMediumInput>) => {
           <FormKit
               type="number"
               number
-              name="amount_issues"
+              name="amountIssues"
               label="Anzahl Ausgaben"
               placeholder="100"
               prefix-icon="number"
@@ -147,7 +147,7 @@ const submit = async (formData: Partial<PubMediumInput>) => {
         </div>
         <FormKit
             type="text"
-            name="zdb_id"
+            name="zdbId"
             label="ZDB-ID"
             placeholder="2650224-0"
             prefix-icon="text"

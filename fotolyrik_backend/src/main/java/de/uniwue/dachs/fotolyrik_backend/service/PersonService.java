@@ -45,13 +45,13 @@ public class PersonService {
     public Person updatePerson(Long id, Person updatedPerson) {
         return personRepository.findById(id)
                 .map(existingPerson -> {
-                    existingPerson.setFirst_name(updatedPerson.getFirst_name());
-                    existingPerson.setLast_name(updatedPerson.getLast_name());
-                    existingPerson.setBirth_year(updatedPerson.getBirth_year());
-                    existingPerson.setDeath_year(updatedPerson.getDeath_year());
+                    existingPerson.setFirstName(updatedPerson.getFirstName());
+                    existingPerson.setLastName(updatedPerson.getLastName());
+                    existingPerson.setBirthYear(updatedPerson.getBirthYear());
+                    existingPerson.setDeathYear(updatedPerson.getDeathYear());
                     existingPerson.setPseudonyms(updatedPerson.getPseudonyms());
                     existingPerson.setSex(updatedPerson.getSex());
-                    existingPerson.setGnd_id(updatedPerson.getGnd_id());
+                    existingPerson.setGndId(updatedPerson.getGndId());
                     existingPerson.setImage(updatedPerson.getImage() != null
                             ? getImage(updatedPerson.getImage().getId())
                             : null);

@@ -16,13 +16,13 @@ onMounted(async () => {
   await store.fetchPhtotopoemById(photopoem_id);
   photopoem_item.value = store.currentPhotopoem;
   console.log('photopoem_item', photopoem_item.value);
-  if (photopoem_item.value?.iiif_manifest) {
-    has_iiif_manifest.value = !!photopoem_item.value.iiif_manifest;
-    has_pages.value = photopoem_item.value.page_number !== undefined;
+  if (photopoem_item.value?.iiifManifest) {
+    has_iiif_manifest.value = !!photopoem_item.value.iiifManifest;
+    has_pages.value = photopoem_item.value.pageNumber !== undefined;
     new Tify({
       container: '#tify-photopoem',
-      manifestUrl: photopoem_item.value.iiif_manifest,
-      pages: has_pages.value ? [photopoem_item.value.page_number] : [1]
+      manifestUrl: photopoem_item.value.iiifManifest,
+      pages: has_pages.value ? [photopoem_item.value.pageNumber] : [1]
     });
   }
 });
@@ -63,19 +63,19 @@ onMounted(async () => {
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Ausgabe</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.issue }}</td>
                       </tr>
-                      <tr v-if="photopoem_item.page_number">
+                      <tr v-if="photopoem_item.pageNumber">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Seite</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.page_number }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.pageNumber }}</td>
                       </tr>
-                      <tr v-if="photopoem_item.publication_date">
+                      <tr v-if="photopoem_item.publicationDate">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Erscheinungsdatum</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.publication_date }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ photopoem_item.publicationDate }}</td>
                       </tr>
-                      <tr v-if="photopoem_item.publication_medium">
+                      <tr v-if="photopoem_item.publicationMedium">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsmedium</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                          <NuxtLink :to="`/publication_media/${photopoem_item.publication_medium.id}`">
-                            {{ photopoem_item.publication_medium.title }}
+                          <NuxtLink :to="`/publication_media/${photopoem_item.publicationMedium.id}`">
+                            {{ photopoem_item.publicationMedium.title }}
                           </NuxtLink>
                         </td>
                       </tr>
@@ -84,7 +84,7 @@ onMounted(async () => {
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                           <span v-for="(author, index) in photopoem_item.authors" :key="author.id">
                           <NuxtLink :to="`/persons/${author.id}`" class="roboto-plain">
-                            {{ author.full_name }}
+                            {{ author.fullName }}
                           </NuxtLink>
                           <span v-if="index < photopoem_item.authors.length -1">, </span>
                         </span>
@@ -95,7 +95,7 @@ onMounted(async () => {
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                           <span v-for="(photographer, index) in photopoem_item.photographers" :key="photographer.id">
                           <NuxtLink :to="`/persons/${photographer.id}`" class="roboto-plain">
-                            {{ photographer.full_name }}
+                            {{ photographer.fullName }}
                           </NuxtLink>
                           <span v-if="index < photopoem_item.photographers.length -1">, </span>
                         </span>

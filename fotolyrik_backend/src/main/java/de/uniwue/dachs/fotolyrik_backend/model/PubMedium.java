@@ -13,10 +13,9 @@ import java.util.Set;
 @Getter
 @Setter
 public class PubMedium extends BaseEntity {
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "subtitle")
     private String subtitle;
 
     @ManyToMany
@@ -25,28 +24,21 @@ public class PubMedium extends BaseEntity {
             joinColumns = @JoinColumn(name = "pub_medium_id"),
             inverseJoinColumns = @JoinColumn(name = "pub_place_id")
     )
-    private Set<Place> publication_places = new HashSet<>();
+    private Set<Place> publicationPlaces = new HashSet<>();
 
-    @Column(name = "publisher")
     private String publisher;
 
-    @Column(name = "pub_rhytm")
-    private String pub_rhytm;
+    private String pubRhytm;
 
-    @Column(name = "start_year")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private Year start_year;
+    private Year startYear;
 
-    @Column(name = "end_year")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private Year end_year;
+    private Year endYear;
 
-    @Column(name = "amount_volumes")
-    private Integer amount_volumes;
+    private Integer amountVolumes;
 
-    @Column(name = "amount_issues")
-    private Integer amount_issues;
+    private Integer amountIssues;
 
-    @Column(name = "zdb_id")
-    private String zdb_id;
+    private String zdbId;
 }

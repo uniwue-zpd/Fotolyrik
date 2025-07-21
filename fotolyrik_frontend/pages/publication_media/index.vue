@@ -6,7 +6,7 @@ const store = usePubMediumStore();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   title: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-  pub_rhytm: { value: null, matchMode: FilterMatchMode.IN },
+  pubRhytm: { value: null, matchMode: FilterMatchMode.IN },
 });
 
 const publication_rhytms = ref(['wöchentlich', 'halbmonatlich', 'monatlich', 'halbjährlich', 'jährlich']);
@@ -21,7 +21,7 @@ const publication_rhytms = ref(['wöchentlich', 'halbmonatlich', 'monatlich', 'h
       <DataTable
           v-model:filters="filters"
           filter-display="row"
-          :global-filter-fields="['title', 'subtitle', 'publisher', 'pub_rhytm', 'start_year', 'end_year', 'amount_volumes', 'amount_issues']"
+          :global-filter-fields="['title', 'subtitle', 'publisher', 'pubRhytm', 'startYear', 'endYear', 'amountVolumes', 'amountIssues']"
           :value="store.pub_media"
       >
         <template #header>
@@ -47,7 +47,7 @@ const publication_rhytms = ref(['wöchentlich', 'halbmonatlich', 'monatlich', 'h
         <Column field="title" header="Titel" class="roboto-plain" sortable>
           <template #body="slotProps">
             <NuxtLink
-                :to="`/publication_media/${slotProps.data.id}`"
+                :to="`/publication_media/${ slotProps.data.id }`"
                 class="roboto-plain font-semibold"
             >
               {{ slotProps.data.title }}
@@ -62,14 +62,14 @@ const publication_rhytms = ref(['wöchentlich', 'halbmonatlich', 'monatlich', 'h
           </template>
         </Column>
         <Column field="subtitle" header="Untertitel" class="roboto-plain"/>
-        <Column header ="Publikationsorte" field="publication_places" class="roboto-plain">
+        <Column header ="Publikationsorte" field="publicationPlaces" class="roboto-plain">
           <template #body="slotProps">
-            <div v-if="slotProps.data.publication_places != null && slotProps.data.publication_places.length > 0">
-              <span v-for="(place, index) in slotProps.data.publication_places" :key="place.id">
-                <NuxtLink :to="`/places/${place.id}`" class="roboto-plain">
+            <div v-if="slotProps.data.publicationPlaces != null && slotProps.data.publicationPlaces.length > 0">
+              <span v-for="(place, index) in slotProps.data.publicationPlaces" :key="place.id">
+                <NuxtLink :to="`/places/${ place.id }`" class="roboto-plain">
                   {{ place.name }}
                 </NuxtLink>
-                <span v-if="index < slotProps.data.publication_places.length -1">, </span>
+                <span v-if="index < slotProps.data.publicationPlaces.length -1">, </span>
               </span>
             </div>
             <div v-else>
@@ -79,13 +79,13 @@ const publication_rhytms = ref(['wöchentlich', 'halbmonatlich', 'monatlich', 'h
         </Column>
         <Column field="publisher" header="Verlag" class="roboto-plain" :sortable="true"/>
         <Column
-            field="pub_rhytm" filterField="pub_rhytm"
+            field="pubRhytm" filterField="pubRhytm"
             header="Publikationsrhythmus"
             class="roboto-plain"
             :showFilterMenu="false" :sortable="true"
         >
           <template #body="slotProps">
-            {{ slotProps.data.pub_rhytm }}
+            {{ slotProps.data.pubRhytm }}
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <MultiSelect
@@ -100,10 +100,10 @@ const publication_rhytms = ref(['wöchentlich', 'halbmonatlich', 'monatlich', 'h
             </MultiSelect>
           </template>
         </Column>
-        <Column field="start_year" header="Startjahr" class="roboto-plain" :sortable="true"/>
-        <Column field="end_year" header="Endjahr" class="roboto-plain" :sortable="true"/>
-        <Column field="amount_volumes" header="Anzahl Bände" class="roboto-plain" :sortable="true"/>
-        <Column field="amount_issues" header="Anzahl Ausgaben" class="roboto-plain" :sortable="true"/>
+        <Column field="startYear" header="Startjahr" class="roboto-plain" :sortable="true"/>
+        <Column field="endYear" header="Endjahr" class="roboto-plain" :sortable="true"/>
+        <Column field="amountVolumes" header="Anzahl Bände" class="roboto-plain" :sortable="true"/>
+        <Column field="amountIssues" header="Anzahl Ausgaben" class="roboto-plain" :sortable="true"/>
       </DataTable>
     </template>
   </Card>

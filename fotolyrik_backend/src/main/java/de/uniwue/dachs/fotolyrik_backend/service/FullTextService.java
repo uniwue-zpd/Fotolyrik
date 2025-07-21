@@ -64,7 +64,7 @@ public class FullTextService {
     @Transactional
     public FullText updateFullText(Long id, FullText fullText) {
         return fullTextRepository.findById(id).map(entity -> {
-            entity.setFull_text(fullText.getFull_text());
+            entity.setFullText(fullText.getFullText());
             entity.setPhotopoem(getPhotopoem(fullText.getPhotopoem().getId()));
             return fullTextRepository.save(entity);
         }).orElseThrow(() -> new EntityNotFoundException("FullText with id '" + id + "' does not exist"));
@@ -74,7 +74,7 @@ public class FullTextService {
     @Transactional
     public FullText updateFullTextByPhotopoemId(Long photopoemId, String fullTextContent) {
         return fullTextRepository.findByPhotopoemId(photopoemId).map(entity -> {
-            entity.setFull_text(fullTextContent);
+            entity.setFullText(fullTextContent);
             return fullTextRepository.save(entity);
         }).orElseThrow(() -> new EntityNotFoundException("FullText for Photopoem with id '" + photopoemId + "' does not exist"));
     }
