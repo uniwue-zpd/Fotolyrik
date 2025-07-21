@@ -7,7 +7,7 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 10MB  # Maximum size allowed per individual file
+      max-file-size: 20MB  # Maximum size allowed per individual file
       max-request-size: 500MB  # Maximum size allowed for the entire request (all files + form data)
 
   datasource:
