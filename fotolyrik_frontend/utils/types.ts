@@ -48,21 +48,21 @@ export interface PhotoPoem extends Auditable {
     title: string;
     volume: string | null;
     issue: string | null;
-    page_number: number | null;
-    page_count: number | null;
-    publication_date: string | null;
-    publication_medium: PubMedium | null;
+    pageNumber: number | null;
+    pageCount: number | null;
+    publicationDate: string | null;
+    publicationMedium: PubMedium | null;
     authors: Person[] | [];
     photographers: Person[] | [];
-    other_contributors: Person[] | [];
+    otherContributors: Person[] | [];
     themes: [string] | [];
     topics: [string] | [];
     form: string | null;
     link: string | null;
-    iiif_manifest: string | null;
+    iiifManifest: string | null;
     images: File[] | []
-    copyright_status_image: string | null;
-    copyright_status_text: string | null;
+    copyrightStatusImage: string | null;
+    copyrightStatusText: string | null;
     language: string | null;
 }
 

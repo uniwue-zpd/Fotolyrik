@@ -20,7 +20,7 @@ const filters = ref({
       <DataTable
           v-model:filters="filters"
           filter-display="row"
-          :global-filter-fields="['title', 'volume', 'issue', 'page_number', 'publication_date', 'publication_medium.title']"
+          :global-filter-fields="['title', 'volume', 'issue', 'pageNumber', 'publicationDate', 'publicationMedium.title']"
           :value="store.photopoems"
       >
         <template #header>
@@ -75,13 +75,13 @@ const filters = ref({
         </Column>
         <Column field="volume" header="Jahrgang" class="roboto-plain"/>
         <Column field="issue" header="Ausgabe" class="roboto-plain"/>
-        <Column field="page_number" header="Seite" class="roboto-plain"/>
-        <Column field="publication_date" header="Publikationsdatum" class="roboto-plain"/>
-        <Column field="publication_medium.title" header="Publikationsmedium" :sortable="true">
+        <Column field="pageNumber" header="Seite" class="roboto-plain"/>
+        <Column field="publicationDate" header="Publikationsdatum" class="roboto-plain"/>
+        <Column field="publicationMedium.title" header="Publikationsmedium" :sortable="true">
           <template #body="slotProps">
-            <div v-if="slotProps.data.publication_medium != null">
-              <NuxtLink :to="`/publication_media/${slotProps.data.publication_medium.id}`" class="roboto-plain">
-                {{ slotProps.data.publication_medium.title }}
+            <div v-if="slotProps.data.publicationMedium != null">
+              <NuxtLink :to="`/publication_media/${slotProps.data.publicationMedium.id}`" class="roboto-plain">
+                {{ slotProps.data.publicationMedium.title }}
               </NuxtLink>
             </div>
             <div v-else>
