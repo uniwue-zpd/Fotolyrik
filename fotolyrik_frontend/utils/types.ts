@@ -76,12 +76,12 @@ export interface Place extends Auditable {
 export interface PubMedium extends Auditable {
     title: string;
     subtitle: string | null;
-    publication_places: Place[] | [];
+    publicationPlaces: Place[] | [];
     publisher: string | null;
-    pub_rhytm: string | null;
-    start_year: string | null;
-    end_year: string | null;
-    amount_volumes: number | null;
-    amount_issues: number | null;
-    zdb_id: string | null;
+    pubRhytm: string | null;
+    startYear: string | null;
+    endYear: string | null;
+    amountVolumes: number | null;
+    amountIssues: number | null;
+    zdbId: string | null;
 }
