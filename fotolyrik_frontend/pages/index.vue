@@ -174,7 +174,7 @@ onMounted(async () => {
         Fotolyrik in illustrierten Zeitschriften zwischen 1895 und 1945
       </h1>
     </div>
-    <div class="intro px-24 px-[3.75rem]">
+    <div class="intro px-[3.75rem]">
       <div class="columns-2 space-y-8 gap-x-10 text-justify">
         <div>
           1 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
