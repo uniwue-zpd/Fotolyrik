@@ -306,17 +306,4 @@ onMounted(async () => {
   --p-carousel-indicator-background: #FFFFFF;
   --p-carousel-indicator-active-background: #F04E30;
 }
-
-:deep(.p-carousel .p-carousel-prev-button),
-:deep(.p-carousel .p-carousel-next-button) {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-:deep(.hover-carousel:hover .p-carousel-prev),
-:deep(.hover-carousel:hover .p-carousel-next) {
-  opacity: 1;
-  pointer-events: auto;
-}
 </style>
