@@ -232,7 +232,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="title py-8 pt-7 px-[3.75rem]">
+    <div class="title py-8 pt-7 px-6 md:px-[3.75rem]">
       <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Fotolyrik in Zahlen</h2>
     </div>
     <div>
@@ -264,7 +264,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="py-8 px-6 md:px-[3.75rem]">
+    <div class="py-6 md:py-8 px-6 md:px-[3.75rem]">
       <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Karte</h1>
     </div>
       <div class="collection bg-[#F1F2F2]">
