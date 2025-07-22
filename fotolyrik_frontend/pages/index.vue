@@ -159,12 +159,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-5">
     <div class="carousel bg-[#F1F2F2] p-5">
       <Carousel :value="images" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
         <template #item="{ data }">
-          <div class="p-2">
-            <img :src="data" alt="image in carousel" class="w-full rounded shadow-md" />
+          <div class="p-4">
+            <img :src="data" alt="image in carousel" class="w-full" />
           </div>
         </template>
       </Carousel>
@@ -279,7 +279,7 @@ onMounted(async () => {
     </div>
     <div class="topics bg-[#F1F2F2] p-5">
       <div class="flex flex-col gap-2">
-        <Carousel :value="topics" :numVisible="4" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
+        <Carousel :value="topics" :numVisible="4" :numScroll="1" controls="true" indicator-type="disc" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
           <template #item="{ data }">
             <div class="p-2">
               <img :src="data" alt="image in carousel" class="w-full rounded shadow-md" />
@@ -296,5 +296,27 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
+<style>
+
+.p-carousel {
+  --p-carousel-indicator-width: 12px;
+  --p-carousel-indicator-height: 12px;
+  --p-carousel-indicator-list-gap: 5px;
+  --p-carousel-indicator-border-radius: 0%;
+  --p-carousel-indicator-background: #FFFFFF;
+  --p-carousel-indicator-active-background: #F04E30;
+}
+
+:deep(.p-carousel .p-carousel-prev-button),
+:deep(.p-carousel .p-carousel-next-button) {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+:deep(.hover-carousel:hover .p-carousel-prev),
+:deep(.hover-carousel:hover .p-carousel-next) {
+  opacity: 1;
+  pointer-events: auto;
+}
 </style>
