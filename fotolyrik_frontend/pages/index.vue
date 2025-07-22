@@ -160,7 +160,7 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col gap-5">
-    <div class="carousel bg-[#F1F2F2] p-5">
+    <div class="carousel bg-[#F1F2F2] md:p-5">
       <Carousel :value="images" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
         <template #item="{ data }">
           <div class="p-4">
