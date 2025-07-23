@@ -94,7 +94,7 @@ const filters = ref({
             <div v-if="slotProps.data.authors != null && slotProps.data.authors.length > 0">
               <span v-for="(author, index) in slotProps.data.authors" :key="author.id">
                 <NuxtLink :to="`/persons/${author.id}`" class="roboto-plain">
-                  {{ author.full_name }}
+                  {{ author.fullName }}
                 </NuxtLink>
                 <span v-if="index < slotProps.data.authors.length -1">, </span>
               </span>
@@ -109,7 +109,7 @@ const filters = ref({
             <div v-if="slotProps.data.photographers != null && slotProps.data.photographers.length > 0">
               <span v-for="(photographer, index) in slotProps.data.photographers" :key="photographer.id">
                 <NuxtLink :to="`/persons/${photographer.id}`" class="roboto-plain">
-                  {{ photographer.full_name }}
+                  {{ photographer.fullName }}
                 </NuxtLink>
                 <span v-if="index < slotProps.data.photographers.length -1">, </span>
               </span>
