@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import PhotopoemForm from "~/components/forms/PhotopoemForm.vue";
 </script>
 

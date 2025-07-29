@@ -25,7 +25,7 @@ const submit = async (formData: Partial<PlaceInput>) => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-2xl outfit-headline font-bold">Neuen Ort erstellen</h1>
+    <h1 class="text-2xl outfit-headline font-bold text-[#063D79]">Neuen Ort erstellen</h1>
     <p class="roboto-plain">Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen</p>
     <FormKit
         type="form"

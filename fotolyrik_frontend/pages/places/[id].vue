@@ -57,7 +57,7 @@ onMounted(async () => {
 
 <template v-if="data_fetched">
   <div class="flex flex-col gap-2">
-    <h1 class="text-3xl font-bold outfit-headline">{{ place_item.name }}</h1>
+    <h1 class="text-3xl font-bold outfit-headline text-[#063D79]">{{ place_item.name }}</h1>
     <div id="map" class="h-[500px] w-full rounded-md"/>
     <div class="text-md roboto-plain">{{ place_item.description }}</div>
   </div>

@@ -1,7 +1,10 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
+import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,9 +14,11 @@ import java.util.Optional;
 @Service
 public class PersonService {
     private final PersonRepository personRepository;
+    private final FileRepository fileRepository;
 
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository, FileRepository fileRepository) {
         this.personRepository = personRepository;
+        this.fileRepository = fileRepository;
     }
 
     // GET all persons
@@ -29,6 +34,9 @@ public class PersonService {
     // POST create new person
     @Transactional
     public Person createPerson(Person person) {
+        person.setImage(person.getImage() != null
+                ? getImage(person.getImage().getId())
+                : null);
         return personRepository.save(person);
     }
 
@@ -37,13 +45,16 @@ public class PersonService {
     public Person updatePerson(Long id, Person updatedPerson) {
         return personRepository.findById(id)
                 .map(existingPerson -> {
-                    existingPerson.setFirst_name(updatedPerson.getFirst_name());
-                    existingPerson.setLast_name(updatedPerson.getLast_name());
-                    existingPerson.setBirth_year(updatedPerson.getBirth_year());
-                    existingPerson.setDeath_year(updatedPerson.getDeath_year());
-                    existingPerson.setPseudonym(updatedPerson.getPseudonym());
+                    existingPerson.setFirstName(updatedPerson.getFirstName());
+                    existingPerson.setLastName(updatedPerson.getLastName());
+                    existingPerson.setBirthYear(updatedPerson.getBirthYear());
+                    existingPerson.setDeathYear(updatedPerson.getDeathYear());
+                    existingPerson.setPseudonyms(updatedPerson.getPseudonyms());
                     existingPerson.setSex(updatedPerson.getSex());
-                    existingPerson.setGnd_id(updatedPerson.getGnd_id());
+                    existingPerson.setGndId(updatedPerson.getGndId());
+                    existingPerson.setImage(updatedPerson.getImage() != null
+                            ? getImage(updatedPerson.getImage().getId())
+                            : null);
                     return personRepository.save(existingPerson);
                 })
                 .orElse(null);
@@ -53,8 +64,17 @@ public class PersonService {
     @Transactional
     public void deletePerson(Long id) {
         if (!personRepository.existsById(id)) {
-            throw new IllegalArgumentException("Person with id '" + id + "' does not exist");
+            throw new EntityNotFoundException("Person with id '" + id + "' does not exist");
         }
         personRepository.deleteById(id);
+    }
+
+    private File getImage(Long id) {
+        if (id == null) {
+            throw  new IllegalArgumentException();
+        }
+        return fileRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Image with id '" + id + "' does not exist")
+        );
     }
 }

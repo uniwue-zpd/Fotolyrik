@@ -1,61 +1,17 @@
 export interface Auditable {
     id: number;
-    created_date: string;
-    created_by: string;
-    last_modified_date: string;
-    last_modified_by: string;
+    createdDate: string;
+    createdBy: string;
+    lastModifiedDate: string;
+    lastModifiedBy: string;
 }
 
-export interface Place extends Auditable {
-    name: string;
-    description: string | null;
-    latitude: number | null;
-    longitude: number | null
-}
-
-export interface Person extends Auditable {
-    first_name: string | null;
-    last_name: string | null;
-    full_name: string | null;
-    pseudonym: string | null;
-    birth_year: number | null;
-    death_year: number | null;
-    sex: "MALE" | "FEMALE" | null;
-    gnd_id: string | null;
-}
-
-export interface PhotoPoem extends Auditable {
-    title: string;
-    volume: string | null;
-    issue: string | null;
-    page_number: number | null;
-    page_count: number | null;
-    publication_date: string | null;
-    publication_medium: PubMedium | null;
-    author: Person | null;
-    photographer: Person | null;
-    other_contributors: Person[] | [];
-    themes: [string] | [];
-    topics: [string] | [];
-    form: string | null;
-    link: string | null;
-    iiif_manifest: string | null;
-    images: File[] | []
-    copyright_status_image: string | null;
-    copyright_status_text: string | null;
-    language: string | null;
-}
-
-export interface PubMedium extends Auditable {
-    title: string;
-    subtitle: string | null;
-    publication_places: Place[] | [];
-    publisher: string | null;
-    pub_rhytm: "M" | "HM" | "W" | "HW" | "DIVERS" | null;
-    start_year: string | null;
-    end_year: string | null;
-    amount_volumes: number | null;
-    amount_issues: number | null;
+export interface ContactForm {
+    name: string | null,
+    appellation: string | null,
+    email: string | null,
+    subject: string | null,
+    message: string | null
 }
 
 export interface File extends Auditable {
@@ -65,10 +21,67 @@ export interface File extends Auditable {
     size: number | null
 }
 
-export interface ContactForm {
-    name: string | null,
-    appellation: string | null,
-    email: string | null,
-    subject: string | null,
-    message: string | null
+export interface FullText extends Auditable {
+    photopoem: PhotoPoem;
+    fullText: string | null;
+}
+
+export interface FullTextSearchResult {
+    photopoemId: number;
+    photopoemTitle: string;
+    queryResult: string;
+}
+
+export interface Person extends Auditable {
+    firstName: string | null;
+    lastName: string | null;
+    fullName: string | null;
+    pseudonyms: [string] | [];
+    birthYear: number | null;
+    deathYear: number | null;
+    sex: "weiblich" | "männlich" | null;
+    gndId: string | null;
+    image: File | null;
+}
+
+export interface PhotoPoem extends Auditable {
+    title: string;
+    volume: string | null;
+    issue: string | null;
+    pageNumber: number | null;
+    pageCount: number | null;
+    publicationDate: string | null;
+    publicationMedium: PubMedium | null;
+    authors: Person[] | [];
+    photographers: Person[] | [];
+    otherContributors: Person[] | [];
+    themes: [string] | [];
+    topics: [string] | [];
+    form: string | null;
+    link: string | null;
+    iiifManifest: string | null;
+    images: File[] | []
+    copyrightStatusImage: string | null;
+    copyrightStatusText: string | null;
+    language: string | null;
+}
+
+export interface Place extends Auditable {
+    name: string;
+    description: string | null;
+    latitude: number | null;
+    longitude: number | null
+}
+
+export interface PubMedium extends Auditable {
+    title: string;
+    subtitle: string | null;
+    publicationPlaces: Place[] | [];
+    publisher: string | null;
+    pubRhytm: string | null;
+    startYear: string | null;
+    endYear: string | null;
+    amountVolumes: number | null;
+    amountIssues: number | null;
+    zdbId: string | null;
 }

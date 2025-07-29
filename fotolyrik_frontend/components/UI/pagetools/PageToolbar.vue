@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useConfirm } from 'primevue/useconfirm';
-import apiClient from '~/service/api';
 
 const props = defineProps<{
+  id: number;
+  entity_type: 'person' | 'photopoem' | 'pub_medium';
   page_url: string;
 }>();
+
+const person_store = usePersonStore();
+const photopoem_store = usePhotopoemStore();
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -30,7 +34,13 @@ const items = ref([
         rejectLabel: 'Nein',
         accept: async () => {
           try {
-            await apiClient.delete(props.page_url);
+            if (props.entity_type === 'person') {
+              await person_store.deletePerson(props.id);
+            } else if (props.entity_type === 'photopoem') {
+              await photopoem_store.deletePhotopoem(props.id);
+            } else if (props.entity_type === 'pub_medium') {
+              await usePubMediumStore().deletePubMedium(props.id);
+            }
             toast.add({ severity: 'success', summary: 'Gelöscht', detail: 'Eintrag erfolgreich gelöscht', life: 3000 });
             router.push(props.page_url.substring(0, props.page_url.lastIndexOf('/')));
           } catch (error) {

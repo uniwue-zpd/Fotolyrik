@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import { useToast } from "primevue/usetoast";
+import { getNode } from '@formkit/core';
 import type { PhotoPoem } from "~/utils/types";
 
 const props = defineProps<{
@@ -7,8 +10,38 @@ const props = defineProps<{
   photopoem?: PhotoPoem;
 }>();
 
-const personstore = usePersonStore();
-personstore.fetchAllPersons();
+const toast = useToast();
+const submitted = ref(false);
+const person_store = usePersonStore();
+const photopoem_store = usePhotopoemStore();
+const pub_medium_store = usePubMediumStore();
+
+type PhotoPoemInput = Omit<PhotoPoem, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
+
+const submit = async (formData: Partial<PhotoPoemInput>) => {
+  try {
+    if (props.action === 'create') {
+      await photopoem_store.createPhotopoem(formData);
+      submitted.value = true;
+      toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich erstellt', life: 3000});
+      const form = getNode('photopoem_creation');
+      form?.reset();
+    } else if (props.action === 'edit' && props.photopoem?.id) {
+      await photopoem_store.updatePhotopoem(formData, props.photopoem.id);
+      submitted.value = true;
+      toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich upgedated', life: 3000});
+      navigateTo(`/photopoems/${props.photopoem?.id}`);
+    }
+  } catch (error) {
+    console.log(error)
+    toast.add({
+      severity: 'error',
+      summary: 'Fehler',
+      detail: 'Fehler beim Erstellen des Fotogedicht-Objektes',
+      life: 3000
+    });
+  }
+};
 </script>
 
 <template>
@@ -21,6 +54,7 @@ personstore.fetchAllPersons();
         type="form"
         id="photopoem_creation"
         submit-label="Erstellen"
+        @submit="submit"
         :actions="false"
         :value="props.photopoem ? props.photopoem : {}"
         :key="props.photopoem?.id || 'create'"
@@ -41,6 +75,7 @@ personstore.fetchAllPersons();
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
+              number
               name="volume"
               label="Jahrgang"
               placeholder="5"
@@ -49,6 +84,7 @@ personstore.fetchAllPersons();
           />
           <FormKit
               type="number"
+              number
               name="issue"
               label="Ausgabe"
               placeholder="1"
@@ -59,7 +95,8 @@ personstore.fetchAllPersons();
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
-              name="page_number"
+              number
+              name="pageNumber"
               label="Seite"
               placeholder="23"
               prefix-icon="number"
@@ -67,7 +104,8 @@ personstore.fetchAllPersons();
           />
           <FormKit
               type="number"
-              name="page_count"
+              number
+              name="pageCount"
               label="Seitenanzahl"
               placeholder="2"
               prefix-icon="number"
@@ -76,7 +114,7 @@ personstore.fetchAllPersons();
         </div>
         <FormKit
             type="text"
-            name="publication_date"
+            name="publicationDate"
             label="Publikationsdatum"
             placeholder="01.03.1930"
             prefix-icon="date"
@@ -84,38 +122,42 @@ personstore.fetchAllPersons();
         />
         <FormKit
             type="select"
-            name="publication_medium"
+            name="publicationMedium"
             label="Publikationsmedium"
-            placeholder="Revue des Monats"
             outer-class="max-w-full"
             select-icon="select"
+            :options="pub_medium_store.pub_media.map(p => ({ label: `${p.title}`, value: p }))"
         />
         <Divider/>
         <div class="flex flex-row space-x-5">
           <FormKit
               type="select"
-              name="author"
-              label="Autor:in"
+              multiple
+              name="authors"
+              label="Autor:innen"
               outer-class="max-w-full"
               select-icon="select"
-              :options="personstore.persons.map(p => ({ label: `${p.full_name}`, value: { id: p.id } }))"
-          />
-          <FormKit
-              type="select"
-              name="photographer"
-              label="Fotograf:in"
-              outer-class="max-w-full"
-              select-icon="select"
-              :options="personstore.persons.map(p => ({ label: `${p.full_name}`, value: { id: p.id } }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
+              help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
           <FormKit
               type="select"
               multiple
-              name="other_contributors"
+              name="photographers"
+              label="Fotograf:innen"
+              outer-class="max-w-full"
+              select-icon="select"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
+              help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
+          />
+          <FormKit
+              type="select"
+              multiple
+              name="otherContributors"
               label="Sonstige Mitwirkende"
               outer-class="max-w-full"
               select-icon="select"
-              :options="personstore.persons.map(p => ({ label: `${p.full_name}`, value: { id: p.id } }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
         </div>
@@ -162,7 +204,7 @@ personstore.fetchAllPersons();
           />
           <FormKit
               type="url"
-              name="iiif_manifest"
+              name="iiifManifest"
               label="IIIF-Manifest"
               placeholder="https://www.example.com..."
               prefix-icon="link"
@@ -185,7 +227,7 @@ personstore.fetchAllPersons();
         <div class="flex flex-row space-x-5">
           <FormKit
               type="select"
-              name="copyright_status_image"
+              name="copyrightStatusImage"
               label="Urheberrechtsstatus Bild"
               outer-class="max-w-full"
               select-icon="select"
@@ -198,7 +240,7 @@ personstore.fetchAllPersons();
           />
           <FormKit
               type="select"
-              name="copyright_status_text"
+              name="copyrightStatusText"
               label="Urheberrechtsstatus Text"
               outer-class="max-w-full"
               select-icon="select"
@@ -226,7 +268,7 @@ personstore.fetchAllPersons();
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>
           <hr>
-          <pre wrap>{{ value }}</pre>
+          <pre wrap class="text-sm">{{ value }}</pre>
         </div>
         <FormKit
             type="submit"

@@ -14,7 +14,7 @@ const toast = useToast();
 const submitted = ref(false);
 const store = usePersonStore();
 
-type PersonInput = Omit<Person, 'id' | 'created_by' | 'created_date' | 'last_modified_by' | 'last_modified_date'>;
+type PersonInput = Omit<Person, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
 
 const submit = async (formData: Partial<PersonInput>) => {
   try {
@@ -58,7 +58,7 @@ const submit = async (formData: Partial<PersonInput>) => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="text"
-              name="first_name"
+              name="firstName"
               label="Vorname"
               placeholder="Johann Wolfgang"
               prefix-icon="text"
@@ -66,26 +66,32 @@ const submit = async (formData: Partial<PersonInput>) => {
           />
           <FormKit
               type="text"
-              name="last_name"
+              name="lastName"
               label="Nachname"
               placeholder="von Goethe"
               prefix-icon="text"
               outer-class="max-w-full"
           />
         </div>
-        <FormKit
-            type="text"
-            name="pseudonym"
-            label="Pseudonym"
-            placeholder="Filippo Möller"
-            prefix-icon="text"
-            outer-class="max-w-full"
-        />
+        <FormKit type="list" :value="[]" name="pseudonyms" dynamic #default="{ items, node, value }">
+          <FormKit
+              v-for="(item, index) in items"
+              :key="item"
+              :index="index"
+              label="Pseudonyme"
+              placeholder="Filippo Möller"
+              suffix-icon="trash"
+              @suffix-icon-click="() => node.input(value?.filter((_, i) => i !== index))"
+              :sections-schema="{ suffixIcon: { $el: 'button', attrs: { type: 'button' } } }"
+              outer-class="max-w-full"
+          />
+          <FormKit type="button" @click="() => node.input(value?.concat(''))">Pseudonym hinzufügen</FormKit>
+        </FormKit>
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
               :number="true"
-              name="birth_year"
+              name="birthYear"
               label="Geburtsjahr"
               placeholder="1749"
               prefix-icon="date"
@@ -94,7 +100,7 @@ const submit = async (formData: Partial<PersonInput>) => {
           <FormKit
               type="number"
               :number="true"
-              name="death_year"
+              name="deathYear"
               label="Sterbejahr"
               placeholder="1832"
               prefix-icon="date"
@@ -115,12 +121,20 @@ const submit = async (formData: Partial<PersonInput>) => {
         />
         <FormKit
             type="text"
-            name="gnd_id"
+            name="gndId"
             label="GND-ID"
             placeholder="118540238"
             prefix-icon="number"
             outer-class="max-w-full"
         />
+        <!-- <FormKit
+            type="select"
+            name="image"
+            label="Bild"
+            outer-class="max-w-full"
+            select-icon="select"
+            :options="file_store.files.map(p => ({ label: `${p.filename}`, value: p }))"
+        /> -->
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>
           <hr>

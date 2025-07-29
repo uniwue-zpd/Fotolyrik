@@ -4,6 +4,19 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --p-datatable-header-cell-selected-color: #1E293B !important; 
+    --p-datatable-header-cell-selected-background: #F1F5F9 !important;
+    --p-paginator-nav-button-selected-color: #1E293B !important;
+    --p-paginator-nav-button-selected-background: #F1F5F9 !important;
+    --p-select-option-selected-color: #1E293B !important;
+    --p-select-option-selected-background: #F1F5F9 !important;
+    --p-select-option-selected-focus-color: #1E293B !important;
+    --p-select-option-selected-focus-background: #F1F5F9 !important;
+    --p-inputtext-focus-border-color: #1e293b86 !important;
+    --p-select-focus-border-color: #1e293b86 !important
+}
+
 #__nuxt {
     display: flex;
     flex-direction: column;
