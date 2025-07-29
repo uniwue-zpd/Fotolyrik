@@ -33,6 +33,10 @@
     font-style: normal;
 }
 
+.averia-layout {
+    font-family: 'Averia Serif Libre', serif;
+}
+
 .roboto-italic {
     font-family: 'Roboto', serif;
     font-style: italic;
