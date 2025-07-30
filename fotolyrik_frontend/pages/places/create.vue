@@ -27,44 +27,78 @@ const submit = async (formData: Partial<PlaceInput>) => {
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Erstellen des Ortes', life: 3000})
   }
 };
+
 /* start interactive map */
-onMounted(async() => {
+const pointCoordinates = ref(null);
+
+onMounted(() => {
   const map = new maplibregl.Map({
-    container: 'map',
+    container: "map",
     zoom: 4.5,
+    center: [11, 51],
     style: {
       version: 8,
+      glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
       sources: {
         osm: {
           type: "raster",
           tiles: ["https://tile.openstreetmap.de/{z}/{x}/{y}.png"],
           tileSize: 256,
-          attribution: "&copy; OpenStreetMap Contributors"
-        }
+          attribution: "&copy; OpenStreetMap Contributors",
+        },
       },
       layers: [
         {
           id: "osm-layer",
           type: "raster",
-          source: "osm"
-        }
-      ]
+          source: "osm",
+        },
+      ],
     },
-    center: [11, 51],
   });
+
   const draw = new MaplibreMeasureControl({
-    modes: ['render','point','select','delete-selection','delete','download'],
+    modes: ["render", "point", "select", "delete-selection", "delete", "download"],
     open: true,
-    distanceUnit: 'kilometers', distancePrecision: 2, areaUnit: 'metric', areaPrecision: 2, computeElevation: true
+    distanceUnit: "kilometers",
+    distancePrecision: 2,
+    areaUnit: "metric",
+    areaPrecision: 2,
+    computeElevation: true,
   });
-  map.addControl(draw, 'top-left');
-})
+
+  map.addControl(draw, "top-left");
+
+  map.on("load", () => {
+    map.on("measure.create", (e) => {
+      console.log("measure.create fired", e);
+
+      if (!e?.features?.length) {
+        console.warn("No features returned");
+        return;
+      }
+
+      e.features.forEach((feature) => {
+        if (feature.geometry.type === "Point") {
+          pointCoordinates.value = feature.geometry.coordinates;
+          console.log("✅ Point coordinates:", pointCoordinates.value);
+        } else {
+          console.log("Not a point:", feature.geometry.type);
+        }
+      });
+    });
+  });
+});
  /* end interactive map */
 </script>
 
 <template>
   <div>
     <div id="map" class="h-[400px] w-full"></div>
+    <div v-if="pointCoordinates">
+      <p>Longitude: {{ pointCoordinates[0] }}</p>
+      <p>Latitude: {{ pointCoordinates[1] }}</p>
+    </div>
   </div>
   <div class="flex flex-col gap-2">
     <h1 class="text-2xl outfit-headline font-bold">Neuen Ort erstellen</h1>
