@@ -4,6 +4,7 @@ import { ref, onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
 import apiClient from "~/service/api";
 import { navigateTo } from "#app";
+import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Map } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -28,14 +29,31 @@ const submit = async (formData: Partial<PlaceInput>) => {
 };
 /* start interactive map */
 onMounted(async() => {
-  const map = new Map({
+  const map = new maplibregl.Map({
     container: 'map',
-    style: 'https://demotiles.maplibre.org/style.json',
-    center: [0, 0],
-    zoom: 1,
+    zoom: 3,
+    style: {
+      version: 8,
+      sources: {
+        osm: {
+          type: "raster",
+          tiles: ["https://tile.openstreetmap.de/{z}/{x}/{y}.png"],
+          tileSize: 256,
+          attribution: "&copy; OpenStreetMap Contributors"
+        }
+      },
+      layers: [
+        {
+          id: "osm-layer",
+          type: "raster",
+          source: "osm"
+        }
+      ]
+    },
+    center: [8, 50],
   });
   const draw = new MaplibreMeasureControl({
-    modes: ['render','point','linestring','polygon','rectangle','circle','freehand','angled-rectangle','sensor','sector','select','delete-selection','delete','download'],
+    modes: ['render','point','select','delete-selection','delete','download'],
     open: true,
     distanceUnit: 'kilometers', distancePrecision: 2, areaUnit: 'metric', areaPrecision: 2, computeElevation: true
   });
