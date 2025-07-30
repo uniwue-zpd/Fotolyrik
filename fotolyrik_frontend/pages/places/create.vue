@@ -31,7 +31,7 @@ const submit = async (formData: Partial<PlaceInput>) => {
 onMounted(async() => {
   const map = new maplibregl.Map({
     container: 'map',
-    zoom: 3,
+    zoom: 4.5,
     style: {
       version: 8,
       sources: {
@@ -50,7 +50,7 @@ onMounted(async() => {
         }
       ]
     },
-    center: [8, 50],
+    center: [11, 51],
   });
   const draw = new MaplibreMeasureControl({
     modes: ['render','point','select','delete-selection','delete','download'],
