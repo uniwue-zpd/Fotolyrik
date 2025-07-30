@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import type { Place } from "~/utils/types";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
 import apiClient from "~/service/api";
 import { navigateTo } from "#app";
+import "maplibre-gl/dist/maplibre-gl.css";
+import { Map } from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { MaplibreMeasureControl } from '@watergis/maplibre-gl-terradraw';
+import '@watergis/maplibre-gl-terradraw/dist/maplibre-gl-terradraw.css';
 
 const toast = useToast();
 
@@ -21,9 +26,28 @@ const submit = async (formData: Partial<PlaceInput>) => {
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Erstellen des Ortes', life: 3000})
   }
 };
+/* start interactive map */
+onMounted(async() => {
+  const map = new Map({
+    container: 'map',
+    style: 'https://demotiles.maplibre.org/style.json',
+    center: [0, 0],
+    zoom: 1,
+  });
+  const draw = new MaplibreMeasureControl({
+    modes: ['render','point','linestring','polygon','rectangle','circle','freehand','angled-rectangle','sensor','sector','select','delete-selection','delete','download'],
+    open: true,
+    distanceUnit: 'kilometers', distancePrecision: 2, areaUnit: 'metric', areaPrecision: 2, computeElevation: true
+  });
+  map.addControl(draw, 'top-left');
+})
+ /* end interactive map */
 </script>
 
 <template>
+  <div>
+    <div id="map" class="h-[400px] w-full"></div>
+  </div>
   <div class="flex flex-col gap-2">
     <h1 class="text-2xl outfit-headline font-bold">Neuen Ort erstellen</h1>
     <p class="roboto-plain">Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen</p>
