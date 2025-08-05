@@ -6,7 +6,6 @@ import apiClient from "~/service/api";
 import { navigateTo } from "#app";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Map } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { MaplibreMeasureControl } from '@watergis/maplibre-gl-terradraw';
 import '@watergis/maplibre-gl-terradraw/dist/maplibre-gl-terradraw.css';
@@ -69,24 +68,13 @@ onMounted(() => {
 
   map.addControl(draw, "top-left");
 
-  map.on("load", () => {
-    map.on("measure.create", (e) => {
-      console.log("measure.create fired", e);
-
-      if (!e?.features?.length) {
-        console.warn("No features returned");
-        return;
-      }
-
-      e.features.forEach((feature) => {
-        if (feature.geometry.type === "Point") {
-          pointCoordinates.value = feature.geometry.coordinates;
-          console.log("✅ Point coordinates:", pointCoordinates.value);
-        } else {
-          console.log("Not a point:", feature.geometry.type);
-        }
-      });
-    });
+  map.on('click', (e) => {
+    document.getElementById('info').innerHTML =
+        // e.point is the x, y coordinates of the mousemove event relative
+        // to the top-left corner of the map
+        `${JSON.stringify(e.point)
+        }<br />${JSON.stringify(e.lngLat.wrap())}`;
+            // e.lngLat is the longitude, latitude geographical position of the event
   });
 });
  /* end interactive map */
@@ -95,10 +83,7 @@ onMounted(() => {
 <template>
   <div>
     <div id="map" class="h-[400px] w-full"></div>
-    <div v-if="pointCoordinates">
-      <p>Longitude: {{ pointCoordinates[0] }}</p>
-      <p>Latitude: {{ pointCoordinates[1] }}</p>
-    </div>
+    <pre id="info"></pre>
   </div>
   <div class="flex flex-col gap-2">
     <h1 class="text-2xl outfit-headline font-bold">Neuen Ort erstellen</h1>
