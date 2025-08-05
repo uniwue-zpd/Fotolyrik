@@ -69,12 +69,8 @@ onMounted(() => {
   map.addControl(draw, "top-left");
 
   map.on('click', (e) => {
-    document.getElementById('info').innerHTML =
-        // e.point is the x, y coordinates of the mousemove event relative
-        // to the top-left corner of the map
-        `${JSON.stringify(e.point)
-        }<br />${JSON.stringify(e.lngLat.wrap())}`;
-            // e.lngLat is the longitude, latitude geographical position of the event
+    const { lng, lat } = e.lngLat;
+        console.log(JSON.stringify({ lng, lat }));
   });
 });
  /* end interactive map */
@@ -83,7 +79,6 @@ onMounted(() => {
 <template>
   <div>
     <div id="map" class="h-[400px] w-full"></div>
-    <pre id="info"></pre>
   </div>
   <div class="flex flex-col gap-2">
     <h1 class="text-2xl outfit-headline font-bold">Neuen Ort erstellen</h1>
