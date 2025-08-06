@@ -78,7 +78,7 @@
         <Column field="filename" header="Datei" sortable headerClass="w-[60%]"></Column>
         <Column field="created_date" header="Erstellt am" sortable>
           <template #body="slotProps">
-              {{ timestampToDate(slotProps.data.created_date) }}
+              {{ timestampToDate(slotProps.data.createdDate) }}
           </template>
         </Column>
         <Column class="w-24 !text-end">
