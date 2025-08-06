@@ -72,7 +72,7 @@ export const useFileStore = defineStore("files", () => {
     function getImagePreview(path: string) {
         if (!path) return '';
         const filename = path.split(/[\\/]/).pop() || '';
-        return `${apiClient.defaults.baseURL || ''}/uploads/${filename}`;
+        return `${apiClient.defaults.baseURL || ''}/uploads/${encodeURIComponent(filename)}`;
     }
 
     return {
