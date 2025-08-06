@@ -37,10 +37,7 @@ public class GeneralSearchService {
             .getResultList();
 
         return rows.stream()
-            .map(row -> new GeneralSearchDTO(
-                ((Number) row[0]).longValue(),
-                (String) row[1],
-                type))
+            .map(row -> new GeneralSearchDTO(((Number) row[0]).longValue(), ((String) row[1]).strip(), type))
             .toList();
     }
 
