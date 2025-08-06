@@ -7,7 +7,6 @@ import { navigateTo } from "#app";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { MaplibreMeasureControl } from '@watergis/maplibre-gl-terradraw';
 import '@watergis/maplibre-gl-terradraw/dist/maplibre-gl-terradraw.css';
 
 const toast = useToast();
@@ -56,21 +55,17 @@ onMounted(() => {
     },
   });
 
-  const draw = new MaplibreMeasureControl({
-    modes: ["render", "point", "select", "delete-selection", "delete", "download"],
-    open: true,
-    distanceUnit: "kilometers",
-    distancePrecision: 2,
-    areaUnit: "metric",
-    areaPrecision: 2,
-    computeElevation: true,
-  });
-
-  map.addControl(draw, "top-left");
-
+  let current_marker: maplibregl.Marker | null = null;
   map.on('click', (e) => {
     const { lng, lat } = e.lngLat;
-        console.log(JSON.stringify({ lng, lat }));
+    console.log(JSON.stringify({ lng, lat }));
+    if (current_marker) {
+      current_marker.remove();
+    }
+    current_marker = new maplibregl.Marker()
+        .setLngLat([lng, lat])
+        .setPopup(new maplibregl.Popup())
+        .addTo(map);
   });
 });
  /* end interactive map */
