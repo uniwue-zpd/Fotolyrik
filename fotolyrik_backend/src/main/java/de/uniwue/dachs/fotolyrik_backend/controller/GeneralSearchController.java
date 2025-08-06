@@ -24,10 +24,9 @@ public class GeneralSearchController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GeneralSearchDTO>> search(@RequestParam("query") String query) {
+    public ResponseEntity<List<GeneralSearchDTO>> search(@RequestParam String query) {
         if (query == null || query.isEmpty() || query.isBlank()) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         List<GeneralSearchDTO> result = generalSearchService.search(query);
         return ResponseEntity.status(HttpStatus.OK).body(result);
