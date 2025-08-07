@@ -4,6 +4,8 @@ import { ref } from 'vue';
 
 const op = ref();
 const toggle = (event: any) => op.value.toggle(event)
+
+const visible = ref(false);
 </script>
 
 <template>
@@ -13,6 +15,14 @@ const toggle = (event: any) => op.value.toggle(event)
         <img class="h-[40px] w-auto" src="../public/fl_wortmarke-blaugrau.svg" alt="logo">
       </NuxtLink>
       <div class="flex flex-row items-center space-x-2">
+        <button @click="visible = true">
+          <i class="pi pi-search text-white"/>
+        </button>
+        <Dialog v-model:visible="visible" modal position="top">
+          <template #header>
+            <h2 class="text-xl font-bold outfit-headline text-[#063D79]">Suchen</h2>
+          </template>
+        </Dialog>
         <NuxtLink to="/project" class="outfit-headline text-white">Projekt</NuxtLink>
         <NuxtLink to="/collection" class="outfit-headline text-white">Sammlung</NuxtLink>
         <NuxtLink to="/contact" class="outfit-headline text-white">Kontakt</NuxtLink>
