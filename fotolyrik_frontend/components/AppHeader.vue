@@ -18,10 +18,16 @@ const visible = ref(false);
         <button @click="visible = true">
           <i class="pi pi-search text-white"/>
         </button>
-        <Dialog v-model:visible="visible" modal position="top">
+        <Dialog v-model:visible="visible" modal position="top" class="min-w-[30%]">
           <template #header>
             <h2 class="text-xl font-bold outfit-headline text-[#063D79]">Suchen</h2>
           </template>
+          <div class="flex flex-col gap-2">
+            <input
+                type="search"
+                class="px-3 py-3 border rounded-md shadow focus:outline-none hover:shadow-md"
+            />
+          </div>
         </Dialog>
         <NuxtLink to="/project" class="outfit-headline text-white">Projekt</NuxtLink>
         <NuxtLink to="/collection" class="outfit-headline text-white">Sammlung</NuxtLink>
