@@ -18,11 +18,7 @@ export default defineNuxtConfig({
       ssr: false
     }
   },
-  modules: [
-    '@pinia/nuxt',
-    '@primevue/nuxt-module',
-    '@formkit/nuxt'
-  ],
+  modules: ['@pinia/nuxt', '@primevue/nuxt-module', '@formkit/nuxt', '@nuxt/icon'],
   primevue: {
     options: {
       theme: {
@@ -33,6 +29,11 @@ export default defineNuxtConfig({
   },
   formkit: {
     configFile: './formkit.config.ts'
+  },
+  icon: {
+    clientBundle: {
+      scan: true,
+    }
   },
   css: ['./assets/css/main.css'],
   postcss: {

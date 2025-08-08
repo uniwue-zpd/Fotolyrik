@@ -14,6 +14,13 @@ const type_mapping: { [key: string]: string } = {
   publication_media: 'Publikationsmedium'
 }
 
+const icon_map: Record<string, string> = {
+  photopoems: 'i-material-symbols-notes-rounded',
+  persons: 'i-material-symbols-person-3-outline-rounded',
+  places: 'i-material-symbols-location-on-outline-rounded',
+  publication_media: 'i-material-symbols-book-5-rounded'
+}
+
 const fetchResults = async (search: string) => {
   if (!search.trim()) {
     results.value = []
@@ -44,6 +51,7 @@ const onInput = () => {
 const clearResults = () => {
   results.value = []
   visible.value = false
+  query.value = '';
 }
 </script>
 
@@ -51,7 +59,7 @@ const clearResults = () => {
   <button @click="visible = true">
     <i class="pi pi-search text-white"/>
   </button>
-  <Dialog v-model:visible="visible" modal position="top" class="min-w-[30%]">
+  <Dialog v-model:visible="visible" modal position="top" class="min-w-[30%]" @hide="clearResults">
     <template #header>
       <h2 class="text-xl font-bold outfit-headline text-[#063D79]">Suchen</h2>
     </template>
@@ -64,16 +72,17 @@ const clearResults = () => {
       />
       <div class="flex flex-col gap-2">
         <div v-for="result in results">
-          <div class="flex flex-col gap-2 rounded-md p-2 shadow-sm hover:shadow-md hover:scale-105 transition-transform duration-300">
             <NuxtLink
                 :to="`/${result.type}/${result.id}`"
                 @click="clearResults"
-                class="roboto-plain text-base font-semibold text-black"
+                class="text-gray-400 hover:text-black flex flex-row items-center space-x-3 rounded-md p-2 shadow-sm hover:shadow-md hover:scale-105 transition-transform duration-300"
             >
-              {{ result.title }}
+              <Icon :name="icon_map[result.type]" class="text-2xl"/>
+              <div class="flex flex-col gap-2">
+                <h2 class="roboto-plain text-base text-black font-semibold">{{ result.title }}</h2>
+                <p class="text-sm roboto-plain text-gray-500">{{ type_mapping[result.type] }}</p>
+              </div>
             </NuxtLink>
-            <p class="text-sm roboto-plain text-gray-500">{{ type_mapping[result.type] }}</p>
-          </div>
         </div>
       </div>
     </div>
