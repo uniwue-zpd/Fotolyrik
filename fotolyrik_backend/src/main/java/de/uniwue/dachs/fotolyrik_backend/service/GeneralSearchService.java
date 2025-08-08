@@ -24,6 +24,8 @@ public class GeneralSearchService {
                 new SearchSpec("SELECT id, CONCAT(first_name, ' ', last_name) AS title FROM person WHERE LOWER(CONCAT(first_name, ' ', last_name)) LIKE :pattern", "person"),
                 new SearchSpec("SELECT p.id, CONCAT(p.first_name, ' ', p.last_name) AS title FROM person p JOIN person_pseudonymes pp ON p.id = pp.person_id WHERE LOWER(pp.pseudonyms) LIKE :pattern", "person"),
                 new SearchSpec("SELECT id, title FROM photopoem WHERE LOWER(title) LIKE :pattern", "photopoem"),
+                new SearchSpec("SELECT id, title FROM photopoem WHERE LOWER(subtitle) LIKE :pattern", "photopoem"),
+                new SearchSpec("SELECT id, title FROM photopoem WHERE LOWER(alt_title) LIKE :pattern", "photopoem"),
                 new SearchSpec("SELECT id, name AS title FROM place WHERE LOWER(name) LIKE :pattern", "place"),
                 new SearchSpec("SELECT id, CONCAT(title, ' ', subtitle) FROM pub_medium WHERE LOWER(CONCAT(title, ' ', subtitle)) LIKE :pattern", "pub_medium")
             )

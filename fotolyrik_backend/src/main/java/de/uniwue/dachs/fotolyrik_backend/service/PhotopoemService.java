@@ -69,6 +69,8 @@ public class PhotopoemService {
     public Photopoem updatePhotopoem(Long id, Photopoem updatedPhotopoem) {
         return photopoemRepository.findById(id).map(entity -> {
             entity.setTitle(updatedPhotopoem.getTitle());
+            entity.setSubtitle(updatedPhotopoem.getSubtitle());
+            entity.setAltTitle(updatedPhotopoem.getAltTitle());
             entity.setVolume((updatedPhotopoem.getVolume() != null) ? updatedPhotopoem.getVolume() : null);
             entity.setIssue((updatedPhotopoem.getIssue() != null) ? updatedPhotopoem.getIssue() : null);
             entity.setPageNumber((updatedPhotopoem.getPageNumber() != null) ? updatedPhotopoem.getPageNumber() : null);
@@ -86,7 +88,7 @@ public class PhotopoemService {
             entity.setImages((updatedPhotopoem.getImages() != null) ? getFiles(updatedPhotopoem.getImages()) : null);
             entity.setCopyrightStatusImage((updatedPhotopoem.getCopyrightStatusImage() != null) ? updatedPhotopoem.getCopyrightStatusImage() : null);
             entity.setCopyrightStatusText((updatedPhotopoem.getCopyrightStatusText() != null) ? updatedPhotopoem.getCopyrightStatusText() : null);
-            entity.setLanguage((updatedPhotopoem.getLanguage() != null) ? updatedPhotopoem.getLanguage() : null);
+            entity.setLanguages((updatedPhotopoem.getLanguages() != null) ? updatedPhotopoem.getLanguages() : null);
             return photopoemRepository.save(entity);
         }).orElseThrow(() -> new EntityNotFoundException("Photopoem with id '" + id + "' does not exist"));
     }
