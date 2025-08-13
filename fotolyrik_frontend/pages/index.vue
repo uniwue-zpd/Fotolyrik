@@ -169,12 +169,12 @@ onMounted(async () => {
         </template>
       </Carousel>
     </div>
-    <div class="intro py-10 px-6 md:px-[3.75rem]">
+    <div class="intro py-10 px-6 md:px-15">
       <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">
         Fotolyrik in illustrierten Zeitschriften zwischen 1895 und 1945
       </h1>
     </div>
-    <div class="intro px-6 md:px-[3.75rem]">
+    <div class="intro px-6 md:px-15">
       <div class="md:columns-2 space-y-8 gap-x-10 text-justify">
         <div>
           1 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
@@ -213,11 +213,11 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="py-8 px-6 md:px-[3.75rem]">
+    <div class="py-8 px-6 md:px-15">
       <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Sammlung</h1>
     </div>
     <div class="collection bg-[#F1F2F2]">
-      <div class="flex flex-col gap-2 px-6 md:px-[3.75rem] py-10 md:py-14">
+      <div class="flex flex-col gap-2 px-6 md:px-15 py-10 md:py-14">
         <div class="pb-3">
           <h2 class="text-3xl averia-layout italic text-[#063D79]">Highlight</h2>
         </div>
@@ -232,13 +232,13 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="title py-8 pt-7 px-6 md:px-[3.75rem]">
+    <div class="title py-8 pt-7 px-6 md:px-15">
       <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Fotolyrik in Zahlen</h2>
     </div>
     <div>
-      <Chart type="bar" :data="chartData" :options="chartOptions" class="h-[30rem]" />
+      <Chart type="bar" :data="chartData" :options="chartOptions" class="h-120" />
     </div>
-    <div class="analytics px-6 md:px-[3.75rem]">
+    <div class="analytics px-6 md:px-15">
       <div class="flex flex-col gap-2">
         <div class="font-bold">
           Bar chart placeholder
@@ -264,11 +264,11 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="py-6 md:py-8 px-6 md:px-[3.75rem]">
+    <div class="py-6 md:py-8 px-6 md:px-15">
       <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Karte</h1>
     </div>
       <div class="collection bg-[#F1F2F2]">
-        <div class="flex flex-col px-6 md:px-[3.75rem] py-10 md:py-14">
+        <div class="flex flex-col px-6 md:px-15 py-10 md:py-14">
           <div class="title pb-5">
             <h2 class="text-3xl averia-layout italic text-[#063D79]">Karte</h2>
           </div>
@@ -277,7 +277,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-    <div class="title pt-10 md:pt-20 pb-4 px-6 md:px-[3.75rem]">
+    <div class="title pt-10 md:pt-20 pb-4 px-6 md:px-15">
       <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Themen</h2>
     </div>
     <div class="topics bg-[#F1F2F2] p-5">
@@ -285,7 +285,7 @@ onMounted(async () => {
         <Carousel :value="topics" :numVisible="4" :numScroll="1" controls="true" indicator-type="disc" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
           <template #item="{ data }">
             <div class="p-2">
-              <img :src="data" alt="image in carousel" class="w-full rounded shadow-md" />
+              <img :src="data" alt="image in carousel" class="w-full rounded-sm shadow-md" />
             </div>
           </template>
         </Carousel>

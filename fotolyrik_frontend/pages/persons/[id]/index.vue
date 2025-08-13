@@ -100,7 +100,7 @@ onMounted(async () => {
     </Card>
     <div class="flex flex-row justify-between">
       <div class="previus">
-        <div v-if="previous_person" class="p-2 border-[1px] border-solid rounded-md hover:shadow-md">
+        <div v-if="previous_person" class="p-2 border border-solid rounded-md hover:shadow-md">
           <NuxtLink
               :to="`/persons/${previous_person.id}`"
               class="flex flex-row items-center space-x-2"
@@ -111,7 +111,7 @@ onMounted(async () => {
         </div>
       </div>
       <div class="next">
-        <div v-if="next_person" class="p-2 border-[1px] border-solid rounded-md hover:shadow-md">
+        <div v-if="next_person" class="p-2 border border-solid rounded-md hover:shadow-md">
           <NuxtLink
               :to="`/persons/${next_person.id}`"
               class="flex flex-row items-center space-x-2"

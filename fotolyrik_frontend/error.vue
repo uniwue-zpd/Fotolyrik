@@ -6,7 +6,7 @@ const props = defineProps({
 </script>
 
 <template>
-      <div class="flex flex-col gap-5 items-center justify-center h-[100vh]">
+      <div class="flex flex-col gap-5 items-center justify-center h-screen">
         <div class="flex flex-col gap-2 items-center justify-center">
           <div class="font-mono font-bold text-8xl animate-pulse text-[#063D79]">{{ error?.statusCode }}</div>
           <div class="font-mono font-bold text-xl text-[#063D79]">{{ error?.message }}</div>
