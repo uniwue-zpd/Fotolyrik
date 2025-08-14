@@ -16,7 +16,7 @@
       >
         <template #header>
           <div class="flex flex-row justify-between items-center">
-            <div class="p-2 border-[1px] border-solid rounded-md hover:shadow-md flex items-center cursor-pointer" @click="uploadVisible = true">
+            <div class="p-2 border border-solid rounded-md hover:shadow-md flex items-center cursor-pointer" @click="uploadVisible = true">
               <i class="pi pi-upload mr-2"/>
               <div class="text-[#063D79] roboto-plain">Dateien hinzufügen</div>
             </div>
@@ -64,7 +64,7 @@
                     @error="handleImageError(slotProps.data.path)" 
                     :src="fileStore.getImagePreview(slotProps.data.path)" 
                     alt="MaxPreview"
-                    class="max-w-screen-md max-h-screen object-contain"
+                    class="max-w-(--breakpoint-md) max-h-screen object-contain"
                     @contextmenu.prevent
                   />
                   <div v-else class="flex items-center justify-center w-full h-full">
@@ -81,15 +81,15 @@
               {{ timestampToDate(slotProps.data.createdDate) }}
           </template>
         </Column>
-        <Column class="w-24 !text-end">
+        <Column class="w-24 text-end!">
           <template #body="{ data }">
-            <Button icon="pi pi-trash" rounded severity="danger" variant="text" @click="fileStore.removeFile(data)"/>
+            <Button icon="pi pi-trash" rounded-sm severity="danger" variant="text" @click="fileStore.removeFile(data)"/>
           </template>
         </Column>
       </DataTable>
     </template>
   </Card>
-  <Dialog v-model:visible="uploadVisible" modal header="Dateien hinzufügen" :draggable="false" class="w-[40dvw] min-w-[30rem]">
+  <Dialog v-model:visible="uploadVisible" modal header="Dateien hinzufügen" :draggable="false" class="w-[40dvw] min-w-120">
     <FormsUploadForm/>
   </Dialog>
 </template>

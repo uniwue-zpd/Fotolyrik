@@ -17,7 +17,7 @@ const toggle = (event: any) => op.value.toggle(event)
         <NuxtLink to="/collection" class="outfit-headline text-white">Sammlung</NuxtLink>
         <NuxtLink to="/contact" class="outfit-headline text-white">Kontakt</NuxtLink>
         <div class="card flex justify-center align-middle text-white">
-          <Button type="button" icon="pi pi-user" rounded aria-label="User" variant="link" class="text-white" @click="toggle"/>
+          <Button type="button" icon="pi pi-user" rounded-sm aria-label="User" variant="link" class="text-white" @click="toggle"/>
           <Popover ref="op">
             <div class="card flex justify-center">
               <div>Hier entsteht der Anmeldebereich</div>

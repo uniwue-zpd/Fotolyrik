@@ -17,6 +17,7 @@
     "@pinia/nuxt": "^0.10.1",
     "@primevue/nuxt-module": "^4.3.1",
     "@primevue/themes": "^4.3.1",
+    "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.8.4",
     "chart.js": "^4.5.0",
     "esbuild": "^0.25.0",
@@ -24,13 +25,9 @@
     "nuxt": "^3.15.4",
     "pinia": "^3.0.1",
     "primeicons": "^7.0.0",
+    "tailwindcss": "^4.1.11",
     "tify": "^0.32.0",
     "vue": "latest",
     "vue-router": "latest"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^3.4.17"
   }
 }

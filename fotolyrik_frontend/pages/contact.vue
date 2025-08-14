@@ -63,7 +63,7 @@ const submit = async (formData: ContactForm) => {
           </div>
         <div class="flex flex-col">
           <FormKit
-              outer-class="max-w-[30rem]"
+              outer-class="max-w-120"
               type="email"
               name="email"
               label="Email*"
@@ -74,7 +74,7 @@ const submit = async (formData: ContactForm) => {
         </div>
         <div class="flex flex-col">
           <FormKit
-              outer-class="max-w-[30rem]"
+              outer-class="max-w-120"
               type="text"
               name="subject"
               id="subject"
@@ -86,8 +86,8 @@ const submit = async (formData: ContactForm) => {
         </div>
         <div class="flex flex-col">
           <FormKit
-              outer-class="max-w-[30rem]"
-              input-class="min-h-[10rem]"
+              outer-class="max-w-120"
+              input-class="min-h-40"
               type="textarea"
               name="message"
               label="Nachricht*"
