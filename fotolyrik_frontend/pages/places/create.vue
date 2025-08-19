@@ -66,17 +66,27 @@ onMounted(() => {
         .setLngLat([lng, lat])
         .setPopup(new maplibregl.Popup())
         .addTo(map);
+
+    const latInput = document.querySelector<HTMLInputElement>('[name="latitude"]');
+    if (latInput) {
+      latInput.value = lat.toString();
+    }
+
+    const lngInput = document.querySelector<HTMLInputElement>('[name="longitude"]');
+    if (lngInput) {
+      lngInput.value = lng.toString();
+    }
   });
 });
  /* end interactive map */
 </script>
 
 <template>
-  <div>
-    <div id="map" class="h-[400px] w-full"></div>
-  </div>
   <div class="flex flex-col gap-2">
     <h1 class="text-2xl outfit-headline font-bold">Neuen Ort erstellen</h1>
+    <div>
+      <div id="map" class="h-[400px] w-full"></div>
+    </div>
     <p class="roboto-plain">Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen</p>
     <FormKit
         type="form"
