@@ -8,6 +8,7 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@watergis/maplibre-gl-terradraw/dist/maplibre-gl-terradraw.css';
+import { getNode } from '@formkit/core';
 
 const toast = useToast();
 
@@ -28,6 +29,8 @@ const submit = async (formData: Partial<PlaceInput>) => {
 
 /* start interactive map */
 const pointCoordinates = ref(null);
+const latitude = ref<number|null>(null);
+const longitude = ref<number|null>(null);
 
 onMounted(() => {
   const map = new maplibregl.Map({
@@ -57,8 +60,10 @@ onMounted(() => {
 
   let current_marker: maplibregl.Marker | null = null;
   map.on('click', (e) => {
-    const { lng, lat } = e.lngLat;
-    console.log(JSON.stringify({ lng, lat }));
+    let { lng, lat } = e.lngLat
+    lng = Number(lng.toFixed(5))
+    lat = Number(lat.toFixed(5))
+
     if (current_marker) {
       current_marker.remove();
     }
@@ -67,15 +72,9 @@ onMounted(() => {
         .setPopup(new maplibregl.Popup())
         .addTo(map);
 
-    const latInput = document.querySelector<HTMLInputElement>('[name="latitude"]');
-    if (latInput) {
-      latInput.value = lat.toString();
-    }
-
-    const lngInput = document.querySelector<HTMLInputElement>('[name="longitude"]');
-    if (lngInput) {
-      lngInput.value = lng.toString();
-    }
+    latitude.value = lat
+    longitude.value = lng
+    console.log(JSON.stringify({ lng, lat }));
   });
 });
  /* end interactive map */
@@ -114,11 +113,13 @@ onMounted(() => {
             placeholder="Hauptstadt Deutschlands"
             prefix-icon="textarea"
             outer-class="max-w-full min-w-[0%]"
+            step="0.0000000001"
         />
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
               name="latitude"
+              v-model="latitude"
               label="Breitengrad"
               placeholder="52.5162"
               prefix-icon="number"
@@ -127,6 +128,7 @@ onMounted(() => {
           <FormKit
               type="number"
               name="longitude"
+              v-model="longitude"
               label="Längengrad"
               placeholder="13.3777"
               prefix-icon="number"
