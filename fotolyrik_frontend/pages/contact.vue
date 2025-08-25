@@ -1,26 +1,39 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import apiClient from "~/service/api";
-import { getNode } from '@formkit/core';
-import type {ContactForm} from "~/utils/types";
+import { ref } from "vue";
+import { zodResolver } from "@primevue/forms/resolvers/zod";
+import { z } from "zod";
 
 const toast = useToast();
 
-const submitted = ref(false);
+const appellation = ref([
+  { key: 'Herr', value: 'Herr' },
+  { key: 'Frau', value: 'Frau' },
+  { key: 'Keine Angabe', value: null }
+])
 
-const submit = async (formData: ContactForm) => {
-  try {
-    await apiClient.post('/contact', formData)
-    submitted.value = true;
-    toast.add({severity: 'success', detail: 'Erfolgreich zugestellt', life: 3000});
-    await new Promise((r) => setTimeout(r, 1000));
-    const form = getNode('submitForm');
-    if (form) {
-      form.reset();
+const resolver = ref(zodResolver(
+  z.object({
+    appellation: z.any(),
+    name: z.string("Bitte geben Sie einen Namen an."),
+    email: z.email("Bitte geben Sie eine gültige Email-Adresse an."),
+    subject: z.string("Bitte geben Sie einen Betreff an."),
+    message: z.string("Bitte geben Sie eine Nachricht an."),
+    dataprotection: z.boolean("Datenschutzerklärung bitte bestätigen.")
+  })
+))
+
+const onFormSubmit = async (e: any) => {
+  if (e.valid) {
+    console.log(e.values)
+    try {
+      await apiClient.post('/contact', e.values)
+      toast.add({severity: 'success', detail: 'Erfolgreich zugestellt', life: 3000});
+    } catch (error) {
+      console.log(error)
+      toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Senden der Nachricht', life: 3000})
     }
-  } catch (error) {
-    console.log(error)
-    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Senden der Nachricht', life: 3000})
+    e.reset()
   }
 };
 </script>
@@ -37,78 +50,42 @@ const submit = async (formData: ContactForm) => {
         Füllen Sie dafür bitte die unteren Felder aus
         und klicken Sie anschließend auf den Senden-Button.</p>
       </div>
-      <FormKit type="form" id='submitForm' @submit="submit" submit-label="Senden"  #default ="{ value }" incomplete-message="Nicht alle Felder wurden ausfüllt.">
-        <div class="flex flex-row gap-4">
-          <FormKit
-              type="text"
-              name="name"
-              id="name"
-              label="Name*"
-              placeholder="Name"
-              validation="required"
-              :validation-messages="{required: 'Bitte geben Sie einen Namen an.'}"
-          />
-          <FormKit
-              type="select"
-              name="appellation"
-              label="Anrede"
-              placeholder="Anrede"
-              select-icon="down"
-              :options="[
-                  {label: 'Herr', value: 'Herr'},
-                  {label: 'Frau', value: 'Frau'},
-                  {label: 'Keine Angabe', value: null}
-              ]"
-            />
+      <Form v-slot="$form" :resolver @submit="onFormSubmit" class="flex flex-col gap-4 w-full">
+        <div class="flex gap-4 w-full">
+          <FormField v-slot="$field" name="appellation" class="flex flex-col gap-1 w-45">
+            <label for="appellation" class="font-bold">Anrede</label>
+            <Select labelId="appellation" :options="appellation " optionLabel="key" optionValue="value" placeholder="Anrede" fluid/>
+          </FormField>
+          <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-auto">
+            <label for="name" class="font-bold">Name*</label>
+            <InputText id="name" type="text" placeholder="Name"/>
+            <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{ $form.name.error.message }}</Message>
+          </FormField>
+        </div>
+        <FormField v-slot="$field" name="email" class="flex flex-col gap-1">
+          <label for="email" class="font-bold">Email*</label>
+          <InputText id="email" type="text" placeholder="Email"/>
+          <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">{{ $form.email.error.message }}</Message>
+        </FormField>
+        <FormField v-slot="$field" name="subject" class="flex flex-col gap-1">
+          <label for="subject" class="font-bold">Betreff*</label>
+          <InputText id="subject" type="text" placeholder="Ihr Betreff"/>
+          <Message v-if="$form.subject?.invalid" severity="error" size="small" variant="simple">{{ $form.subject.error.message }}</Message>
+        </FormField>
+        <FormField v-slot="$field" name="message" class="flex flex-col gap-1">
+          <label for="message" class="font-bold">Nachricht*</label>
+          <Textarea id="message" type="text" placeholder="Ihre Nachricht"/>
+          <Message v-if="$form.message?.invalid" severity="error" size="small" variant="simple">{{ $form.message.error.message }}</Message>
+        </FormField>
+        <FormField v-slot="$field" name="data_protection" class="flex flex-col gap-1">
+          <div class="flex gap-4 mt-2">
+            <Checkbox inputId="dp" name="dataprotection" class="pt-0.5" binary/>
+            <label for="dp">Ich habe die <NuxtLink to="/data-protection" class="text-[#004188] font-bold">Datenschutzerklärung</NuxtLink> zur Kenntnis genommen.*</label>
           </div>
-        <div class="flex flex-col">
-          <FormKit
-              outer-class="max-w-120"
-              type="email"
-              name="email"
-              label="Email*"
-              placeholder="Email"
-              validation="required"
-              :validation-messages="{required: 'Bitte geben Sie eine gültige E-Mail-Adresse an.'}"
-          />
-        </div>
-        <div class="flex flex-col">
-          <FormKit
-              outer-class="max-w-120"
-              type="text"
-              name="subject"
-              id="subject"
-              label="Betreff*"
-              placeholder="Ihr Betreff"
-              validation="required"
-              :validation-messages="{required: 'Bitte geben Sie einen Betreff an.'}"
-          />
-        </div>
-        <div class="flex flex-col">
-          <FormKit
-              outer-class="max-w-120"
-              input-class="min-h-40"
-              type="textarea"
-              name="message"
-              label="Nachricht*"
-              placeholder="Ihre Nachricht"
-              validation="required"
-              :validation-messages="{required: 'Bitte geben Sie eine Nachricht ein.'}"
-          />
-          <FormKit
-              type="checkbox"
-              name="Datenschutzerklärung"
-              decorator-icon="check"
-              :value="false"
-              validation="accepted"
-              :validation-messages="{accepted: 'Datenschutzerklärung bitte bestätigen.'}"
-          >
-            <template #label="context">
-              <span :class="context.classes.label">Ich habe die <NuxtLink to="/data-protection" class="text-[#0073C9] font-bold">Datenschutzerklärung</NuxtLink> zur Kenntnis genommen.</span>
-            </template>
-          </FormKit>
-        </div>
-      </FormKit>
+          <Message v-if="$form.dataprotection?.invalid" severity="error" size="small" variant="simple">{{ $form.dataprotection.error.message }}</Message>
+        </FormField>
+        <Button type="submit" severity="primary" label="Senden"/>
+      </Form>
     </div>
   </div>
 </template>
