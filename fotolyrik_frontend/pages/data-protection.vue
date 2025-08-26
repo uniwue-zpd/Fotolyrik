@@ -4,7 +4,7 @@
 
 <template>
 <div class="flex flex-col gap-2">
-<h1 class="text-3xl outfit-headline font-bold">Datenschutzerklärung</h1>
+<h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Datenschutzerklärung</h1>
   <div class="flex flex-col">
     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
     sed diam nonumy eirmod tempor invidunt ut labore et dolore

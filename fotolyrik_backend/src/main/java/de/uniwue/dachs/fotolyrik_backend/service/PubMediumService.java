@@ -4,13 +4,11 @@ import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PlaceRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class PubMediumService {
@@ -36,17 +34,34 @@ public class PubMediumService {
     // POST
     @Transactional
     public PubMedium savePubMedium(PubMedium pubMedium) {
-        pubMedium.setPublication_places(getOrSavePubPlace(pubMedium.getPublication_places()));
+        pubMedium.setPublicationPlaces(getOrSavePubPlaces(pubMedium.getPublicationPlaces()));
         return pubMediumRepository.save(pubMedium);
     }
 
-    //TODO: Implement method for PUT Mapping
+    // PUT
+    public PubMedium updatePubMedium(Long id, PubMedium updatedPubMedium) {
+        return pubMediumRepository.findById(id)
+                .map(existingPubMedium -> {
+                    existingPubMedium.setTitle(updatedPubMedium.getTitle());
+                    existingPubMedium.setSubtitle(updatedPubMedium.getSubtitle());
+                    existingPubMedium.setPublicationPlaces(getOrSavePubPlaces(updatedPubMedium.getPublicationPlaces()));
+                    existingPubMedium.setPublisher(updatedPubMedium.getPublisher());
+                    existingPubMedium.setPubRhytm(updatedPubMedium.getPubRhytm());
+                    existingPubMedium.setStartYear(updatedPubMedium.getStartYear());
+                    existingPubMedium.setEndYear(updatedPubMedium.getEndYear());
+                    existingPubMedium.setAmountVolumes(updatedPubMedium.getAmountVolumes());
+                    existingPubMedium.setAmountIssues(updatedPubMedium.getAmountIssues());
+                    existingPubMedium.setZdbId(updatedPubMedium.getZdbId());
+                    return pubMediumRepository.save(existingPubMedium);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("PubMedium with id '" + id + "' does not exist"));
+    }
 
     // DELETE
     @Transactional
     public void deletePubPlace(Long id) {
         if (!pubMediumRepository.existsById(id)) {
-            throw new RuntimeException("Photopoem with id '" + id + "' does not exist");
+            throw new EntityNotFoundException("Photopoem with id '" + id + "' does not exist");
         }
         else {
             pubMediumRepository.deleteById(id);
@@ -54,19 +69,18 @@ public class PubMediumService {
     }
 
     // Helper
-    private Set<Place> getOrSavePubPlace(Set<Place> pub_places) {
+    private Set<Place> getOrSavePubPlaces(Set<Place> pub_places) {
         if (pub_places == null || pub_places.isEmpty()) {
             return new HashSet<>();
         }
         Set<Place> savedPlaces = new HashSet<>();
-        for (Place place : pub_places) {
+        pub_places.forEach(place -> {
             if (place.getId() != null) {
                 savedPlaces.add(placeRepository.findById(place.getId()).orElse(null));
-            }
-            else {
+            } else {
                 savedPlaces.add(placeRepository.save(place));
             }
-        }
+        });
         return savedPlaces;
     }
 }

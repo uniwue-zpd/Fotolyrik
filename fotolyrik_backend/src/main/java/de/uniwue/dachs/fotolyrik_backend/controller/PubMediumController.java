@@ -5,6 +5,8 @@ import de.uniwue.dachs.fotolyrik_backend.service.PubMediumService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/publication_media")
 public class PubMediumController {
@@ -33,7 +35,15 @@ public class PubMediumController {
         return ResponseEntity.status(201).body(savedPubMedium);
     }
 
-    //TODO: Implement PUT mapping
+    @PutMapping("/{id}")
+    public ResponseEntity<PubMedium> updatePubMedium(@PathVariable Long id, @RequestBody PubMedium pubMedium) {
+        try {
+            PubMedium updated = pubMediumService.updatePubMedium(id, pubMedium);
+            return ResponseEntity.ok(updated);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePubMedium(@PathVariable Long id) {

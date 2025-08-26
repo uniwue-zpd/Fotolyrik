@@ -14,8 +14,9 @@ const toast = useToast();
 const submitted = ref(false);
 const person_store = usePersonStore();
 const photopoem_store = usePhotopoemStore();
+const pub_medium_store = usePubMediumStore();
 
-type PhotoPoemInput = Omit<PhotoPoem, 'id' | 'created_by' | 'created_date' | 'last_modified_by' | 'last_modified_date'>;
+type PhotoPoemInput = Omit<PhotoPoem, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
 
 const submit = async (formData: Partial<PhotoPoemInput>) => {
   try {
@@ -74,6 +75,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
+              number
               name="volume"
               label="Jahrgang"
               placeholder="5"
@@ -82,6 +84,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
           />
           <FormKit
               type="number"
+              number
               name="issue"
               label="Ausgabe"
               placeholder="1"
@@ -92,7 +95,8 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
-              name="page_number"
+              number
+              name="pageNumber"
               label="Seite"
               placeholder="23"
               prefix-icon="number"
@@ -100,7 +104,8 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
           />
           <FormKit
               type="number"
-              name="page_count"
+              number
+              name="pageCount"
               label="Seitenanzahl"
               placeholder="2"
               prefix-icon="number"
@@ -109,7 +114,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         </div>
         <FormKit
             type="text"
-            name="publication_date"
+            name="publicationDate"
             label="Publikationsdatum"
             placeholder="01.03.1930"
             prefix-icon="date"
@@ -117,11 +122,11 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         />
         <FormKit
             type="select"
-            name="publication_medium"
+            name="publicationMedium"
             label="Publikationsmedium"
-            placeholder="Revue des Monats"
             outer-class="max-w-full"
             select-icon="select"
+            :options="pub_medium_store.pub_media.map(p => ({ label: `${p.title}`, value: p }))"
         />
         <Divider/>
         <div class="flex flex-row space-x-5">
@@ -132,7 +137,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Autor:innen"
               outer-class="max-w-full"
               select-icon="select"
-              :options="person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
           <FormKit
@@ -142,17 +147,17 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Fotograf:innen"
               outer-class="max-w-full"
               select-icon="select"
-              :options="person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
           <FormKit
               type="select"
               multiple
-              name="other_contributors"
+              name="otherContributors"
               label="Sonstige Mitwirkende"
               outer-class="max-w-full"
               select-icon="select"
-              :options="person_store.persons.map(p => ({ label: `${p.full_name}`, value: p }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
         </div>
@@ -199,7 +204,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
           />
           <FormKit
               type="url"
-              name="iiif_manifest"
+              name="iiifManifest"
               label="IIIF-Manifest"
               placeholder="https://www.example.com..."
               prefix-icon="link"
@@ -222,7 +227,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="select"
-              name="copyright_status_image"
+              name="copyrightStatusImage"
               label="Urheberrechtsstatus Bild"
               outer-class="max-w-full"
               select-icon="select"
@@ -235,7 +240,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
           />
           <FormKit
               type="select"
-              name="copyright_status_text"
+              name="copyrightStatusText"
               label="Urheberrechtsstatus Text"
               outer-class="max-w-full"
               select-icon="select"
@@ -263,7 +268,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>
           <hr>
-          <pre wrap>{{ value }}</pre>
+          <pre wrap class="text-sm">{{ value }}</pre>
         </div>
         <FormKit
             type="submit"

@@ -4,7 +4,7 @@ import { useConfirm } from 'primevue/useconfirm';
 
 const props = defineProps<{
   id: number;
-  entity_type: 'person' | 'photopoem';
+  entity_type: 'person' | 'photopoem' | 'pub_medium';
   page_url: string;
 }>();
 
@@ -38,6 +38,8 @@ const items = ref([
               await person_store.deletePerson(props.id);
             } else if (props.entity_type === 'photopoem') {
               await photopoem_store.deletePhotopoem(props.id);
+            } else if (props.entity_type === 'pub_medium') {
+              await usePubMediumStore().deletePubMedium(props.id);
             }
             toast.add({ severity: 'success', summary: 'Gelöscht', detail: 'Eintrag erfolgreich gelöscht', life: 3000 });
             router.push(props.page_url.substring(0, props.page_url.lastIndexOf('/')));

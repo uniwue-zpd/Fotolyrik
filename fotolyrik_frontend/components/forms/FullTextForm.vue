@@ -15,7 +15,7 @@ const toast = useToast();
 const submitted = ref(false);
 const photopoem_store = usePhotopoemStore();
 
-type FullTextInput = Omit<FullText, 'id' | 'created_by' | 'created_date' | 'last_modified_by' | 'last_modified_date'>;
+type FullTextInput = Omit<FullText, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
 
 const submit = async (formData: Partial<FullTextInput>) => {
   try {
@@ -71,7 +71,7 @@ const submit = async (formData: Partial<FullTextInput>) => {
         />
         <FormKit
             type="textarea"
-            name="full_text"
+            name="fullText"
             label="Volltext"
             placeholder="Die Sonne tönt nach alter Weise..."
             prefix-icon="textarea"

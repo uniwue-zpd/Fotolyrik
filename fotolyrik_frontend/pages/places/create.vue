@@ -89,6 +89,7 @@ onMounted(() => {
     <div>
       <div id="map" class="h-[400px] w-full"></div>
     </div>
+    <h1 class="text-2xl outfit-headline font-bold text-[#063D79]">Neuen Ort erstellen</h1>
     <p class="roboto-plain">Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen</p>
     <FormKit
         type="form"
@@ -116,7 +117,6 @@ onMounted(() => {
             placeholder="Hauptstadt Deutschlands"
             prefix-icon="textarea"
             outer-class="max-w-full min-w-[0%]"
-            step="0.0000000001"
         />
         <div class="flex flex-row space-x-5">
           <FormKit

@@ -43,7 +43,6 @@ services:
     volumes:
       # In case you have a database dump, uncomment the following line and change the file name
       # - ./<your_dump>.sql:/docker-entrypoint-initdb.d/<your_dump>.sql
-      - ./fotolyrik_dev_local.sql:/docker-entrypoint-initdb.d/fotolyrik_dev_local.sql
       - db_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]

@@ -41,6 +41,19 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         }
     }
 
+        // Fetch photopoem by author's ID
+    async function fetchPhotopoemsBy(params: Record<string, any>): Promise<PhotoPoem[]> {
+        try {
+            const response = await apiClient.get<PhotoPoem[]>(`/photopoems/filter`, {
+                params
+            });
+            return response.data;
+        } catch (error) {
+            console.log('Error fetching photopoems by author ID:', error);
+            return [];
+        }
+    }
+
         // Create new photopoem
     async function createPhotopoem(payload: Partial<PhotoPoem>) {
         try {
@@ -116,6 +129,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         isLoaded,
         fetchPhotopoems,
         fetchPhtotopoemById,
+        fetchPhotopoemsBy,
         createPhotopoem,
         updatePhotopoem,
         deletePhotopoem,

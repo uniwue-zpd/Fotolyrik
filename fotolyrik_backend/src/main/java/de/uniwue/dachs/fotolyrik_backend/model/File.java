@@ -9,15 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class File extends BaseEntity {
-    @Column(name = "filename")
     private String filename;
 
-    @Column(name = "path")
     private String path;
 
-    @Column(name = "type")
     private String type;
 
-    @Column(name = "size")
     private Long size;
 }

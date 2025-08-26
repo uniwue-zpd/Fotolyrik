@@ -31,7 +31,7 @@ const submit = async (formData: ContactForm) => {
   </div>
   <div class="columns-1 w-[40%] mx-auto">
     <div class="flex flex-col gap-5 place-content-center">
-      <h1 class="mt-4 text-3xl outfit-headline font-bold">Kontakt</h1>
+      <h1 class="mt-4 text-3xl outfit-headline font-bold text-[#063D79]">Kontakt</h1>
       <div>
         <p>Hier können Sie Ihre Nachricht an uns hinterlassen.
         Füllen Sie dafür bitte die unteren Felder aus
@@ -63,7 +63,7 @@ const submit = async (formData: ContactForm) => {
           </div>
         <div class="flex flex-col">
           <FormKit
-              outer-class="max-w-[30rem]"
+              outer-class="max-w-120"
               type="email"
               name="email"
               label="Email*"
@@ -74,7 +74,7 @@ const submit = async (formData: ContactForm) => {
         </div>
         <div class="flex flex-col">
           <FormKit
-              outer-class="max-w-[30rem]"
+              outer-class="max-w-120"
               type="text"
               name="subject"
               id="subject"
@@ -86,8 +86,8 @@ const submit = async (formData: ContactForm) => {
         </div>
         <div class="flex flex-col">
           <FormKit
-              outer-class="max-w-[30rem]"
-              input-class="min-h-[10rem]"
+              outer-class="max-w-120"
+              input-class="min-h-40"
               type="textarea"
               name="message"
               label="Nachricht*"

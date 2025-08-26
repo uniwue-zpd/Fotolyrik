@@ -4,7 +4,7 @@
 
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-3xl outfit-headline font-bold">Impressum</h1>
+    <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Impressum</h1>
     <div class="flex flex-col">
       <div>Julius-Maximilians-Universität Würzburg</div>
       <div>Sanderring 2</div>
