@@ -84,6 +84,9 @@ onMounted(() => {
   <div class="flex flex-col gap-2">
     <h1 class="text-2xl outfit-headline font-bold">Neuen Ort erstellen</h1>
     <div>
+      Klicken Sie auf die Karte, um einen Ort zu platzieren. Der Längen- und Breitengrad werden automatisch in die entsprechenden Formularfelder übernommen.
+    </div>
+    <div>
       <div id="map" class="h-[400px] w-full"></div>
     </div>
     <p class="roboto-plain">Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen</p>
