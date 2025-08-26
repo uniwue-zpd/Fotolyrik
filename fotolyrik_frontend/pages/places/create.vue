@@ -7,8 +7,6 @@ import { navigateTo } from "#app";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import 'maplibre-gl/dist/maplibre-gl.css';
-import '@watergis/maplibre-gl-terradraw/dist/maplibre-gl-terradraw.css';
-import { getNode } from '@formkit/core';
 
 const toast = useToast();
 
