@@ -119,6 +119,7 @@ onMounted(() => {
         <div class="flex flex-row space-x-5">
           <FormKit
               type="number"
+              number
               name="latitude"
               v-model="latitude"
               label="Breitengrad"
@@ -128,6 +129,7 @@ onMounted(() => {
           />
           <FormKit
               type="number"
+              number
               name="longitude"
               v-model="longitude"
               label="Längengrad"
