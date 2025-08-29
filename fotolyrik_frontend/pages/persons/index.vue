@@ -95,7 +95,7 @@ const filters = ref({
         <Column field="sex" header="Geschlecht" :sortable="true">
           <template #body="slotProps">
             <div v-if="slotProps.data.sex != null">
-              <div class="roboto-plain">{{ slotProps.data.sex === 'MALE' ? "männlich" : "weiblich" }}</div>
+              <div class="roboto-plain">{{ slotProps.data.sex === 'männlich' ? "männlich" : "weiblich" }}</div>
             </div>
             <div v-else>
               <span class="roboto-italic text-gray-500">Unbekannt</span>

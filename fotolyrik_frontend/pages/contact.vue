@@ -19,9 +19,9 @@ const resolver = ref(zodResolver(
     email: z.email("Bitte geben Sie eine gültige Email-Adresse an."),
     subject: z.string("Bitte geben Sie einen Betreff an."),
     message: z.string("Bitte geben Sie eine Nachricht an."),
-    dataprotection: z.boolean("Datenschutzerklärung bitte bestätigen.")
+    dataProtection: z.boolean("Datenschutzerklärung bitte bestätigen.")
   })
-))
+));
 
 const onFormSubmit = async (e: any) => {
   if (e.valid) {
@@ -29,11 +29,11 @@ const onFormSubmit = async (e: any) => {
     try {
       await apiClient.post('/contact', e.values)
       toast.add({severity: 'success', detail: 'Erfolgreich zugestellt', life: 3000});
+      e.reset()
     } catch (error) {
       console.log(error)
       toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Senden der Nachricht', life: 3000})
     }
-    e.reset()
   }
 };
 </script>
@@ -79,10 +79,10 @@ const onFormSubmit = async (e: any) => {
         </FormField>
         <FormField v-slot="$field" name="data_protection" class="flex flex-col gap-1">
           <div class="flex gap-4 mt-2">
-            <Checkbox inputId="dp" name="dataprotection" class="pt-0.5" binary/>
+            <Checkbox inputId="dp" name="dataProtection" class="pt-0.5" binary/>
             <label for="dp">Ich habe die <NuxtLink to="/data-protection" class="text-[#004188] font-bold">Datenschutzerklärung</NuxtLink> zur Kenntnis genommen.*</label>
           </div>
-          <Message v-if="$form.dataprotection?.invalid" severity="error" size="small" variant="simple">{{ $form.dataprotection.error.message }}</Message>
+          <Message v-if="$form.dataProtection?.invalid" severity="error" size="small" variant="simple">{{ $form.dataProtection.error.message }}</Message>
         </FormField>
         <Button type="submit" severity="primary" label="Senden"/>
       </Form>
