@@ -22,7 +22,6 @@ const submit = async (formData: Partial<PlaceInput>) => {
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Erstellen des Ortes', life: 3000})
   }
 };*/
-import type { Place } from "~/utils/types";
 import { navigateTo } from "#app";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
@@ -75,7 +74,7 @@ onMounted(() => {
       .addTo(map);
     }
   })
-})
+});
 
 const resolver = ref(
   zodResolver(
@@ -100,7 +99,7 @@ const onCoordinatesUpdate = () => {
   }
   map.setCenter(coords);
   map.setZoom(7);
-}
+};
 
 const onFormSubmit = async (e: any) => {
   if (e.valid) {
@@ -119,9 +118,11 @@ const onFormSubmit = async (e: any) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <h1 class="text-2xl outfit-headline font-bold text-[#063D79]">Neuen Ort erstellen</h1>
-    <p class="roboto-plain">Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen</p>
+  <div class="flex flex-col mx-auto w-[70%] gap-4">
+    <h1 class="text-2xl outfit-headline text-[#063D79] font-bold">Neuen Ort erstellen</h1>
+    <p class="roboto-plain">
+      Füllen Sie bitte die untenstehenden Felder aus, um ein Ort zu erstellen oder anzupassen.
+    </p>
     <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
       <Form
         v-slot="$form"
@@ -210,7 +211,7 @@ const onFormSubmit = async (e: any) => {
         -->
       </Form>
     </div>
-  </div> 
+  </div>
 </template>
 
 <style scoped>
