@@ -13,8 +13,8 @@ export const usePlaceStore = defineStore('place', () => {
 
     // Actions
         // Fetch all places
-    async function fetchPlaces() {
-        if (!isLoaded.value) {
+    async function fetchPlaces(reload = false) {
+        if (!isLoaded.value || reload) {
             try {
                 const response = await apiClient.get<Place[]>('/places');
                 places.value = response.data;

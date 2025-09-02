@@ -13,8 +13,8 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
 
     // Actions
         // Fetch all photopoems
-    async function fetchPhotopoems() {
-        if (!isLoaded.value) {
+    async function fetchPhotopoems(reload = false) {
+        if (!isLoaded.value || reload) {
             try {
                 const response = await apiClient.get<PhotoPoem[]>('/photopoems');
                 photopoems.value = response.data;

@@ -13,7 +13,7 @@ export const useFileStore = defineStore("files", () => {
     const loadingUp = ref(false)
     const errorUp = ref<string | null>(null)
 
-    async function getFiles() {
+    async function fetchFiles(reload = false) {
         loadingDown.value = true;
         errorDown.value = null;
 
@@ -31,7 +31,7 @@ export const useFileStore = defineStore("files", () => {
 
     async function removeFile(file: File) {
         try {
-            apiClient.delete(`/files/${file.id}`);
+            await apiClient.delete(`/files/${file.id}`);
             files.value = files.value.filter(f => f.id !== file.id);
         } catch (err: any) {
             console.error('Failed to delete file:', err);
@@ -47,6 +47,7 @@ export const useFileStore = defineStore("files", () => {
         const formData = new FormData();
         Array.from(fileList).forEach(file => {
             formData.append('file', file);
+            console.log(file)
         });
 
         try {
@@ -83,7 +84,7 @@ export const useFileStore = defineStore("files", () => {
         loadingUp,
         errorUp,
 
-        getFiles,
+        fetchFiles,
         removeFile,
         uploadFiles,
         getImagePreview

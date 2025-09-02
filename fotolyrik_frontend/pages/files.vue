@@ -1,9 +1,54 @@
+<script lang="ts" setup>
+import { onMounted } from 'vue';
+import { useFileStore } from '~/stores/FileStore';
+import { FilterMatchMode } from "@primevue/core";
+
+const toast = useToast();
+const fileStore = useFileStore();
+
+const imageErrors = ref<Record<string, boolean>>({});
+const uploadVisible = ref<boolean>(false);
+
+const filter = ref({ global: {value: null, matchMode: FilterMatchMode.CONTAINS}});
+const options: Intl.DateTimeFormatOptions = {
+  weekday: "long",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit"
+};
+
+onMounted(() => {
+  fileStore.fetchFiles();
+});
+
+const onFileSelect = async (e: any) => {
+  try {
+    if (e.files && e.files.length > 0) {
+      await fileStore.uploadFiles(e.files);
+      toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich hinzugefügt", life: 3000});
+    }
+  } catch (error) {
+    console.log(error);
+    toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
+  }
+}
+
+const timestampToDate = (timestamp: string) => {
+  return new Date(timestamp).toLocaleDateString("de-DE", options);
+};
+
+const handleImageError = (path: string) => {
+  imageErrors.value[path] = true;
+};
+</script>
+
 <template>
   <Card>
     <template #title>
       <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">Dateien</h1>
     </template>
     <template #content>
+      
       <DataTable
         :value="fileStore.files"
         v-model:filters="filter"
@@ -16,10 +61,19 @@
       >
         <template #header>
           <div class="flex flex-row justify-between items-center">
-            <div class="p-2 border border-solid rounded-md hover:shadow-md flex items-center cursor-pointer" @click="uploadVisible = true">
-              <i class="pi pi-upload mr-2"/>
-              <div class="text-[#063D79] roboto-plain">Dateien hinzufügen</div>
-            </div>
+            <FileUpload 
+              mode="basic" 
+              name="upload[]" 
+              accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+              chooseLabel="Dateien hinzufügen" 
+              invalidFileSizeMessage="Dateien sind zu groß. Maximal 20MB"
+              :maxFileSize="20000000"
+              :customUpload="true" 
+              :multiple="true" 
+              @select="onFileSelect"
+              auto
+              :pt="{ pcChooseButton: { root: { class: 'p-button-secondary p-button-outlined' } } }"
+            />
             <IconField>
               <InputIcon>
                 <i class="pi pi-search"/>
@@ -94,36 +148,7 @@
   </Dialog>
 </template>
 
-<script lang="ts" setup>
-import { onMounted } from 'vue';
-import { useFileStore } from '~/stores/FileStore';
-import { FilterMatchMode } from "@primevue/core";
 
-const fileStore = useFileStore();
-
-const imageErrors = ref<Record<string, boolean>>({});
-const uploadVisible = ref<boolean>(false);
-
-const filter = ref({ global: {value: null, matchMode: FilterMatchMode.CONTAINS}});
-const options: Intl.DateTimeFormatOptions = {
-  weekday: "long",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit"
-};
-
-onMounted(() => {
-  fileStore.getFiles();
-});
-
-const timestampToDate = (timestamp: string) => {
-  return new Date(timestamp).toLocaleDateString("de-DE", options);
-};
-
-const handleImageError = (path: string) => {
-  imageErrors.value[path] = true;
-};
-</script>
 
 <style>
 .p-image-rotate-left-button,

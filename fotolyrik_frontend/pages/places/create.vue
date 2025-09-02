@@ -1,44 +1,31 @@
 <script setup lang="ts">
-/*
-import type { Place } from "~/utils/types";
-import { ref } from "vue";
-import { useToast } from "primevue/usetoast";
-import apiClient from "~/service/api";
-import { navigateTo } from "#app";
-
-const toast = useToast();
-
-type PlaceInput = Omit<Place, 'id' | 'created_by' | 'created_date' | 'last_modified_by' | 'last_modified_date'>;
-const submitted = ref(false);
-
-const submit = async (formData: Partial<PlaceInput>) => {
-  try {
-    const response = await apiClient.post('/places', formData)
-    submitted.value = true;
-    toast.add({severity: 'success', detail: 'Erfolgreich erstellt', life: 3000})
-    navigateTo('/places');
-  } catch (error) {
-    console.log(error)
-    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Erstellen des Ortes', life: 3000})
-  }
-};*/
 import { navigateTo } from "#app";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 import maplibregl from "maplibre-gl";
 import apiClient from "~/service/api";
 
+const toast = useToast();
+
 const lat = ref<number | null>(null);
 const lng = ref<number | null>(null);
 let map: maplibregl.Map;
 let marker: maplibregl.Marker | null;
 
-const toast = useToast();
+const resolver = ref(
+  zodResolver(
+    z.object({
+      name: z.string("Bitte geben Sie einen Ortsnamen an."),
+      description: z.string().optional().nullable(),
+      latitude: z.number().optional().nullable(),
+      longitude: z.number().optional().nullable(),
+    })
+  )
+);
 
 onMounted(() => {
   map = new maplibregl.Map({
     container: "map",
-    //style: "https://demotiles.maplibre.org/style.json",
     style: {
       version: 8,
       sources: {
@@ -76,17 +63,6 @@ onMounted(() => {
   })
 });
 
-const resolver = ref(
-  zodResolver(
-    z.object({
-      name: z.string("Bitte geben Sie einen Ortsnamen an."),
-      description: z.any(),
-      latitude: z.any(),
-      longitude: z.any(),
-    })
-  )
-);
-
 const onCoordinatesUpdate = () => {
   if (lat.value == null || lng.value == null) return;
   const coords: [number, number] = [lng.value, lat.value];
@@ -106,12 +82,12 @@ const onFormSubmit = async (e: any) => {
     e.values.longitude = lng.value;
     e.values.latitude = lat.value;
     try {
-      const response = await apiClient.post('/places', e.values)
-      toast.add({severity: 'success', detail: 'Erfolgreich erstellt', life: 3000})
-      navigateTo('/places');
+      await apiClient.post("/places", e.values)
+      toast.add({severity: "success", detail: "Erfolgreich erstellt", life: 3000})
+      navigateTo("/places");
     } catch (error) {
       console.log(error)
-      toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Erstellen des Ortes', life: 3000})
+      toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000})
     }
   }
 };
@@ -121,8 +97,9 @@ const onFormSubmit = async (e: any) => {
   <div class="flex flex-col mx-auto w-[70%] gap-4">
     <h1 class="text-2xl outfit-headline text-[#063D79] font-bold">Neuen Ort erstellen</h1>
     <p class="roboto-plain">
-      Füllen Sie bitte die untenstehenden Felder aus, um ein Ort zu erstellen oder anzupassen.
+      Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen oder anzupassen.
     </p>
+
     <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
       <Form
         v-slot="$form"
@@ -130,6 +107,7 @@ const onFormSubmit = async (e: any) => {
         @submit="onFormSubmit"
         class="flex flex-col gap-4"
       >
+        <!-- Place name field -->
         <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-auto">
           <label for="name" class="font-bold">Ortsname*</label>
           <IconField>
@@ -145,6 +123,8 @@ const onFormSubmit = async (e: any) => {
             {{ $form.name.error.message }}
           </Message>
         </FormField>
+
+        <!-- Description field -->
         <FormField v-slot="$field" name="description" class="flex flex-col gap-1 flex-auto">
           <label for="description" class="font-bold">Beschreibung</label>
           <Textarea
@@ -158,11 +138,15 @@ const onFormSubmit = async (e: any) => {
             {{ $form.description.error.message }}
           </Message>
         </FormField>
+
+        <!-- Map -->
         <div class="flex flex-col gap-1 flex-auto">
           <label for="map" class="font-bold">Karte</label>
           <div id="map" class="h-[600px] w-full rounded-md"/>
         </div>
+
         <div class="flex flex-row gap-6 flex-wrap">
+          <!-- Latitude field -->
           <FormField v-slot="$field" name="latitude" class="flex flex-col gap-1 flex-1"> 
             <label for="latitude" class="font-bold">Breitengrad</label>
             <IconField>
@@ -182,6 +166,8 @@ const onFormSubmit = async (e: any) => {
               />
             </IconField>
           </FormField>
+
+          <!-- Longitude field -->
           <FormField v-slot="$field" name="longitude" class="flex flex-col gap-1 flex-1"> 
             <label for="longitude" class="font-bold">Längengrad</label>
             <IconField>
@@ -202,7 +188,9 @@ const onFormSubmit = async (e: any) => {
             </IconField>
           </FormField>
         </div>
-        <Button type="submit" severity="primary">Erstellen</Button>
+
+        <!-- Submit button -->
+        <Button type="submit" severity="primary" label="Erstellen" />
 
         <!--
         <Fieldset legend="Form States" class="h-80 overflow-auto">

@@ -12,8 +12,8 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
 
     // Actions
         // GET all  publication media
-    async function fetchPubMedia() {
-        if (!isLoaded.value) {
+    async function fetchPubMedia(reload = false) {
+        if (!isLoaded.value || reload) {
             try {
                 const response = await apiClient.get<PubMedium[]>('/publication_media');
                 pub_media.value = response.data;

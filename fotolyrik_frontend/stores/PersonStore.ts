@@ -13,8 +13,8 @@ export const usePersonStore = defineStore('person', () => {
 
     // Actions
         // Fetch all persons
-    async function fetchPersons() {
-        if (!isLoaded.value) {
+    async function fetchPersons(reload = false) {
+        if (!isLoaded.value || reload) {
             try {
                 const response = await apiClient.get<Person[]>('/persons');
                 persons.value = response.data;
