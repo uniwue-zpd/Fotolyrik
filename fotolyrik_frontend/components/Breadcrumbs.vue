@@ -1,30 +1,33 @@
+
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { BreadcrumbItem } from '@nuxt/ui';
-import { useRoute } from '#app';
+import type { BreadcrumbItem } from '@nuxt/ui'
+import { computed } from 'vue'
+import { useRoute } from '#app'
 
 const route = useRoute()
 
-const items = ref<BreadcrumbItem[]>([
-  {
-    label: 'Home',
-    icon: 'i-lucide-house'
-  },
-  {
-    label: 'Components',
-    icon: 'i-lucide-box',
-    to: '/components'
-  },
-  {
-    label: 'Breadcrumb',
-    icon: 'i-lucide-link',
-    to: '/components/breadcrumb'
-  }
-])
+const items = computed<BreadcrumbItem[]>(() => {
+  const pathSegments = route.path.split('/').filter(Boolean)
+
+  const crumbs: BreadcrumbItem[] = [
+    { label: 'Homepage', to: '/' }
+  ]
+
+  pathSegments.forEach((segment, index) => {
+    const to = '/' + pathSegments.slice(0, index + 1).join('/')
+    crumbs.push({
+      label: segment.charAt(0).toUpperCase() + segment.slice(1),
+      to
+    })
+  })
+
+  return crumbs
+})
 </script>
 
 <template>
   <UBreadcrumb :items="items" />
 </template>
+
 
 <style scoped></style>
