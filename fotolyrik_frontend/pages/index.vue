@@ -130,32 +130,6 @@ const setChartOptions = () => {
 };
 
 // end of bar chart example
-// start map example
-onMounted(async () => {
-  const map = new maplibregl.Map({
-    container: "map", // statt ref einfach die Id
-    zoom: 5,
-    style: {
-      version: 8,
-      sources: {
-        osm: {
-          type: "raster",
-          tiles: ["https://tile.openstreetmap.de/{z}/{x}/{y}.png"],
-          tileSize: 256,
-          attribution: "&copy; OpenStreetMap Contributors"
-        }
-      },
-      layers: [
-        {
-          id: "osm-layer",
-          type: "raster",
-          source: "osm"
-        }
-      ]
-    }
-  });
-});
-//end map example
 </script>
 
 <template>
@@ -244,7 +218,7 @@ onMounted(async () => {
           Bar chart placeholder
           <i class="pi pi-chart-bar"/>
         </div>
-        <div class="py-10">
+        <div class="py-8">
         <div class="md:columns-2 space-y-8 gap-x-10 text-justify">
           <div>
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
@@ -264,20 +238,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="py-6 md:py-8 px-6 md:px-15">
-      <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Karte</h1>
-    </div>
-      <div class="collection bg-[#F1F2F2]">
-        <div class="flex flex-col px-6 md:px-15 py-10 md:py-14">
-          <div class="title pb-5">
-            <h2 class="text-3xl averia-layout italic text-[#063D79]">Karte</h2>
-          </div>
-          <div class="flex flex-row justify-center">
-            <div id="map" class=" h-[236px] md:h-[549px] w-[268px] md:w-[996px]"/>
-          </div>
-        </div>
-      </div>
-    <div class="title pt-10 md:pt-20 pb-4 px-6 md:px-15">
+    <div class="title pt-10 md:pt-6 pb-4 px-6 md:px-15">
       <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Themen</h2>
     </div>
     <div class="topics bg-[#F1F2F2] p-5">
