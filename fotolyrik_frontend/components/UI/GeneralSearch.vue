@@ -59,7 +59,7 @@ const clearResults = () => {
   <button @click="visible = true">
     <i class="pi pi-search text-white"/>
   </button>
-  <Dialog v-model:visible="visible" modal position="top" class="min-w-[30%]" @hide="clearResults">
+  <Dialog v-model:visible="visible" modal :dismissableMask="true" position="top" class="min-w-[30%] p-2" @hide="clearResults">
     <template #header>
       <h2 class="text-xl font-bold outfit-headline text-[#063D79]">Suchen</h2>
     </template>
