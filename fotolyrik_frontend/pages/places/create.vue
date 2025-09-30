@@ -25,12 +25,11 @@ const submit = async (formData: Partial<PlaceInput>) => {
   }
 };
 
-/* start interactive map */
 const pointCoordinates = ref(null);
 const latitude = ref<number|null>(null);
 const longitude = ref<number|null>(null);
 
-onMounted(() => {
+onMounted(async () => {
   const map = new maplibregl.Map({
     container: "map",
     zoom: 4.5,
@@ -72,10 +71,16 @@ onMounted(() => {
 
     latitude.value = lat
     longitude.value = lng
-    console.log(JSON.stringify({ lng, lat }));
+  });
+  map.on('contextmenu', () => {
+    if (current_marker) {
+      current_marker.remove();
+      current_marker = null;
+    }
+    latitude.value = null;
+    longitude.value = null;
   });
 });
- /* end interactive map */
 </script>
 
 <template>
