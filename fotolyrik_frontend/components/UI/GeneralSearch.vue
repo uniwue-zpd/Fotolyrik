@@ -38,7 +38,7 @@ const fetchResults = async (search: string) => {
   }
 }
 
-const debouncedFetch = debounce(fetchResults, 300)
+const debouncedFetch = debounce(fetchResults, 250)
 
 const onInput = () => {
   if (query.value.length >= 2) {
