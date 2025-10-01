@@ -32,6 +32,12 @@ export interface FullTextSearchResult {
     queryResult: string;
 }
 
+export interface GeneralSearchResult {
+    id: number;
+    title: string;
+    type: string;
+}
+
 export interface Person extends Auditable {
     firstName: string | null;
     lastName: string | null;
