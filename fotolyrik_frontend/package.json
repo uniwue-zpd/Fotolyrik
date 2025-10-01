@@ -14,8 +14,10 @@
     "@formkit/addons": "^1.6.9",
     "@formkit/icons": "^1.6.9",
     "@formkit/nuxt": "^1.6.9",
+    "@iconify-json/material-symbols": "^1.2.40",
     "@nuxt/icon": "^1.15.0",
     "@pinia/nuxt": "^0.10.1",
+    "@primevue/nuxt-module": "^4.3.9",
     "@primevue/themes": "^4.3.1",
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.8.4",
@@ -29,9 +31,5 @@
     "tify": "^0.32.0",
     "vue": "latest",
     "vue-router": "latest"
-  },
-  "devDependencies": {
-    "@iconify-json/material-symbols": "^1.2.30",
-    "@primevue/nuxt-module": "^4.3.9"
   }
 }
