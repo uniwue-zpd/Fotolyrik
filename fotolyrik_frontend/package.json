@@ -16,7 +16,6 @@
     "@formkit/nuxt": "^1.6.9",
     "@nuxt/icon": "^1.15.0",
     "@pinia/nuxt": "^0.10.1",
-    "@primevue/nuxt-module": "^4.3.1",
     "@primevue/themes": "^4.3.1",
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.8.4",
@@ -32,6 +31,7 @@
     "vue-router": "latest"
   },
   "devDependencies": {
-    "@iconify-json/material-symbols": "^1.2.30"
+    "@iconify-json/material-symbols": "^1.2.30",
+    "@primevue/nuxt-module": "^4.3.9"
   }
 }
