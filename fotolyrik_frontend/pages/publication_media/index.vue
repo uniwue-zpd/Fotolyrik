@@ -26,7 +26,7 @@ const publication_rhytms = ref(['wöchentlich', 'halbmonatlich', 'monatlich', 'h
       >
         <template #header>
           <div class="flex flex-row justify-between items-center">
-            <div class="p-2 border-[1px] border-solid rounded-md hover:shadow-md">
+            <div class="p-2 border border-solid rounded-md hover:shadow-md">
               <NuxtLink to="/publication_media/create" class="flex items-center">
                 <i class="pi pi-pen-to-square mr-2"/>
                 <div class="text-[#063D79] roboto-plain">Neu anlegen</div>

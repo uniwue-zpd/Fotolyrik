@@ -18,6 +18,10 @@ public class Photopoem extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
+    private String subtitle;
+
+    private String altTitle;
+
     private Long volume;
 
     private Long issue;
@@ -79,7 +83,7 @@ public class Photopoem extends BaseEntity {
 
     private String copyrightStatusText;
 
-    private String language;
-
-    //TODO: Add other required fields
+    @ElementCollection(targetClass = String.class)
+    @CollectionTable(name = "photopoem_languages", joinColumns = @JoinColumn(name = "photopoem_id"))
+    private List<String> languages;
 }
