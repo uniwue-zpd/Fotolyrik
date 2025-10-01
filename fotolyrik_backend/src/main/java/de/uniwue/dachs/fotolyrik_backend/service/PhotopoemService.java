@@ -1,13 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
-import de.uniwue.dachs.fotolyrik_backend.model.Person;
-import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
-import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
-import de.uniwue.dachs.fotolyrik_backend.model.File;
-import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
-import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
-import de.uniwue.dachs.fotolyrik_backend.repository.PhotopoemRepository;
-import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
+import de.uniwue.dachs.fotolyrik_backend.model.*;
+import de.uniwue.dachs.fotolyrik_backend.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,16 +18,18 @@ public class PhotopoemService {
     private final PubMediumRepository pubMediumRepository;
     private final FileRepository fileRepository;
     private final FullTextService fullTextService;
+    private final KeywordRepository keywordRepository;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             PersonRepository personRepository,
                             PubMediumRepository pubMediumRepository,
-                            FileRepository fileRepository, FullTextService fullTextService) {
+                            FileRepository fileRepository, FullTextService fullTextService, KeywordRepository keywordRepository) {
         this.photopoemRepository = photopoemRepository;
         this.personRepository = personRepository;
         this.pubMediumRepository = pubMediumRepository;
         this.fileRepository = fileRepository;
         this.fullTextService = fullTextService;
+        this.keywordRepository = keywordRepository;
     }
 
     public List<Photopoem> getAllPhotopoems() {
@@ -61,6 +57,8 @@ public class PhotopoemService {
         photopoem.setAuthors(getOrSavePersons(photopoem.getAuthors()));
         photopoem.setPhotographers(getOrSavePersons(photopoem.getPhotographers()));
         photopoem.setOtherContributors(getOrSavePersons(photopoem.getOtherContributors()));
+        photopoem.setThemes(getOrSaveKeywords(photopoem.getThemes()));
+        photopoem.setImageMotifs(getOrSaveKeywords(photopoem.getImageMotifs()));
         photopoem.setPublicationMedium(getOrSavePubMedium(photopoem.getPublicationMedium()));
         return photopoemRepository.save(photopoem);
     }
@@ -80,8 +78,8 @@ public class PhotopoemService {
             entity.setAuthors((updatedPhotopoem.getAuthors() != null) ? getOrSavePersons(updatedPhotopoem.getAuthors()) : null);
             entity.setPhotographers((updatedPhotopoem.getPhotographers() != null) ? getOrSavePersons(updatedPhotopoem.getPhotographers()) : null);
             entity.setOtherContributors((updatedPhotopoem.getOtherContributors() != null) ? getOrSavePersons(updatedPhotopoem.getOtherContributors()) : new HashSet<>());
-            entity.setThemes((updatedPhotopoem.getThemes() != null) ? updatedPhotopoem.getThemes() : null);
-            entity.setTopics((updatedPhotopoem.getTopics() != null) ? updatedPhotopoem.getTopics() : null);
+            entity.setThemes((updatedPhotopoem.getThemes() != null) ? getOrSaveKeywords(updatedPhotopoem.getThemes()) : null);
+            entity.setImageMotifs((updatedPhotopoem.getImageMotifs() != null) ? getOrSaveKeywords(updatedPhotopoem.getImageMotifs()) : null);
             entity.setForm((updatedPhotopoem.getForm() != null) ? updatedPhotopoem.getForm() : null);
             entity.setLink((updatedPhotopoem.getLink() != null) ? updatedPhotopoem.getLink() : null);
             entity.setIiifManifest((updatedPhotopoem.getIiifManifest() != null) ? updatedPhotopoem.getIiifManifest() : null);
@@ -141,5 +139,21 @@ public class PhotopoemService {
             }
         });
         return newFiles;
+    }
+
+    // Helper method to set an existing keyword or save a new one
+    private Set<Keyword> getOrSaveKeywords(Set<Keyword> keywords) {
+        if (keywords == null || keywords.isEmpty()) {
+            return null;
+        }
+        Set<Keyword> savedKeywords = new HashSet<>();
+        keywords.forEach(keyword -> {
+            if (keyword.getId() != null) {
+                savedKeywords.add(keywordRepository.findById(keyword.getId()).orElse(null));
+            } else {
+                savedKeywords.add(keywordRepository.save(keyword));
+            }
+        });
+        return savedKeywords;
     }
 }

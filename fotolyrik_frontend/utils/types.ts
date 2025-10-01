@@ -70,6 +70,7 @@ export interface PhotoPoem extends Auditable {
     copyrightStatusImage: string | null;
     copyrightStatusText: string | null;
     language: string | null;
+    // TODO: themes and imageMotifs should be Keyword[]
 }
 
 export interface Place extends Auditable {
@@ -90,4 +91,9 @@ export interface PubMedium extends Auditable {
     amountVolumes: number | null;
     amountIssues: number | null;
     zdbId: string | null;
+}
+
+export interface Keyword extends Auditable {
+    value: string;
+    gndId: string | null;
 }
