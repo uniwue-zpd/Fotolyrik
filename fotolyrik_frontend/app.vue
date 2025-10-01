@@ -16,8 +16,8 @@ onMounted(async () => {
 
 <template>
   <AppHeader/>
-  <Breadcrumbs/>
   <MainContent>
+    <Breadcrumbs/>
     <NuxtLayout>
       <NuxtPage/>
     </NuxtLayout>

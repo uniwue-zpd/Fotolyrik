@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import type { BreadcrumbItem } from '@nuxt/ui'
 import { computed } from 'vue'
@@ -26,7 +25,11 @@ const items = computed<BreadcrumbItem[]>(() => {
 </script>
 
 <template>
-  <UBreadcrumb :items="items" />
+  <UBreadcrumb :items="items">
+    <template #separator>
+      <span class="mx-2 text-muted">/</span>
+    </template>
+  </UBreadcrumb>
 </template>
 
 
