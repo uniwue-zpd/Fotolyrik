@@ -21,7 +21,7 @@ fotolyrik_frontend/.output/
 fotolyrik_frontend/.cache/
 
 # Environment variables
-.env
+env-dev
 
 # OS
 .DS_Store
