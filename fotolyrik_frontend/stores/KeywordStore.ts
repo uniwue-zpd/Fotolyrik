@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import apiClient from '~/service/api';
 import type { Keyword } from '~/utils/types';
 
 export const useKeywordStore = defineStore('keyword', () => {
@@ -12,77 +11,76 @@ export const useKeywordStore = defineStore('keyword', () => {
     const isLoaded = computed(() => keywords.value.length > 0);
 
     // Actions
-        // Fetch all keywords
+        // GET Fetch all keywords
     async function fetchKeywords() {
         if (!isLoaded.value) {
-            try {
-                const response = await apiClient.get<Keyword[]>('/keywords');
-                keywords.value = response.data;
-            } catch (error) {
-                console.log('Error fetching keywords:', error);
+            const { data, error } = await useFetch('/api/keywords');
+            if (error.value) {
+                console.error('Error fetching keywords:', error.value);
+                return;
             }
+            keywords.value = data.value as Keyword[];
         }
     }
 
-        // Fetch keyword by ID
+        // GET Fetch keyword by ID
     async function fetchKeywordById(id: number) {
         if (!currentKeyword.value || currentKeyword.value.id !== id) {
             const cachedKeyword = keywords.value.find(k => k.id === id);
             if (cachedKeyword) {
                 currentKeyword.value = cachedKeyword;
             } else {
-                try {
-                    const response = await apiClient.get<Keyword>(`/keywords/${id}`);
-                    currentKeyword.value = response.data;
-                } catch (error) {
-                    console.log('Error fetching keyword by ID:', error);
+                const { data, error } = await useFetch(`/api/keywords/${id}`);
+                if (error.value) {
+                    console.error(`Error fetching keyword with id ${id}:`, error.value);
+                    return;
                 }
+                currentKeyword.value = data.value as Keyword;
             }
         }
     }
 
-        // Create new keyword
+        // POST Create new keyword
     async function createKeyword(payload: Partial<Keyword>) {
-        try {
-            const response = await apiClient.post('/keywords', payload);
-            keywords.value.push(response.data);
-            return response.data;
-        } catch (error) {
-            console.log('Error creating keyword:', error);
-            throw error;
+        const { data, error } = await useFetch('/api/keywords', {
+            method: 'POST',
+            body: payload
+        });
+        if (error.value) {
+            console.error('Error creating keyword:', error.value);
+            return;
         }
+        const newKeyword = data.value as Keyword;
+        keywords.value.push(newKeyword);
+        return newKeyword;
     }
 
-        // Update existing keyword
+        // PUT Update existing keyword
     async function updateKeyword(payload: Partial<Keyword>, id: number) {
-        try {
-            const response = await apiClient.put(`/keywords/${id}`, payload);
-            const index = keywords.value.findIndex(k => k.id === id);
-            if (index !== -1) {
-                keywords.value[index] = response.data;
-            }
-            if (currentKeyword.value && currentKeyword.value.id === id) {
-                currentKeyword.value = response.data;
-            }
-            return response.data;
-        } catch (error) {
-            console.log('Error updating keyword:', error);
-            throw error;
+        const { data, error } = await useFetch(`/api/keywords/${id}`, {
+            method: 'PUT',
+            body: payload
+        });
+        if (error.value) {
+            console.error('Error updating keyword:', error.value);
+            return;
         }
+        const updatedKeyword = data.value as Keyword;
+        const index = keywords.value.findIndex(k => k.id === id);
+        if (index !== -1) keywords.value[index] = updatedKeyword;
+        if (currentKeyword.value?.id === id) currentKeyword.value = updatedKeyword;
+        return updatedKeyword;
     }
 
-        // Delete keyword
+        // DELETE keyword
     async function deleteKeyword(id: number) {
-        try {
-            await apiClient.delete(`/keywords/${id}`);
-            keywords.value = keywords.value.filter(k => k.id !== id);
-            if (currentKeyword.value?.id === id) {
-                currentKeyword.value = null;
-            }
-        } catch (error) {
-            console.log('Error deleting keyword:', error);
-            throw error;
+        const { error } = await useFetch(`/api/keywords/${id}`, { method: 'DELETE' })
+        if (error.value) {
+            console.error('Error deleting keyword:', error.value);
+            return;
         }
+        keywords.value = keywords.value.filter(k => k.id !== id)
+        if (currentKeyword.value?.id === id) currentKeyword.value = null;
     }
 
         // Clear current keyword
