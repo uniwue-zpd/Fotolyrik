@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import apiClient from "~/service/api";
 import type { Person } from "~/utils/types";
 
 export const usePersonStore = defineStore('person', () => {
@@ -15,14 +14,15 @@ export const usePersonStore = defineStore('person', () => {
         // Fetch all persons
     async function fetchPersons() {
         if (!isLoaded.value) {
-            try {
-                const response = await apiClient.get<Person[]>('/persons');
-                persons.value = response.data;
-            } catch (error) {
-                console.log('Error fetching persons:', error);
+            const { data, error } = await useFetch('/api/persons');
+            if (error.value) {
+                console.error('Error fetching persons:', error.value);
+                return;
             }
+            persons.value = data.value as Person[];
         }
     }
+
         // Fetch person by ID
     async function fetchPersonById(id: number) {
         if (!currentPerson.value || currentPerson.value.id !== id) {
@@ -30,58 +30,57 @@ export const usePersonStore = defineStore('person', () => {
             if (cachedPerson) {
                 currentPerson.value = cachedPerson;
             } else {
-                try {
-                    const response = await apiClient.get<Person>(`/persons/${id}`);
-                    currentPerson.value = response.data;
-                } catch (error) {
-                    console.log('Error fetching person by ID:', error);
+                const { data, error } = await useFetch(`/api/persons/${id}`);
+                if (error.value) {
+                    console.error(`Error fetching person with id ${id}:`, error.value);
+                    return;
                 }
+                currentPerson.value = data.value as Person;
             }
         }
     }
 
         // Create new person
     async function createPerson(payload: Partial<Person>) {
-        try {
-            const response = await apiClient.post('/persons', payload);
-            persons.value.push(response.data);
-            return response.data;
-        } catch (error) {
-            console.log('Error creating person:', error);
-            throw error;
+        const { data, error } = await useFetch('/api/persons', {
+            method: 'POST',
+            body: payload
+        });
+        if (error.value) {
+            console.error('Error creating person:', error.value);
+            return;
         }
+        const newPerson = data.value as Person;
+        persons.value.push(newPerson);
+        return newPerson;
     }
 
         // Update existing person
     async function updatePerson(payload: Partial<Person>, id: number) {
-        try {
-            const response = await apiClient.put(`/persons/${id}`, payload);
-            const index = persons.value.findIndex(p => p.id === id);
-            if (index !== -1) {
-                persons.value[index] = response.data;
-            }
-            if (currentPerson.value?.id === id) {
-                currentPerson.value = response.data;
-            }
-            return response.data;
-        } catch (error) {
-            console.log('Error updating person:', error);
-            throw error;
+        const { data, error } = await useFetch(`/api/persons/${id}`, {
+            method: 'PUT',
+            body: payload
+        });
+        if (error.value) {
+            console.error('Error updating person:', error.value);
+            return;
         }
+        const updatedPerson = data.value as Person;
+        const index = persons.value.findIndex(p => p.id === id);
+        if (index !== -1) persons.value[index] = updatedPerson;
+        if (currentPerson.value?.id === id) currentPerson.value = updatedPerson;
+        return updatedPerson;
     }
 
-        // DELETE existing person
+        // Delete existing person
     async function deletePerson(id: number) {
-        try {
-            await apiClient.delete(`/persons/${id}`);
-            persons.value = persons.value.filter(p => p.id !== id);
-            if (currentPerson.value?.id === id) {
-                currentPerson.value = null;
-            }
-        } catch (error) {
-            console.log('Error deleting person:', error);
-            throw error;
+        const { error } = await useFetch(`/api/persons/${id}`, { method: 'DELETE' });
+        if (error.value) {
+            console.error('Error deleting person:', error.value);
+            return;
         }
+        persons.value = persons.value.filter(p => p.id !== id);
+        if (currentPerson.value?.id === id) currentPerson.value = null;
     }
 
         // Navigation left
