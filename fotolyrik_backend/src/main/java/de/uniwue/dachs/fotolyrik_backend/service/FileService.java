@@ -77,7 +77,8 @@ public class FileService {
             }
 
             File savedFile = new File();
-            savedFile.setFilename(originalFilename);
+            savedFile.setOriginalFilename(originalFilename);
+            savedFile.setFilename(uuid);
             savedFile.setPath(targetPath.toString());
             savedFile.setType(contentType);
             savedFile.setSize(file.getSize());
@@ -94,7 +95,7 @@ public class FileService {
     public File deleteFileById(Long id) throws EntityNotFoundException, IOException {
         File file = fileRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("File not found with id: " + id));
-        
+
         Path filePath = Paths.get(file.getPath());
         try {
             Files.deleteIfExists(filePath);

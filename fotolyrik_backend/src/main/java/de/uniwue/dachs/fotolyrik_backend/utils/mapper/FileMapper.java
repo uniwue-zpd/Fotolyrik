@@ -30,7 +30,8 @@ public class FileMapper {
     public FileDTO FileToFileDTO(File file) {
         FileDTO fileDTO = new FileDTO();
         fileDTO.setId(file.getId());
-        fileDTO.setFileName(file.getFilename());
+        fileDTO.setOriginalFilename(file.getOriginalFilename());
+        fileDTO.setFilename(file.getFilename());
         return fileDTO;
     }
 
