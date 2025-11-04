@@ -2,12 +2,12 @@
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { getNode } from '@formkit/core';
-import type { PhotoPoem } from "~/utils/types";
+import type { PhotoPoemDTO } from "~/utils/types";
 
 const props = defineProps<{
   action: 'create' | 'edit';
   header: string;
-  photopoem?: PhotoPoem;
+  photopoem?: PhotoPoemDTO;
 }>();
 
 const toast = useToast();
@@ -15,8 +15,10 @@ const submitted = ref(false);
 const person_store = usePersonStore();
 const photopoem_store = usePhotopoemStore();
 const pub_medium_store = usePubMediumStore();
+const keyword_store = useKeywordStore();
+const file_store = useFileStore();
 
-type PhotoPoemInput = Omit<PhotoPoem, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
+type PhotoPoemInput = Omit<PhotoPoemDTO, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
 
 const submit = async (formData: Partial<PhotoPoemInput>) => {
   try {
@@ -61,16 +63,32 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         #default="{ value }"
     >
       <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-[#F1F2F2]">
-        <FormKit
-            type="text"
-            name="title"
-            label="Titel"
-            placeholder="Telephon-Tragödie"
-            prefix-icon="text"
-            outer-class="max-w-full"
-            validation="required"
-            validation-visibility="live"
-        />
+        <div class="flex flex-row space-x-3">
+          <FormKit
+              type="text"
+              name="title"
+              label="Titel"
+              placeholder="Telephon-Tragödie"
+              prefix-icon="text"
+              outer-class="max-w-full"
+              validation="required"
+              validation-visibility="live"
+          />
+          <FormKit
+              type="text"
+              name="subtitle"
+              label="Untertitel"
+              prefix-icon="text"
+              outer-class="max-w-full"
+          />
+          <FormKit
+              type="text"
+              name="altTitle"
+              label="Alternativer Titel"
+              prefix-icon="text"
+              outer-class="max-w-full"
+          />
+        </div>
         <Divider/>
         <div class="flex flex-row space-x-5">
           <FormKit
@@ -126,7 +144,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
             label="Publikationsmedium"
             outer-class="max-w-full"
             select-icon="select"
-            :options="pub_medium_store.pub_media.map(p => ({ label: `${p.title}`, value: p }))"
+            :options="pub_medium_store.pub_media.map(p => ({ label: `${p.title}`, value: { id: p.id, title: p.title } }))"
         />
         <Divider/>
         <div class="flex flex-row space-x-5">
@@ -137,7 +155,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Autor:innen"
               outer-class="max-w-full"
               select-icon="select"
-              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: {id: p.id, fullName: p.fullName} }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
           <FormKit
@@ -147,7 +165,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Fotograf:innen"
               outer-class="max-w-full"
               select-icon="select"
-              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: {id: p.id, fullName: p.fullName} }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
           <FormKit
@@ -157,40 +175,40 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Sonstige Mitwirkende"
               outer-class="max-w-full"
               select-icon="select"
-              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: {id: p.id, fullName: p.fullName} }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
         </div>
         <Divider/>
         <div class="flex flex-col gap-2">
-          <FormKit type="list" :value="[]" name="themes" dynamic #default="{ items, node, value }">
-            <FormKit
-                v-for="(item, index) in items"
-                :key="item"
-                :index="index"
-                label="Thematik"
-                placeholder="Philosophie"
-                suffix-icon="trash"
-                @suffix-icon-click="() => node.input(value?.filter((_, i) => i !== index))"
-                :sections-schema="{ suffixIcon: { $el: 'button' } }"
-                outer-class="max-w-full"
-            />
-            <FormKit type="button" @click="() => node.input(value?.concat(''))">Thematik hinzufügen</FormKit>
-          </FormKit>
-          <FormKit type="list" :value="[]" name="topics" dynamic #default="{ items, node, value }">
-            <FormKit
-                v-for="(item, index) in items"
-                :key="item"
-                :index="index"
-                label="Kategorie"
-                placeholder="Verkehr"
-                suffix-icon="trash"
-                @suffix-icon-click="() => node.input(value?.filter((_, i) => i !== index))"
-                :sections-schema="{ suffixIcon: { $el: 'button' } }"
-                outer-class="max-w-full"
-            />
-            <FormKit type="button" @click="() => node.input(value?.concat(''))">Kategorien hinzufügen</FormKit>
-          </FormKit>
+          <FormKit
+              type="select"
+              multiple
+              name="themes"
+              label="Thematik"
+              outer-class="max-w-full"
+              select-icon="select"
+              :options="keyword_store.keywords.map(p => ({ label: `${p.value}`, value: {id: p.id, value: p.value} }))"
+              help="Halten Sie die Strg-Taste gedrückt, um mehrere Schlagworte auszuwählen"
+          />
+          <FormKit
+              type="select"
+              multiple
+              name="imageMotifs"
+              label="Bildmotiv"
+              outer-class="max-w-full"
+              select-icon="select"
+              :options="keyword_store.keywords.map(p => ({ label: `${p.value}`, value: {id: p.id, value: p.value} }))"
+              help="Halten Sie die Strg-Taste gedrückt, um mehrere Schlagworte auszuwählen"
+          />
+          <FormKit
+              type="text"
+              name="form"
+              label="Format"
+              placeholder="B x H x L"
+              prefix-icon="text"
+              outer-class="max-w-full"
+          />
         </div>
         <Divider/>
         <div class="flex flex-row space-x-5">
@@ -213,58 +231,18 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         </div>
         <Divider/>
         <FormKit
-            type="file"
+            type="select"
+            id="images"
+            multiple
             name="images"
             label="Bilder"
-            accept=".jpg,.png"
-            multiple="true"
-            file-item-icon="fileImage"
-            no-files-icon="fileImage"
-            file-remove-icon="trash"
-            outer-class="max-w-full"
-        />
-        <Divider/>
-        <div class="flex flex-row space-x-5">
-          <FormKit
-              type="select"
-              name="copyrightStatusImage"
-              label="Urheberrechtsstatus Bild"
-              outer-class="max-w-full"
-              select-icon="select"
-              :options="[
-                  {label: '', value: null},
-                  {label: 'Ungeklärt', value: 'Ungeklärt'},
-                  {label: 'rechtefrei 70 Jahre', value: 'rechtefrei 70 Jahre'},
-                  {label: 'eingeholt (schriftlich)', value: 'eingeholt (schriftlich)'}
-              ]"
-          />
-          <FormKit
-              type="select"
-              name="copyrightStatusText"
-              label="Urheberrechtsstatus Text"
-              outer-class="max-w-full"
-              select-icon="select"
-              :options="[
-                  {label: '', value: null},
-                  {label: 'Ungeklärt', value: 'Ungeklärt'},
-                  {label: 'rechtefrei 70 Jahre', value: 'rechtefrei 70 Jahre'},
-                  {label: 'eingeholt (schriftlich)', value: 'eingeholt (schriftlich)'}
-              ]"
-          />
-        </div>
-        <FormKit
-            type="select"
-            name="language"
-            label="Sprache"
             outer-class="max-w-full"
             select-icon="select"
-            :options="[
-                {label: '', value: null},
-                {label: 'Deutsch', value: 'German'},
-                {label: 'Englisch', value: 'English'},
-                {label: 'Französisch', value: 'French'}
-              ]"
+            :options="file_store.files.map(p => ({label: `${p.originalFilename}`, value: {id: p.id, filename: p.filename, originalFilename: p.originalFilename}}))"
+            help="Halten Sie die Strg-Taste gedrückt, um mehrere Schlagworte auszuwählen"
         />
+        <Divider/>
+        <!-- TODO: Languages and copyright statuses have to be fetched from corresponding stores -->
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>
           <hr>
@@ -272,7 +250,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         </div>
         <FormKit
             type="submit"
-            label="Erstellen"
+            :label="action === 'create' ? 'Erstellen' : 'Ändern'"
         />
       </div>
     </FormKit>
