@@ -4,7 +4,7 @@ services:
       context: ./fotolyrik_frontend
     depends_on:
       - backend
-    restart: unless-stopped
+    restart: always
 
   backend:
     build:
@@ -19,7 +19,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    restart: unless-stopped
+    restart: always
 
   database:
     image: postgres:17-alpine
@@ -36,7 +36,7 @@ services:
       interval: 30s
       retries: 10
       start_period: 60s
-    restart: unless-stopped
+    restart: always
 
   nginx:
     image: nginx:alpine-slim
@@ -46,5 +46,4 @@ services:
       - "${PORT_NGINX:-80}:80"
     depends_on:
       - frontend
-      - backend
-    restart: unless-stopped
+    restart: always
