@@ -21,6 +21,11 @@ export interface File extends Auditable {
     size: number | null
 }
 
+export interface FileDTO {
+    id: number;
+    fileName: string;
+}
+
 export interface FullText extends Auditable {
     photopoem: PhotoPoem;
     fullText: string | null;
@@ -50,6 +55,11 @@ export interface Person extends Auditable {
     image: File | null;
 }
 
+export interface PersonDTO {
+    id: number;
+    fullName: string | null;
+}
+
 export interface PhotoPoem extends Auditable {
     title: string;
     volume: string | null;
@@ -61,16 +71,39 @@ export interface PhotoPoem extends Auditable {
     authors: Person[] | [];
     photographers: Person[] | [];
     otherContributors: Person[] | [];
-    themes: [string] | [];
-    topics: [string] | [];
+    themes: Keyword[] | [];
+    imageMotifs: Keyword[] | [];
     form: string | null;
     link: string | null;
     iiifManifest: string | null;
     images: File[] | []
     copyrightStatusImage: string | null;
     copyrightStatusText: string | null;
-    language: string | null;
-    // TODO: themes and imageMotifs should be Keyword[]
+    languages: [string] | [];
+}
+
+export interface PhotoPoemDTO extends Auditable {
+    title: string;
+    subtitle: string | null;
+    altTitle: string | null;
+    volume: number | null;
+    issue: number | null;
+    pageNumber: number | null;
+    pageCount: number | null;
+    publicationDate: string | null;
+    publicationMedium: PubMediumDTO | null;
+    authors: PersonDTO[] | [];
+    photographers: PersonDTO[] | [];
+    otherContributors: PersonDTO[] | [];
+    themes: KeywordDTO[] | [];
+    imageMotifs: KeywordDTO[] | [];
+    form: string | null;
+    link: string | null;
+    iiifManifest: string | null;
+    images: FileDTO[] | []
+    copyrightStatusImage: string | null;
+    copyrightStatusText: string | null;
+    languages: [string] | [];
 }
 
 export interface Place extends Auditable {
@@ -93,7 +126,17 @@ export interface PubMedium extends Auditable {
     zdbId: string | null;
 }
 
+export interface PubMediumDTO {
+    id: number;
+    title: number;
+}
+
 export interface Keyword extends Auditable {
     value: string;
     gndId: string | null;
+}
+
+export interface KeywordDTO {
+    id: number;
+    value: string;
 }
