@@ -95,10 +95,10 @@ public class PhotopoemService {
      * @return a {@link Photopoem} object and makes it persistent
      */
     @Transactional
-    public Photopoem createPhotopoem(PhotopoemDTO photopoemDTO) {
+    public PhotopoemDTO createPhotopoem(PhotopoemDTO photopoemDTO) {
         Photopoem photopoem = photopoemMapper.PhotopoemDTOToPhotopoem(photopoemDTO);
-        photopoemRepository.save(photopoem);
-        return photopoem;
+        Photopoem createdPhotopoem = photopoemRepository.save(photopoem);
+        return photopoemMapper.PhotopoemToPhotopoemDTO(createdPhotopoem);
     }
 
     /**
@@ -107,7 +107,7 @@ public class PhotopoemService {
      * @return {@link Photopoem} object and persists the updates
      */
     @Transactional
-    public Photopoem updatePhotopoem(Long id, PhotopoemDTO updatedPhotopoem) {
+    public PhotopoemDTO updatePhotopoem(Long id, PhotopoemDTO updatedPhotopoem) {
         return photopoemRepository.findById(id).map(entity -> {
             entity.setTitle(updatedPhotopoem.getTitle());
             entity.setSubtitle(updatedPhotopoem.getSubtitle());
@@ -130,7 +130,9 @@ public class PhotopoemService {
             entity.setCopyrightStatusImage(updatedPhotopoem.getCopyrightStatusImage());
             entity.setCopyrightStatusText(updatedPhotopoem.getCopyrightStatusText());
             entity.setLanguages(updatedPhotopoem.getLanguages());
-            return photopoemRepository.save(entity);
+
+            Photopoem savedPhotopoem = photopoemRepository.save(entity);
+            return photopoemMapper.PhotopoemToPhotopoemDTO(savedPhotopoem);
         }).orElseThrow(() -> new EntityNotFoundException("Photopoem with id'" + id + "' can't be found"));
     }
 

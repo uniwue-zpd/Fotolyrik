@@ -3,7 +3,6 @@ package de.uniwue.dachs.fotolyrik_backend.controller;
 import de.uniwue.dachs.fotolyrik_backend.DTO.FullTextDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PhotopoemDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.FullText;
-import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
 import de.uniwue.dachs.fotolyrik_backend.service.FullTextService;
 import de.uniwue.dachs.fotolyrik_backend.service.PhotopoemService;
 import org.springframework.http.ResponseEntity;
@@ -59,15 +58,15 @@ public class PhotopoemController {
     }
 
     @PostMapping
-    public ResponseEntity<Photopoem> savePhotopoem(@RequestBody PhotopoemDTO photopoem) {
-        Photopoem savedPhotopoem = photopoemService.createPhotopoem(photopoem);
+    public ResponseEntity<PhotopoemDTO> savePhotopoem(@RequestBody PhotopoemDTO photopoem) {
+        PhotopoemDTO savedPhotopoem = photopoemService.createPhotopoem(photopoem);
         return ResponseEntity.status(201).body(savedPhotopoem);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Photopoem> updatePhotopoem(@PathVariable Long id, @RequestBody PhotopoemDTO photopoem) {
+    public ResponseEntity<PhotopoemDTO> updatePhotopoem(@PathVariable Long id, @RequestBody PhotopoemDTO photopoem) {
         try {
-            Photopoem updatedPhotopoem = photopoemService.updatePhotopoem(id, photopoem);
+            PhotopoemDTO updatedPhotopoem = photopoemService.updatePhotopoem(id, photopoem);
             return ResponseEntity.ok(updatedPhotopoem);
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
