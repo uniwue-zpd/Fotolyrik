@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -92,5 +91,5 @@ public class Photopoem extends BaseEntity {
 
     @ElementCollection(targetClass = String.class)
     @CollectionTable(name = "photopoem_languages", joinColumns = @JoinColumn(name = "photopoem_id"))
-    private List<String> languages;
+    private Set<String> languages;
 }

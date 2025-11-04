@@ -1,14 +1,17 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.FullTextDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.FullTextSearchResult;
 import de.uniwue.dachs.fotolyrik_backend.model.FullText;
 import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
 import de.uniwue.dachs.fotolyrik_backend.repository.FullTextRepository;
-import de.uniwue.dachs.fotolyrik_backend.repository.PhotopoemRepository;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.FullTextMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PhotopoemMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -16,33 +19,48 @@ import java.util.regex.Pattern;
 @Service
 public class FullTextService {
     private final FullTextRepository fullTextRepository;
-    private final PhotopoemRepository photopoemRepository;
 
     private static final Pattern HTML_TAG_PATTERN = Pattern.compile("<[^>]*>");
     private static final Pattern SPECIAL_CHAR_PATTERN = Pattern.compile("[^\\p{L}\\p{N}\\s\"'-]");
+    private final FullTextMapper fullTextMapper;
+    private final PhotopoemMapper photopoemMapper;
 
-    public FullTextService(FullTextRepository fullTextRepository,
-                           PhotopoemRepository photopoemRepository) {
+    public FullTextService(FullTextRepository fullTextRepository, FullTextMapper fullTextMapper, PhotopoemMapper photopoemMapper) {
         this.fullTextRepository = fullTextRepository;
-        this.photopoemRepository = photopoemRepository;
+        this.fullTextMapper = fullTextMapper;
+        this.photopoemMapper = photopoemMapper;
     }
 
-    // GET all
-    public List<FullText> getAllFullTexts() {
-        return fullTextRepository.findAll();
+    /**
+     * @return a {@link List} of found {@link FullTextDTO} objects
+     */
+    public List<FullTextDTO> getAllFullTexts() {
+        return fullTextRepository.findAll()
+                .stream()
+                .map(fullTextMapper::FulltextToFullTextDTO)
+                .sorted(Comparator.comparing(FullTextDTO::getId)).toList();
     }
 
-    // GET method to get full text by ID
-    public Optional<FullText> getFullTextById(Long id) {
-        return fullTextRepository.findById(id);
+    /**
+     * @param id ID of the {@link FullText} to be found
+     * @return a {@link FullTextDTO} object
+     */
+    public Optional<FullTextDTO> getFullTextById(Long id) {
+        return fullTextRepository.findById(id).map(fullTextMapper::FulltextToFullTextDTO);
     }
 
-    // GET method to get full text by photopoem ID
-    public Optional<FullText> getFullTextByPhotopoemId(Long photopoemId) {
-        return fullTextRepository.findByPhotopoemId(photopoemId);
+    /**
+     * @param photopoem_id ID of the photopoem
+     * @return a {@link FullTextDTO} object
+     */
+    public Optional<FullTextDTO> getFullTextByPhotopoemId(Long photopoem_id) {
+        return fullTextRepository.findById(photopoem_id).map(fullTextMapper::FulltextToFullTextDTO);
     }
 
-    // GET method to search full text based on a query
+    /**
+     * @param query is a query to be used for the full-text-search
+     * @return a {@link List} of {@link FullTextSearchResult} objects
+     */
     public List<FullTextSearchResult> searchFullText(String query) {
         if (query == null || query.isBlank()) {
             return List.of();
@@ -53,24 +71,36 @@ public class FullTextService {
         return fullTextRepository.searchFullText(sanitized_query);
     }
 
-    // POST method to save full text for a photopoem
+    /**
+     * @param fullTextDTO is a {@link FullTextDTO} to be passed as parameter
+     * @return a {@link FullText} object and persists it in the database
+     */
     @Transactional
-    public FullText saveFullText(FullText fullText) {
-        fullText.setPhotopoem(getPhotopoem(fullText.getPhotopoem().getId()));
-        return fullTextRepository.save(fullText);
+    public FullText createFullText(FullTextDTO fullTextDTO) {
+        FullText fullText = fullTextMapper.FullTextDTOToFullText(fullTextDTO);
+        fullTextRepository.save(fullText);
+        return fullText;
     }
 
-    // PUT method to update full text by ID
+    /**
+     * @param id of the {@link FullText} object
+     * @param updatedFullText contains data to be passed to existing {@link FullText} object
+     * @return a {@link FullText} object and persists it in the database
+     */
     @Transactional
-    public FullText updateFullText(Long id, FullText fullText) {
+    public FullText updateFullText(Long id, FullTextDTO updatedFullText) {
         return fullTextRepository.findById(id).map(entity -> {
-            entity.setFullText(fullText.getFullText());
-            entity.setPhotopoem(getPhotopoem(fullText.getPhotopoem().getId()));
+            entity.setFullText(updatedFullText.getFullText());
+            entity.setPhotopoem(photopoemMapper.PhotopoemPreviewDTOToPhotopoem(updatedFullText.getPhotopoem()));
             return fullTextRepository.save(entity);
         }).orElseThrow(() -> new EntityNotFoundException("FullText with id '" + id + "' does not exist"));
     }
 
-    // PUT method to update full text by photopoem ID
+    /**
+     * @param photopoemId ID of the corresponding photopoem
+     * @param fullTextContent text
+     * @return updated {@link FullText} object
+     */
     @Transactional
     public FullText updateFullTextByPhotopoemId(Long photopoemId, String fullTextContent) {
         return fullTextRepository.findByPhotopoemId(photopoemId).map(entity -> {
@@ -79,7 +109,9 @@ public class FullTextService {
         }).orElseThrow(() -> new EntityNotFoundException("FullText for Photopoem with id '" + photopoemId + "' does not exist"));
     }
 
-    // DELETE method to delete full text by ID
+    /**
+     * @param id ID of the {@link FullText} object to be deleted
+     */
     @Transactional
     public void deleteFullText(Long id) {
         if (!fullTextRepository.existsById(id)) {
@@ -88,22 +120,12 @@ public class FullTextService {
         fullTextRepository.deleteById(id);
     }
 
-    // DELETE method to delete full text by photopoem ID
+    /**
+     * @param photopoemId ID of the corresponding {@link Photopoem}
+     */
     @Transactional
     public void deleteFullTextByPhotopoemID(Long photopoemId) {
-        if (!fullTextRepository.existsByPhotopoemId(photopoemId)) {
-            throw new EntityNotFoundException("FullText for Photopoem with id '" + photopoemId + "' does not exist");
-        }
-        fullTextRepository.deleteByPhotopoemId(photopoemId);
-    }
-
-    // Helper method to set an existing photopoem
-    private Photopoem getPhotopoem(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Photopoem cannot be null");
-        }
-        return photopoemRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Photopoem with id '" + id + "' does not exist")
-        );
+        Optional<FullText> fullText = fullTextRepository.findByPhotopoemId(photopoemId);
+        fullText.ifPresent(fullTextRepository::delete);
     }
 }
