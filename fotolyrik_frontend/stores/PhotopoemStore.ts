@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { PhotoPoem } from "~/utils/types";
+import type { PhotoPoemDTO } from "~/utils/types";
 
 export const usePhotopoemStore = defineStore('photopoem', () => {
     // State
-    const photopoems = ref<PhotoPoem[]>([] as PhotoPoem[]);
-    const currentPhotopoem = ref<PhotoPoem | null>(null);
+    const photopoems = ref<PhotoPoemDTO[]>([] as PhotoPoemDTO[]);
+    const currentPhotopoem = ref<PhotoPoemDTO | null>(null);
 
     // Getters
     const isLoaded = computed(() => photopoems.value.length > 0);
@@ -19,7 +19,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
                 console.error('An error occured while fetching photopoems:', error.value);
                 return;
             }
-            photopoems.value = data.value as PhotoPoem[];
+            photopoems.value = data.value as PhotoPoemDTO[];
         }
     }
 
@@ -35,7 +35,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
                     console.error(`Error fetching photopoem with id ${id}`);
                     return;
                 }
-                currentPhotopoem.value = data.value as PhotoPoem;
+                currentPhotopoem.value = data.value as PhotoPoemDTO;
             }
         }
     }
@@ -60,7 +60,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
             console.error('Error creating photopoem:', error.value);
             return;
         }
-        const response = data.value as PhotoPoem;
+        const response = data.value as PhotoPoemDTO;
         photopoems.value.push(response);
         return response;
     }
@@ -79,7 +79,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
             console.error('Error updating photopoem:', error.value);
             return;
         }
-        const updatedPhotopoem = data.value as PhotoPoem;
+        const updatedPhotopoem = data.value as PhotoPoemDTO;
         const index = photopoems.value.findIndex(p => p.id === id);
         if (index !== -1) photopoems.value[index] = updatedPhotopoem;
         if (currentPhotopoem.value?.id === id) currentPhotopoem.value = updatedPhotopoem;

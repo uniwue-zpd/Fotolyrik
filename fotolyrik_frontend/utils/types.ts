@@ -15,6 +15,7 @@ export interface ContactForm {
 }
 
 export interface File extends Auditable {
+    originalFilename: string | null;
     filename: string | null;
     path: string | null;
     type: string | null;
@@ -23,7 +24,8 @@ export interface File extends Auditable {
 
 export interface FileDTO {
     id: number;
-    fileName: string;
+    originalFilename: string;
+    filename: string;
 }
 
 export interface FullText extends Auditable {

@@ -15,7 +15,7 @@ const toggle = (event: any) => op.value.toggle(event)
       <div class="flex flex-row items-center space-x-2">
         <GeneralSearch />
         <NuxtLink to="/project" class="outfit-headline text-white">Projekt</NuxtLink>
-        <NuxtLink to="/collection" class="outfit-headline text-white">Sammlung</NuxtLink>
+        <NuxtLink to="/photopoems" class="outfit-headline text-white">Sammlung</NuxtLink>
         <NuxtLink to="/contact" class="outfit-headline text-white">Kontakt</NuxtLink>
         <div class="card flex justify-center align-middle text-white">
           <Button type="button" icon="pi pi-user" rounded-sm aria-label="User" variant="link" class="text-white" @click="toggle"/>
