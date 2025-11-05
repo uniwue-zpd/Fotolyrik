@@ -9,6 +9,10 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   title: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
 });
+
+useHead(() => ({
+  title: 'Sammlung'
+}));
 </script>
 
 <template>

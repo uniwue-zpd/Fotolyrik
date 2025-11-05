@@ -11,6 +11,10 @@ const photopoem_item = computed(() => store.currentPhotopoem);
 const has_iiif_manifest = computed(() => Boolean(photopoem_item.value?.iiifManifest));
 const has_pages = computed(() => Boolean(photopoem_item.value?.pageNumber));
 
+useHead(() => ({
+  title: photopoem_item.value ? `${photopoem_item.value?.title}` : 'Nicht gefunden'
+}));
+
 onMounted(async () => {
   await store.fetchPhtotopoemById(photopoem_id);
   if (photopoem_item.value?.iiifManifest) {
@@ -184,9 +188,9 @@ onMounted(async () => {
                         <td class="px-6 py-4 whitespace-nowrap font-semibold">Sprachen</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                           <div class="grid grid-cols-2 justify-items-start gap-y-3.5">
-                            <div v-for="language in photopoem_item.languages" :key="language">
+                            <div v-for="language in photopoem_item.languages">
                               <div class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium">
-                                {{ language }}
+                                {{ language.name }}
                               </div>
                             </div>
                           </div>
@@ -194,11 +198,11 @@ onMounted(async () => {
                       </tr>
                       <tr v-if="photopoem_item.copyrightStatusText">
                         <td class="px-6 py-4 whitespace-nowrap font-semibold">Urheberrecht Text</td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.copyrightStatusText }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.copyrightStatusText.value }}</td>
                       </tr>
                       <tr v-if="photopoem_item.copyrightStatusImage">
                         <td class="px-6 py-4 whitespace-nowrap font-semibold">Urheberrecht Bild</td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.copyrightStatusImage }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.copyrightStatusImage.value }}</td>
                       </tr>
                       </tbody>
                     </table>

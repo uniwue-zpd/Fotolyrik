@@ -17,6 +17,8 @@ const photopoem_store = usePhotopoemStore();
 const pub_medium_store = usePubMediumStore();
 const keyword_store = useKeywordStore();
 const file_store = useFileStore();
+const language_store = useLanguageStore();
+const copyrigh_status_store = useCopyrightStatusStore();
 
 type PhotoPoemInput = Omit<PhotoPoemDTO, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
 
@@ -144,7 +146,9 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
             label="Publikationsmedium"
             outer-class="max-w-full"
             select-icon="select"
-            :options="pub_medium_store.pub_media.map(p => ({ label: `${p.title}`, value: { id: p.id, title: p.title } }))"
+            :options="[{label: 'Keine Auswahl', value: null},
+            ...pub_medium_store.pub_media.map(p => ({ label: `${p.title}`, value: { id: p.id, title: p.title } })) as any
+            ]"
         />
         <Divider/>
         <div class="flex flex-row space-x-5">
@@ -232,7 +236,6 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         <Divider/>
         <FormKit
             type="select"
-            id="images"
             multiple
             name="images"
             label="Bilder"
@@ -242,7 +245,39 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
             help="Halten Sie die Strg-Taste gedrückt, um mehrere Schlagworte auszuwählen"
         />
         <Divider/>
-        <!-- TODO: Languages and copyright statuses have to be fetched from corresponding stores -->
+        <div class="flex flex-row space-x-5">
+          <FormKit
+              type="select"
+              name="copyrightStatusImage"
+              label="Urheberrecht Bild"
+              outer-class="max-w-full"
+              select-icon="select"
+              :options="[{label: 'Keine Auswahl', value: []},
+              ...copyrigh_status_store.copyrightStatuses.map(p => ({label: `${p.value}`, value: {id: p.id, value: p.value, description: p.description}})) as any
+              ]"
+          />
+          <FormKit
+              type="select"
+              name="copyrightStatusText"
+              label="Urheberrecht Text"
+              outer-class="max-w-full"
+              select-icon="select"
+              :options="[{label: 'Keine Auswahl', value: []},
+              ...copyrigh_status_store.copyrightStatuses.map(p => ({label: `${p.value}`, value: {id: p.id, value: p.value, description: p.description}})) as any
+              ]"
+          />
+        </div>
+        <Divider/>
+        <FormKit
+            type="select"
+            multiple
+            name="languages"
+            label="Sprache(n)"
+            outer-class="max-w-full"
+            select-icon="select"
+            :options="language_store.languages.map(p => ({label: `${p.name}`, value: {id: p.id, name: p.name, isoDesignation: p.isoDesignation}}))"
+            help="Halten Sie die Strg-Taste gedrückt, um mehrere Schlagworte auszuwählen"
+        />
         <div class="border-solid border-2 rounded-md p-5 bg-[#F1F2F5] mb-2">
           <div class="font-mono">JSON-Preview</div>
           <hr>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-// TODO: Define functions to parse data for the carousel and the bar chart
+useHead(() => ({
+  title: 'Fotolyrik - Startseite'
+}));
 
 import Chart from 'primevue/chart';
 import { ref, onMounted } from 'vue';
-import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css"
 
 const images = ref([
