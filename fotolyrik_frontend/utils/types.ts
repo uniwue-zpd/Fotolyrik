@@ -14,6 +14,17 @@ export interface ContactForm {
     message: string | null
 }
 
+export interface CopyrightStatus extends Auditable {
+    value: string;
+    description: string | null;
+}
+
+export interface CopyrightStatusDTO {
+    id: number;
+    value: string;
+    description: string | null;
+}
+
 export interface File extends Auditable {
     originalFilename: string | null;
     filename: string | null;
@@ -45,6 +56,17 @@ export interface GeneralSearchResult {
     type: string;
 }
 
+export interface Language extends Auditable {
+    name: string;
+    isoDesignation: string;
+}
+
+export interface LanguageDTO {
+    id: number;
+    name: string;
+    isoDesignation: string;
+}
+
 export interface Person extends Auditable {
     firstName: string | null;
     lastName: string | null;
@@ -64,6 +86,8 @@ export interface PersonDTO {
 
 export interface PhotoPoem extends Auditable {
     title: string;
+    subtitle: string | null;
+    altTitle: string | null;
     volume: string | null;
     issue: string | null;
     pageNumber: number | null;
@@ -79,9 +103,9 @@ export interface PhotoPoem extends Auditable {
     link: string | null;
     iiifManifest: string | null;
     images: File[] | []
-    copyrightStatusImage: string | null;
-    copyrightStatusText: string | null;
-    languages: [string] | [];
+    copyrightStatusImage: CopyrightStatus | null;
+    copyrightStatusText: CopyrightStatus | null;
+    languages: Language[] | [];
 }
 
 export interface PhotoPoemDTO extends Auditable {
@@ -103,9 +127,9 @@ export interface PhotoPoemDTO extends Auditable {
     link: string | null;
     iiifManifest: string | null;
     images: FileDTO[] | []
-    copyrightStatusImage: string | null;
-    copyrightStatusText: string | null;
-    languages: [string] | [];
+    copyrightStatusImage: CopyrightStatusDTO | null;
+    copyrightStatusText: CopyrightStatusDTO | null;
+    languages: LanguageDTO[] | [];
 }
 
 export interface Place extends Auditable {

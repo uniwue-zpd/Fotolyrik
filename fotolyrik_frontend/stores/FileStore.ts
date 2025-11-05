@@ -17,26 +17,24 @@ export const useFileStore = defineStore("files", () => {
         loadingDown.value = true;
         errorDown.value = null;
 
-        try {
-            const response = await apiClient.get<File[]>("/files/all");
-            files.value = response.data;
-
-        } catch (err: any) {
-            errorDown.value = err.message || 'Failed to fetch files';
-            console.error('Error fetching files:', err);
-        } finally {
-            loadingDown.value = false;
+        const { data, error } = await useFetch("/api/files/all");
+        if (error.value) {
+            console.error("Unable to fetch files: ", error.value);
+            errorDown.value = error.value.message || "Failed to fetch files";
+            return;
         }
+        files.value = data.value as File[];
+        loadingDown.value = false;
     }
 
     async function removeFile(file: File) {
-        try {
-            apiClient.delete(`/files/${file.id}`);
-            files.value = files.value.filter(f => f.id !== file.id);
-        } catch (err: any) {
-            console.error('Failed to delete file:', err);
-            errorDown.value = err.message || 'Failed to delete file';
+        const { error } = await useFetch(`/api/files/${file.id}`, { method: 'DELETE' });
+        if (error.value) {
+            console.error('Failed to delete file: ', error.value.message);
+            errorDown.value = error.value.message || 'Failed to delete file';
+            return;
         }
+        files.value = files.value.filter(f => f.id !== file.id);
     }
 
     async function uploadFiles(fileList: FileList) {

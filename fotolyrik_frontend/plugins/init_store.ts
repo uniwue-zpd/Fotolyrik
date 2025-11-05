@@ -5,6 +5,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const place_store = usePlaceStore();
     const pub_media_store = usePubMediumStore();
     const file_store = useFileStore();
+    const language_store = useLanguageStore();
+    const copyright_status_store = useCopyrightStatusStore();
 
     await keyword_store.fetchKeywords();
     await person_store.fetchPersons();
@@ -12,4 +14,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     await place_store.fetchPlaces();
     await pub_media_store.fetchPubMedia();
     await file_store.getFiles();
+    await language_store.fetchLanguages();
+    await copyright_status_store.fetchCopyrightStatuses();
 });
