@@ -13,13 +13,17 @@ public class PhotopoemMapper {
     private final KeywordMapper keywordMapper;
     private final FileMapper fileMapper;
     private final PhotopoemRepository photopoemRepository;
+    private final LanguageMapper languageMapper;
+    private final CopyrightStatusMapper copyrightStatusMapper;
 
-    public PhotopoemMapper(PersonMapper personMapper, PubMediumMapper pubMediumMapper, KeywordMapper keywordMapper, FileMapper fileMapper, PhotopoemRepository photopoemRepository) {
+    public PhotopoemMapper(PersonMapper personMapper, PubMediumMapper pubMediumMapper, KeywordMapper keywordMapper, FileMapper fileMapper, PhotopoemRepository photopoemRepository, LanguageMapper languageMapper, CopyrightStatusMapper copyrightStatusMapper) {
         this.personMapper = personMapper;
         this.pubMediumMapper = pubMediumMapper;
         this.keywordMapper = keywordMapper;
         this.fileMapper = fileMapper;
         this.photopoemRepository = photopoemRepository;
+        this.languageMapper = languageMapper;
+        this.copyrightStatusMapper = copyrightStatusMapper;
     }
 
     public Photopoem PhotopoemDTOToPhotopoem(PhotopoemDTO photopoemDTO) {
@@ -32,10 +36,7 @@ public class PhotopoemMapper {
         photopoem.setPageNumber(photopoemDTO.getPageNumber());
         photopoem.setPageCount(photopoemDTO.getPageCount());
         photopoem.setPublicationDate(photopoemDTO.getPublicationDate());
-        photopoem.setPublicationMedium((photopoemDTO.getPublicationMedium() != null)
-                ? pubMediumMapper.PubMediumDTOToPubmedium(photopoemDTO.getPublicationMedium())
-                : null
-        );
+        photopoem.setPublicationMedium(pubMediumMapper.PubMediumDTOToPubmedium(photopoemDTO.getPublicationMedium()));
         photopoem.setAuthors(personMapper.PersonDTOsToPersons(photopoemDTO.getAuthors()));
         photopoem.setPhotographers(personMapper.PersonDTOsToPersons(photopoemDTO.getPhotographers()));
         photopoem.setOtherContributors(personMapper.PersonDTOsToPersons(photopoemDTO.getOtherContributors()));
@@ -45,9 +46,9 @@ public class PhotopoemMapper {
         photopoem.setLink(photopoemDTO.getLink());
         photopoem.setIiifManifest(photopoemDTO.getIiifManifest());
         photopoem.setImages(fileMapper.FileDTOsToFiles(photopoemDTO.getImages()));
-        photopoem.setCopyrightStatusText(photopoemDTO.getCopyrightStatusText());
-        photopoem.setCopyrightStatusImage(photopoemDTO.getCopyrightStatusImage());
-        photopoem.setLanguages(photopoemDTO.getLanguages());
+        photopoem.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusText()));
+        photopoem.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusImage()));
+        photopoem.setLanguages(languageMapper.LanguageDTOsToLanguages(photopoemDTO.getLanguages()));
         return photopoem;
     }
 
@@ -62,10 +63,7 @@ public class PhotopoemMapper {
         photopoemDTO.setPageNumber(photopoem.getPageNumber());
         photopoemDTO.setPageCount(photopoem.getPageCount());
         photopoemDTO.setPublicationDate(photopoem.getPublicationDate());
-        photopoemDTO.setPublicationMedium((photopoem.getPublicationMedium() != null)
-                ? pubMediumMapper.PubMediumToPubmediumDTO(photopoem.getPublicationMedium())
-                : null
-        );
+        photopoemDTO.setPublicationMedium(pubMediumMapper.PubMediumToPubmediumDTO(photopoem.getPublicationMedium()));
         photopoemDTO.setAuthors(personMapper.PersonsToPersonDTOs(photopoem.getAuthors()));
         photopoemDTO.setPhotographers(personMapper.PersonsToPersonDTOs(photopoem.getPhotographers()));
         photopoemDTO.setOtherContributors(personMapper.PersonsToPersonDTOs(photopoem.getOtherContributors()));
@@ -75,9 +73,9 @@ public class PhotopoemMapper {
         photopoemDTO.setLink(photopoem.getLink());
         photopoemDTO.setIiifManifest(photopoem.getIiifManifest());
         photopoemDTO.setImages(fileMapper.FilesToFileDTOs(photopoem.getImages()));
-        photopoemDTO.setCopyrightStatusImage(photopoem.getCopyrightStatusImage());
-        photopoemDTO.setCopyrightStatusText(photopoem.getCopyrightStatusText());
-        photopoemDTO.setLanguages(photopoem.getLanguages());
+        photopoemDTO.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(photopoem.getCopyrightStatusImage()));
+        photopoemDTO.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(photopoem.getCopyrightStatusText()));
+        photopoemDTO.setLanguages(languageMapper.LanguagesToLanguageDTOs(photopoem.getLanguages()));
         photopoemDTO.setCreatedDate(photopoem.getCreatedDate());
         photopoemDTO.setCreatedBy(photopoem.getCreatedBy());
         photopoemDTO.setLastModifiedDate(photopoem.getLastModifiedDate());

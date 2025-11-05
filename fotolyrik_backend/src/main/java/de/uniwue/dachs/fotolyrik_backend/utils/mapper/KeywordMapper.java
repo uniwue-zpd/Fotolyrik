@@ -6,6 +6,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ public class KeywordMapper {
     }
 
     public Keyword KeywordDTOToKeyword(KeywordDTO keywordDTO) {
+        if (keywordDTO == null) return null;
         if (keywordDTO.getId() != null) {
             return keywordRepository.findById(keywordDTO.getId()).orElse(null);
         } else {
@@ -30,10 +32,14 @@ public class KeywordMapper {
 
     public Set<Keyword> KeywordDTOsToKeywords(Set<KeywordDTO> keywordDTOs) {
         if (keywordDTOs.isEmpty()) return Collections.emptySet();
-        return keywordDTOs.stream().map(this::KeywordDTOToKeyword).collect(Collectors.toSet());
+        return keywordDTOs.stream()
+                .map(this::KeywordDTOToKeyword)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     public KeywordDTO KeywordToKeywordDTO(Keyword keyword) {
+        if (keyword == null) return null;
         KeywordDTO keywordDTO = new KeywordDTO();
         keywordDTO.setId(keyword.getId());
         keywordDTO.setValue(keyword.getValue());
@@ -42,6 +48,9 @@ public class KeywordMapper {
 
     public Set<KeywordDTO> KeywordToKeywordDTOs(Set<Keyword> keywords) {
         if (keywords.isEmpty()) return Collections.emptySet();
-        return keywords.stream().map(this::KeywordToKeywordDTO).collect(Collectors.toSet());
+        return keywords.stream()
+                .map(this::KeywordToKeywordDTO)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 }

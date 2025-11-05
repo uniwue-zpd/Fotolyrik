@@ -14,6 +14,7 @@ public class PubMediumMapper {
     }
 
     public PubMedium PubMediumDTOToPubmedium(PubMediumDTO pubMediumDTO) {
+        if (pubMediumDTO == null) return null;
         if (pubMediumDTO.getId() != null) {
             return pubMediumRepository.findById(pubMediumDTO.getId()).orElse(null);
         } else {
@@ -25,6 +26,7 @@ public class PubMediumMapper {
     }
 
     public PubMediumDTO PubMediumToPubmediumDTO(PubMedium pubMedium) {
+        if (pubMedium == null) return null;
         PubMediumDTO pubMediumDTO = new PubMediumDTO();
         pubMediumDTO.setId(pubMedium.getId());
         pubMediumDTO.setTitle(pubMedium.getTitle());

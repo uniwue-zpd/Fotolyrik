@@ -6,6 +6,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ public class PersonMapper {
     }
 
     public Person PersonDTOToPerson(PersonDTO personDTO) {
+        if (personDTO == null) return null;
         if (personDTO.getId() != null) {
             return personRepository.findById(personDTO.getId()).orElse(null);
         } else {
@@ -30,10 +32,14 @@ public class PersonMapper {
 
     public Set<Person> PersonDTOsToPersons(Set<PersonDTO> personDTOs) {
         if (personDTOs.isEmpty()) return Collections.emptySet();
-        return personDTOs.stream().map(this::PersonDTOToPerson).collect(Collectors.toSet());
+        return personDTOs.stream()
+                .map(this::PersonDTOToPerson)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     public PersonDTO PersonToPersonDTO(Person person) {
+        if (person == null) return null;
         PersonDTO personDTO = new PersonDTO();
         personDTO.setId(person.getId());
         personDTO.setFullName(person.getFullName());
@@ -42,6 +48,9 @@ public class PersonMapper {
 
     public Set<PersonDTO> PersonsToPersonDTOs(Set<Person> persons) {
         if (persons.isEmpty()) return Collections.emptySet();
-        return persons.stream().map(this::PersonToPersonDTO).collect(Collectors.toSet());
+        return persons.stream()
+                .map(this::PersonToPersonDTO)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 }

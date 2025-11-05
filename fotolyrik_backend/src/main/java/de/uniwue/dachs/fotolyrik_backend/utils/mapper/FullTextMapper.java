@@ -24,6 +24,7 @@ public class FullTextMapper {
     }
 
     public FullTextDTO FulltextToFullTextDTO(FullText fullText) {
+        if (fullText == null) return null;
         FullTextDTO fullTextDTO = new FullTextDTO();
         fullTextDTO.setId(fullText.getId());
         fullTextDTO.setPhotopoem(photopoemMapper.PhotopoemToPreviewDTO(fullText.getPhotopoem()));

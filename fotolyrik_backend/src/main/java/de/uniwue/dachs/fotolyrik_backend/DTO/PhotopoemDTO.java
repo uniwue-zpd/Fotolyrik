@@ -33,7 +33,7 @@ public class PhotopoemDTO extends BaseEntity {
     private String link;
     private String iiifManifest;
     private Set<FileDTO> images = new HashSet<>();
-    private String copyrightStatusImage;
-    private String copyrightStatusText;
-    private Set<String> languages = new HashSet<>();
+    private CopyrightStatusDTO copyrightStatusImage;
+    private CopyrightStatusDTO copyrightStatusText;
+    private Set<LanguageDTO> languages = new HashSet<>();
 }

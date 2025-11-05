@@ -6,6 +6,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,10 +25,14 @@ public class FileMapper {
 
     public Set<File> FileDTOsToFiles(Set<FileDTO> fileDTOs) {
         if (fileDTOs.isEmpty()) return Collections.emptySet();
-        return fileDTOs.stream().map(this::FileDTOToFile).collect(Collectors.toSet());
+        return fileDTOs.stream()
+                .map(this::FileDTOToFile)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     public FileDTO FileToFileDTO(File file) {
+        if (file == null) return null;
         FileDTO fileDTO = new FileDTO();
         fileDTO.setId(file.getId());
         fileDTO.setOriginalFilename(file.getOriginalFilename());
@@ -37,6 +42,9 @@ public class FileMapper {
 
     public Set<FileDTO> FilesToFileDTOs(Set<File> files) {
         if (files.isEmpty()) return Collections.emptySet();
-        return files.stream().map(this::FileToFileDTO).collect(Collectors.toSet());
+        return files.stream()
+                .map(this::FileToFileDTO)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 }

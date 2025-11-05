@@ -85,11 +85,19 @@ public class Photopoem extends BaseEntity {
     @JoinColumn(name = "photopoem_id")
     private Set<File> images = new HashSet<>();
 
-    private String copyrightStatusImage;
+    @ManyToOne
+    @JoinColumn(name = "copyrightstatus_image_id")
+    private CopyrightStatus copyrightStatusImage;
 
-    private String copyrightStatusText;
+    @ManyToOne
+    @JoinColumn(name = "copyrightstatus_text_id")
+    private CopyrightStatus copyrightStatusText;
 
-    @ElementCollection(targetClass = String.class)
-    @CollectionTable(name = "photopoem_languages", joinColumns = @JoinColumn(name = "photopoem_id"))
-    private Set<String> languages;
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_languages",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    private Set<Language> languages = new HashSet<>();
 }

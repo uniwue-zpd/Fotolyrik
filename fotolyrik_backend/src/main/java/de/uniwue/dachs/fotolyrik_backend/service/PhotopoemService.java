@@ -19,6 +19,8 @@ public class PhotopoemService {
     private final PersonMapper personMapper;
     private final KeywordMapper keywordMapper;
     private final FileMapper fileMapper;
+    private final CopyrightStatusMapper copyrightStatusMapper;
+    private final LanguageMapper languageMapper;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             FullTextService fullTextService,
@@ -26,7 +28,7 @@ public class PhotopoemService {
                             PubMediumMapper pubMediumMapper,
                             PersonMapper personMapper,
                             KeywordMapper keywordMapper,
-                            FileMapper fileMapper) {
+                            FileMapper fileMapper, CopyrightStatusMapper copyrightStatusMapper, LanguageMapper languageMapper) {
         this.photopoemRepository = photopoemRepository;
         this.fullTextService = fullTextService;
         this.photopoemMapper = photopoemMapper;
@@ -34,6 +36,8 @@ public class PhotopoemService {
         this.personMapper = personMapper;
         this.keywordMapper = keywordMapper;
         this.fileMapper = fileMapper;
+        this.copyrightStatusMapper = copyrightStatusMapper;
+        this.languageMapper = languageMapper;
     }
 
     /**
@@ -127,9 +131,9 @@ public class PhotopoemService {
             entity.setLink(updatedPhotopoem.getLink());
             entity.setIiifManifest(updatedPhotopoem.getIiifManifest());
             entity.setImages(fileMapper.FileDTOsToFiles(updatedPhotopoem.getImages()));
-            entity.setCopyrightStatusImage(updatedPhotopoem.getCopyrightStatusImage());
-            entity.setCopyrightStatusText(updatedPhotopoem.getCopyrightStatusText());
-            entity.setLanguages(updatedPhotopoem.getLanguages());
+            entity.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusImage()));
+            entity.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusText()));
+            entity.setLanguages(languageMapper.LanguageDTOsToLanguages(updatedPhotopoem.getLanguages()));
 
             Photopoem savedPhotopoem = photopoemRepository.save(entity);
             return photopoemMapper.PhotopoemToPhotopoemDTO(savedPhotopoem);
