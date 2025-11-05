@@ -24,7 +24,6 @@ public class PersonMapper {
             return personRepository.findById(personDTO.getId()).orElse(null);
         } else {
             Person person = new Person();
-            person.setFullName(personDTO.getFullName());
             personRepository.save(person);
             return person;
         }

@@ -17,7 +17,11 @@ public class Person extends BaseEntity {
 
     private String lastName;
 
-    private String fullName;
+    @Transient
+    public String getFullName() {
+        return (firstName != null ? firstName + " " : "") +
+                (lastName != null ? lastName : "");
+    }
 
     @ElementCollection(targetClass = String.class)
     @CollectionTable(name = "person_pseudonymes", joinColumns = @JoinColumn(name = "person_id"))
