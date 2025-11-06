@@ -11,12 +11,24 @@ export const useLanguageStore = defineStore('language', () => {
     // Actions
         // GET Fetch all languages
     async function fetchLanguages() {
-        const { data, error } = await useFetch('/api/languages');
-        if (error.value) {
-            console.error(error.value);
-            return;
+        if (!isLoaded.value) {
+            const { data, error } = await useFetch('/api/languages');
+            if (error.value) {
+                console.error(error.value);
+                return;
+            }
+            languages.value = data.value as Language[];
         }
-        languages.value = data.value as Language[];
+    }
+
+        // GET Refetch languages
+    async function refreshLanguagesData() {
+        try {
+            const data = await $fetch('/api/languages');
+            languages.value = data as Language[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
+        }
     }
 
         // GET a language by its ID
@@ -89,6 +101,7 @@ export const useLanguageStore = defineStore('language', () => {
         currentLanguage,
         isLoaded,
         fetchLanguages,
+        refreshLanguagesData,
         fetchLanguageById,
         createLanguage,
         updateLanguage,

@@ -22,6 +22,16 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         }
     }
 
+        // GET refetch publication media
+    async function refreshPubMediaData() {
+        try {
+            const data = await $fetch('/api/publication_media');
+            pub_media.value = data as PubMedium[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
+        }
+    }
+
         // GET publication medium by ID
     async function fetchPubMediumById(id: number) {
         if (!current_pub_medium.value || current_pub_medium.value.id !== id) {
@@ -111,6 +121,7 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         pub_media,
         current_pub_medium,
         fetchPubMedia,
+        refreshPubMediaData,
         fetchPubMediumById,
         createPubMedium,
         updatePubMedium,

@@ -27,6 +27,15 @@ export const useFileStore = defineStore("files", () => {
         loadingDown.value = false;
     }
 
+    async function refreshFilesData() {
+        try {
+            const data = await $fetch('/api/files/all');
+            files.value = data as File[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
+        }
+    }
+
     async function removeFile(file: File) {
         const { error } = await useFetch(`/api/files/${file.id}`, { method: 'DELETE' });
         if (error.value) {
@@ -82,6 +91,7 @@ export const useFileStore = defineStore("files", () => {
         errorUp,
 
         getFiles,
+        refreshFilesData,
         removeFile,
         uploadFiles,
         getImagePreview

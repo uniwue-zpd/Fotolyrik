@@ -23,6 +23,16 @@ export const usePlaceStore = defineStore('place', () => {
         }
     }
 
+        // GET Refetch all places
+    async function refreshPlacesData() {
+        try {
+            const data = await $fetch('/api/places');
+            places.value = data as Place[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
+        }
+    }
+
         // GET Fetch place by ID
     async function fetchPlaceById(id: number) {
         if (!current_place.value || current_place.value.id !== id) {
@@ -112,6 +122,7 @@ export const usePlaceStore = defineStore('place', () => {
         places,
         current_place,
         fetchPlaces,
+        refreshPlacesData,
         fetchPlaceById,
         createPlace,
         updatePlace,

@@ -23,6 +23,16 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         }
     }
 
+        // GET refetch photopoems
+    async function refreshPhotopoemsData() {
+        try {
+            const data = await $fetch('/api/photopoems');
+            photopoems.value = data as PhotoPoemDTO[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
+        }
+    }
+
         // Fetch photopoem by ID
     async function fetchPhtotopoemById(id: number) {
         if (!currentPhotopoem.value || currentPhotopoem.value.id !== id) {
@@ -131,6 +141,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         currentPhotopoem,
         isLoaded,
         fetchPhotopoems,
+        refreshPhotopoemsData,
         fetchPhtotopoemById,
         fetchPhotopoemsBy,
         createPhotopoem,

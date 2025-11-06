@@ -23,6 +23,16 @@ export const useKeywordStore = defineStore('keyword', () => {
         }
     }
 
+        // GET refetch keywords
+    async function refreshKeywordsData() {
+        try {
+            const data = await $fetch('/api/keywords');
+            keywords.value = data as Keyword[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
+        }
+    }
+
         // GET Fetch keyword by ID
     async function fetchKeywordById(id: number) {
         if (!currentKeyword.value || currentKeyword.value.id !== id) {
@@ -93,6 +103,7 @@ export const useKeywordStore = defineStore('keyword', () => {
         currentKeyword,
         isLoaded,
         fetchKeywords,
+        refreshKeywordsData,
         fetchKeywordById,
         createKeyword,
         updateKeyword,

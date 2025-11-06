@@ -23,6 +23,16 @@ export const usePersonStore = defineStore('person', () => {
         }
     }
 
+        // GET refetch persons
+    async function refreshPersonsData() {
+        try {
+            const data = await $fetch('/api/persons');
+            persons.value = data as Person[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
+        }
+    }
+
         // Fetch person by ID
     async function fetchPersonById(id: number) {
         if (!currentPerson.value || currentPerson.value.id !== id) {
@@ -113,6 +123,7 @@ export const usePersonStore = defineStore('person', () => {
         currentPerson,
         isLoaded,
         fetchPersons,
+        refreshPersonsData,
         fetchPersonById,
         createPerson,
         updatePerson,

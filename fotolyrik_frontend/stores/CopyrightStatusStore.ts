@@ -11,12 +11,24 @@ export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
     // Actions
         // GET Fetch all copyright statuses
     async function fetchCopyrightStatuses() {
-        const { data, error } = await useFetch('/api/copyright_statuses');
-        if (error.value) {
-            console.error(error.value);
-            return;
+        if (!isLoaded.value) {
+            const { data, error } = await useFetch('/api/copyright_statuses');
+            if (error.value) {
+                console.error(error.value);
+                return;
+            }
+            copyrightStatuses.value = data.value as CopyrightStatus[];
         }
-        copyrightStatuses.value = data.value as CopyrightStatus[];
+    }
+
+        // GET refetch copyright statues
+    async function refreshCopyrighStatusesData() {
+        try {
+            const data = await $fetch('/api/copyright_statuses');
+            copyrightStatuses.value = data as CopyrightStatus[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
+        }
     }
 
         // GET a copyright status by its ID
@@ -89,6 +101,7 @@ export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
         currentCopyrightStatus,
         isLoaded,
         fetchCopyrightStatuses,
+        refreshCopyrighStatusesData,
         fetchCopyrightStatusById,
         createCopyrightStatus,
         updateCopyrightStatus,
