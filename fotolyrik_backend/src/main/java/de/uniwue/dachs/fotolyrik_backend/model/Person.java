@@ -37,6 +37,8 @@ public class Person extends BaseEntity {
 
     private String gndId;
 
+    private String notes;
+
     @OneToOne
     @JoinColumn(name = "file_id")
     private File image;

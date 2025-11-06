@@ -52,6 +52,7 @@ public class PersonService {
                     existingPerson.setPseudonyms(updatedPerson.getPseudonyms());
                     existingPerson.setSex(updatedPerson.getSex());
                     existingPerson.setGndId(updatedPerson.getGndId());
+                    existingPerson.setNotes(updatedPerson.getNotes());
                     existingPerson.setImage(updatedPerson.getImage() != null
                             ? getImage(updatedPerson.getImage().getId())
                             : null);
