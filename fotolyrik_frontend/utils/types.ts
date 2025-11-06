@@ -117,7 +117,7 @@ export interface PhotoPoemDTO extends Auditable {
     pageNumber: number | null;
     pageCount: number | null;
     publicationDate: string | null;
-    publicationMedium: PubMediumDTO | null;
+    publicationMedium: PubMediumPreviewDTO | null;
     authors: PersonDTO[] | [];
     photographers: PersonDTO[] | [];
     otherContributors: PersonDTO[] | [];
@@ -139,22 +139,64 @@ export interface Place extends Auditable {
     longitude: number | null
 }
 
+export interface PlaceDTO {
+    id: number;
+    name: string | null;
+}
+
 export interface PubMedium extends Auditable {
     title: string;
     subtitle: string | null;
     publicationPlaces: Place[] | [];
-    publisher: string | null;
-    pubRhytm: string | null;
+    publisher: Publisher | null;
+    pubRhythms: PubRhythm[] | [];
+    editorialOffice: string | null;
     startYear: string | null;
     endYear: string | null;
     amountVolumes: number | null;
     amountIssues: number | null;
     zdbId: string | null;
+    notes: string | null;
 }
 
-export interface PubMediumDTO {
+export interface PubMediumPreviewDTO {
     id: number;
     title: number;
+}
+
+export interface PubMediumDTO extends Auditable {
+    title: string;
+    subtitle: string | null;
+    publicationPlaces: PlaceDTO[] | [];
+    publisher: PublisherDTO | null;
+    pubRhythms: PubRhythmDTO[] | [];
+    editorialOffice: string | null;
+    startYear: string | null;
+    endYear: string | null;
+    amountVolumes: number | null;
+    amountIssues: number | null;
+    zdbId: string | null;
+    notes: string | null;
+}
+
+export interface Publisher extends Auditable {
+    name: string | null;
+    description: string | null;
+}
+
+export interface PublisherDTO {
+    id: number;
+    name: string | null;
+}
+
+export interface PubRhythm extends Auditable {
+    value: string | null;
+    description: string | null;
+}
+
+export interface PubRhythmDTO {
+    id: number;
+    value: string | null;
 }
 
 export interface Keyword extends Auditable {

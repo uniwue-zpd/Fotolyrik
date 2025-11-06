@@ -7,6 +7,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const file_store = useFileStore();
     const language_store = useLanguageStore();
     const copyright_status_store = useCopyrightStatusStore();
+    const publisher_store = usePublisherStore();
+    const pub_rhythm_store = usePubRhythmStore();
 
     await keyword_store.fetchKeywords();
     await person_store.fetchPersons();
@@ -16,4 +18,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     await file_store.getFiles();
     await language_store.fetchLanguages();
     await copyright_status_store.fetchCopyrightStatuses();
+    await publisher_store.fetchPublishers();
+    await pub_rhythm_store.fetchPubRhythms();
 });

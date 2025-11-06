@@ -3,8 +3,8 @@ import { ref, computed } from "vue";
 
 export const usePubMediumStore = defineStore('pubMedium', () => {
     // State
-    const pub_media = ref<PubMedium[]>([] as PubMedium[]);
-    const current_pub_medium = ref<PubMedium | null>(null);
+    const pub_media = ref<PubMediumDTO[]>([] as PubMediumDTO[]);
+    const current_pub_medium = ref<PubMediumDTO | null>(null);
 
     // Getters
     const isLoaded = computed(() => pub_media.value.length > 0);
@@ -18,7 +18,7 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
                 console.error('Error fetching publication media:', error.value);
                 return;
             }
-            pub_media.value = data.value as PubMedium[];
+            pub_media.value = data.value as PubMediumDTO[];
         }
     }
 
@@ -26,7 +26,7 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
     async function refreshPubMediaData() {
         try {
             const data = await $fetch('/api/publication_media');
-            pub_media.value = data as PubMedium[];
+            pub_media.value = data as PubMediumDTO[];
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
@@ -44,13 +44,13 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
                     console.error(`Error fetching publication medium with id ${id}:`, error.value);
                     return;
                 }
-                current_pub_medium.value = data.value as PubMedium;
+                current_pub_medium.value = data.value as PubMediumDTO;
             }
         }
     }
 
         // POST Create new publication medium
-    async function createPubMedium(payload: Partial<PubMedium>) {
+    async function createPubMedium(payload: Partial<PubMediumDTO>) {
         const { data, error } = await useFetch('/api/publication_media', {
             method: 'POST',
             body: payload
@@ -59,13 +59,13 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
             console.error('Error creating publication medium:', error.value);
             return;
         }
-        const newPubMedium = data.value as PubMedium;
+        const newPubMedium = data.value as PubMediumDTO;
         pub_media.value.push(newPubMedium);
         return newPubMedium;
     }
 
         // PUT Update existing publication medium
-    async function updatePubMedium(payload: Partial<PubMedium>, id: number) {
+    async function updatePubMedium(payload: Partial<PubMediumDTO>, id: number) {
         const { data, error } = await useFetch(`/api/publication_media/${id}`, {
             method: 'PUT',
             body: payload
@@ -74,7 +74,7 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
             console.error('Error updating publication medium:', error.value);
             return;
         }
-        const updatedPubMedium = data.value;
+        const updatedPubMedium = data.value as PubMediumDTO;
         const index = pub_media.value.findIndex(p => p.id === id);
         if (index !== -1) pub_media.value[index] = updatedPubMedium;
         if (current_pub_medium.value?.id === id) current_pub_medium.value = updatedPubMedium;

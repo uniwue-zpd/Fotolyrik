@@ -313,9 +313,3 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
     </FormKit>
   </div>
 </template>
-
-<style>
-.p-button, .p-button:hover {
-  background: #063D79 !important;
-}
-</style>
