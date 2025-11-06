@@ -1,10 +1,11 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
-import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
+import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PubMediumService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -17,28 +18,28 @@ public class PubMediumController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<PubMedium>> getPubMediums() {
-        Iterable<PubMedium> pubMediums = pubMediumService.getAllPubMedia();
-        return ResponseEntity.ok(pubMediums);
+    public ResponseEntity<List<PubMediumDTO>> getPubMediums() {
+        List<PubMediumDTO> pubMedia = pubMediumService.getAllPubMedia();
+        return ResponseEntity.ok(pubMedia);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PubMedium> getPubMediumById(@PathVariable Long id) {
+    public ResponseEntity<PubMediumDTO> getPubMediumById(@PathVariable Long id) {
         return pubMediumService.getPubMediumById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public ResponseEntity<PubMedium> savePubMedium(@RequestBody PubMedium pubMedium) {
-        PubMedium savedPubMedium = pubMediumService.savePubMedium(pubMedium);
+    public ResponseEntity<PubMediumDTO> savePubMedium(@RequestBody PubMediumDTO pubMediumDTO) {
+        PubMediumDTO savedPubMedium = pubMediumService.createPubMedium(pubMediumDTO);
         return ResponseEntity.status(201).body(savedPubMedium);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PubMedium> updatePubMedium(@PathVariable Long id, @RequestBody PubMedium pubMedium) {
+    public ResponseEntity<PubMediumDTO> updatePubMedium(@PathVariable Long id, @RequestBody PubMediumDTO pubMediumDTO) {
         try {
-            PubMedium updated = pubMediumService.updatePubMedium(id, pubMedium);
+            PubMediumDTO updated = pubMediumService.updatePubMedium(id, pubMediumDTO);
             return ResponseEntity.ok(updated);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).build();

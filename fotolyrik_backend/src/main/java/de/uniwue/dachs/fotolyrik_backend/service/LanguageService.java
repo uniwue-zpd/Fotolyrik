@@ -64,5 +64,6 @@ public class LanguageService {
         if (!languageRepository.existsById(id)) {
             throw new EntityNotFoundException("Entity with id '" + id + "' does not exist");
         }
+        languageRepository.deleteById(id);
     }
 }

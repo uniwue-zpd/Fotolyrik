@@ -36,7 +36,7 @@ public class PhotopoemMapper {
         photopoem.setPageNumber(photopoemDTO.getPageNumber());
         photopoem.setPageCount(photopoemDTO.getPageCount());
         photopoem.setPublicationDate(photopoemDTO.getPublicationDate());
-        photopoem.setPublicationMedium(pubMediumMapper.PubMediumDTOToPubmedium(photopoemDTO.getPublicationMedium()));
+        photopoem.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(photopoemDTO.getPublicationMedium()));
         photopoem.setAuthors(personMapper.PersonDTOsToPersons(photopoemDTO.getAuthors()));
         photopoem.setPhotographers(personMapper.PersonDTOsToPersons(photopoemDTO.getPhotographers()));
         photopoem.setOtherContributors(personMapper.PersonDTOsToPersons(photopoemDTO.getOtherContributors()));
@@ -63,7 +63,7 @@ public class PhotopoemMapper {
         photopoemDTO.setPageNumber(photopoem.getPageNumber());
         photopoemDTO.setPageCount(photopoem.getPageCount());
         photopoemDTO.setPublicationDate(photopoem.getPublicationDate());
-        photopoemDTO.setPublicationMedium(pubMediumMapper.PubMediumToPubmediumDTO(photopoem.getPublicationMedium()));
+        photopoemDTO.setPublicationMedium(pubMediumMapper.PubMediumToPubMediumPreviewDTO(photopoem.getPublicationMedium()));
         photopoemDTO.setAuthors(personMapper.PersonsToPersonDTOs(photopoem.getAuthors()));
         photopoemDTO.setPhotographers(personMapper.PersonsToPersonDTOs(photopoem.getPhotographers()));
         photopoemDTO.setOtherContributors(personMapper.PersonsToPersonDTOs(photopoem.getOtherContributors()));
@@ -88,7 +88,7 @@ public class PhotopoemMapper {
         return photopoemRepository.findById(photopoemPreviewDTO.getId()).orElse(null);
     }
 
-    public PhotopoemPreviewDTO PhotopoemToPreviewDTO(Photopoem photopoem) {
+    public PhotopoemPreviewDTO PhotopoemToPhotopoemPreviewDTO(Photopoem photopoem) {
         PhotopoemPreviewDTO photopoemPreviewDTO = new PhotopoemPreviewDTO();
         photopoemPreviewDTO.setId(photopoem.getId());
         photopoemPreviewDTO.setTitle(photopoem.getTitle());

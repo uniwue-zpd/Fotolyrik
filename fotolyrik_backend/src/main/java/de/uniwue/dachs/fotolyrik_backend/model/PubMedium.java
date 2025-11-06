@@ -26,9 +26,19 @@ public class PubMedium extends BaseEntity {
     )
     private Set<Place> publicationPlaces = new HashSet<>();
 
-    private String publisher;
+    @ManyToOne
+    @JoinColumn(name = "pub_medium_id")
+    private Publisher publisher;
 
-    private String pubRhytm;
+    @ManyToMany
+    @JoinTable(
+            name = "pub_medium_rhythm",
+            joinColumns = @JoinColumn(name = "pub_medium_id"),
+            inverseJoinColumns = @JoinColumn(name = "pub_rhythm_id")
+    )
+    private Set<PublicationRhythm> pubRhytms = new HashSet<>();
+
+    private String editorialOffice;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
     private Year startYear;
@@ -36,9 +46,11 @@ public class PubMedium extends BaseEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
     private Year endYear;
 
-    private Integer amountVolumes;
+    private Long amountVolumes;
 
-    private Integer amountIssues;
+    private Long amountIssues;
 
     private String zdbId;
+
+    private String notes;
 }

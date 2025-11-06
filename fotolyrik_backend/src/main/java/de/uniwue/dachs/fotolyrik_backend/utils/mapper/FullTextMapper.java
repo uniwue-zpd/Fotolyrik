@@ -27,7 +27,7 @@ public class FullTextMapper {
         if (fullText == null) return null;
         FullTextDTO fullTextDTO = new FullTextDTO();
         fullTextDTO.setId(fullText.getId());
-        fullTextDTO.setPhotopoem(photopoemMapper.PhotopoemToPreviewDTO(fullText.getPhotopoem()));
+        fullTextDTO.setPhotopoem(photopoemMapper.PhotopoemToPhotopoemPreviewDTO(fullText.getPhotopoem()));
         fullTextDTO.setFullText(fullText.getFullText());
         return fullTextDTO;
     }

@@ -23,7 +23,7 @@ public class PhotopoemDTO extends BaseEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate publicationDate;
 
-    private PubMediumDTO publicationMedium;
+    private PubMediumPreviewDTO publicationMedium;
     private Set<PersonDTO> authors = new HashSet<>();
     private Set<PersonDTO> photographers = new HashSet<>();
     private Set<PersonDTO> otherContributors = new HashSet<>();
