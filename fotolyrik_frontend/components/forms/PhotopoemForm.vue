@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { getNode } from '@formkit/core';
 import type { PhotoPoemDTO } from "~/utils/types";
+import { useRefreshStoreData } from "~/composables/RefreshStores";
 
 const props = defineProps<{
   action: 'create' | 'edit';
@@ -19,8 +20,21 @@ const keyword_store = useKeywordStore();
 const file_store = useFileStore();
 const language_store = useLanguageStore();
 const copyrigh_status_store = useCopyrightStatusStore();
+const data_refreshing = ref(false);
 
 type PhotoPoemInput = Omit<PhotoPoemDTO, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'>;
+
+async function handleRefresh() {
+  data_refreshing.value = true;
+  try {
+    await useRefreshStoreData();
+    toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
+  } catch (err) {
+    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});
+  } finally {
+    data_refreshing.value = false;
+  }
+}
 
 const submit = async (formData: Partial<PhotoPoemInput>) => {
   try {
@@ -65,6 +79,14 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         #default="{ value }"
     >
       <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-[#F1F2F2]">
+        <div>
+          <Button :disabled="data_refreshing" label="Daten aktualisieren" @click="handleRefresh">
+            <div class="flex flex-row space-x-3 items-center">
+              <div class="roboto-plain font-semibold">Datenbankdaten aktualisieren</div>
+              <i v-show="data_refreshing" :class="['pi', data_refreshing ? 'pi-spin pi-spinner' : 'pi-spinner']"/>
+            </div>
+          </Button>
+        </div>
         <div class="flex flex-row space-x-3">
           <FormKit
               type="text"
@@ -292,6 +314,8 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
   </div>
 </template>
 
-<style scoped>
-
+<style>
+.p-button, .p-button:hover {
+  background: #063D79 !important;
+}
 </style>
