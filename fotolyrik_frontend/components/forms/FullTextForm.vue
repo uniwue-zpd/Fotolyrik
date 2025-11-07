@@ -3,7 +3,6 @@ import type { FullText } from "~/utils/types";
 import { getNode } from "@formkit/core";
 import { useToast } from "primevue/usetoast";
 import { ref } from "vue";
-import apiClient from "~/service/api";
 
 const props = defineProps<{
   action: 'create' | 'edit' | 'edit-by-photopoem';
@@ -20,13 +19,13 @@ type FullTextInput = Omit<FullText, 'id' | 'createdBy' | 'createdDate' | 'lastMo
 const submit = async (formData: Partial<FullTextInput>) => {
   try {
     if (props.action === 'create') {
-      await apiClient.post('/fulltexts', formData);
+      await $fetch('/api/fulltexts', { method: 'POST', body: formData });
       submitted.value = true;
       toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich erstellt', life: 3000});
       const form = getNode('fulltext_creation');
       form?.reset();
     } else if (props.action === 'edit' && props.fulltext?.id) {
-      await apiClient.put(`/fulltexts/${props.fulltext.id}`, formData);
+      await $fetch(`/api/fulltexts/${props.fulltext.id}`, { method: 'PUT', body: formData });
       submitted.value = true;
       toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich upgedated', life: 3000});
       navigateTo(`/fulltexts/${props.fulltext?.id}`);

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import apiClient from "~/service/api";
 
 const visible = ref(false);
 
@@ -28,10 +27,9 @@ const fetchResults = async (search: string) => {
   }
 
   try {
-    const { data } = await apiClient.get('/search', {
-      params: { query: search }
-    });
-    results.value = data;
+    results.value = await $fetch<GeneralSearchResult[]>('/api/search',
+        { params: { query: search }}
+    );
   } catch (error) {
     console.error('Search error:', error)
     results.value = []
