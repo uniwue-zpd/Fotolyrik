@@ -8,6 +8,7 @@ import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PubMediumMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublicationRhythmMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,10 +38,9 @@ public class PubMediumService {
      * @return a {@link List} of {@link PubMediumDTO} objects
      */
     public List<PubMediumDTO> getAllPubMedia() {
-        return pubMediumRepository.findAll()
+        return pubMediumRepository.findAll(Sort.by(Sort.Direction.ASC, "title"))
                 .stream()
                 .map(pubMediumMapper::PubMediumToPubMediumDTO)
-                .sorted(Comparator.comparing(PubMediumDTO::getId))
                 .toList();
     }
 

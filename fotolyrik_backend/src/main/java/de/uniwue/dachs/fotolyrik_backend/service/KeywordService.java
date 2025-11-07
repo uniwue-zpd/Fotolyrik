@@ -3,6 +3,7 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,7 @@ public class KeywordService {
 
     // GET all keywords
     public List<Keyword> getAllKeywords() {
-        return keywordRepository.findAll();
+        return keywordRepository.findAll(Sort.by(Sort.Direction.ASC, "value"));
     }
 
     // GET keyword by ID
@@ -42,7 +43,7 @@ public class KeywordService {
                     existingKeyword.setGndId(updatedKeyword.getGndId());
                     return keywordRepository.save(existingKeyword);
                 })
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
     }
 
     // DELETE keyword by ID

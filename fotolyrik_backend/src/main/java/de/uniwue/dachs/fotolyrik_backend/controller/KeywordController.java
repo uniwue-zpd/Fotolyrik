@@ -2,6 +2,7 @@ package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.service.KeywordService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,11 +37,11 @@ public class KeywordController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Keyword> updateKeyword(@PathVariable Long id, @RequestBody Keyword updatedKeyword) {
-        Keyword keyword = keywordService.updateKeyword(id, updatedKeyword);
-        if (keyword != null) {
-            return ResponseEntity.status(201).body(keyword);
-        } else {
+    public ResponseEntity<Keyword> updateKeyword(@PathVariable Long id, @RequestBody Keyword keyword) {
+        try {
+            Keyword updatedKeyword = keywordService.updateKeyword(id, keyword);
+            return ResponseEntity.status(201).body(updatedKeyword);
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
         }
     }

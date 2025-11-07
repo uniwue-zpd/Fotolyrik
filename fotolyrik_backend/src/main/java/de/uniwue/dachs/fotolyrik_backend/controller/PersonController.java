@@ -2,6 +2,7 @@ package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,11 +37,11 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(@PathVariable Long id, @RequestBody Person updatedPerson) {
-        Person person = personService.updatePerson(id, updatedPerson);
-        if (person != null) {
-            return ResponseEntity.status(201).body(person);
-        } else {
+    public ResponseEntity<Person> updatePerson(@PathVariable Long id, @RequestBody Person person) {
+        try {
+            Person updatedPerson = personService.updatePerson(id, person);
+            return ResponseEntity.status(201).body(updatedPerson);
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
         }
     }
