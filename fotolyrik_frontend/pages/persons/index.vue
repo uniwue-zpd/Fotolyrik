@@ -22,6 +22,7 @@ const filters = ref({
           filter-display="row"
           :global-filter-fields="['fullName', 'sex', 'birthYear', 'deathYear']"
           :value="store.persons"
+          stripedRows paginator :rows="10"
       >
         <template #header>
           <div class="flex flex-row justify-between items-center">

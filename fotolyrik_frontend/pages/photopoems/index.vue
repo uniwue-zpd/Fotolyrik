@@ -26,6 +26,7 @@ useHead(() => ({
           filter-display="row"
           :global-filter-fields="['title', 'volume', 'issue', 'pageNumber', 'publicationDate', 'publicationMedium.title']"
           :value="store.photopoems"
+          stripedRows paginator :rows="10"
       >
         <template #header>
           <div class="flex flex-row justify-between items-center">

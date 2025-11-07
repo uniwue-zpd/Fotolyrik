@@ -181,7 +181,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Autor:innen"
               outer-class="max-w-full"
               select-icon="select"
-              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: {id: p.id, fullName: p.fullName} }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName ? p.fullName : p.pseudonyms.join(', ')}`, value: {id: p.id, fullName: p.fullName} }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
           <FormKit
@@ -191,7 +191,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Fotograf:innen"
               outer-class="max-w-full"
               select-icon="select"
-              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: {id: p.id, fullName: p.fullName} }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName ? p.fullName : p.pseudonyms.join(', ')}`, value: {id: p.id, fullName: p.fullName} }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
           <FormKit
@@ -201,7 +201,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Sonstige Mitwirkende"
               outer-class="max-w-full"
               select-icon="select"
-              :options="person_store.persons.map(p => ({ label: `${p.fullName}`, value: {id: p.id, fullName: p.fullName} }))"
+              :options="person_store.persons.map(p => ({ label: `${p.fullName ? p.fullName : p.pseudonyms.join(', ')}`, value: {id: p.id, fullName: p.fullName} }))"
               help="Halten Sie die Strg-Taste gedrückt, um mehrere Personen auszuwählen"
           />
         </div>
