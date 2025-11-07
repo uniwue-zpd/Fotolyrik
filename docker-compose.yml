@@ -17,7 +17,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     volumes:
-      - "${WORKSPACE:?error}/uploads:/uploads"
+      - ${WORKSPACE:?error}/uploads:/uploads
     depends_on:
       database:
         condition: service_healthy
@@ -32,7 +32,7 @@ services:
     volumes:
       # In case you have a database dump, uncomment the following line and change the file name
       # - ./<your_dump>.sql:/docker-entrypoint-initdb.d/<your_dump>.sql
-      - "${WORKSPACE:?error}/db_data:/var/lib/postgresql/data"
+      - ${WORKSPACE:?error}/db_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]
       interval: 30s
@@ -40,10 +40,29 @@ services:
       start_period: 60s
     restart: always
 
+  db_backup:
+    image: postgres:17-alpine
+    environment:
+      - PGPASSWORD=${DB_PASSWORD}
+    volumes:
+      - ${BACKUPS:?error}:/backups
+    entrypoint: /bin/sh
+    command: -c "sleep $(( ( $(date -d '05:00' +%s) - $(date +%s) + 86400 ) % 86400 )); \
+      while true; do \
+      mkdir -p /backups/$(date +'%Y-%m-%d'); \
+      pg_dump -h database -U ${DB_USER} ${DB_NAME} | gzip > /backups/$(date +'%Y-%m-%d')/fotolyrik_$(date +'%H%M%S').sql.gz; \
+      sleep 86400; \
+      done"
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: always
+
   nginx:
     image: nginx:alpine-slim
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/.htpasswd:/etc/nginx/.htpasswd
     ports:
       - "${PORT_NGINX:-80}:80"
     depends_on:
