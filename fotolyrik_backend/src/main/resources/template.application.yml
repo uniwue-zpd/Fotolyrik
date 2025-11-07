@@ -21,7 +21,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-    show_sql: true
     defer-datasource-initialization: true
 
   sql:
@@ -39,6 +38,11 @@ spring:
           auth: true
           starttls:
             enable: true
+
+server:
+  compression:
+    mime-types: application/json
+    min-response-size: 1024
 
 config:
   files:
