@@ -1,5 +1,7 @@
 services:
   frontend:
+    environment:
+      - NUXT_API_BASE_URL=${NUXT_API_BASE_URL}
     build:
       context: ./fotolyrik_frontend
     depends_on:
