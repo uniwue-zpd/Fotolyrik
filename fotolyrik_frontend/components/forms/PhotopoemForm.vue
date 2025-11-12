@@ -274,7 +274,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Urheberrecht Bild"
               outer-class="max-w-full"
               select-icon="select"
-              :options="[{label: 'Keine Auswahl', value: []},
+              :options="[{label: 'Keine Auswahl', value: null},
               ...copyrigh_status_store.copyrightStatuses.map(p => ({label: `${p.value}`, value: {id: p.id, value: p.value, description: p.description}})) as any
               ]"
           />
@@ -284,7 +284,7 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               label="Urheberrecht Text"
               outer-class="max-w-full"
               select-icon="select"
-              :options="[{label: 'Keine Auswahl', value: []},
+              :options="[{label: 'Keine Auswahl', value: null},
               ...copyrigh_status_store.copyrightStatuses.map(p => ({label: `${p.value}`, value: {id: p.id, value: p.value, description: p.description}})) as any
               ]"
           />

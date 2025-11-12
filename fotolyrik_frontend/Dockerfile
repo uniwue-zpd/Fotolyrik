@@ -1,16 +1,20 @@
-FROM node:lts-alpine
+FROM node:lts-alpine AS build
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json /app
 
-RUN npm install
+RUN npm ci && npm cache clean --force
 
 COPY . .
-
-EXPOSE 3000
 
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
-CMD ["npm", "run", "start"]
+FROM node:lts-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/.output /app/.output
+
+ENTRYPOINT ["node", ".output/server/index.mjs"]

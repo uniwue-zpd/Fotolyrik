@@ -22,6 +22,7 @@ fotolyrik_frontend/.cache/
 
 # Environment variables
 env-dev
+nginx/.htpasswd
 
 # OS
 .DS_Store
