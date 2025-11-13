@@ -136,12 +136,12 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
         </div>
         <div class="flex flex-row space-x-5">
           <FormKit
-              type="number"
-              number
+              type="text"
+              text
               name="pageNumber"
-              label="Seite"
-              placeholder="23"
-              prefix-icon="number"
+              label="Seite(n)"
+              placeholder="23, 24 ..."
+              prefix-icon="text"
               outer-class="max-w-full"
           />
           <FormKit

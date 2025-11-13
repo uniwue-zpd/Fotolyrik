@@ -90,7 +90,7 @@ export interface PhotoPoem extends Auditable {
     altTitle: string | null;
     volume: string | null;
     issue: string | null;
-    pageNumber: number | null;
+    pageNumber: string | null;
     manifestPageNumber: number | null;
     pageCount: number | null;
     publicationDate: string | null;
@@ -115,7 +115,7 @@ export interface PhotoPoemDTO extends Auditable {
     altTitle: string | null;
     volume: number | null;
     issue: number | null;
-    pageNumber: number | null;
+    pageNumber: string | null;
     manifestPageNumber: number | null;
     pageCount: number | null;
     publicationDate: string | null;

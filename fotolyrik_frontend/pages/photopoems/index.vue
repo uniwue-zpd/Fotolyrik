@@ -80,7 +80,7 @@ useHead(() => ({
         </Column>
         <Column field="volume" header="Jahrgang" class="roboto-plain"/>
         <Column field="issue" header="Ausgabe" class="roboto-plain"/>
-        <Column field="pageNumber" header="Seite" class="roboto-plain"/>
+        <Column field="pageNumber" header="Seite(n)" class="roboto-plain"/>
         <Column field="publicationDate" header="Publikationsdatum" class="roboto-plain"/>
         <Column field="publicationMedium.title" header="Publikationsmedium" :sortable="true">
           <template #body="slotProps">

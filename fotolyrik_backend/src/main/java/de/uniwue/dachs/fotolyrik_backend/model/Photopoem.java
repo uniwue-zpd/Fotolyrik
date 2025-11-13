@@ -22,7 +22,7 @@ public class Photopoem extends BaseEntity {
 
     private Long issue;
 
-    private Long pageNumber;
+    private String pageNumber;
 
     private Long manifestPageNumber;
 
