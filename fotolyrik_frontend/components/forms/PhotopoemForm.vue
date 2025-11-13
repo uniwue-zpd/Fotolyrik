@@ -95,8 +95,6 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
               placeholder="Telephon-Tragödie"
               prefix-icon="text"
               outer-class="max-w-full"
-              validation="required"
-              validation-visibility="live"
           />
           <FormKit
               type="text"

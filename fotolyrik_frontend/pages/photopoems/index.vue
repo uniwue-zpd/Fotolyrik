@@ -24,7 +24,7 @@ useHead(() => ({
       <DataTable
           v-model:filters="filters"
           filter-display="row"
-          :global-filter-fields="['title', 'volume', 'issue', 'pageNumber', 'publicationDate', 'publicationMedium.title']"
+          :global-filter-fields="['title', 'altTitle', 'volume', 'issue', 'pageNumber', 'publicationDate', 'publicationMedium.title']"
           :value="store.photopoems"
           stripedRows paginator :rows="10"
       >
@@ -78,6 +78,7 @@ useHead(() => ({
             />
           </template>
         </Column>
+        <Column field="altTitle" header="Alternativtitel" class="roboto-plain"/>
         <Column field="volume" header="Jahrgang" class="roboto-plain"/>
         <Column field="issue" header="Ausgabe" class="roboto-plain"/>
         <Column field="pageNumber" header="Seite(n)" class="roboto-plain"/>

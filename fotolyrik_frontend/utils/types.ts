@@ -85,7 +85,7 @@ export interface PersonDTO {
 }
 
 export interface PhotoPoem extends Auditable {
-    title: string;
+    title: string | null;
     subtitle: string | null;
     altTitle: string | null;
     volume: string | null;
@@ -110,7 +110,7 @@ export interface PhotoPoem extends Auditable {
 }
 
 export interface PhotoPoemDTO extends Auditable {
-    title: string;
+    title: string | null;
     subtitle: string | null;
     altTitle: string | null;
     volume: number | null;

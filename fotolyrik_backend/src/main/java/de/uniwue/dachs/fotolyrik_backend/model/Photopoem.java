@@ -11,7 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Photopoem extends BaseEntity {
-    @Column(name = "title", nullable = false)
     private String title;
 
     private String subtitle;

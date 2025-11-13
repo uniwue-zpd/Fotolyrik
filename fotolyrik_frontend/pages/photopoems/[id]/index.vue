@@ -15,7 +15,7 @@ const has_pages = computed(() => Boolean(photopoem_item.value?.manifestPageNumbe
 const double_page = computed(() => photopoem_item.value?.pageCount === 2);
 
 useHead(() => ({
-  title: photopoem_item.value ? `${photopoem_item.value?.title}` : 'Nicht gefunden'
+  title: photopoem_item.value?.title ? `${photopoem_item.value?.title}` : photopoem_item.value?.altTitle
 }));
 
 onMounted(async () => {
@@ -39,7 +39,7 @@ onMounted(async () => {
     <Card v-if="photopoem_item">
       <template #title>
         <div class="flex flex-row justify-between">
-          <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ photopoem_item?.title }}</h1>
+          <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ photopoem_item?.title ? photopoem_item.title : photopoem_item.altTitle}}</h1>
           <PageToolbar
               v-if="photopoem_item"
               :id="photopoem_item.id"
