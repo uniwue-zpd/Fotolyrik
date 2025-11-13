@@ -147,6 +147,15 @@ const submit = async (formData: Partial<PhotoPoemInput>) => {
           <FormKit
               type="number"
               number
+              name="manifestPageNumber"
+              label="Seite (IIIF-Manifest)"
+              placeholder="23"
+              prefix-icon="number"
+              outer-class="max-w-full"
+          />
+          <FormKit
+              type="number"
+              number
               name="pageCount"
               label="Seitenanzahl"
               placeholder="2"

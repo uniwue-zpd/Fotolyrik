@@ -1,8 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -26,10 +24,11 @@ public class Photopoem extends BaseEntity {
 
     private Long pageNumber;
 
+    private Long manifestPageNumber;
+
     private Long pageCount;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-    private LocalDate publicationDate;
+    private String publicationDate;
 
     @ManyToOne
     @JoinColumn(name = "pub_medium_id")

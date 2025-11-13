@@ -1,11 +1,9 @@
 package de.uniwue.dachs.fotolyrik_backend.DTO;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import de.uniwue.dachs.fotolyrik_backend.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,11 +16,9 @@ public class PhotopoemDTO extends BaseEntity {
     private Long volume;
     private Long issue;
     private Long pageNumber;
+    private Long manifestPageNumber;
     private Long pageCount;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-    private LocalDate publicationDate;
-
+    private String publicationDate;
     private PubMediumPreviewDTO publicationMedium;
     private Set<PersonDTO> authors = new HashSet<>();
     private Set<PersonDTO> photographers = new HashSet<>();

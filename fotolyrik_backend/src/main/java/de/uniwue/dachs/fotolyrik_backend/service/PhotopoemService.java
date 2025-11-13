@@ -119,6 +119,7 @@ public class PhotopoemService {
             entity.setVolume(updatedPhotopoem.getVolume());
             entity.setIssue(updatedPhotopoem.getIssue());
             entity.setPageNumber(updatedPhotopoem.getPageNumber());
+            entity.setManifestPageNumber(updatedPhotopoem.getManifestPageNumber());
             entity.setPageCount(updatedPhotopoem.getPageCount());
             entity.setPublicationDate(updatedPhotopoem.getPublicationDate());
             entity.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(updatedPhotopoem.getPublicationMedium()));

@@ -8,8 +8,11 @@ const router = useRoute();
 const photopoem_id = Number(router.params.id);
 const store = usePhotopoemStore();
 const photopoem_item = computed(() => store.currentPhotopoem);
+
+// TIFY Viewer setup
 const has_iiif_manifest = computed(() => Boolean(photopoem_item.value?.iiifManifest));
-const has_pages = computed(() => Boolean(photopoem_item.value?.pageNumber));
+const has_pages = computed(() => Boolean(photopoem_item.value?.manifestPageNumber));
+const double_page = computed(() => photopoem_item.value?.pageCount === 2);
 
 useHead(() => ({
   title: photopoem_item.value ? `${photopoem_item.value?.title}` : 'Nicht gefunden'
@@ -21,7 +24,11 @@ onMounted(async () => {
     new Tify({
       container: '#tify-photopoem',
       manifestUrl: photopoem_item.value.iiifManifest,
-      pages: has_pages.value ? [photopoem_item.value.pageNumber] : [1]
+      pages: has_pages.value
+          ? (double_page.value
+              ? [photopoem_item.value.manifestPageNumber, photopoem_item.value.manifestPageNumber + 1]
+              : [photopoem_item.value.manifestPageNumber])
+          : [1]
     });
   }
 });
