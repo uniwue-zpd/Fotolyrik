@@ -5,6 +5,7 @@ import de.uniwue.dachs.fotolyrik_backend.model.Language;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
@@ -61,10 +62,12 @@ public class PhotopoemSpecification {
     public static Specification<Photopoem> hasAuthor(String authorName) {
         return (root, query, criteriaBuilder) -> {
             Join<Photopoem, Person> authors = root.join("authors");
+            Join<Person, String> pseudonyms = authors.join("pseudonyms", JoinType.LEFT);
             String pattern = "%" + authorName.toLowerCase() + "%";
             return criteriaBuilder.or(
                     criteriaBuilder.like(criteriaBuilder.lower(authors.get("firstName")), pattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(authors.get("lastName")), pattern)
+                    criteriaBuilder.like(criteriaBuilder.lower(authors.get("lastName")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(pseudonyms), pattern)
             );
         };
     }
@@ -79,10 +82,12 @@ public class PhotopoemSpecification {
     public static Specification<Photopoem> hasPhotographer(String photographerName) {
         return (root, query, criteriaBuilder) -> {
             Join<Photopoem, Person> photographers = root.join("photographers");
+            Join<Person, String> pseudonyms = photographers.join("pseudonyms", JoinType.LEFT);
             String pattern = "%" + photographerName.toLowerCase() + "%";
             return criteriaBuilder.or(
                     criteriaBuilder.like(criteriaBuilder.lower(photographers.get("firstName")), pattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(photographers.get("lastName")), pattern)
+                    criteriaBuilder.like(criteriaBuilder.lower(photographers.get("lastName")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(pseudonyms), pattern)
             );
         };
     }
@@ -97,10 +102,12 @@ public class PhotopoemSpecification {
     public static Specification<Photopoem> hasOtherContributor(String contributorName) {
         return (root, query, criteriaBuilder) -> {
             Join<Photopoem, Person> otherContributors = root.join("otherContributors");
+            Join<Person, String> pseudonyms = otherContributors.join("pseudonyms", JoinType.LEFT);
             String pattern = "%" + contributorName.toLowerCase() + "%";
             return criteriaBuilder.or(
                     criteriaBuilder.like(criteriaBuilder.lower(otherContributors.get("firstName")), pattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(otherContributors.get("lastName")), pattern)
+                    criteriaBuilder.like(criteriaBuilder.lower(otherContributors.get("lastName")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(pseudonyms), pattern)
             );
         };
     }
@@ -138,6 +145,26 @@ public class PhotopoemSpecification {
             Join<Photopoem, Language> languages = root.join("languages");
             return criteriaBuilder.equal(languages.get("id"), languageId);
         };
+    }
+
+    public static Specification<Photopoem> hasCopyrightStatusImageId(Long copyrightStatusImageId) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("copyrightStatusImage").get("id"), copyrightStatusImageId);
+    }
+
+    public static Specification<Photopoem> hasCopyrightStatusImage(String copyrightStatusImage) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("copyrightStatusImage").get("value")), "%" + copyrightStatusImage.toLowerCase() + "%");
+    }
+
+    public static Specification<Photopoem> hasCopyrightStatusTextId(Long copyrightStatusTextId) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("copyrightStatusText").get("id"), copyrightStatusTextId);
+    }
+
+    public static Specification<Photopoem> hasCopyrightStatusText(String copyrightStatusText) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("copyrightStatusText").get("value")), "%" + copyrightStatusText.toLowerCase() + "%");
     }
 
     public static Specification<Photopoem> hasLanguage(String languageName) {
