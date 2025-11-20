@@ -65,28 +65,28 @@ public class PhotopoemService {
      * Filter photopoems based on various criteria.
      * @param title refers to the title of the photopoem
      * @param subtitle refers to the subtitle of the photopoem
-     * @param altTitle refers to the alternative title of the photopoem {@link String}
-     * @param volume refers to the volume number {@link Long}
-     * @param issue refers to the issue number {@link Long}
-     * @param publicationDate refers to the publication date {@link String}
-     * @param pubMediumId refers to the ID of the publication medium {@link Long}
-     * @param pubMedium refers to the name of the publication medium {@link String}
-     * @param authorId refers to the ID of the author {@link Long}
-     * @param author refers to the name of the author {@link String}
-     * @param photographerId refers to the ID of the photographer {@link Long}
-     * @param photographer refers to the name of the photographer {@link String}
-     * @param contributorId refers to the ID of other contributors {@link Long}
-     * @param otherContributor refers to the name of other contributors {@link String}
-     * @param themeId refers to the ID of the theme {@link Long}
-     * @param theme refers to the name of the theme {@link String}
-     * @param imageMotifId refers to the ID of the image motif {@link Long}
-     * @param imageMotif refers to the name of the image motif {@link String}
-     * @param copyrightStatusImageId refers to the ID of the copyright status for the image {@link Long}
-     * @param copyrightStatusImage refers to the name of the copyright status for the image {@link String}
-     * @param copyrightStatusTextId refers to the ID of the copyright status for the text {@link Long}
-     * @param copyrightStatusText refers to the name of the copyright status for the text {@link String}
-     * @param languageId refers to the ID of the language {@link Long}
-     * @param language refers to the name of the language {@link String}
+     * @param altTitle refers to the alternative title of the photopoem
+     * @param volume refers to the volume number
+     * @param issue refers to the issue number
+     * @param publicationDate refers to the publication date
+     * @param pubMediumId refers to the ID of the publication medium
+     * @param pubMedium refers to the name of the publication medium
+     * @param authorId refers to the ID of the author
+     * @param author refers to the name of the author
+     * @param photographerId refers to the ID of the photographer
+     * @param photographer refers to the name of the photographer
+     * @param contributorId refers to the ID of other contributors
+     * @param otherContributor refers to the name of other contributors
+     * @param themeId refers to the ID of the theme
+     * @param theme refers to the name of the theme
+     * @param imageMotifId refers to the ID of the image motif
+     * @param imageMotif refers to the name of the image motif
+     * @param copyrightStatusImageId refers to the ID of the copyright status for the image
+     * @param copyrightStatusImage refers to the name of the copyright status for the image
+     * @param copyrightStatusTextId refers to the ID of the copyright status for the text
+     * @param copyrightStatusText refers to the name of the copyright status for the text
+     * @param languageId refers to the ID of the language
+     * @param language refers to the name of the language
      * @return a {@link List} containing {@link PhotopoemDTO} projections of the {@link Photopoem} objects
      */
     public List<PhotopoemDTO> filterPhotopoems(
@@ -194,41 +194,6 @@ public class PhotopoemService {
         return result.stream()
                 .map(photopoemMapper::PhotopoemToPhotopoemDTO)
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing(PhotopoemDTO::getId)).toList();
-    }
-
-    /**
-     *
-     * @param author_id of the {@link Person}
-     * @return a {@link List} containing the mapped {@link PhotopoemDTO}
-     */
-    public List<PhotopoemDTO> getPhotopoemsByAuthorId(Long author_id) {
-        return photopoemRepository.findAllByAuthors_Id(author_id)
-                .stream()
-                .map(photopoemMapper::PhotopoemToPhotopoemDTO)
-                .sorted(Comparator.comparing(PhotopoemDTO::getId)).toList();
-    }
-
-    /**
-     * @param photographer_id of the {@link Person}
-     * @return a {@link List} containing the mapped {@link PhotopoemDTO}
-     */
-    public List<PhotopoemDTO> getPhotopoemsByPhotographerId(Long photographer_id) {
-        return photopoemRepository.findAllByPhotographers_Id(photographer_id)
-                .stream()
-                .map(photopoemMapper::PhotopoemToPhotopoemDTO)
-                .sorted(Comparator.comparing(PhotopoemDTO::getId)).toList();
-    }
-
-    /**
-     * @param author_id ID of the author
-     * @param photographer_id ID of the photographer
-     * @return a {@link List} containing the mapped {@link PhotopoemDTO}
-     */
-    public List<PhotopoemDTO> getPhotopoemsByAuthorIdAndPhotographerId(Long author_id, Long photographer_id) {
-        return photopoemRepository.findAllByAuthors_IdAndPhotographers_id(author_id, photographer_id)
-                .stream()
-                .map(photopoemMapper::PhotopoemToPhotopoemDTO)
                 .sorted(Comparator.comparing(PhotopoemDTO::getId)).toList();
     }
 
