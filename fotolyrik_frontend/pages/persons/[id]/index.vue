@@ -11,16 +11,18 @@ const photopoem_store = usePhotopoemStore();
 const person_item = ref<Person | null>(null);
 const previous_person = ref<Person | null>(null);
 const next_person = ref<Person | null>(null);
-const author_photopoems = ref<PhotoPoem[] | []>([]);
-const photographer_photopoems = ref<PhotoPoem[] | []>([]);
+const author_photopoems = ref<PhotoPoemDTO[] | []>([]);
+const photographer_photopoems = ref<PhotoPoemDTO[] | []>([]);
+const contributor_photopoems = ref<PhotoPoemDTO[] | []>([]);
 
 onMounted(async () => {
   await person_store.fetchPersonById(person_id);
   person_item.value = person_store.currentPerson;
   previous_person.value = person_store.previousPerson();
   next_person.value = person_store.nextPerson();
-  author_photopoems.value = await photopoem_store.fetchPhotopoemsBy({ author_id: person_id });
-  photographer_photopoems.value = await photopoem_store.fetchPhotopoemsBy({ photographer_id: person_id });
+  author_photopoems.value = await photopoem_store.filterPhotopoems({ 'author-id': person_id });
+  photographer_photopoems.value = await photopoem_store.filterPhotopoems({ 'photographer-id': person_id });
+  contributor_photopoems.value = await photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id });
 });
 </script>
 
@@ -77,8 +79,8 @@ onMounted(async () => {
         <div class="flex flex-col gap-2">
           <div v-if="author_photopoems.length > 0">
             <div class="flex flex-col gap-2">
-              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotogedichte vom Autor</h2>
-              <div class="flex flex-col gap-3 md:grid md:grid-cols-4 md:justify-items-center">
+              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Autor:in von</h2>
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in author_photopoems" :key="photopoem.id">
                   <PhotopoemPreview :photopoem="photopoem"/>
                 </div>
@@ -87,9 +89,19 @@ onMounted(async () => {
           </div>
           <div v-if="photographer_photopoems.length > 0">
             <div class="flex flex-col gap-2">
-              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotogedichte vom Fotografen</h2>
-              <div class="flex flex-col gap-3 md:grid md:grid-cols-4 md:justify-items-center">
+              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotograf:in von</h2>
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in photographer_photopoems" :key="photopoem.id">
+                  <PhotopoemPreview :photopoem="photopoem"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="contributor_photopoems.length > 0">
+            <div class="flex flex-col gap-2">
+              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Mitgewirkt in</h2>
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
+                <div v-for="photopoem in contributor_photopoems" :key="photopoem.id">
                   <PhotopoemPreview :photopoem="photopoem"/>
                 </div>
               </div>

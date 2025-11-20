@@ -1,13 +1,13 @@
 <script setup lang="ts">
 const props = defineProps<{
-  photopoem: PhotoPoem
+  photopoem: PhotoPoemDTO
 }>();
 </script>
 
 <template>
-  <Card class="hover:shadow-md">
-    <template #header>
-      <div class="flex justify-center p-3">
+  <div class="rounded-md shadow-md hover:shadow-xl transition-shadow duration-300 p-2 h-full bg-[#F1F2F2]">
+    <NuxtLink :to="`/photopoems/${photopoem.id}`" class="flex flex-col gap-2">
+      <div class="flex justify-center">
         <div v-if="photopoem.images.length > 0">
           <Avatar
               :image="`/api/uploads/${photopoem.images[0].filename}`"
@@ -24,15 +24,11 @@ const props = defineProps<{
           />
         </div>
       </div>
-    </template>
-    <template #title>
-      <NuxtLink :to="`/photopoems/${photopoem.id}`">
-        <p class="text-center text-sm font-bold outfit-headline text-[#063D79]">
-          {{ photopoem.title }}
-        </p>
-      </NuxtLink>
-    </template>
-  </Card>
+      <p class="text-center text-sm font-bold outfit-headline text-[#063D79]">
+        {{ photopoem.title }}
+      </p>
+    </NuxtLink>
+  </div>
 </template>
 
 <style scoped>
