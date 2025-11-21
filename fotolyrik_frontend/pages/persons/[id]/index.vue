@@ -77,9 +77,9 @@ onMounted(async () => {
         </table>
         <Divider/>
         <div class="flex flex-col gap-2">
-          <div v-if="author_photopoems.length > 0">
-            <div class="flex flex-col gap-2">
-              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Autor:in von</h2>
+          <div v-if="author_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Autor:in von</h2>
+            <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in author_photopoems" :key="photopoem.id">
                   <PhotopoemPreview :photopoem="photopoem"/>
@@ -87,9 +87,9 @@ onMounted(async () => {
               </div>
             </div>
           </div>
-          <div v-if="photographer_photopoems.length > 0">
-            <div class="flex flex-col gap-2">
-              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotograf:in von</h2>
+          <div v-if="photographer_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotograf:in von</h2>
+            <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in photographer_photopoems" :key="photopoem.id">
                   <PhotopoemPreview :photopoem="photopoem"/>
@@ -97,15 +97,28 @@ onMounted(async () => {
               </div>
             </div>
           </div>
-          <div v-if="contributor_photopoems.length > 0">
-            <div class="flex flex-col gap-2">
-              <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Mitgewirkt in</h2>
+          <div v-if="contributor_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Mitgewirkt an</h2>
+            <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in contributor_photopoems" :key="photopoem.id">
                   <PhotopoemPreview :photopoem="photopoem"/>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <Divider/>
+        <div class="flex flex-col text-base">
+          <div v-if="person_item?.createdDate" class="flex flex-row space-x-2 text-black roboto-plain">
+            <p class="font-semibold">Erstellt am:</p>
+            <p>{{ new Date(person_item.createdDate).toLocaleDateString() }}</p>
+          </div>
+          <div v-if="person_item?.lastModifiedDate" class="flex flex-row space-x-2 text-black roboto-plain">
+            <p class="font-semibold">Zuletzt geändert am:</p>
+            <p>{{ new Date(person_item.lastModifiedDate).toLocaleDateString() }}</p>
           </div>
         </div>
       </template>

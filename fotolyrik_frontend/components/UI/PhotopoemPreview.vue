@@ -5,7 +5,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="rounded-md shadow-md hover:shadow-xl transition-shadow duration-300 p-2 h-full bg-[#F1F2F2]">
+  <div class="rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-2 h-full bg-[#F1F2F2]">
     <NuxtLink :to="`/photopoems/${photopoem.id}`" class="flex flex-col gap-2">
       <div class="flex justify-center">
         <div v-if="photopoem.images.length > 0">
