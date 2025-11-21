@@ -1,26 +1,35 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import apiClient from "~/service/api";
-import type { PhotoPoem } from "~/utils/types";
+import type { PhotoPoemDTO } from "~/utils/types";
 
 export const usePhotopoemStore = defineStore('photopoem', () => {
     // State
-    const photopoems = ref<PhotoPoem[]>([] as PhotoPoem[]);
-    const currentPhotopoem = ref<PhotoPoem | null>(null);
+    const photopoems = ref<PhotoPoemDTO[]>([] as PhotoPoemDTO[]);
+    const currentPhotopoem = ref<PhotoPoemDTO | null>(null);
 
     // Getters
     const isLoaded = computed(() => photopoems.value.length > 0);
 
     // Actions
         // Fetch all photopoems
-    async function fetchPhotopoems(reload = false) {
-        if (!isLoaded.value || reload) {
-            try {
-                const response = await apiClient.get<PhotoPoem[]>('/photopoems');
-                photopoems.value = response.data;
-            } catch (error) {
-                console.log('Error fetching photopoems:', error);
+    async function fetchPhotopoems() {
+        if (!isLoaded.value) {
+            const { data, error } = await useFetch('/api/photopoems');
+            if (error.value) {
+                console.error('An error occured while fetching photopoems:', error.value);
+                return;
             }
+            photopoems.value = data.value as PhotoPoemDTO[];
+        }
+    }
+
+        // GET refetch photopoems
+    async function refreshPhotopoemsData() {
+        try {
+            const data = await $fetch('/api/photopoems');
+            photopoems.value = data as PhotoPoemDTO[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
         }
     }
 
@@ -31,71 +40,75 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
             if (cachedPhotopoem) {
                 currentPhotopoem.value = cachedPhotopoem;
             } else {
-                try {
-                    const response = await apiClient.get<PhotoPoem>(`/photopoems/${id}`);
-                    currentPhotopoem.value = response.data;
-                } catch (error) {
-                    console.log('Error fetching photopoem by ID:', error);
+                const { data, error } = await useFetch(`/api/photopoems/${id}`);
+                if (error.value) {
+                    console.error(`Error fetching photopoem with id ${id}`);
+                    return;
                 }
+                currentPhotopoem.value = data.value as PhotoPoemDTO;
             }
         }
     }
 
         // Fetch photopoem by author's ID
-    async function fetchPhotopoemsBy(params: Record<string, any>): Promise<PhotoPoem[]> {
-        try {
-            const response = await apiClient.get<PhotoPoem[]>(`/photopoems/filter`, {
-                params
-            });
-            return response.data;
-        } catch (error) {
-            console.log('Error fetching photopoems by author ID:', error);
+    async function fetchPhotopoemsBy(params: Record<string, any>): Promise<PhotoPoemDTO[]> {
+        const { data, error } = await useFetch('/api/photopoems/filter', { query: params });
+        if (error.value) {
+            console.error('Error fetching photopoems by params:', error.value);
             return [];
         }
+        return data.value as PhotoPoemDTO[] || [];
     }
 
         // Create new photopoem
-    async function createPhotopoem(payload: Partial<PhotoPoem>) {
-        try {
-            const response = await apiClient.post('/photopoems', payload);
-            photopoems.value.push(response.data);
-            return response.data;
-        } catch (error) {
-            console.log('Error creating photopoem:', error);
-            throw error;
+    async function createPhotopoem(payload: Partial<PhotoPoemDTO>) {
+        const { data, error } = await useFetch('/api/photopoems', {
+            method: 'POST',
+            body: payload
+        });
+        if (error.value) {
+            console.error('Error creating photopoem:', error.value);
+            return;
         }
+        const response = data.value as PhotoPoemDTO;
+        photopoems.value.push(response);
+        return response;
     }
 
         // Update existing photopoem
-    async function updatePhotopoem(payload: Partial<PhotoPoem>, id: number) {
-        try {
-            const response = await apiClient.put(`/photopoems/${id}`, payload);
-            const index = photopoems.value.findIndex(p => p.id === id);
-            if (index !== -1) {
-                photopoems.value[index] = response.data;
-            }
-            if (currentPhotopoem.value?.id === id) {
-                currentPhotopoem.value = response.data;
-            }
-            return response.data;
-        } catch (error) {
-            console.log('Error updating photopoem:', error);
-            throw error;
+    async function updatePhotopoem(payload: Partial<PhotoPoemDTO>, id: number) {
+        if (!photopoems.value) {
+            console.error('Photopoems data is not loaded');
+            return;
         }
+        const { data, error } = await useFetch(`/api/photopoems/${id}`, {
+            method: 'PUT',
+            body: payload
+        });
+        if (error.value) {
+            console.error('Error updating photopoem:', error.value);
+            return;
+        }
+        const updatedPhotopoem = data.value as PhotoPoemDTO;
+        const index = photopoems.value.findIndex(p => p.id === id);
+        if (index !== -1) photopoems.value[index] = updatedPhotopoem;
+        if (currentPhotopoem.value?.id === id) currentPhotopoem.value = updatedPhotopoem;
+        return updatedPhotopoem;
     }
 
         // DELETE existing photopoem
     async function deletePhotopoem(id: number) {
-        try {
-            await apiClient.delete(`/photopoems/${id}`);
-            photopoems.value = photopoems.value.filter(p => p.id !== id);
-            if (currentPhotopoem.value?.id === id) {
-                currentPhotopoem.value = null;
-            }
-        } catch (error) {
-            console.log('Error deleting person:', error);
-            throw error;
+        if (!photopoems.value) {
+            console.error('Photopoems data is not loaded');
+            return;
         }
+        const { error } = await useFetch(`/api/photopoems/${id}`, { method: 'DELETE' });
+        if (error.value) {
+            console.error('Error deleting photopoem:', error.value)
+            return;
+        }
+        photopoems.value = photopoems.value.filter(p => p.id !== id);
+        if (currentPhotopoem.value?.id === id) currentPhotopoem.value = null;
     }
 
         // Navigation left
@@ -128,6 +141,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         currentPhotopoem,
         isLoaded,
         fetchPhotopoems,
+        refreshPhotopoemsData,
         fetchPhtotopoemById,
         fetchPhotopoemsBy,
         createPhotopoem,

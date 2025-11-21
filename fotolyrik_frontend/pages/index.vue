@@ -1,9 +1,11 @@
 <script setup lang="ts">
-// TODO: Define functions to parse data for the carousel and the bar chart
+import CollectionOverview from "~/components/UI/homepage/CollectionOverview.vue";
 
-import Chart from 'primevue/chart';
-import { ref, onMounted } from 'vue';
-import maplibregl from "maplibre-gl";
+useHead(() => ({
+  title: 'Fotolyrik - Startseite'
+}));
+
+import { ref } from 'vue';
 import "maplibre-gl/dist/maplibre-gl.css"
 
 const images = ref([
@@ -54,108 +56,6 @@ const responsiveOptions = ref([
     numScroll: 1
   }
 ]);
-
-// start for bar chart example
-
-onMounted(() => {
-  chartData.value = setChartData();
-  chartOptions.value = setChartOptions();
-});
-
-const chartData = ref();
-const chartOptions = ref();
-
-const setChartData = () => {
-  const documentStyle = getComputedStyle(document.documentElement);
-
-  return {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-      {
-        label: 'My First dataset',
-        backgroundColor: documentStyle.getPropertyValue('--p-cyan-500'),
-        borderColor: documentStyle.getPropertyValue('--p-cyan-500'),
-        data: [65, 59, 80, 81, 56, 55, 40]
-      },
-      {
-        label: 'My Second dataset',
-        backgroundColor: documentStyle.getPropertyValue('--p-gray-500'),
-        borderColor: documentStyle.getPropertyValue('--p-gray-500'),
-        data: [28, 48, 40, 19, 86, 27, 90]
-      }
-    ]
-  };
-};
-const setChartOptions = () => {
-  const documentStyle = getComputedStyle(document.documentElement);
-  const textColor = documentStyle.getPropertyValue('--p-text-color');
-  const textColorSecondary = documentStyle.getPropertyValue('--p-text-muted-color');
-  const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color');
-
-  return {
-    indexAxis: 'y',
-    maintainAspectRatio: false,
-    aspectRatio: 0.8,
-    plugins: {
-      legend: {
-        labels: {
-          color: textColor
-        }
-      }
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: textColorSecondary,
-          font: {
-            weight: 500
-          }
-        },
-        grid: {
-          display: false,
-          drawBorder: false
-        }
-      },
-      y: {
-        ticks: {
-          color: textColorSecondary
-        },
-        grid: {
-          color: surfaceBorder,
-          drawBorder: false
-        }
-      }
-    }
-  };
-};
-
-// end of bar chart example
-// start map example
-onMounted(async () => {
-  const map = new maplibregl.Map({
-    container: "map", // statt ref einfach die Id
-    zoom: 5,
-    style: {
-      version: 8,
-      sources: {
-        osm: {
-          type: "raster",
-          tiles: ["https://tile.openstreetmap.de/{z}/{x}/{y}.png"],
-          tileSize: 256,
-          attribution: "&copy; OpenStreetMap Contributors"
-        }
-      },
-      layers: [
-        {
-          id: "osm-layer",
-          type: "raster",
-          source: "osm"
-        }
-      ]
-    }
-  });
-});
-//end map example
 </script>
 
 <template>
@@ -235,16 +135,10 @@ onMounted(async () => {
     <div class="title py-8 pt-7 px-6 md:px-15">
       <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Fotolyrik in Zahlen</h2>
     </div>
-    <div>
-      <Chart type="bar" :data="chartData" :options="chartOptions" class="h-120" />
-    </div>
     <div class="analytics px-6 md:px-15">
       <div class="flex flex-col gap-2">
-        <div class="font-bold">
-          Bar chart placeholder
-          <i class="pi pi-chart-bar"/>
-        </div>
-        <div class="py-10">
+        <CollectionOverview/>
+        <div class="py-8">
         <div class="md:columns-2 space-y-8 gap-x-10 text-justify">
           <div>
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
@@ -264,20 +158,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="py-6 md:py-8 px-6 md:px-15">
-      <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Karte</h1>
-    </div>
-      <div class="collection bg-[#F1F2F2]">
-        <div class="flex flex-col px-6 md:px-15 py-10 md:py-14">
-          <div class="title pb-5">
-            <h2 class="text-3xl averia-layout italic text-[#063D79]">Karte</h2>
-          </div>
-          <div class="flex flex-row justify-center">
-            <div id="map" class=" h-[236px] md:h-[549px] w-[268px] md:w-[996px]"/>
-          </div>
-        </div>
-      </div>
-    <div class="title pt-10 md:pt-20 pb-4 px-6 md:px-15">
+    <div class="title pt-10 md:pt-6 pb-4 px-6 md:px-15">
       <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Themen</h2>
     </div>
     <div class="topics bg-[#F1F2F2] p-5">

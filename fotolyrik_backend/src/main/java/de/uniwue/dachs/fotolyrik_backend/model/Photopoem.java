@@ -1,11 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Photopoem extends BaseEntity {
-    @Column(name = "title", nullable = false)
     private String title;
 
     private String subtitle;
@@ -26,12 +21,13 @@ public class Photopoem extends BaseEntity {
 
     private Long issue;
 
-    private Long pageNumber;
+    private String pageNumber;
+
+    private Long manifestPageNumber;
 
     private Long pageCount;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-    private LocalDate publicationDate;
+    private String publicationDate;
 
     @ManyToOne
     @JoinColumn(name = "pub_medium_id")
@@ -61,13 +57,21 @@ public class Photopoem extends BaseEntity {
     )
     private Set<Person> otherContributors = new HashSet<>();
 
-    @ElementCollection(targetClass = String.class)
-    @CollectionTable(name = "photopoem_themes", joinColumns = @JoinColumn(name = "photopoem_id"))
-    private List<String> themes = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_themes",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "keyword_id")
+    )
+    private Set<Keyword> themes = new HashSet<>();
 
-    @ElementCollection(targetClass = String.class)
-    @CollectionTable(name = "photopoem_topics", joinColumns = @JoinColumn(name = "photopoem_id"))
-    private List<String> topics = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_image_motifs",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "keyword_id")
+    )
+    private Set<Keyword> imageMotifs = new HashSet<>();
 
     private String form;
 
@@ -79,11 +83,19 @@ public class Photopoem extends BaseEntity {
     @JoinColumn(name = "photopoem_id")
     private Set<File> images = new HashSet<>();
 
-    private String copyrightStatusImage;
+    @ManyToOne
+    @JoinColumn(name = "copyrightstatus_image_id")
+    private CopyrightStatus copyrightStatusImage;
 
-    private String copyrightStatusText;
+    @ManyToOne
+    @JoinColumn(name = "copyrightstatus_text_id")
+    private CopyrightStatus copyrightStatusText;
 
-    @ElementCollection(targetClass = String.class)
-    @CollectionTable(name = "photopoem_languages", joinColumns = @JoinColumn(name = "photopoem_id"))
-    private List<String> languages;
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_languages",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    private Set<Language> languages = new HashSet<>();
 }

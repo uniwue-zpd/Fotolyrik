@@ -6,9 +6,9 @@ const router = useRoute();
 const store = usePubMediumStore();
 
 const pub_medium_id = Number(router.params.id);
-const pub_medium_item = ref<PubMedium | null>(null);
-const previous_pub_medium = ref<PubMedium | null>(null);
-const next_pub_medium = ref<PubMedium | null>(null);
+const pub_medium_item = ref<PubMediumDTO | null>(null);
+const previous_pub_medium = ref<PubMediumDTO | null>(null);
+const next_pub_medium = ref<PubMediumDTO | null>(null);
 
 onMounted(async () => {
   await store.fetchPubMediumById(pub_medium_id);
@@ -52,11 +52,17 @@ onMounted(async () => {
           </tr>
           <tr v-if="pub_medium_item.publisher">
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Herausgeber</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ pub_medium_item.publisher }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ pub_medium_item.publisher.name }}</td>
           </tr>
-          <tr v-if="pub_medium_item.pubRhytm">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsrhythmus</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ pub_medium_item.pubRhytm }}</td>
+          <tr v-if="pub_medium_item.pubRhythms.length > 0">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsrhythen</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <ul class="list-disc list-inside">
+                <li v-for="rhythm in pub_medium_item.pubRhythms">
+                  {{ rhythm.value }}
+                </li>
+              </ul>
+            </td>
           </tr>
           <tr v-if="pub_medium_item.startYear && pub_medium_item.endYear">
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsjahre</td>

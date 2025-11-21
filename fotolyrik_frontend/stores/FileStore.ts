@@ -13,30 +13,37 @@ export const useFileStore = defineStore("files", () => {
     const loadingUp = ref(false)
     const errorUp = ref<string | null>(null)
 
-    async function fetchFiles(reload = false) {
+    async function getFiles() {
         loadingDown.value = true;
         errorDown.value = null;
 
-        try {
-            const response = await apiClient.get<File[]>("/files/all");
-            files.value = response.data;
+        const { data, error } = await useFetch("/api/files/all");
+        if (error.value) {
+            console.error("Unable to fetch files: ", error.value);
+            errorDown.value = error.value.message || "Failed to fetch files";
+            return;
+        }
+        files.value = data.value as File[];
+        loadingDown.value = false;
+    }
 
-        } catch (err: any) {
-            errorDown.value = err.message || 'Failed to fetch files';
-            console.error('Error fetching files:', err);
-        } finally {
-            loadingDown.value = false;
+    async function refreshFilesData() {
+        try {
+            const data = await $fetch('/api/files/all');
+            files.value = data as File[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
         }
     }
 
     async function removeFile(file: File) {
-        try {
-            await apiClient.delete(`/files/${file.id}`);
-            files.value = files.value.filter(f => f.id !== file.id);
-        } catch (err: any) {
-            console.error('Failed to delete file:', err);
-            errorDown.value = err.message || 'Failed to delete file';
+        const { error } = await useFetch(`/api/files/${file.id}`, { method: 'DELETE' });
+        if (error.value) {
+            console.error('Failed to delete file: ', error.value.message);
+            errorDown.value = error.value.message || 'Failed to delete file';
+            return;
         }
+        files.value = files.value.filter(f => f.id !== file.id);
     }
 
     async function uploadFiles(fileList: FileList) {
@@ -47,7 +54,6 @@ export const useFileStore = defineStore("files", () => {
         const formData = new FormData();
         Array.from(fileList).forEach(file => {
             formData.append('file', file);
-            console.log(file)
         });
 
         try {
@@ -84,7 +90,8 @@ export const useFileStore = defineStore("files", () => {
         loadingUp,
         errorUp,
 
-        fetchFiles,
+        getFiles,
+        refreshFilesData,
         removeFile,
         uploadFiles,
         getImagePreview

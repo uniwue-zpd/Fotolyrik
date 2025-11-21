@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.FullTextDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.FullTextSearchResult;
 import de.uniwue.dachs.fotolyrik_backend.model.FullText;
 import de.uniwue.dachs.fotolyrik_backend.service.FullTextService;
@@ -18,28 +19,28 @@ public class FullTextController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FullText>> getFullTexts() {
-        List<FullText> fullTexts = fullTextService.getAllFullTexts();
+    public ResponseEntity<List<FullTextDTO>> getFullTexts() {
+        List<FullTextDTO> fullTexts = fullTextService.getAllFullTexts();
         return ResponseEntity.ok(fullTexts);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FullText> getFullTextById(@PathVariable Long id) {
+    public ResponseEntity<FullTextDTO> getFullTextById(@PathVariable Long id) {
         return fullTextService.getFullTextById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public ResponseEntity<FullText> saveFullText(@RequestBody FullText fullText) {
-        FullText savedFullText = fullTextService.saveFullText(fullText);
+    public ResponseEntity<FullText> saveFullText(@RequestBody FullTextDTO fullTextDTO) {
+        FullText savedFullText = fullTextService.createFullText(fullTextDTO);
         return ResponseEntity.status(201).body(savedFullText);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FullText> updateFullText(@PathVariable Long id, @RequestBody FullText fullText) {
+    public ResponseEntity<FullText> updateFullText(@PathVariable Long id, @RequestBody FullTextDTO fullTextDTO) {
         try {
-            FullText updatedFullText = fullTextService.updateFullText(id, fullText);
+            FullText updatedFullText = fullTextService.updateFullText(id, fullTextDTO);
             return ResponseEntity.ok(updatedFullText);
         } catch (Exception e) {
             return ResponseEntity.status(404).build();

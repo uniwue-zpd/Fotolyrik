@@ -9,6 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class File extends BaseEntity {
+    private String originalFilename;
+
     private String filename;
 
     private String path;

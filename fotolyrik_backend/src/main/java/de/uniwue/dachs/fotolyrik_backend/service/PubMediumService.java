@@ -1,10 +1,14 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
-import de.uniwue.dachs.fotolyrik_backend.model.Place;
+import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
-import de.uniwue.dachs.fotolyrik_backend.repository.PlaceRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PubMediumMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublicationRhythmMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,51 +17,82 @@ import java.util.*;
 @Service
 public class PubMediumService {
     private final PubMediumRepository pubMediumRepository;
-    private final PlaceRepository placeRepository;
+    private final PubMediumMapper pubMediumMapper;
+    private final PlaceMapper placeMapper;
+    private final PublisherMapper publisherMapper;
+    private final PublicationRhythmMapper publicationRhythmMapper;
 
     public PubMediumService(PubMediumRepository pubMediumRepository,
-                            PlaceRepository placeRepository) {
+                            PubMediumMapper pubMediumMapper,
+                            PlaceMapper placeMapper,
+                            PublisherMapper publisherMapper,
+                            PublicationRhythmMapper publicationRhythmMapper) {
         this.pubMediumRepository = pubMediumRepository;
-        this.placeRepository = placeRepository;
+        this.pubMediumMapper = pubMediumMapper;
+        this.placeMapper = placeMapper;
+        this.publisherMapper = publisherMapper;
+        this.publicationRhythmMapper = publicationRhythmMapper;
     }
 
-    // GET
-    public List<PubMedium> getAllPubMedia() {
-        return pubMediumRepository.findAll();
+    /**
+     * @return a {@link List} of {@link PubMediumDTO} objects
+     */
+    public List<PubMediumDTO> getAllPubMedia() {
+        return pubMediumRepository.findAll(Sort.by(Sort.Direction.ASC, "title"))
+                .stream()
+                .map(pubMediumMapper::PubMediumToPubMediumDTO)
+                .toList();
     }
 
-    // GET by ID
-    public Optional<PubMedium> getPubMediumById(Long id) {
-        return pubMediumRepository.findById(id);
+    /**
+     * @param id ID of the {@link PubMedium} object to be found
+     * @return a {@link PubMediumDTO} object
+     */
+    public Optional<PubMediumDTO> getPubMediumById(Long id) {
+        return pubMediumRepository.findById(id).map(pubMediumMapper::PubMediumToPubMediumDTO);
     }
 
-    // POST
+    /**
+     * @param pubMediumDTO {@link PubMediumDTO} projection of the {@link PubMedium} to be created
+     * @return persisted {@link PubMediumDTO} object
+     */
     @Transactional
-    public PubMedium savePubMedium(PubMedium pubMedium) {
-        pubMedium.setPublicationPlaces(getOrSavePubPlaces(pubMedium.getPublicationPlaces()));
-        return pubMediumRepository.save(pubMedium);
+    public PubMediumDTO createPubMedium(PubMediumDTO pubMediumDTO) {
+        PubMedium pubMedium = pubMediumMapper.PubMediumDTOToPubMedium(pubMediumDTO);
+        PubMedium createdPubMedium = pubMediumRepository.save(pubMedium);
+        return pubMediumMapper.PubMediumToPubMediumDTO(createdPubMedium);
     }
 
-    // PUT
-    public PubMedium updatePubMedium(Long id, PubMedium updatedPubMedium) {
+    /**
+     * @param id ID of the {@link PubMedium} object to be updated
+     * @param updatedPubMediumDTO {@link PubMediumDTO} projection
+     * @return {@link PubMediumDTO} of the updated {@link PubMedium} object
+     */
+    public PubMediumDTO updatePubMedium(Long id, PubMediumDTO updatedPubMediumDTO) {
         return pubMediumRepository.findById(id)
-                .map(existingPubMedium -> {
-                    existingPubMedium.setTitle(updatedPubMedium.getTitle());
-                    existingPubMedium.setSubtitle(updatedPubMedium.getSubtitle());
-                    existingPubMedium.setPublicationPlaces(getOrSavePubPlaces(updatedPubMedium.getPublicationPlaces()));
-                    existingPubMedium.setPublisher(updatedPubMedium.getPublisher());
-                    existingPubMedium.setPubRhytm(updatedPubMedium.getPubRhytm());
-                    existingPubMedium.setStartYear(updatedPubMedium.getStartYear());
-                    existingPubMedium.setEndYear(updatedPubMedium.getEndYear());
-                    existingPubMedium.setAmountVolumes(updatedPubMedium.getAmountVolumes());
-                    existingPubMedium.setAmountIssues(updatedPubMedium.getAmountIssues());
-                    existingPubMedium.setZdbId(updatedPubMedium.getZdbId());
-                    return pubMediumRepository.save(existingPubMedium);
+                .map(entity -> {
+                    entity.setTitle(updatedPubMediumDTO.getTitle());
+                    entity.setSubtitle(updatedPubMediumDTO.getSubtitle());
+                    entity.setPublicationPlaces(placeMapper.PlaceDTOsToPlaces(updatedPubMediumDTO.getPublicationPlaces()));
+                    entity.setPublisher(publisherMapper.PublisherDTOToPublisher(updatedPubMediumDTO.getPublisher()));
+                    entity.setPubRhytms(publicationRhythmMapper.PublicationRhythmDTOsToPublicationRhythms(updatedPubMediumDTO.getPubRhythms()));
+                    entity.setEditorialOffice(updatedPubMediumDTO.getEditorialOffice());
+                    entity.setStartYear(updatedPubMediumDTO.getStartYear());
+                    entity.setEndYear(updatedPubMediumDTO.getEndYear());
+                    entity.setAmountVolumes(updatedPubMediumDTO.getAmountVolumes());
+                    entity.setAmountIssues(updatedPubMediumDTO.getAmountIssues());
+                    entity.setZdbId(updatedPubMediumDTO.getZdbId());
+                    entity.setNotes(updatedPubMediumDTO.getNotes());
+
+                    PubMedium savedPubMedium = pubMediumRepository.save(entity);
+                    return pubMediumMapper.PubMediumToPubMediumDTO(savedPubMedium);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("PubMedium with id '" + id + "' does not exist"));
     }
 
-    // DELETE
+    /**
+     * @param id ID of the {@link PubMedium} object to be deleted
+     */
     @Transactional
     public void deletePubPlace(Long id) {
         if (!pubMediumRepository.existsById(id)) {
@@ -66,21 +101,5 @@ public class PubMediumService {
         else {
             pubMediumRepository.deleteById(id);
         }
-    }
-
-    // Helper
-    private Set<Place> getOrSavePubPlaces(Set<Place> pub_places) {
-        if (pub_places == null || pub_places.isEmpty()) {
-            return new HashSet<>();
-        }
-        Set<Place> savedPlaces = new HashSet<>();
-        pub_places.forEach(place -> {
-            if (place.getId() != null) {
-                savedPlaces.add(placeRepository.findById(place.getId()).orElse(null));
-            } else {
-                savedPlaces.add(placeRepository.save(place));
-            }
-        });
-        return savedPlaces;
     }
 }

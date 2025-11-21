@@ -1,18 +1,14 @@
 services:
   frontend:
-    image: fotolyrik_frontend
-    container_name: frontend
+    environment:
+      - NUXT_API_BASE_URL=${NUXT_API_BASE_URL}
     build:
       context: ./fotolyrik_frontend
     depends_on:
       - backend
-    networks:
-      - fotolyrik_network
-    restart: unless-stopped
+    restart: always
 
   backend:
-    image: fotolyrik_backend
-    container_name: backend
     build:
       context: ./fotolyrik_backend
     environment:
@@ -21,55 +17,50 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     volumes:
-      - "${WORKSPACE:?error}/uploads:/uploads"
+      - ${WORKSPACE:?error}/uploads:/uploads
     depends_on:
       database:
         condition: service_healthy
-    networks:
-      - fotolyrik_network
-    restart: unless-stopped
+    restart: always
 
   database:
     image: postgres:17-alpine
-    container_name: fotolyrik_db
-    env_file:
-      - .env
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       # In case you have a database dump, uncomment the following line and change the file name
       # - ./<your_dump>.sql:/docker-entrypoint-initdb.d/<your_dump>.sql
-      - db_data:/var/lib/postgresql/data
+      - ${WORKSPACE:?error}/db_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]
-      interval: 30s
+      interval: 10s
       retries: 10
-      start_period: 60s
-    networks:
-      - fotolyrik_network
-    restart: unless-stopped
+      start_period: 10s
+    restart: always
+
+  db_backup:
+    build:
+      context: ./db_backup
+    environment:
+      - DB_HOST=database # Host is the service name of the database container
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - PGPASSWORD=${DB_PASSWORD}
+    volumes:
+      - ${BACKUPS:?error}:/backups
+    depends_on:
+      - backend
+    restart: always
 
   nginx:
     image: nginx:alpine-slim
-    container_name: nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/.htpasswd:/etc/nginx/.htpasswd
     ports:
-      - "80:80"
+      - "${PORT_NGINX:-80}:80"
     depends_on:
       - frontend
-      - backend
-    networks:
-      - fotolyrik_network
-    restart: unless-stopped
-
-networks:
-  fotolyrik_network:
-    driver: bridge
-
-volumes:
-  db_data:
+    restart: always

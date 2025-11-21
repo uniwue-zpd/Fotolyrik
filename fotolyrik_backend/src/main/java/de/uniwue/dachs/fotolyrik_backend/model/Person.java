@@ -17,6 +17,12 @@ public class Person extends BaseEntity {
 
     private String lastName;
 
+    @Transient
+    public String getFullName() {
+        return (firstName != null ? firstName + " " : "") +
+                (lastName != null ? lastName : "");
+    }
+
     @ElementCollection(targetClass = String.class)
     @CollectionTable(name = "person_pseudonymes", joinColumns = @JoinColumn(name = "person_id"))
     private List<String> pseudonyms = new ArrayList<>();
@@ -31,13 +37,9 @@ public class Person extends BaseEntity {
 
     private String gndId;
 
+    private String notes;
+
     @OneToOne
     @JoinColumn(name = "file_id")
     private File image;
-
-    @Transient
-    public String getFullName() {
-        return (firstName != null ? firstName + " " : "") +
-                (lastName != null ? lastName : "");
-    }
 }

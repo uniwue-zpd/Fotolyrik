@@ -5,6 +5,7 @@ import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +24,7 @@ public class PersonService {
 
     // GET all persons
     public List<Person> getAllPersons() {
-        return personRepository.findAll();
+        return personRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName", "lastName"));
     }
 
     // GET person by ID
@@ -52,12 +53,13 @@ public class PersonService {
                     existingPerson.setPseudonyms(updatedPerson.getPseudonyms());
                     existingPerson.setSex(updatedPerson.getSex());
                     existingPerson.setGndId(updatedPerson.getGndId());
+                    existingPerson.setNotes(updatedPerson.getNotes());
                     existingPerson.setImage(updatedPerson.getImage() != null
                             ? getImage(updatedPerson.getImage().getId())
                             : null);
                     return personRepository.save(existingPerson);
                 })
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
     }
 
     // DELETE person by ID
