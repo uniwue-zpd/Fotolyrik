@@ -1,100 +1,73 @@
 <script setup lang="ts">
-import type { PhotoPoem } from "~/utils/types";
+import type { PhotoPoemDTO } from "~/utils/types";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
+import { Form } from '@primevue/forms';
+import { FormField } from '@primevue/forms';
 
 const toast = useToast();
 const personStore = usePersonStore();
 const photopoemStore = usePhotopoemStore();
 const pubMediumStore = usePubMediumStore();
 const fileStore = useFileStore();
+const languageStore = useLanguageStore();
+const copyrightStatusStore = useCopyrightStatusStore();
+const keywordStore = useKeywordStore();
 
-const personLoading = ref(false);
-const pubMediumLoading = ref(false);
-const fileLoading = ref(false);
+const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, pseudonyms: p.pseudonyms })));
+const keywords = computed(() => keywordStore.keywords.map(k => ({ id: k.id, value: k.value })));
+const languages = computed(() => languageStore.languages.map(l => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
+const files = computed(() => fileStore.files.map(f => ({ id: f.id, filename: f.filename, originalFilename: f.originalFilename })));
+const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
+
+const data_refreshing = ref(false);
 
 const props = defineProps<{
   action: "create" | "edit";
   header: string;
-  photopoem?: PhotoPoem;
+  photopoem?: PhotoPoemDTO;
 }>();
-
-onMounted(() => {
-  personStore.fetchPersons();
-  pubMediumStore.fetchPubMedia();
-  fileStore.fetchFiles();
-});
-
-const dateRegex = /^(0?[1-9]|[12][0-9]|3[01])\.(0?[1-9]|1[0-2])\.(\d{4})$/;
-const copyright = ref([
-  { label: "Ungeklärt", value: "Ungeklärt" },
-  { label: "Rechtefrei 70 Jahre", value: "rechtefrei 70 Jahre" },
-  { label: "Eingeholt (schriftlich)", value: "eingeholt (schriftlich)" }
-]);
-const languages = ref([
-  { label: "Unbekannt", value: null, code: null},
-  { label: "Deutsch", value: "German", code: "DE"},
-  { label: "Englisch", value: "English", code: "GB" },
-  { label: "Französisch", value: "French", code: "FR" }
-]);
 
 const resolver = ref(
   zodResolver(
     z.object({
-      title: z.string("Bitte geben Sie einen Titel an."),
+      title: z.any(),
+      subtitle: z.any(),
+      altTitle: z.any(),
       volume: z.any(),
       issue: z.any(),
       pageNumber: z.any(),
+      manifestPageNumber: z.any(),
       pageCount: z.any(),
-      publicationDate: z
-        .string().optional().nullable()
-        .refine((val) => {
-          if (!val || val.trim() === "") return true;
-          if (!dateRegex.test(val)) return false;
-          const [day, month, year] = val.split(".").map(Number);
-          const d = new Date(year, month - 1, day);
-          return (d.getFullYear() === year && d.getMonth() === month - 1 && d.getDate() === day);
-        },
-        { message: "Bitte geben Sie ein gültiges Datum im Format DD.MM.YYYY an." }
-      ),
+      publicationDate: z.any(),
       publicationMedium: z.any(),
       authors: z.any(),
       photographers: z.any(),
       otherContributors: z.any(),
       themes: z.any(),
-      topics: z.any(),
-      link: z.url().optional().nullable(),
-      iiifManifest: z.url().optional().nullable(),
+      imageMotifs: z.any(),
+      form: z.any(),
+      link: z.any(),
+      iiifManifest: z.any(),
+      images: z.any(),
       copyrightStatusImage: z.any(),
       copyrightStatusText: z.any(),
-      language: z.any()
+      languages: z.any(),
     })
   )
 );
 
-const onPersonReload = async () => {
-  if (!personLoading.value) {
-    personLoading.value = true;
-    await personStore.fetchPersons(true);
-    personLoading.value = false;
-  }  
-};
-
-const onPubMediumReload = async () => {
-  if (!pubMediumLoading.value) {
-    pubMediumLoading.value = true;
-    await pubMediumStore.fetchPubMedia(true);
-    pubMediumLoading.value = false;
-  }  
-};
-
-const onFileReload = async () => {
-  if (!fileLoading.value) {
-    fileLoading.value = true;
-    await fileStore.fetchFiles(true);
-    fileLoading.value = false;
-  }  
-};
+async function handleRefresh() {
+  data_refreshing.value = true;
+  try {
+    await useRefreshStoreData();
+    toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
+  } catch (err) {
+    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});
+  } finally {
+    data_refreshing.value = false;
+  }
+}
 
 const onFormSubmit = async (e: any) => {
   if (e.valid) {
@@ -117,52 +90,77 @@ const onFormSubmit = async (e: any) => {
 </script>
 
 <template>
-  <div class="flex flex-col mx-auto w-[70%] gap-4">
+  <div class="flex flex-col mx-auto w-[90%] gap-4">
     <h1 class="text-2xl outfit-headline text-[#063D79] font-bold">{{ props.header }}</h1>
     <p class="roboto-plain">
       Füllen Sie bitte die untenstehenden Felder aus, um ein Objekt zu erstellen oder anzupassen.
     </p>
-
     <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
-      <Form 
-        v-slot="$form" 
+      <Button :disabled="data_refreshing" label="Daten aktualisieren" @click="handleRefresh">
+        <div class="flex flex-row space-x-3 items-center">
+          <div class="roboto-plain font-semibold">Datenbankdaten aktualisieren</div>
+          <i v-show="data_refreshing" :class="['pi', data_refreshing ? 'pi-spin pi-spinner' : 'pi-spinner']"/>
+        </div>
+      </Button>
+      <Form
+        v-slot="$form"
         class="flex flex-col gap-4"
-        :resolver 
-        :initialValues="props.photopoem ? props.photopoem : {}"
+        :resolver
+        :initialValues="props.photopoem ? props.photopoem : {} as PhotoPoemDTO"
         :key="props.photopoem ? props.photopoem.id : 'new'"
-        @submit="onFormSubmit" 
+        @submit="onFormSubmit"
       >
-        <!-- Title field -->
         <FormField v-slot="$field" name="title" class="flex flex-col gap-1 flex-auto">
-          <label for="title" class="font-bold">Titel*</label>
+          <label for="title" class="font-bold">Titel</label>
           <IconField>
             <InputIcon class="pi pi-pen-to-square" />
-            <InputText 
-              id="title" 
-              placeholder="Telephon-Tragödie" 
-              v-on:keydown.enter.prevent 
-              fluid 
+            <InputText
+              id="title"
+              placeholder="Telephon-Tragödie"
+              v-on:keydown.enter.prevent
+              fluid
             />
           </IconField>
           <Message v-if="$form.title?.invalid" severity="error" size="small" variant="simple">
             {{ $form.title.error.message }}
           </Message>
         </FormField>
-
-        <Divider align="center"><b class="px-2">Daten</b></Divider>
-
-        <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Volume field -->
-          <FormField v-slot="$field" name="volume" class="flex flex-col gap-1 flex-1">
+        <FormField v-slot="$field" name="subtitle" class="flex flex-col gap-1 flex-auto">
+          <label for="title" class="font-bold">Untertitel</label>
+          <IconField>
+            <InputIcon class="pi pi-pen-to-square" />
+            <InputText
+                id="subtitle"
+                v-on:keydown.enter.prevent
+                fluid
+            />
+          </IconField>
+        </FormField>
+        <FormField v-slot="$field" name="altTitle" class="flex flex-col gap-1 flex-auto">
+          <label for="title" class="font-bold">Alternativer Titel</label>
+          <IconField>
+            <InputIcon class="pi pi-pen-to-square" />
+            <InputText
+                id="altTitle"
+                v-on:keydown.enter.prevent
+                fluid
+            />
+          </IconField>
+        </FormField>
+        <Divider align="center">
+          <b class="px-2">Daten</b>
+        </Divider>
+        <div class="flex flex-row space-x-3">
+          <FormField v-slot="$field" name="volume" class="flex flex-col gap-1 w-full">
             <label for="volume" class="font-bold">Jahrgang</label>
             <IconField>
               <InputIcon class="pi pi-pen-to-square" />
-              <InputNumber 
+              <InputNumber
                 id="volume"
                 placeholder="5"
-                :min="0" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
+                :min="0"
+                :useGrouping="false"
+                v-on:keydown.enter.prevent
                 fluid
               />
             </IconField>
@@ -170,18 +168,16 @@ const onFormSubmit = async (e: any) => {
               {{ $form.volume.error.message }}
             </Message>
           </FormField>
-
-          <!-- Issue field -->
-          <FormField v-slot="$field" name="issue" class="flex flex-col gap-1 flex-1">
+          <FormField v-slot="$field" name="issue" class="flex flex-col gap-1 w-full">
             <label for="issue" class="font-bold">Ausgabe</label>
             <IconField>
               <InputIcon class="pi pi-pen-to-square" />
-              <InputNumber 
-                id="issue" 
+              <InputNumber
+                id="issue"
                 placeholder="1"
-                :min="0" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
+                :min="0"
+                :useGrouping="false"
+                v-on:keydown.enter.prevent
                 fluid
               />
             </IconField>
@@ -190,38 +186,29 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-
-        <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Page number field -->
-          <FormField v-slot="$field" name="pageNumber" class="flex flex-col gap-1 flex-1">
-            <label for="pageNumber" class="font-bold">Seite</label>
+        <div class="flex flex-row space-x-3">
+          <FormField v-slot="$field" name="pageNumber" class="flex flex-col gap-1 w-full">
+            <label for="pageNumber" class="font-bold">Seite(n)</label>
             <IconField>
               <InputIcon class="pi pi-pen-to-square" />
-              <InputNumber 
-                id="pageNumber"
-                placeholder="23"
-                :min="0" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
-                fluid
+              <InputText
+                  id="pageNumber"
+                  placeholder="12-15"
+                  v-on:keydown.enter.prevent
+                  fluid
               />
             </IconField>
-            <Message v-if="$form.pageNumber?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.pageNumber.error.message }}
-            </Message>
           </FormField>
-
-          <!-- Page count field -->
-          <FormField v-slot="$field" name="pageCount" class="flex flex-col gap-1 flex-1">
+          <FormField v-slot="$field" name="pageCount" class="flex flex-col gap-1 w-full">
             <label for="pageCount" class="font-bold">Seitenzahl</label>
             <IconField>
               <InputIcon class="pi pi-pen-to-square" />
-              <InputNumber 
-                id="pageCount" 
-                placeholder="1832"
-                :min="0" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
+              <InputNumber
+                id="pageCount"
+                placeholder="2"
+                :min="0"
+                :useGrouping="false"
+                v-on:keydown.enter.prevent
                 fluid
               />
             </IconField>
@@ -230,70 +217,55 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-
         <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Publication date field -->
           <FormField v-slot="$field" name="publicationDate" class="flex flex-col gap-1 flex-1">
             <label for="publicationDate" class="font-bold">Publikationsdatum</label>
             <IconField>
               <InputIcon class="pi pi-calendar" />
-              <InputText 
-                id="publicationDate" 
-                placeholder="01.03.1930" 
-                v-on:keydown.enter.prevent 
-                fluid 
+              <InputText
+                id="publicationDate"
+                placeholder="01.03.1930"
+                v-on:keydown.enter.prevent
+                fluid
               />
             </IconField>
             <Message v-if="$form.publicationDate?.invalid" severity="error" size="small" variant="simple">
               {{ $form.publicationDate.error.message }}
             </Message>
           </FormField>
-
-          <!-- Language field -->
-          <FormField v-slot="$field" name="language" class="flex flex-col gap-1 flex-1">
-            <label for="language" class="font-bold">Sprache</label>
-            <IconField>
-              <InputIcon class="pi pi-language"/>
-              <Select 
-                labelId="language" 
-                placeholder="Sprache auswählen"
-                class="pl-7" 
-                optionLabel="label"
-                optionValue="value"
+          <FormField v-slot="$field" name="languages" class="flex flex-col gap-1 w-full">
+            <label for="languages" class="font-bold">Sprache(n)</label>
+            <MultiSelect
+                inputId="authors"
+                placeholder="Sprachen auswählen"
+                selectedItemsLabel="{0} Sprachen ausgewählt"
+                optionLabel="name"
+                :maxSelectedLabels="3"
                 :options="languages"
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.language?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.language.error.message }}
+                :key="languages.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                filter fluid showClear
+            />
+            <Message v-if="$form.languages?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.languages.error.message }}
             </Message>
           </FormField>
         </div>
-
-        <!-- Publication medium field -->
         <FormField v-slot="$field" name="publicationMedium" class="flex flex-col gap-1">
           <label for="publicationMedium" class="font-bold">Publikationsmedium</label>
           <div class="flex flex-row gap-4 flex-nowrap">
             <IconField class="flex-1 min-w-0">
               <InputIcon class="pi pi-book"/>
-              <Select 
-                labelId="publicationMedium" 
+              <Select
+                labelId="publicationMedium"
                 placeholder="Publikationsmedium auswählen"
                 class="pl-7"
-                optionLabel="label"
-                optionValue="value"
-                :options="pubMediumStore.pub_media.map(p => ({ label: `${p.title}`, value: p }))"
-                :key="pubMediumStore.pub_media.length"
+                optionLabel="title"
+                :options="publicationMedia"
+                :key="publicationMedia.length"
                 fluid
               />
             </IconField>
-            <Button 
-              icon="pi pi-refresh" 
-              severity="secondary" 
-              aria-label="Reload" 
-              :loading="pubMediumLoading" 
-              @click="onPubMediumReload"
-            />
             <NuxtLink to="/publication_media/create" target="_blank">
               <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
             </NuxtLink>
@@ -302,141 +274,201 @@ const onFormSubmit = async (e: any) => {
             {{ $form.publicationMedium.error.message }}
           </Message>
         </FormField>
-
-        <Divider align="center"><b class="px-2">Personen</b></Divider>
-
+        <Divider align="center">
+          <b class="px-2">Personen</b>
+        </Divider>
         <div class="flex flex-row gap-4">
-          <Button 
-            icon="pi pi-refresh" 
-            label="Personen aktualisieren"
-            severity="secondary" 
-            aria-label="Reload" 
-            :loading="personLoading" 
-            @click="onPersonReload" 
-          />
           <NuxtLink to="/persons/create" target="_blank">
             <Button icon="pi pi-plus" severity="secondary" aria-label="Add" label="Person erstellen"/>
           </NuxtLink>
         </div>
-        
-        <!-- Authors field -->
-        <FormField v-slot="$field" name="authors" class="flex flex-col gap-1">
-          <label for="authors" class="font-bold">Author:innen</label>
+        <div class="flex flex-row space-x-3">
+          <FormField v-slot="$field" name="authors" class="flex flex-col gap-1 w-full">
+            <label for="authors" class="font-bold">Author:innen</label>
             <MultiSelect
-              inputId="authors"
-              placeholder="Author:innen auswählen"
-              selectedItemsLabel="{0} Personen ausgewählt"
-              optionLabel="label"
-              optionValue="value"
-              :options="personStore.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
-              :key="personStore.persons.length"
-              :maxSelectedLabels="2"
-              filter
-              fluid
+                inputId="authors"
+                placeholder="Author:innen auswählen"
+                selectedItemsLabel="{0} Personen ausgewählt"
+                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                :optionValue="opt => ({id: opt.id, fullName: opt.fullName})"
+                :maxSelectedLabels="2"
+                :options="persons"
+                :key="persons.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                filter fluid
             />
-          <Message v-if="$form.authors?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.authors.error.message }}
+            <Message v-if="$form.authors?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.authors.error.message }}
+            </Message>
+          </FormField>
+          <FormField v-slot="$field" name="photographers" class="flex flex-col gap-1 w-full">
+            <label for="photographers" class="font-bold">Fotograf:innen</label>
+            <MultiSelect
+                inputId="photographers"
+                placeholder="Fotograf:innen auswählen"
+                selectedItemsLabel="{0} Personen ausgewählt"
+                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                :optionValue="opt => ({id: opt.id, fullName: opt.fullName})"
+                :maxSelectedLabels="2"
+                :options="persons"
+                :key="persons.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                filter fluid
+            />
+            <Message v-if="$form.photographers?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.photographers.error.message }}
+            </Message>
+          </FormField>
+          <FormField v-slot="$field" name="otherContributors" class="flex flex-col gap-1 w-full">
+            <label for="otherContributors" class="font-bold">Sonstige Mitwirkende</label>
+            <MultiSelect
+                inputId="otherContributors"
+                placeholder="Sonstige Mitwirkende auswählen"
+                selectedItemsLabel="{0} Personen ausgewählt"
+                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                :optionValue="opt => ({id: opt.id, fullName: opt.fullName})"
+                :maxSelectedLabels="2"
+                :options="persons"
+                :key="persons.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                filter fluid
+            />
+            <Message v-if="$form.otherContributors?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.otherContributors.error.message }}
+            </Message>
+          </FormField>
+        </div>
+        <Divider align="center">
+          <b class="px-2">Tags</b>
+        </Divider>
+        <div class="flex flex-row space-x-3">
+          <FormField v-slot="$field" name="themes" class="flex flex-col gap-1 w-full">
+            <label for="themes" class="font-bold">Thematik</label>
+            <MultiSelect
+                inputId="themes"
+                placeholder="Thematiken auswählen"
+                selectedItemsLabel="{0} Thematiken ausgewählt"
+                optionLabel="value"
+                :options="keywords"
+                :key="keywords.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                :maxSelectedLabels="3"
+                filter fluid
+            />
+            <Message v-if="$form.themes?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.themes.error.message }}
+            </Message>
+          </FormField>
+          <FormField v-slot="$field" name="imageMotifs" class="flex flex-col gap-1 w-full">
+            <label for="authors" class="font-bold">Bildmotiv</label>
+            <MultiSelect
+                inputId="imageMotifs"
+                placeholder="Bildmotive auswählen"
+                selectedItemsLabel="{0} Bildmotive ausgewählt"
+                optionLabel="value"
+                :options="keywords"
+                :key="keywords.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                :maxSelectedLabels="3"
+                filter fluid
+            />
+            <Message v-if="$form.imageMotifs?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.imageMotifs.error.message }}
+            </Message>
+          </FormField>
+          <FormField v-slot="$field" name="form" class="flex flex-col gap-1 w-full">
+            <label for="form" class="font-bold">Format</label>
+            <IconField>
+              <InputIcon class="pi pi-pen-to-square" />
+              <InputText
+                  id="form"
+                  v-on:keydown.enter.prevent
+                  fluid
+              />
+            </IconField>
+          </FormField>
+        </div>
+        <Divider align="center">
+          <b class="px-2">Links</b>
+        </Divider>
+        <FormField v-slot="$field" name="link" class="flex flex-col gap-1 flex-1">
+          <label for="link" class="font-bold">Link</label>
+          <IconField>
+            <InputIcon class="pi pi-link" />
+            <InputText
+                id="link"
+                placeholder="https://www.example.com"
+                v-on:keydown.enter.prevent
+                fluid
+            />
+          </IconField>
+          <Message v-if="$form.link?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.link.error.message }}
           </Message>
         </FormField>
-
-        <!-- Photographers field -->
-        <FormField v-slot="$field" name="photographers" class="flex flex-col gap-1">
-          <label for="photographers" class="font-bold">Fotograf:innen</label>
-          <MultiSelect
-            inputId="photographers"
-            placeholder="Fotograf:innen auswählen"
-            selectedItemsLabel="{0} Personen ausgewählt"
-            optionLabel="label"
-            optionValue="value"
-            :options="personStore.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
-            :key="personStore.persons.length"
-            :maxSelectedLabels="2"
-            filter 
-            fluid
-          />          
-          <Message v-if="$form.photographers?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.photographers.error.message }}
-          </Message>
-        </FormField>
-
-        <!-- Other contributors field -->
-        <FormField v-slot="$field" name="otherContributors" class="flex flex-col gap-1">
-          <label for="otherContributors" class="font-bold">Sonstige Mitwirkende</label>
-          <MultiSelect
-            inputId="otherContributors"
-            placeholder="Sonstige Mitwirkende auswählen"
-            selectedItemsLabel="{0} Personen ausgewählt"
-            optionLabel="label"
-            optionValue="value"
-            :options="personStore.persons.map(p => ({ label: `${p.fullName}`, value: p }))"
-            :key="personStore.persons.length"
-            :maxSelectedLabels="2"
-            filter 
-            fluid
-          />
-          <Message v-if="$form.otherContributors?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.otherContributors.error.message }}
-          </Message>
-        </FormField>
-
-        <Divider align="center"><b class="px-2">Tags</b></Divider>
-
-        <!-- Themes field -->
-        <FormField v-slot="$field" name="themes">
-          <label for="themes" class="font-bold">Thematik</label>
-          <AutoComplete 
-            inputId="themes"
-            placeholder="Eingabe mit Enter bestätigen"
-            :typeahead="false" 
-            multiple 
-            fluid
-          />
-          <Message v-if="$form.themes?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.themes.error.message }}
-          </Message>
-        </FormField>
-
-        <!-- Topics field -->
-        <FormField v-slot="$field" name="topics">
-          <label for="topics" class="font-bold">Kategorie</label>
-          <AutoComplete 
-            inputId="topics"
-            placeholder="Eingabe mit Enter bestätigen"
-            :typeahead="false" 
-            multiple 
-            fluid
-          />
-          <Message v-if="$form.topics?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.topics.error.message }}
-          </Message>
-        </FormField>
-
-        <Divider align="center"><b class="px-2">Links</b></Divider>
-
-        <!-- File select field -->
-        <FormField v-slot="$field" name="files" class="flex flex-col gap-1">
-          <label for="files" class="font-bold">Dateien</label>
+        <div class="flex flex-row space-x-3">
+          <FormField v-slot="$field" name="iiifManifest" class="flex flex-col gap-1 w-full">
+            <label for="iiifManifest" class="font-bold">IIIF-Manifest</label>
+            <IconField>
+              <InputIcon class="pi pi-link" />
+              <InputText
+                id="iiifManifest"
+                placeholder="https://www.example.com"
+                v-on:keydown.enter.prevent
+                fluid
+              />
+            </IconField>
+            <Message v-if="$form.iiifManifest?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.iiifManifest.error.message }}
+            </Message>
+          </FormField>
+          <FormField v-slot="$field" name="manifestPageNumber" class="flex flex-col gap-1 w-full">
+            <label for="pageCount" class="font-bold">IIIF-Seite</label>
+            <IconField>
+              <InputIcon class="pi pi-pen-to-square" />
+              <InputNumber
+                  id="manifestPageNumber"
+                  placeholder="257"
+                  :min="0"
+                  :useGrouping="false"
+                  v-on:keydown.enter.prevent
+                  fluid
+              />
+            </IconField>
+            <Message v-if="$form.pageCount?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.pageCount.error.message }}
+            </Message>
+          </FormField>
+        </div>
+        <Divider align="center">
+          <b class="px-2">Dateien</b>
+        </Divider>
+        <FormField v-slot="$field" name="images" class="flex flex-col gap-1">
+          <label for="images" class="font-bold">Dateien</label>
           <div class="flex flex-row gap-4 flex-nowrap">
             <MultiSelect
-              inputId="files"
-              placeholder="Dateien auswählen"
-              class="flex-1 min-w-0"
-              selectedItemsLabel="{0} Dateien ausgewählt"
-              optionLabel="label"
-              optionValue="value"
-              :options="fileStore.files.map(f => ({ label: `${f.filename}`, value: f }))"
-              :key="fileStore.files.length"
-              :maxSelectedLabels="2"
-              fluid
-              filter
-            />
-            <Button 
-              icon="pi pi-refresh" 
-              severity="secondary" 
-              aria-label="Reload" 
-              :loading="fileLoading" 
-              @click="onFileReload"
-            />
+                inputId="images"
+                placeholder="Dateien auswählen"
+                class="flex-1 min-w-0"
+                selectedItemsLabel="{0} Dateien ausgewählt"
+                :options="files"
+                optionLabel="originalFilename"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                :key="files.length"
+                :maxSelectedLabels="2"
+                fluid filter
+            >
+              <template #option="slotProps">
+                <div class="flex flex-row space-x-2">
+                  <Avatar
+                      :image="`/api/uploads/${slotProps.option.filename}`"
+                      shape="square"
+                      oncontextmenu="return false;"
+                  />
+                  <p>{{ slotProps.option.originalFilename }}</p>
+                </div>
+              </template>
+            </MultiSelect>
             <NuxtLink to="/files" target="_blank">
               <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
             </NuxtLink>
@@ -445,56 +477,20 @@ const onFormSubmit = async (e: any) => {
             {{ $form.files.error.message }}
           </Message>
         </FormField>
-
-        <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Link field -->
-          <FormField v-slot="$field" name="link" class="flex flex-col gap-1 flex-1">
-            <label for="link" class="font-bold">Link</label>
-            <IconField>
-              <InputIcon class="pi pi-link" />
-              <InputText 
-                id="link" 
-                placeholder="https://www.example.com" 
-                v-on:keydown.enter.prevent 
-                fluid 
-              />
-            </IconField>
-            <Message v-if="$form.link?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.link.error.message }}
-            </Message>
-          </FormField>
-
-          <!-- IIIF manifest field -->
-          <FormField v-slot="$field" name="iiifManifest" class="flex flex-col gap-1 flex-1">
-            <label for="iiifManifest" class="font-bold">IIIF-Manifest</label>
-            <IconField>
-              <InputIcon class="pi pi-link" />
-              <InputText 
-                id="iiifManifest" 
-                placeholder="https://www.example.com" 
-                v-on:keydown.enter.prevent 
-                fluid 
-              />
-            </IconField>
-            <Message v-if="$form.iiifManifest?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.iiifManifest.error.message }}
-            </Message>
-          </FormField>
-        </div>
-
-        <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Copyright image field -->
-          <FormField v-slot="$field" name="copyrightStatusImage" class="flex flex-col gap-1 flex-1">
+        <Divider align="center">
+          <b class="px-2">Urheberrecht</b>
+        </Divider>
+        <div class="flex flex-row space-x-3">
+          <FormField v-slot="$field" name="copyrightStatusImage" class="flex flex-col gap-1 w-full">
             <label for="copyrightStatusImage" class="font-bold">Urheberrechtsstatus Bild</label>
             <IconField>
               <InputIcon class="pi pi-shield"/>
-              <Select 
-                labelId="copyrightStatusImage" 
+              <Select
+                labelId="copyrightStatusImage"
                 placeholder="Status auswählen"
                 class="pl-7"
-                optionLabel="label"
-                optionValue="value"
-                :options="copyright"
+                optionLabel="value"
+                :options="copyrightStatusStore.copyrightStatuses.map(status => ({id: status.id, value: status.value, description: status.description}))"
                 fluid
               />
             </IconField>
@@ -502,19 +498,16 @@ const onFormSubmit = async (e: any) => {
               {{ $form.copyrightStatusImage.error.message }}
             </Message>
           </FormField>
-
-          <!-- Copyright text field -->
-          <FormField v-slot="$field" name="copyrightStatusText" class="flex flex-col gap-1 flex-1">
+          <FormField v-slot="$field" name="copyrightStatusText" class="flex flex-col gap-1 w-full">
             <label for="copyrightStatusText" class="font-bold">Urheberrechtsstatus Text</label>
             <IconField>
               <InputIcon class="pi pi-shield"/>
-              <Select 
-                labelId="copyrightStatusText" 
+              <Select
+                labelId="copyrightStatusText"
                 placeholder="Status auswählen"
-                class="pl-7" 
-                optionLabel="label"
-                optionValue="value"
-                :options="copyright"
+                class="pl-7"
+                optionLabel="value"
+                :options="copyrightStatusStore.copyrightStatuses.map(status => ({id: status.id, value: status.value, description: status.description}))"
                 fluid
               />
             </IconField>
@@ -523,17 +516,10 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-
-        <!-- Submit Button -->
         <Button type="submit" severity="primary">
           {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
         </Button>
-
-        <!--
-        <Fieldset legend="Form States" class="h-80 overflow-auto">
-          <pre class="whitespace-pre-wrap">{{ $form }}</pre>
-        </Fieldset>
-        -->
+        <pre wrap>{{ $form }}</pre>
       </Form>
     </div>
   </div>
