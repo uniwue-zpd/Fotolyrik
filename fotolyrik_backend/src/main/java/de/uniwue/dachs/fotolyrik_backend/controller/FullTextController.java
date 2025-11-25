@@ -2,7 +2,6 @@ package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.FullTextDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.FullTextSearchResult;
-import de.uniwue.dachs.fotolyrik_backend.model.FullText;
 import de.uniwue.dachs.fotolyrik_backend.service.FullTextService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,15 +31,15 @@ public class FullTextController {
     }
 
     @PostMapping
-    public ResponseEntity<FullText> saveFullText(@RequestBody FullTextDTO fullTextDTO) {
-        FullText savedFullText = fullTextService.createFullText(fullTextDTO);
+    public ResponseEntity<FullTextDTO> saveFullText(@RequestBody FullTextDTO fullTextDTO) {
+        FullTextDTO savedFullText = fullTextService.createFullText(fullTextDTO);
         return ResponseEntity.status(201).body(savedFullText);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FullText> updateFullText(@PathVariable Long id, @RequestBody FullTextDTO fullTextDTO) {
+    public ResponseEntity<FullTextDTO> updateFullText(@PathVariable Long id, @RequestBody FullTextDTO fullTextDTO) {
         try {
-            FullText updatedFullText = fullTextService.updateFullText(id, fullTextDTO);
+            FullTextDTO updatedFullText = fullTextService.updateFullText(id, fullTextDTO);
             return ResponseEntity.ok(updatedFullText);
         } catch (Exception e) {
             return ResponseEntity.status(404).build();

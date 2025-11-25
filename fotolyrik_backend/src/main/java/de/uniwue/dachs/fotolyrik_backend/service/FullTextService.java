@@ -76,10 +76,10 @@ public class FullTextService {
      * @return a {@link FullText} object and persists it in the database
      */
     @Transactional
-    public FullText createFullText(FullTextDTO fullTextDTO) {
+    public FullTextDTO createFullText(FullTextDTO fullTextDTO) {
         FullText fullText = fullTextMapper.FullTextDTOToFullText(fullTextDTO);
-        fullTextRepository.save(fullText);
-        return fullText;
+        FullText createdFullText = fullTextRepository.save(fullText);
+        return fullTextMapper.FulltextToFullTextDTO(createdFullText);
     }
 
     /**
@@ -88,11 +88,12 @@ public class FullTextService {
      * @return a {@link FullText} object and persists it in the database
      */
     @Transactional
-    public FullText updateFullText(Long id, FullTextDTO updatedFullText) {
+    public FullTextDTO updateFullText(Long id, FullTextDTO updatedFullText) {
         return fullTextRepository.findById(id).map(entity -> {
             entity.setFullText(updatedFullText.getFullText());
             entity.setPhotopoem(photopoemMapper.PhotopoemPreviewDTOToPhotopoem(updatedFullText.getPhotopoem()));
-            return fullTextRepository.save(entity);
+            FullText savedEntity = fullTextRepository.save(entity);
+            return fullTextMapper.FulltextToFullTextDTO(savedEntity);
         }).orElseThrow(() -> new EntityNotFoundException("FullText with id '" + id + "' does not exist"));
     }
 
