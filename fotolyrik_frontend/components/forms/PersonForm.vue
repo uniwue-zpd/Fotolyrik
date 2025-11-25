@@ -21,8 +21,8 @@ const sex = ref([
 const resolver = ref(
   zodResolver(
     z.object({
-      firstName: z.string("Bitte geben Sie einen Vornamen an."),
-      lastName: z.string("Bitte geben Sie einen Nachnamen an."),
+      firstName: z.string().optional().nullable(),
+      lastName: z.string().optional().nullable(),
       sex: z.string().optional().nullable(),
       birthYear: z.number().optional(),
       deathYear: z.number().optional(),
@@ -66,25 +66,24 @@ const onFormSubmit = async (e: any) => {
     </p>
 
     <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
-      <Form 
+      <Form
         v-slot="$form"
         class="flex flex-col gap-4"
-        :resolver 
+        :resolver
         :initialValues="props.person ? props.person : {}"
         :key="props.person ? props.person.id : 'new'"
-        @submit="onFormSubmit" 
+        @submit="onFormSubmit"
       >
         <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Firstname field -->
           <FormField v-slot="$field" name="firstName" class="flex flex-col gap-1 flex-1">
-            <label for="firstName" class="font-bold">Vorname*</label>
+            <label for="firstName" class="font-bold">Vorname</label>
             <IconField>
               <InputIcon class="pi pi-user-edit" />
-              <InputText 
-                id="firstName" 
-                placeholder="Johann Wolfgang" 
-                v-on:keydown.enter.prevent 
-                fluid 
+              <InputText
+                id="firstName"
+                placeholder="Johann Wolfgang"
+                v-on:keydown.enter.prevent
+                fluid
               />
             </IconField>
             <Message v-if="$form.firstName?.invalid" severity="error" size="small" variant="simple">
@@ -92,16 +91,15 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
 
-          <!-- Lastname field -->
           <FormField v-slot="$field" name="lastName" class="flex flex-col gap-1 flex-1">
-            <label for="lastName" class="font-bold">Nachname*</label>
+            <label for="lastName" class="font-bold">Nachname</label>
             <IconField>
               <InputIcon class="pi pi-user-edit" />
-              <InputText 
-                id="lastName" 
-                placeholder="von Goethe" 
-                v-on:keydown.enter.prevent 
-                fluid 
+              <InputText
+                id="lastName"
+                placeholder="von Goethe"
+                v-on:keydown.enter.prevent
+                fluid
               />
             </IconField>
             <Message v-if="$form.lastName?.invalid" severity="error" size="small" variant="simple">
@@ -109,17 +107,15 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-
         <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Sex field -->
           <FormField v-slot="$field" name="sex" class="flex flex-col gap-1 flex-1">
             <label for="sex" class="font-bold">Geschlecht</label>
             <IconField>
               <InputIcon class="pi pi-mars"/>
-              <Select 
-                labelId="sex" 
+              <Select
+                labelId="sex"
                 placeholder="Geschlecht auswählen"
-                class="pl-7" 
+                class="pl-7"
                 optionLabel="label"
                 optionValue="value"
                 :options="sex"
@@ -130,19 +126,17 @@ const onFormSubmit = async (e: any) => {
               {{ $form.sex.error.message }}
             </Message>
           </FormField>
-
-          <!-- Birthyear field -->
           <FormField v-slot="$field" name="birthYear" class="flex flex-col gap-1 flex-1">
             <label for="birthYear" class="font-bold">Geburtsjahr</label>
             <IconField>
               <InputIcon class="pi pi-calendar" />
-              <InputNumber 
+              <InputNumber
                 id="birthYear"
                 placeholder="1749"
-                :min="0" 
-                :max="3000" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
+                :min="0"
+                :max="3000"
+                :useGrouping="false"
+                v-on:keydown.enter.prevent
                 fluid
               />
             </IconField>
@@ -150,19 +144,17 @@ const onFormSubmit = async (e: any) => {
               {{ $form.birthYear.error.message }}
             </Message>
           </FormField>
-
-          <!-- Deathyear field -->
           <FormField v-slot="$field" name="deathYear" class="flex flex-col gap-1 flex-1">
             <label for="deathYear" class="font-bold">Sterbejahr</label>
             <IconField>
               <InputIcon class="pi pi-calendar" />
-              <InputNumber 
-                id="deathYear" 
+              <InputNumber
+                id="deathYear"
                 placeholder="1832"
-                :min="0" 
-                :max="3000" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
+                :min="0"
+                :max="3000"
+                :useGrouping="false"
+                v-on:keydown.enter.prevent
                 fluid
               />
             </IconField>
@@ -171,44 +163,37 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-
-        <!-- Pseudonyms field -->
         <FormField v-slot="$field" name="pseudonyms">
           <label for="pseudonyms" class="font-bold">Pseudonyme</label>
-          <AutoComplete 
+          <AutoComplete
             inputId="pseudonyms"
             placeholder="Eingabe mit Enter bestätigen"
-            :typeahead="false" 
-            multiple 
+            :typeahead="false"
+            multiple
             fluid
           />
           <Message v-if="$form.pseudonyms?.invalid" severity="error" size="small" variant="simple">
             {{ $form.pseudonyms.error.message }}
           </Message>
         </FormField>
-
-        <!-- GND-ID field -->
         <FormField v-slot="$field" name="gndId" class="flex flex-col gap-1 flex-auto">
           <label for="gndId" class="font-bold">GND-ID</label>
           <IconField>
             <InputIcon class="pi pi-book" />
-            <InputText 
-              id="gndId" 
-              placeholder="118540238" 
-              v-on:keydown.enter.prevent 
-              fluid 
+            <InputText
+              id="gndId"
+              placeholder="118540238"
+              v-on:keydown.enter.prevent
+              fluid
             />
           </IconField>
           <Message v-if="$form.gndId?.invalid" severity="error" size="small" variant="simple">
             {{ $form.gndId.error.message }}
           </Message>
         </FormField>
-
-        <!-- Submit button -->
         <Button type="submit" severity="primary">
           {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
         </Button>
-        
         <!--
         <Fieldset legend="Form States" class="h-80 overflow-auto">
           <pre class="whitespace-pre-wrap">{{ $form }}</pre>

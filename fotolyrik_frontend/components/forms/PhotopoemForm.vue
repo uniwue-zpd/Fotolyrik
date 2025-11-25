@@ -519,7 +519,11 @@ const onFormSubmit = async (e: any) => {
         <Button type="submit" severity="primary">
           {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
         </Button>
-        <pre wrap>{{ $form }}</pre>
+        <!--
+        <Fieldset legend="Form States" class="h-80 overflow-auto">
+          <pre class="whitespace-pre-wrap">{{ $form }}</pre>
+        </Fieldset>
+        -->
       </Form>
     </div>
   </div>
