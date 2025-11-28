@@ -1,57 +1,57 @@
 <script setup lang="ts">
-import type { PubMedium } from "~/utils/types";
+import type { PubMediumDTO } from "~/utils/types";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
+import {FormField} from "@primevue/forms";
 
 const toast = useToast();
 const pubMediumStore = usePubMediumStore();
 const placeStore = usePlaceStore();
+const publisherStore = usePublisherStore();
+const pubRhythmStore = usePubRhythmStore();
 
-const placeLoading = ref(false);
+const publication_places = computed(() => placeStore.places.map(p => ({id: p.id, name: p.name})));
+const publishers = computed(() => publisherStore.publishers.map(pu => ({id: pu.id, name: pu.name})));
+const publication_rhythms = computed(() => pubRhythmStore.publication_rhythms.map(pr => ({id: pr.id, value: pr.value})));
+
+const data_refreshing = ref(false);
 
 const props = defineProps<{
   action: "create" | "edit";
   header: string;
-  pub_medium?: PubMedium;
+  pub_medium?: PubMediumDTO;
 }>();
-
-onMounted(() => {
-  placeStore.fetchPlaces();
-});
-
-const rythm = ref([
-    { label: "Unbekannt", value: null },
-    { label: "Wöchentlich", value: "wöchentlich" },
-    { label: "Halbmonatlich", value: "halbmonatlich" },
-    { label: "Monatlich", value: "monatlich" },
-    { label: "Halbjährlich", value: "halbjährlich"},
-    { label: "Jährlich", value: "jährlich"}
-]);
 
 const resolver = ref(
   zodResolver(
     z.object({
       title: z.string("Bitte geben Sie einen Titel an."),
-      subtitle: z.string().optional(),
-      publicationPlaces: z.array(z.object()).optional(),
-      publisher: z.string().optional(),
-      pubRhytm: z.string().optional(),
-      startYear: z.number().optional(),
-      endYear: z.number().optional(),
-      amountVolumes: z.number().optional(),
-      amountIssues: z.number().optional(),
-      zdbId: z.string().optional(),
+      subtitle: z.string().optional().nullable(),
+      publicationPlaces: z.any(),
+      publisher: z.any().nullable(),
+      pubRhythms: z.any(),
+      editorialOffice: z.string().optional().nullable(),
+      startYear: z.any().optional().nullable(),
+      endYear: z.any().optional().nullable(),
+      amountVolumes: z.number().optional().nullable(),
+      amountIssues: z.number().optional().nullable(),
+      zdbId: z.string().optional().nullable(),
+      notes: z.string().optional().nullable(),
     })
   )
 );
 
-const onPlaceReload = async () => {
-  if (!placeLoading.value) {
-    placeLoading.value = true;
-    await placeStore.fetchPlaces(true);
-    placeLoading.value = false;
+async function handleRefresh() {
+  data_refreshing.value = true;
+  try {
+    await useRefreshStoreData();
+    toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
+  } catch (err) {
+    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});
+  } finally {
+    data_refreshing.value = false;
   }
-};
+}
 
 const onFormSubmit = async (e: any) => {
   if (e.valid) {
@@ -79,8 +79,14 @@ const onFormSubmit = async (e: any) => {
     <p class="roboto-plain">
       Füllen Sie bitte die untenstehenden Felder aus, um ein Publikationsmedium zu erstellen oder anzupassen.
     </p>
-
     <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
+      <Button :disabled="data_refreshing" label="Daten aktualisieren" @click="handleRefresh">
+        <div class="flex flex-row space-x-3 items-center">
+          <div class="roboto-plain font-semibold">Datenbankdaten aktualisieren</div>
+          <i v-show="data_refreshing" :class="['pi', data_refreshing ? 'pi-spin pi-spinner' : 'pi-spinner']"/>
+        </div>
+      </Button>
+      <Divider/>
       <Form 
         v-slot="$form" 
         class="flex flex-col gap-4"
@@ -90,7 +96,6 @@ const onFormSubmit = async (e: any) => {
         @submit="onFormSubmit" 
       >
         <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Title field -->
           <FormField v-slot="$field" name="title" class="flex flex-col gap-1 flex-1">
             <label for="title" class="font-bold">Titel</label>
             <IconField>
@@ -106,8 +111,6 @@ const onFormSubmit = async (e: any) => {
               {{ $form.title.error.message }}
             </Message>
           </FormField>
-
-          <!-- Subtitle field -->
           <FormField v-slot="$field" name="subtitle" class="flex flex-col gap-1 flex-1">
             <label for="subtitle" class="font-bold">Untertitel</label>
             <IconField class="flex-auto">
@@ -124,8 +127,6 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-
-        <!-- Place field -->
         <FormField v-slot="$field" name="publicationPlaces" class="flex flex-col gap-1 flex-1">
           <label for="publicationPlaces" class="font-bold">Publikationsorte</label>
           <div class="flex flex-row gap-4 flex-nowrap">
@@ -134,20 +135,12 @@ const onFormSubmit = async (e: any) => {
               placeholder="Orte auswählen"
               selectedItemsLabel="{0} Orte ausgewählt"
               class="flex-1 min-w-0"
-              optionLabel="label"
-              optionValue="value"
-              :options="placeStore.places.map(p => ({ label: `${p.name}`, value: p }))"
-              :key="placeStore.places.length"
+              optionLabel="name"
+              :options="publication_places"
+              :key="publication_places.length"
               :maxSelectedLabels="2"
               filter
               fluid
-            />
-            <Button 
-              icon="pi pi-refresh" 
-              severity="secondary" 
-              aria-label="Reload" 
-              :loading="placeLoading" 
-              @click="onPlaceReload"
             />
             <NuxtLink to="/places/create" target="_blank">
               <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
@@ -157,48 +150,66 @@ const onFormSubmit = async (e: any) => {
             {{ $form.publicationPlaces.error.message }}
           </Message>
         </FormField>
-
         <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Publisher field -->
-          <FormField v-slot="$field" name="publisher" class="flex flex-col gap-1 flex-1">
+          <FormField v-slot="$field" name="publisher" class="flex flex-col gap-1">
             <label for="publisher" class="font-bold">Herausgeber</label>
-            <IconField>
-              <InputIcon class="pi pi-pen-to-square" />
-              <InputText 
-                id="publisher" 
-                placeholder="Girardet" 
-                v-on:keydown.enter.prevent 
-                fluid 
-              />
-            </IconField>
-            <Message v-if="$form.publisher?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.publisher.error.message }}
+            <div class="flex flex-row gap-4 flex-nowrap">
+              <IconField class="flex-1 min-w-0">
+                <InputIcon class="pi pi-book"/>
+                <Select
+                    labelId="publisher"
+                    placeholder="Herausgeber auswählen"
+                    class="pl-7"
+                    optionLabel="name"
+                    :options="publishers"
+                    :key="publishers.length"
+                    editable
+                    showClear
+                    fluid
+                />
+              </IconField>
+              <NuxtLink to="/publishers/create" target="_blank">
+                <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
+              </NuxtLink>
+            </div>
+            <Message v-if="$form.publicationMedium?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.publicationMedium.error.message }}
             </Message>
           </FormField>
-
-          <!-- Publication rythm field -->
-          <FormField v-slot="$field" name="pubRhytm" class="flex flex-col gap-1 flex-1">
-            <label for="pubRhytm" class="font-bold">Publikationsrythmus</label>
-            <IconField>
-              <InputIcon class="pi pi-calendar-clock"/>
-              <Select 
-                labelId="pubRhytm"
-                placeholder="Rythmus auswählen"
-                class="pl-7" 
-                optionLabel="label"
-                optionValue="value"
-                :options="rythm"
+          <FormField v-slot="$field" name="pubRhythms" class="flex flex-col gap-1 flex-1">
+            <label for="pubRhythms" class="font-bold">Publikationsrhythmen</label>
+            <MultiSelect
+                inputId="pubRhythms"
+                placeholder="Rhythmen auswählen"
+                selectedItemsLabel="{0} Rhythmen ausgewählt"
+                class="flex-1 min-w-0"
+                optionLabel="value"
+                :options="publication_rhythms"
+                :key="publication_rhythms.length"
+                :maxSelectedLabels="2"
+                filter
                 fluid
-              />
-            </IconField>
-            <Message v-if="$form.pubRhytm?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.pubRhytm.error.message }}
+            />
+            <Message v-if="$form.pubRhythms?.invalid" severity="error" size="small" variant="simple" class="flex-auto">
+              {{ $form.pubRhythms.error.message }}
             </Message>
           </FormField>
         </div>
-
+        <FormField v-slot="$field" name="editorialOffice" class="flex flex-col gap-1 flex-1">
+          <label for="editorialOffice" class="font-bold">Schriftleitung</label>
+          <IconField>
+            <InputIcon class="pi pi-pen-to-square" />
+            <InputText
+                id="editorialOffice"
+                v-on:keydown.enter.prevent
+                fluid
+            />
+          </IconField>
+          <Message v-if="$form.editorialOffice?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.editorialOffice.error.message }}
+          </Message>
+        </FormField>
         <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Start year field -->
           <FormField v-slot="$field" name="startYear" class="flex flex-col gap-1 flex-1">
             <label for="startYear" class="font-bold">Startjahr</label>
             <IconField>
@@ -217,8 +228,6 @@ const onFormSubmit = async (e: any) => {
               {{ $form.startYear.error.message }}
             </Message>
           </FormField>
-
-          <!-- End year field -->
           <FormField v-slot="$field" name="endYear" class="flex flex-col gap-1 flex-1">
             <label for="endYear" class="font-bold">Endjahr</label>
             <IconField>
@@ -238,9 +247,7 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-
         <div class="flex flex-row gap-6 flex-wrap">
-          <!-- Amount of volumes field -->
           <FormField v-slot="$field" name="amountVolumes" class="flex flex-col gap-1 flex-1">
             <label for="amountVolumes" class="font-bold">Anzahl Jahrgänge</label>
             <IconField>
@@ -258,8 +265,6 @@ const onFormSubmit = async (e: any) => {
               {{ $form.amountVolumes.error.message }}
             </Message>
           </FormField>
-
-          <!-- Amount of issues field -->
           <FormField v-slot="$field" name="amountIssues" class="flex flex-col gap-1 flex-1">
             <label for="amountIssues" class="font-bold">Anzahl Ausgaben</label>
             <IconField>
@@ -278,8 +283,6 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-
-        <!-- ZDB-ID field -->
         <FormField v-slot="$field" name="zdbId" class="flex flex-col gap-1 flex-auto">
           <label for="zdbId" class="font-bold">ZDB-ID</label>
           <IconField>
@@ -295,12 +298,20 @@ const onFormSubmit = async (e: any) => {
             {{ $form.zdbId.error.message }}
           </Message>
         </FormField>
-
-        <!-- Submit button -->
+        <FormField v-slot="$field" name="notes" class="flex flex-col gap-1 flex-1">
+          <label for="notes" class="font-bold">Notizen</label>
+          <Textarea
+              id="notes"
+              autoResize
+              fluid
+          />
+          <Message v-if="$form.notes?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.notes.error.message }}
+          </Message>
+        </FormField>
         <Button type="submit" severity="primary">
           {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
         </Button>
-
         <!--
         <Fieldset legend="Form States" class="h-80 overflow-auto">
           <pre class="whitespace-pre-wrap">{{ $form }}</pre>
