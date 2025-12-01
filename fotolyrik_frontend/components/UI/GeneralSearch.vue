@@ -2,6 +2,7 @@
 import { ref } from "vue";
 
 const visible = ref(false);
+const searchInput = ref<HTMLInputElement | null>(null);
 
 // Handle search input
 const query = ref('');
@@ -10,14 +11,16 @@ const type_mapping: { [key: string]: string } = {
   photopoems: 'Fotogedicht',
   persons: 'Person',
   places: 'Ort',
-  publication_media: 'Publikationsmedium'
+  publication_media: 'Publikationsmedium',
+  keywords: 'Schlagwort'
 }
 
 const icon_map: Record<string, string> = {
   photopoems: 'i-material-symbols-notes-rounded',
   persons: 'i-material-symbols-person-3-outline-rounded',
   places: 'i-material-symbols-location-on-outline-rounded',
-  publication_media: 'i-material-symbols-book-5-rounded'
+  publication_media: 'i-material-symbols-book-5-rounded',
+  keywords: 'i-material-symbols-tag'
 }
 
 const fetchResults = async (search: string) => {
@@ -36,10 +39,10 @@ const fetchResults = async (search: string) => {
   }
 }
 
-const debouncedFetch = debounce(fetchResults, 250)
+const debouncedFetch = debounce(fetchResults, 300);
 
 const onInput = () => {
-  if (query.value.length >= 2) {
+  if (query.value.length >= 3) {
     debouncedFetch(query.value);
   } else {
     results.value = []
@@ -51,6 +54,12 @@ const clearResults = () => {
   visible.value = false
   query.value = '';
 }
+
+watch(query, (val) => {
+  if (!val || val.length < 3) {
+    results.value = []
+  }
+})
 </script>
 
 <template>
@@ -67,6 +76,7 @@ const clearResults = () => {
           class="px-3 py-3 border rounded-md shadow focus:outline-none hover:shadow-md"
           v-model="query"
           @input="onInput"
+          autofocus
       />
       <div class="flex flex-col gap-2">
         <div v-for="result in results">
