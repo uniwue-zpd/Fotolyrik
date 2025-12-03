@@ -5,6 +5,9 @@ useHead(() => ({
   title: 'Fotolyrik - Startseite'
 }));
 
+const keywordStore = useKeywordStore();
+const topics = computed(() => keywordStore.keywords.slice(0, 20));
+
 import { ref } from 'vue';
 import "maplibre-gl/dist/maplibre-gl.css"
 
@@ -19,19 +22,6 @@ const images = ref([
     'k-8.jpg',
     'k-9.jpg',
     'k-10.jpg'
-]);
-
-const topics = ref([
-    't-1.jpg',
-    't-2.jpg',
-    't-3.jpg',
-    't-4.jpg',
-    't-5.jpg',
-    't-6.jpg',
-    't-7.jpg',
-    't-8.jpg',
-    't-9.jpg',
-    't-10.jpg'
 ]);
 
 const responsiveOptions = ref([
@@ -165,13 +155,17 @@ const responsiveOptions = ref([
       <div class="flex flex-col gap-2">
         <Carousel :value="topics" :numVisible="4" :numScroll="1" controls="true" indicator-type="disc" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
           <template #item="{ data }">
-            <div class="p-2">
-              <img :src="data" alt="image in carousel" class="w-full rounded-sm shadow-md" />
-            </div>
+            <NuxtLink
+                :to="`/keywords/${data.id}`"
+                class="flex flex-col items-center rounded-md m-2 p-3 bg-white shadow-md hover:scale-105 transition-transform duration-300"
+            >
+              <Icon name="i-material-symbols-bookmark-outline" class="w-full text-5xl md:text-7xl text-[#063D79]"/>
+              <p class="roboto-plain font-medium text-black">{{ data.value }}</p>
+            </NuxtLink>
           </template>
         </Carousel>
         <div class="flex flex-row justify-center">
-          <NuxtLink to="/topics" class="inline-block px-8 py-2 outfit-headline font-semibold text-[#F04E30] bg-white p-1">
+          <NuxtLink to="/keywords" class="inline-block px-8 py-2 outfit-headline font-semibold text-[#F04E30] bg-white p-1">
             alle Themen
           </NuxtLink>
         </div>

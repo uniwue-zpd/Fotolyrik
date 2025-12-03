@@ -1,20 +1,15 @@
 <script setup lang="ts">
-import apiClient from "~/service/api";
-import { ref } from "vue";
-import type { FullTextSearchResult } from "~/utils/types";
+import {ref} from "vue";
+import type {FullTextSearchResult} from "~/utils/types";
 
+const fullTextStore = useFullTextStore();
 const submitted = ref(false);
 const results = ref<FullTextSearchResult[]>([]);
 const query_result_status = ref('');
 
 const submit = async (formData: { query: string}) => {
   try {
-    const response = await apiClient.get('/fulltexts/search', {
-      params: {
-        query: formData.query
-      }
-    });
-    results.value = response.data;
+    results.value = await fullTextStore.searchFullTexts(formData.query);
     submitted.value = true;
     results.value.length > 0 ? query_result_status.value = 'success': query_result_status.value = 'empty';
   } catch (error) {

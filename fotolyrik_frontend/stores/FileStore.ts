@@ -13,7 +13,7 @@ export const useFileStore = defineStore("files", () => {
     const loadingUp = ref(false)
     const errorUp = ref<string | null>(null)
 
-    async function getFiles() {
+    async function fetchFiles() {
         loadingDown.value = true;
         errorDown.value = null;
 
@@ -89,8 +89,7 @@ export const useFileStore = defineStore("files", () => {
         progressUp,
         loadingUp,
         errorUp,
-
-        getFiles,
+        fetchFiles,
         refreshFilesData,
         removeFile,
         uploadFiles,
