@@ -29,64 +29,66 @@ export const usePublisherStore = defineStore('publisher', () => {
         }
     }
 
-    // GET Fetch publisher by ID
+        // GET Fetch publisher by ID
     async function fetchPublisherById(id: number) {
         if (!currentPublisher.value || currentPublisher.value.id !== id) {
             const cachedPublisher = publishers.value.find(k => k.id === id);
             if (cachedPublisher) {
                 currentPublisher.value = cachedPublisher;
             } else {
-                const { data, error } = await useFetch(`/api/publishers/${id}`);
-                if (error.value) {
-                    console.error(`Error fetching publisher with id ${id}:`, error.value);
+                try {
+                    const data = await $fetch<Publisher>(`/api/publishers/${id}`);
+                    currentPublisher.value = data as Publisher;
+                } catch (err) {
+                    console.error(`Error fetching publisher with id ${id}:`, err);
                     return;
                 }
-                currentPublisher.value = data.value as Publisher;
             }
         }
     }
 
-    // POST Create new publisher
+        // POST Create new publisher
     async function createPublisher(payload: Partial<Publisher>) {
-        const { data, error } = await useFetch('/api/publishers', {
-            method: 'POST',
-            body: payload
-        });
-        if (error.value) {
-            console.error('Error creating publisher:', error.value);
+        try {
+            const newPublisher = await $fetch<Publisher>('/api/publishers', {
+                method: 'POST',
+                body: payload
+            });
+            publishers.value.push(newPublisher);
+            return newPublisher;
+        } catch (err) {
+            console.error('Error creating publisher:', err);
             return;
         }
-        const newPublisher = data.value as Publisher;
-        publishers.value.push(newPublisher);
-        return newPublisher;
     }
 
-    // PUT Update existing publisher
+        // PUT Update existing publisher
     async function updatePublisher(payload: Partial<Publisher>, id: number) {
-        const { data, error } = await useFetch(`/api/publishers/${id}`, {
-            method: 'PUT',
-            body: payload
-        });
-        if (error.value) {
-            console.error('Error updating publisher:', error.value);
+        try {
+            const updatedPublisher = await $fetch<Publisher>(`/api/publishers/${id}`, {
+                method: 'PUT',
+                body: payload
+            });
+            const index = publishers.value.findIndex(k => k.id === id);
+            if (index !== -1) publishers.value[index] = updatedPublisher;
+            if (currentPublisher.value?.id === id) currentPublisher.value = updatedPublisher;
+            return updatedPublisher;
+        } catch (err) {
+            console.error('Error updating publisher:', err);
             return;
         }
-        const updatedPublisher = data.value as Publisher;
-        const index = publishers.value.findIndex(k => k.id === id);
-        if (index !== -1) publishers.value[index] = updatedPublisher;
-        if (currentPublisher.value?.id === id) currentPublisher.value = updatedPublisher;
-        return updatedPublisher;
     }
 
-    // DELETE publisher
+        // DELETE publisher
     async function deletePublisher(id: number) {
-        const { error } = await useFetch(`/api/publishers/${id}`, { method: 'DELETE' })
-        if (error.value) {
-            console.error('Error deleting publisher:', error.value);
+        try {
+            await $fetch(`/api/publishers/${id}`, { method: 'DELETE' });
+            publishers.value = publishers.value.filter(k => k.id !== id);
+            if (currentPublisher.value?.id === id) currentPublisher.value = null;
+        } catch (err) {
+            console.error('Error deleting publisher:', err);
             return;
         }
-        publishers.value = publishers.value.filter(k => k.id !== id)
-        if (currentPublisher.value?.id === id) currentPublisher.value = null;
     }
 
     // Clear current publisher

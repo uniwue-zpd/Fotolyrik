@@ -66,19 +66,19 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
 
         // PUT Update existing publication medium
     async function updatePubMedium(payload: Partial<PubMediumDTO>, id: number) {
-        const { data, error } = await useFetch(`/api/publication_media/${id}`, {
-            method: 'PUT',
-            body: payload
-        });
-        if (error.value) {
-            console.error('Error updating publication medium:', error.value);
+        try {
+            const updatedPubMedium = await $fetch<PubMediumDTO>(`/api/publication_media/${id}`, {
+                method: 'PUT',
+                body: payload
+            });
+            const index = pub_media.value.findIndex(p => p.id === id);
+            if (index !== -1) pub_media.value[index] = updatedPubMedium;
+            if (current_pub_medium.value?.id === id) current_pub_medium.value = updatedPubMedium;
+            return updatedPubMedium;
+        } catch (err) {
+            console.error('Error updating publication medium:', err);
             return;
         }
-        const updatedPubMedium = data.value as PubMediumDTO;
-        const index = pub_media.value.findIndex(p => p.id === id);
-        if (index !== -1) pub_media.value[index] = updatedPubMedium;
-        if (current_pub_medium.value?.id === id) current_pub_medium.value = updatedPubMedium;
-        return updatedPubMedium;
     }
 
         // DELETE existing publication medium

@@ -27,7 +27,8 @@ public class GeneralSearchService {
                 new SearchSpec("SELECT id, title FROM photopoem WHERE LOWER(subtitle) LIKE :pattern", "photopoems"),
                 new SearchSpec("SELECT id, title FROM photopoem WHERE LOWER(alt_title) LIKE :pattern", "photopoems"),
                 new SearchSpec("SELECT id, name AS title FROM place WHERE LOWER(name) LIKE :pattern", "places"),
-                new SearchSpec("SELECT id, CONCAT(title, ' ', subtitle) FROM pub_medium WHERE LOWER(CONCAT(title, ' ', subtitle)) LIKE :pattern", "publication_media")
+                new SearchSpec("SELECT id, CONCAT(title, ' ', subtitle) FROM pub_medium WHERE LOWER(CONCAT(title, ' ', subtitle)) LIKE :pattern", "publication_media"),
+                new SearchSpec("SELECT id, value FROM keyword WHERE LOWER(value) LIKE :pattern", "keywords")
             )
             .flatMap(spec -> searchDatabase(spec.sql, pattern, spec.type).stream())
             .toList();

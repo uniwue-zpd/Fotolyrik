@@ -94,6 +94,7 @@ public class PhotopoemMapper {
         PhotopoemPreviewDTO photopoemPreviewDTO = new PhotopoemPreviewDTO();
         photopoemPreviewDTO.setId(photopoem.getId());
         photopoemPreviewDTO.setTitle(photopoem.getTitle());
+        photopoemPreviewDTO.setAltTitle(photopoem.getAltTitle());
         return photopoemPreviewDTO;
     }
 }

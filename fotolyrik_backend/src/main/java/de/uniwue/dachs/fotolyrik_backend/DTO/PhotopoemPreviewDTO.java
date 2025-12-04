@@ -8,4 +8,5 @@ import lombok.Setter;
 public class PhotopoemPreviewDTO {
     private Long id;
     private String title;
+    private String altTitle;
 }

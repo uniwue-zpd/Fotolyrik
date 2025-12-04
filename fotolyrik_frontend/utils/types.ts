@@ -44,6 +44,11 @@ export interface FullText extends Auditable {
     fullText: string | null;
 }
 
+export interface FullTextDTO extends Auditable {
+    photopoem: PhotoPoemPreviewDTO;
+    fullText: string;
+}
+
 export interface FullTextSearchResult {
     photopoemId: number;
     photopoemTitle: string;
@@ -132,6 +137,12 @@ export interface PhotoPoemDTO extends Auditable {
     copyrightStatusImage: CopyrightStatusDTO | null;
     copyrightStatusText: CopyrightStatusDTO | null;
     languages: LanguageDTO[] | [];
+}
+
+export interface PhotoPoemPreviewDTO {
+    id: number;
+    title: string | null;
+    altTitle: string | null;
 }
 
 export interface Place extends Auditable {

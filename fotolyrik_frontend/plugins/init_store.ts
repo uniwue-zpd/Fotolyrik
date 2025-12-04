@@ -15,7 +15,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     await photopoem_store.fetchPhotopoems();
     await place_store.fetchPlaces();
     await pub_media_store.fetchPubMedia();
-    await file_store.getFiles();
+    await file_store.fetchFiles();
     await language_store.fetchLanguages();
     await copyright_status_store.fetchCopyrightStatuses();
     await publisher_store.fetchPublishers();

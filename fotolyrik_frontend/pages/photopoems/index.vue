@@ -43,7 +43,7 @@ useHead(() => ({
               <InputText
                   v-model="filters['global'].value"
                   type="text"
-                  placeholder="Schlagwortsuche"
+                  placeholder="Felder durchsuchen"
               />
             </IconField>
           </div>
@@ -52,11 +52,15 @@ useHead(() => ({
           <template #body="{ data }">
             <div class="flex flex-row space-x-5 items-center">
               <NuxtLink
+                  v-if="data.title"
                   :to="`/photopoems/${data.id}`"
                   class="roboto-plain font-semibold"
               >
                 {{ data.title }}
               </NuxtLink>
+              <div v-else class="roboto-italic text-gray-500">
+                Unbenannt
+              </div>
               <AvatarGroup>
                 <div v-if="data.images.length > 0">
                   <Avatar
@@ -78,7 +82,20 @@ useHead(() => ({
             />
           </template>
         </Column>
-        <Column field="altTitle" header="Alternativtitel" class="roboto-plain"/>
+        <Column field="altTitle" header="Alternativtitel" class="roboto-plain">
+          <template #body="{ data }">
+            <NuxtLink
+                v-if="!data.title"
+                :to="`/photopoems/${data.id}`"
+                class="roboto-plain font-semibold"
+            >
+              {{ data.altTitle }}
+            </NuxtLink>
+            <div v-else class="roboto-plain">
+              {{ data.altTitle }}
+            </div>
+          </template>
+        </Column>
         <Column field="volume" header="Jahrgang" class="roboto-plain"/>
         <Column field="issue" header="Ausgabe" class="roboto-plain"/>
         <Column field="pageNumber" header="Seite(n)" class="roboto-plain"/>
