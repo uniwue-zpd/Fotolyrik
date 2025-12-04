@@ -25,7 +25,10 @@ const props = defineProps<{
         </div>
       </div>
       <p class="text-center text-sm font-bold outfit-headline text-[#063D79]">
-        {{ photopoem.title }}
+        <span v-if="photopoem.title">
+          {{ photopoem.title }}
+        </span>
+        <span v-else>{{ photopoem.altTitle }}</span>
       </p>
     </NuxtLink>
   </div>
