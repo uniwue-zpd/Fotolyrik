@@ -155,12 +155,11 @@ const responsiveOptions = ref([
       <div class="flex flex-col gap-2">
         <Carousel :value="topics" :numVisible="4" :numScroll="1" controls="true" indicator-type="disc" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
           <template #item="{ data }">
-            <NuxtLink
-                :to="`/keywords/${data.id}`"
-                class="flex flex-col items-center rounded-md m-2 p-3 bg-white shadow-md hover:scale-105 transition-transform duration-300"
-            >
-              <Icon name="i-material-symbols-bookmark-outline" class="w-full text-5xl md:text-7xl text-[#063D79]"/>
-              <p class="roboto-plain font-medium text-black">{{ data.value }}</p>
+            <NuxtLink :to="`/keywords/${data.id}`" class="flex flex-col items-center m-2">
+              <p class="roboto-plain font-medium text-[#063D79]">{{ data.value }}</p>
+              <div class="bg-white p-8">
+                <Icon name="i-material-symbols-bookmark-outline" class="w-full text-5xl md:text-7xl text-black"/>
+              </div>
             </NuxtLink>
           </template>
         </Carousel>
