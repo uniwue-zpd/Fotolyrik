@@ -1,8 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -13,43 +11,91 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Photopoem extends BaseEntity {
-    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "volume")
+    private String subtitle;
+
+    private String altTitle;
+
     private Long volume;
 
-    @Column(name = "issue")
     private Long issue;
 
-    @Column(name = "page_number")
-    private Long page_number;
+    private String pageNumber;
 
-    @Column(name = "publication_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-    private LocalDate publication_date;
+    private Long manifestPageNumber;
+
+    private Long pageCount;
+
+    private String publicationDate;
 
     @ManyToOne
     @JoinColumn(name = "pub_medium_id")
-    private PubMedium publication_medium;
+    private PubMedium publicationMedium;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private Person author;
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_authors",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id")
+    )
+    private Set<Person> authors = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "photographer_id")
-    private Person photographer;
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_photographers",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id")
+    )
+    private Set<Person> photographers = new HashSet<>();
 
-    @Column(name = "link")
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_other_contributors",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id")
+    )
+    private Set<Person> otherContributors = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_themes",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "keyword_id")
+    )
+    private Set<Keyword> themes = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_image_motifs",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "keyword_id")
+    )
+    private Set<Keyword> imageMotifs = new HashSet<>();
+
+    private String form;
+
     private String link;
 
-    @Column(name = "iiif_manifest")
-    private String iiif_manifest;
+    private String iiifManifest;
 
     @OneToMany
     @JoinColumn(name = "photopoem_id")
     private Set<File> images = new HashSet<>();
 
-    //TODO: Add other required fields
+    @ManyToOne
+    @JoinColumn(name = "copyrightstatus_image_id")
+    private CopyrightStatus copyrightStatusImage;
+
+    @ManyToOne
+    @JoinColumn(name = "copyrightstatus_text_id")
+    private CopyrightStatus copyrightStatusText;
+
+    @ManyToMany
+    @JoinTable(
+            name = "photopoem_languages",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    private Set<Language> languages = new HashSet<>();
 }

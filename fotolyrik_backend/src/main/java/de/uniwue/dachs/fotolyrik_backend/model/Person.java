@@ -1,40 +1,45 @@
 package de.uniwue.dachs.fotolyrik_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "person")
 @Getter
 @Setter
 public class Person extends BaseEntity {
-    @Column(name = "first_name")
-    private String first_name;
+    private String firstName;
 
-    @Column(name = "last_name")
-    private String last_name;
-
-    @Column(name = "pseudonym")
-    private String pseudonym;
-
-    @Column(name = "birth_year", length = 4)
-    private Integer birth_year;
-
-    @Column(name = "death_year", length = 4)
-    private Integer death_year;
-
-    @Column(name = "sex")
-    @Enumerated(EnumType.STRING)
-    private Sex sex;
+    private String lastName;
 
     @Transient
-    public String getFull_name() {
-        return (first_name != null ? first_name : "") + " " +
-                (last_name != null ? last_name : "");
+    public String getFullName() {
+        return (firstName != null ? firstName + " " : "") +
+                (lastName != null ? lastName : "");
     }
 
-    public enum Sex {
-        MALE, FEMALE
-    }
+    @ElementCollection(targetClass = String.class)
+    @CollectionTable(name = "person_pseudonymes", joinColumns = @JoinColumn(name = "person_id"))
+    private List<String> pseudonyms = new ArrayList<>();
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
+    private Integer birthYear;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
+    private Integer deathYear;
+
+    private String sex;
+
+    private String gndId;
+
+    private String notes;
+
+    @OneToOne
+    @JoinColumn(name = "file_id")
+    private File image;
 }

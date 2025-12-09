@@ -1,0 +1,134 @@
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import type { Place } from "~/utils/types";
+
+export const usePlaceStore = defineStore('place', () => {
+    // State
+    const places = ref<Place[]>([] as Place[]);
+    const current_place = ref<Place | null>(null);
+
+    // Getters
+    const isLoaded = computed(() => places.value.length > 0);
+
+    // Actions
+        // GET Fetch all places
+    async function fetchPlaces() {
+        if (!isLoaded.value) {
+            const { data, error } = await useFetch('/api/places');
+            if (error.value) {
+                console.error('Error fetching places:', error.value);
+                return;
+            }
+            places.value = data.value as Place[];
+        }
+    }
+
+        // GET Refetch all places
+    async function refreshPlacesData() {
+        try {
+            const data = await $fetch('/api/places');
+            places.value = data as Place[];
+        } catch (err) {
+            console.error('Unable to refetch the data', err);
+        }
+    }
+
+        // GET Fetch place by ID
+    async function fetchPlaceById(id: number) {
+        if (!current_place.value || current_place.value.id !== id) {
+            const cachedPlace = places.value.find(p => p.id === id);
+            if (cachedPlace) {
+                current_place.value = cachedPlace;
+            } else {
+                const { data, error } = await useFetch(`/api/places/${id}`);
+                if (error.value) {
+                    console.error(`Error fetching place with id ${id}:`, error.value);
+                    return;
+                }
+                current_place.value = data.value as Place;
+            }
+        }
+    }
+
+        // POST Create new place
+    async function createPlace(payload: Partial<Place>) {
+        const { data, error } = await useFetch('/api/places', {
+            method: 'POST',
+            body: payload
+        });
+        if (error.value) {
+            console.error('Error creating place:', error.value);
+            return;
+        }
+        const newPlace = data.value as Place;
+        places.value.push(newPlace);
+        return newPlace;
+    }
+
+        // PUT Update existing place
+    async function updatePlace(payload: Partial<Place>, id: number) {
+        const { data, error } = await useFetch(`/api/places/${id}`, {
+            method: 'PUT',
+            body: payload
+        });
+        if (error.value) {
+            console.error('Error updating place:', error.value);
+            return;
+        }
+        const updatedPlace = data.value as Place;
+        const index = places.value.findIndex(p => p.id === id);
+        if (index !== -1) places.value[index] = updatedPlace;
+        if (current_place.value?.id === id) current_place.value = updatedPlace;
+        return updatedPlace;
+    }
+
+        // DELETE existing place
+    async function deletePlace(id: number) {
+        const { error } = await useFetch(`/api/places/${id}`, { method: 'DELETE' })
+        if (error.value) {
+            console.error('Error deleting place:', error.value);
+            return;
+        }
+        places.value = places.value.filter(p => p.id !== id);
+        if (current_place.value?.id === id) current_place.value = null;
+    }
+
+        // Navigation left
+    function previousPlace() {
+        const current_index = places.value.findIndex(p => p.id === current_place.value?.id);
+        if (current_index !== -1 && current_index) {
+            return places.value[current_index - 1] as Place;
+        } else {
+            return null;
+        }
+    }
+
+        // Navigation right
+    function nextPlace() {
+        const current_index = places.value.findIndex(p => p.id === current_place.value?.id);
+        if (current_index !== -1 && current_index < places.value.length - 1) {
+            return places.value[current_index + 1] as Place;
+        } else {
+            return null;
+        }
+    }
+
+        // Clear current place
+    function clearPlace() {
+        current_place.value = null;
+    }
+
+    return {
+        places,
+        current_place,
+        fetchPlaces,
+        refreshPlacesData,
+        fetchPlaceById,
+        createPlace,
+        updatePlace,
+        deletePlace,
+        previousPlace,
+        nextPlace,
+        clearPlace
+    }
+})

@@ -1,0 +1,50 @@
+# Create the application.yml file with the following content
+# and fill out the placeholders with your secrets
+
+spring:
+  application:
+    name: fotolyrik_backend
+
+  servlet:
+    multipart:
+      max-file-size: 20MB  # Maximum size allowed per individual file
+      max-request-size: 500MB  # Maximum size allowed for the entire request (all files + form data)
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ #database_name
+    username: #db_user
+    password: #db_password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
+  mail:
+    host: #host
+    port: #port
+    username: #email_username
+    password: #email_password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  compression:
+    mime-types: application/json
+    min-response-size: 1024
+
+config:
+  files:
+    upload-dir: /uploads
+

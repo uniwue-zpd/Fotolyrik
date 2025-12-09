@@ -61,7 +61,7 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-3xl font-bold outfit-headline">Orte</h1>
+    <h1 class="text-3xl font-bold outfit-headline text-[#063D79]">Orte</h1>
     <div class="h-[500px] w-full mx-auto rounded-md" id="map"/>
   </div>
 </template>

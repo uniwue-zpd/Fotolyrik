@@ -11,7 +11,7 @@
 !**/src/main/**/target/
 !**/src/test/**/target/
 **/HELP.md
-**/src/main/resources/application.properties
+**/src/main/resources/application.yml
 
 # Frontend
 fotolyrik_frontend/node_modules/
@@ -21,7 +21,8 @@ fotolyrik_frontend/.output/
 fotolyrik_frontend/.cache/
 
 # Environment variables
-.env
+env-dev
+nginx/.htpasswd
 
 # OS
 .DS_Store

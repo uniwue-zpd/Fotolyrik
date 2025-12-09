@@ -1,55 +1,58 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
-import de.uniwue.dachs.fotolyrik_backend.repository.PlaceRepository;
+import de.uniwue.dachs.fotolyrik_backend.service.PlaceService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/places")
 public class PlaceController {
-    private final PlaceRepository placeRepository;
+    private final PlaceService placeService;
 
-    public PlaceController(PlaceRepository placeRepository) {
-        this.placeRepository = placeRepository;
+    public PlaceController(PlaceService placeService) {
+        this.placeService = placeService;
     }
 
     @GetMapping
-    public Iterable<Place> getAllPlaces() {
-        return placeRepository.findAll();
+    public ResponseEntity<List<Place>> getAllPlaces() {
+        List<Place> places = placeService.getAllPlaces();
+        return ResponseEntity.ok().body(places);
     }
 
     @GetMapping("/{id}")
-    public Place getPlaceById(@PathVariable Long id) {
-        return placeRepository.findById(id).orElse(null);
+    public ResponseEntity<Place> getPlaceById(@PathVariable Long id) {
+        return placeService.getPlaceById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public Place addPlace(@RequestBody Place place) {
-        return placeRepository.save(place);
+    public ResponseEntity<Place> createPlace(@RequestBody Place place) {
+        Place createdPlace = placeService.createPlace(place);
+        return ResponseEntity.status(201).body(createdPlace);
     }
 
     @PutMapping("/{id}")
-    public Place updatePlace(@PathVariable Long id, @RequestBody Place place) {
-        Place existingPlace = placeRepository.findById(id).orElse(null);
-        if (existingPlace == null) {
-            return null;
+    public ResponseEntity<Place> updatePlace(@PathVariable Long id, @RequestBody Place place) {
+        try {
+            Place updatedPlace = placeService.updatePlace(id, place);
+            return ResponseEntity.status(201).body(updatedPlace);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).build();
         }
-        existingPlace.setName(place.getName());
-        existingPlace.setDescription(place.getDescription());
-        existingPlace.setLatitude(place.getLatitude());
-        existingPlace.setLongitude(place.getLongitude());
-
-        return placeRepository.save(existingPlace);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePlace(@PathVariable Long id) {
-        if (placeRepository.existsById(id)) {
-            placeRepository.deleteById(id);
-            return ResponseEntity.ok("Place with id '" + id + "' deleted successfully");
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deletePlace(@PathVariable Long id) {
+        try {
+            placeService.deletePlace(id);
+            return ResponseEntity.status(204).build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).build();
         }
     }
 }

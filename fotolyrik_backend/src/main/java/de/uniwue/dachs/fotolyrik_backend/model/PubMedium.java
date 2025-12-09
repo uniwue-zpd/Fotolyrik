@@ -13,10 +13,9 @@ import java.util.Set;
 @Getter
 @Setter
 public class PubMedium extends BaseEntity {
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "subtitle")
     private String subtitle;
 
     @ManyToMany
@@ -25,30 +24,33 @@ public class PubMedium extends BaseEntity {
             joinColumns = @JoinColumn(name = "pub_medium_id"),
             inverseJoinColumns = @JoinColumn(name = "pub_place_id")
     )
-    private Set<Place> publication_places = new HashSet<>();
+    private Set<Place> publicationPlaces = new HashSet<>();
 
-    @Column(name = "publisher")
-    private String publisher;
+    @ManyToOne
+    @JoinColumn(name = "pub_medium_id")
+    private Publisher publisher;
 
-    @Column(name = "pub_rhytm")
-    @Enumerated(EnumType.STRING)
-    private PublicationRhytm pub_rhytm;
+    @ManyToMany
+    @JoinTable(
+            name = "pub_medium_rhythm",
+            joinColumns = @JoinColumn(name = "pub_medium_id"),
+            inverseJoinColumns = @JoinColumn(name = "pub_rhythm_id")
+    )
+    private Set<PublicationRhythm> pubRhytms = new HashSet<>();
 
-    @Column(name = "start_year")
+    private String editorialOffice;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private Year start_year;
+    private Year startYear;
 
-    @Column(name = "end_year")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private Year end_year;
+    private Year endYear;
 
-    @Column(name = "amount_volumes")
-    private Integer amount_volumes;
+    private Long amountVolumes;
 
-    @Column(name = "amount_issues")
-    private Integer amount_issues;
+    private Long amountIssues;
 
-    public enum PublicationRhytm {
-        M, HM, W, HW, DIVERS
-    }
+    private String zdbId;
+
+    private String notes;
 }
