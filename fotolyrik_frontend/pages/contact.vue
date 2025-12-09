@@ -43,41 +43,38 @@ const onFormSubmit = async (e: any) => {
   <div class="mb-2">
     <img src= "https://unsplash.it/1200/200" alt=""/>
   </div>
-  <div class="flex flex-col mx-auto w-[50%] gap-4">
+  <div class="flex flex-col mx-auto md:w-[80%] gap-4">
     <h1 class="text-2xl outfit-headline text-[#063D79] font-bold">Kontakt</h1>
     <p class="roboto-plain">
       Hier können Sie Ihre Nachricht an uns hinterlassen.
       Füllen Sie dafür bitte die unteren Felder aus
       und klicken Sie anschließend auf den Senden-Button.
     </p>
-    <Form 
-      v-slot="$form" 
-      :resolver 
-      @submit="onFormSubmit" 
+    <Form
+      v-slot="$form"
+      :resolver
+      @submit="onFormSubmit"
       class="flex flex-col gap-4"
     >
       <div class="flex flex-row gap-6 flex-wrap">
-        <!-- Appelation field -->
         <FormField v-slot="$field" name="appellation" class="flex flex-col gap-1 w-45">
           <label for="appellation" class="font-bold">Anrede</label>
-          <Select 
-            labelId="appellation" 
-            :options="appellation" 
-            optionLabel="label" 
-            optionValue="value" 
-            placeholder="Anrede" 
+          <Select
+            labelId="appellation"
+            :options="appellation"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Anrede"
             fluid
           />
           <Message v-if="$form.appellation?.invalid" severity="error" size="small" variant="simple">
             {{ $form.appellation.error.message }}
           </Message>
         </FormField>
-
-        <!-- Name field -->
         <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-1">
           <label for="name" class="font-bold">Name*</label>
-          <InputText 
-            id="name" 
+          <InputText
+            id="name"
             placeholder="Name"
             v-on:keydown.enter.prevent
             fluid
@@ -87,12 +84,10 @@ const onFormSubmit = async (e: any) => {
           </Message>
         </FormField>
       </div>
-
-      <!-- Email field -->
       <FormField v-slot="$field" name="email" class="flex flex-col gap-1">
         <label for="email" class="font-bold">Email*</label>
-        <InputText 
-          id="email" 
+        <InputText
+          id="email"
           placeholder="Email"
           v-on:keydown.enter.prevent
           fluid
@@ -101,13 +96,11 @@ const onFormSubmit = async (e: any) => {
           {{ $form.email.error.message }}
         </Message>
       </FormField>
-
-      <!-- Subject field -->
       <FormField v-slot="$field" name="subject" class="flex flex-col gap-1">
         <label for="subject" class="font-bold">Betreff*</label>
-        <InputText 
-          id="subject" 
-          placeholder="Ihr Betreff"
+        <InputText
+          id="subject"
+          placeholder="Betreff"
           v-on:keydown.enter.prevent
           fluid
         />
@@ -115,14 +108,12 @@ const onFormSubmit = async (e: any) => {
           {{ $form.subject.error.message }}
         </Message>
       </FormField>
-
-      <!-- Message field -->
       <FormField v-slot="$field" name="message" class="flex flex-col gap-1">
         <label for="message" class="font-bold">Nachricht*</label>
-        <Textarea 
-          id="message" 
+        <Textarea
+          id="message"
           placeholder="Ihre Nachricht"
-          rows="3"
+          rows="5"
           autoResize
           fluid
         />
@@ -130,16 +121,14 @@ const onFormSubmit = async (e: any) => {
           {{ $form.message.error.message }}
         </Message>
       </FormField>
-
-      <!-- Dataprotection checkbox -->
       <FormField v-slot="$field" name="data_protection" class="flex flex-col gap-1">
         <div class="flex gap-4 mt-2">
           <Checkbox inputId="dp" name="dataProtection" class="pt-0.5" binary/>
           <label for="dp">
-            Ich habe die 
+            Ich habe die
             <NuxtLink to="/data-protection" class="text-[#004188] font-bold">
               Datenschutzerklärung
-            </NuxtLink> 
+            </NuxtLink>
             zur Kenntnis genommen.*
           </label>
         </div>
@@ -147,16 +136,58 @@ const onFormSubmit = async (e: any) => {
           {{ $form.dataProtection.error.message }}
         </Message>
       </FormField>
-      
-      <!-- Submit button -->
-      <Button type="submit" severity="primary" label="Senden"/>
-
+      <Button type="submit" severity="primary" label="Senden" class="w-[20%]"/>
       <!--
       <Fieldset legend="Form States" class="h-80 overflow-auto">
         <pre class="whitespace-pre-wrap">{{ $form }}</pre>
       </Fieldset>
       -->
     </Form>
+    <h1 class="text-2xl outfit-headline text-[#063D79] font-bold">Ansprechpartner</h1>
+    <div class="flex flex-col">
+      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-[#F1F2F2] p-5">
+        <img src="https://picsum.photos/200" alt="placeholder-image"/>
+        <div class="flex flex-col gap-4">
+          <div class="averia-layout italic text-2xl text-[#063D79]">Max Mustermann</div>
+          <div class="roboto-plain break-words">
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+            sed diam nonumy eirmod tempor invidunt ut labore et dolore
+            magna aliquyam erat, sed diam voluptua. At vero eos et
+            accusam et justo duo dolores et ea rebum. Stet clita kasd
+            gubergren, no sea takimata sanctus est Lorem ipsum dolor
+            sit amet.
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start p-5">
+        <div class="flex flex-col gap-4">
+          <div class="averia-layout italic text-2xl text-[#063D79]">Max Mustermann</div>
+          <div class="roboto-plain break-words">
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+            sed diam nonumy eirmod tempor invidunt ut labore et dolore
+            magna aliquyam erat, sed diam voluptua. At vero eos et
+            accusam et justo duo dolores et ea rebum. Stet clita kasd
+            gubergren, no sea takimata sanctus est Lorem ipsum dolor
+            sit amet.
+          </div>
+        </div>
+        <img src="https://picsum.photos/200" alt="placeholder-image"/>
+      </div>
+      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-[#F1F2F2] p-5">
+        <img src="https://picsum.photos/200" alt="placeholder-image"/>
+        <div class="flex flex-col gap-4">
+          <div class="averia-layout italic text-2xl text-[#063D79]">Max Mustermann</div>
+          <div class="roboto-plain break-words">
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+            sed diam nonumy eirmod tempor invidunt ut labore et dolore
+            magna aliquyam erat, sed diam voluptua. At vero eos et
+            accusam et justo duo dolores et ea rebum. Stet clita kasd
+            gubergren, no sea takimata sanctus est Lorem ipsum dolor
+            sit amet.
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
