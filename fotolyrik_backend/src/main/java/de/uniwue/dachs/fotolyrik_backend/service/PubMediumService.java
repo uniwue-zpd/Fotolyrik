@@ -3,12 +3,14 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
+import de.uniwue.dachs.fotolyrik_backend.specification.PubMediumSpecification;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PubMediumMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublicationRhythmMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +52,94 @@ public class PubMediumService {
      */
     public Optional<PubMediumDTO> getPubMediumById(Long id) {
         return pubMediumRepository.findById(id).map(pubMediumMapper::PubMediumToPubMediumDTO);
+    }
+
+    /**
+     * Filters {@link PubMedium} entities based on the provided criteria.
+     * @param title refers to the title of the publication medium
+     * @param subtitle refers to the subtitle of the publication medium
+     * @param pubPlaceId refers to the ID of the publication place
+     * @param pubPlace refers to the name of the publication place
+     * @param publisherId refers to the ID of the publisher
+     * @param publisher refers to the name of the publisher
+     * @param pubRhythmId refers to the ID of the publication rhythm
+     * @param pubRhythm refers to the name of the publication rhythm
+     * @param editorialOffice refers to the editorial office of the publication medium
+     * @param startYear refers to the start year of the publication medium
+     * @param endYear refers to the end year of the publication medium
+     * @param amountVolumes refers to the amount of volumes of the publication medium
+     * @param amountIssues refers to the amount of issues of the publication medium
+     * @param zdbId refers to the ZDB ID of the publication medium
+     * @return a {@link List} of filtered {@link PubMediumDTO} objects
+     */
+    public List<PubMediumDTO> filterPubMedia(
+            String title,
+            String subtitle,
+            Long pubPlaceId,
+            String pubPlace,
+            Long publisherId,
+            String publisher,
+            Long pubRhythmId,
+            String pubRhythm,
+            String editorialOffice,
+            Long startYear,
+            Long endYear,
+            Long amountVolumes,
+            Long amountIssues,
+            String zdbId
+
+    ) {
+        Specification<PubMedium> spec = Specification.where(null);
+
+        if (title != null && !title.isEmpty()) {
+            spec = spec.and(PubMediumSpecification.hasTitle(title));
+        }
+        if (subtitle != null && !subtitle.isEmpty()) {
+            spec = spec.and(PubMediumSpecification.hasSubtitle(subtitle));
+        }
+        if (pubPlaceId != null) {
+            spec = spec.and(PubMediumSpecification.hasPubPlaceId(pubPlaceId));
+        }
+        if (pubPlace != null && !pubPlace.isEmpty()) {
+            spec = spec.and(PubMediumSpecification.hasPubPlace(pubPlace));
+        }
+        if (publisherId != null) {
+            spec = spec.and(PubMediumSpecification.hasPublisherId(publisherId));
+        }
+        if (publisher != null && !publisher.isEmpty()) {
+            spec = spec.and(PubMediumSpecification.hasPublisher(publisher));
+        }
+        if (pubRhythmId != null) {
+            spec = spec.and(PubMediumSpecification.hasPubRhythmId(pubRhythmId));
+        }
+        if (pubRhythm != null && !pubRhythm.isEmpty()) {
+            spec = spec.and(PubMediumSpecification.hasPubRhythm(pubRhythm));
+        }
+        if (editorialOffice != null && !editorialOffice.isEmpty()) {
+            spec = spec.and(PubMediumSpecification.hasEditorialOffice(editorialOffice));
+        }
+        if (startYear != null) {
+            spec = spec.and(PubMediumSpecification.hasStartYear(startYear));
+        }
+        if (endYear != null) {
+            spec = spec.and(PubMediumSpecification.hasEndYear(endYear));
+        }
+        if (amountVolumes != null) {
+            spec = spec.and(PubMediumSpecification.hasAmountVolumes(amountVolumes));
+        }
+        if (amountIssues != null) {
+            spec = spec.and(PubMediumSpecification.hasAmountIssues(amountIssues));
+        }
+        if (zdbId != null && !zdbId.isEmpty()) {
+            spec = spec.and(PubMediumSpecification.hasZdbId(zdbId));
+        }
+
+        List<PubMedium> result = pubMediumRepository.findAll(spec);
+        return result.stream()
+                .map(pubMediumMapper::PubMediumToPubMediumDTO)
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(PubMediumDTO::getTitle))
+                .toList();
     }
 
     /**

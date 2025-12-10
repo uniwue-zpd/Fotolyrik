@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/publication_media")
@@ -28,6 +30,40 @@ public class PubMediumController {
         return pubMediumService.getPubMediumById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<PubMediumDTO>> filterPubMedia(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String subtitle,
+            @RequestParam(required = false, value = "pubplace-id") Long pubPlaceId,
+            @RequestParam(required = false, value = "pubplace") String pubPlace,
+            @RequestParam(required = false, value = "publisher-id") Long publisherId,
+            @RequestParam(required = false) String publisher,
+            @RequestParam(required = false, value = "publication-rhythm-id") Long publicationRhythmId,
+            @RequestParam(required = false, value = "publication-rhythm") String publicationRhythm,
+            @RequestParam(required = false, value = "editorial-office") String editorialOffice,
+            @RequestParam(required = false, value = "start-year") Long startYear,
+            @RequestParam(required = false, value = "end-year") Long endYear,
+            @RequestParam(required = false, value = "amount-volumes") Long amountVolumes,
+            @RequestParam(required = false, value = "amount-issues") Long amountIssues,
+            @RequestParam(required = false, value = "zdb-id") String zdbId
+    ) {
+        List<Object> paramsCount = Stream.<Object>of(
+                title, subtitle, pubPlaceId, pubPlace, publisherId, publisher,
+                publicationRhythmId, publicationRhythm, editorialOffice, startYear,
+                endYear, amountVolumes, amountIssues, zdbId
+        )
+                .filter(Objects::nonNull)
+                .toList();
+        if (paramsCount.isEmpty()) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(
+                pubMediumService.filterPubMedia(
+                        title, subtitle, pubPlaceId, pubPlace, publisherId, publisher,
+                        publicationRhythmId, publicationRhythm, editorialOffice, startYear,
+                        endYear, amountVolumes, amountIssues, zdbId
+                )
+        );
     }
 
     @PostMapping

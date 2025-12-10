@@ -49,6 +49,17 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         }
     }
 
+        // GET publication media by filter params
+    async function filterPubMedia(params: Record<string, any>): Promise<PubMediumDTO[]> {
+        try {
+            const data = await $fetch('/api/publication_media/filter', { query: params });
+            return data as PubMediumDTO[];
+        } catch (err) {
+            console.error('Error fetching publication media by params:', err);
+            return [];
+        }
+    }
+
         // POST Create new publication medium
     async function createPubMedium(payload: Partial<PubMediumDTO>) {
         const { data, error } = await useFetch('/api/publication_media', {
