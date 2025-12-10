@@ -65,7 +65,7 @@ const responsiveOptions = ref([
       </h1>
     </div>
     <div class="intro px-6 md:px-15">
-      <div class="md:columns-2 space-y-8 gap-x-10 text-justify">
+      <div class="md:columns-2 space-y-2< text-justify">
         <div>
           1 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
           tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
@@ -96,10 +96,10 @@ const responsiveOptions = ref([
           At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
           sanctus est Lorem ipsum dolor sit amet.
         </div>
-        <div class="justify-self-center pt-5 order-last">
-        <NuxtLink to="/project" class="text-xl border-2 border-solid border-spacing-2 border-[#F04E30] text-[#F04E30] averia-layout px-6 py-2">
-        das Projekt
-      </NuxtLink>
+        <div class="flex flex-row justify-center">
+          <NuxtLink to="/project" class="averia-layout font-semibold text-sm text-[#F04E30] border-2 border-[#F04E30]  p-1">
+            Das Projekt
+          </NuxtLink>
         </div>
       </div>
     </div>
@@ -123,7 +123,7 @@ const responsiveOptions = ref([
       </div>
     </div>
     <div class="title py-8 pt-7 px-6 md:px-15">
-      <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Fotolyrik in Zahlen</h2>
+      <h2 class="text-3xl averia-layout italic font-bold text-[#063D79]">Fotolyrik in Zahlen</h2>
     </div>
     <div class="analytics px-6 md:px-15">
       <div class="flex flex-col gap-2">
@@ -149,7 +149,7 @@ const responsiveOptions = ref([
       </div>
     </div>
     <div class="title pt-10 md:pt-6 pb-4 px-6 md:px-15">
-      <h2 class="text-3xl outfit-headline font-bold text-[#063D79]">Themen</h2>
+      <h2 class="text-3xl averia-layout italic font-bold text-[#063D79]">Themen</h2>
     </div>
     <div class="topics bg-[#F1F2F2] p-5">
       <div class="flex flex-col gap-2">
