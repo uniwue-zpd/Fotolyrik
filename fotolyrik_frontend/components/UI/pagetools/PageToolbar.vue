@@ -4,7 +4,7 @@ import { useConfirm } from 'primevue/useconfirm';
 
 const props = defineProps<{
   id: number;
-  entity_type: 'person' | 'photopoem' | 'pub_medium' | 'keyword';
+  entity_type: 'person' | 'place' | 'photopoem' | 'pub_medium' | 'keyword';
   page_url: string;
 }>();
 
@@ -12,6 +12,7 @@ const person_store = usePersonStore();
 const photopoem_store = usePhotopoemStore();
 const pub_medium_store = usePubMediumStore();
 const keyword_store = useKeywordStore();
+const place_store = usePlaceStore();
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -38,6 +39,8 @@ const items = ref([
           try {
             if (props.entity_type === 'person') {
               await person_store.deletePerson(props.id);
+            } else if (props.entity_type === 'place') {
+              await place_store.deletePlace(props.id);
             } else if (props.entity_type === 'photopoem') {
               await photopoem_store.deletePhotopoem(props.id);
             } else if (props.entity_type === 'pub_medium') {

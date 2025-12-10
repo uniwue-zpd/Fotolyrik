@@ -134,6 +134,7 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         fetchPubMedia,
         refreshPubMediaData,
         fetchPubMediumById,
+        filterPubMedia,
         createPubMedium,
         updatePubMedium,
         deletePubMedium,
