@@ -51,13 +51,14 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
     }
 
         // Fetch photopoem by author's ID
-    async function fetchPhotopoemsBy(params: Record<string, any>): Promise<PhotoPoemDTO[]> {
-        const { data, error } = await useFetch('/api/photopoems/filter', { query: params });
-        if (error.value) {
-            console.error('Error fetching photopoems by params:', error.value);
+    async function filterPhotopoems(params: Record<string, any>): Promise<PhotoPoemDTO[]> {
+        try {
+            const data = await $fetch('/api/photopoems/filter', { query: params });
+            return data as PhotoPoemDTO[];
+        } catch (err) {
+            console.error('Error fetching photopoems by params:', err);
             return [];
         }
-        return data.value as PhotoPoemDTO[] || [];
     }
 
         // Create new photopoem
@@ -143,7 +144,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         fetchPhotopoems,
         refreshPhotopoemsData,
         fetchPhtotopoemById,
-        fetchPhotopoemsBy,
+        filterPhotopoems,
         createPhotopoem,
         updatePhotopoem,
         deletePhotopoem,

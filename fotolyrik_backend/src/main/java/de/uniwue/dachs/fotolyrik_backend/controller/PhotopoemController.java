@@ -8,8 +8,9 @@ import de.uniwue.dachs.fotolyrik_backend.service.PhotopoemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/photopoems")
@@ -43,18 +44,51 @@ public class PhotopoemController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<PhotopoemDTO>> filterByAuthorPhotographer(
-            @RequestParam (value = "author_id", required = false) Long author_id,
-            @RequestParam (value = "photographer_id", required = false) Long photographer_id) {
-        List<PhotopoemDTO> photopoems = new ArrayList<>();
-        if (author_id != null && photographer_id != null) {
-            photopoems = photopoemService.getPhotopoemsByAuthorIdAndPhotographerId(author_id, photographer_id);
-        } else if (author_id != null) {
-            photopoems = photopoemService.getPhotopoemsByAuthorId(author_id);
-        } else if (photographer_id != null) {
-            photopoems = photopoemService.getPhotopoemsByPhotographerId(photographer_id);
-        }
-        return ResponseEntity.ok(photopoems);
+    public ResponseEntity<List<PhotopoemDTO>> searchPhotopoems(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String subtitle,
+            @RequestParam(required = false, value = "alt-title") String altTitle,
+            @RequestParam(required = false) Long volume,
+            @RequestParam(required = false) Long issue,
+            @RequestParam(required = false, value = "publication-date") String publicationDate,
+            @RequestParam(required = false, value = "pubmedium-id") Long pubMediumId,
+            @RequestParam(required = false, value = "pubmedium") String pubMedium,
+            @RequestParam(required = false, value = "author-id") Long authorId,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false, value = "photographer-id") Long photographerId,
+            @RequestParam(required = false) String photographer,
+            @RequestParam(required = false, value = "other-contributor-id") Long otherContributorId,
+            @RequestParam(required = false, value = "other-contributor") String otherContributor,
+            @RequestParam(required = false, value = "theme-id") Long themeId,
+            @RequestParam(required = false) String theme,
+            @RequestParam(required = false, value = "image-motif-id") Long imageMotifId,
+            @RequestParam(required = false, value = "image-motif") String imageMotif,
+            @RequestParam(required = false, value = "copyright-status-image-id") Long copyrightStatusImageId,
+            @RequestParam(required = false, value = "copyright-status-image") String copyrightStatusImage,
+            @RequestParam(required = false, value = "copyright-status-text-id") Long copyrightStatusTextId,
+            @RequestParam(required = false, value = "copyright-status-text") String copyrightStatusText,
+            @RequestParam(required = false, value = "language-id") Long languageId,
+            @RequestParam(required = false) String language
+    ) {
+        List<Object> paramsCount = Stream.<Object>of(
+                title, subtitle, altTitle, volume, issue, publicationDate,
+                pubMediumId, pubMedium, authorId, author, photographerId,
+                photographer, otherContributorId, otherContributor, themeId,
+                theme, imageMotifId, imageMotif, copyrightStatusImageId,
+                copyrightStatusImage, copyrightStatusTextId, copyrightStatusText, languageId, language
+        )
+                .filter(Objects::nonNull)
+                .toList();
+        if (paramsCount.isEmpty()) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(
+                photopoemService.filterPhotopoems(
+                        title, subtitle, altTitle, volume, issue, publicationDate,
+                        pubMediumId, pubMedium, authorId, author, photographerId,
+                        photographer, otherContributorId, otherContributor, themeId,
+                        theme, imageMotifId, imageMotif, copyrightStatusImageId, copyrightStatusImage,
+                        copyrightStatusTextId, copyrightStatusText, languageId, language
+                )
+        );
     }
 
     @PostMapping

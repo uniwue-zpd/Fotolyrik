@@ -1,20 +1,25 @@
 <script setup lang="ts">
 
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
+import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 
 const router = useRoute();
-const store = usePubMediumStore();
+const pubmedium_store = usePubMediumStore();
+const photopoem_store = usePhotopoemStore();
 
 const pub_medium_id = Number(router.params.id);
 const pub_medium_item = ref<PubMediumDTO | null>(null);
 const previous_pub_medium = ref<PubMediumDTO | null>(null);
 const next_pub_medium = ref<PubMediumDTO | null>(null);
+const pub_medium_photopoems = ref<PhotoPoemDTO[] | []>([]);
 
 onMounted(async () => {
-  await store.fetchPubMediumById(pub_medium_id);
-  pub_medium_item.value = store.current_pub_medium;
-  previous_pub_medium.value = store.previousPubMedium();
-  next_pub_medium.value = store.nextPubMedium();
+  await pubmedium_store.fetchPubMediumById(pub_medium_id);
+  pub_medium_item.value = pubmedium_store.current_pub_medium;
+  previous_pub_medium.value = pubmedium_store.previousPubMedium();
+  next_pub_medium.value = pubmedium_store.nextPubMedium();
+  pub_medium_photopoems.value = await photopoem_store.filterPhotopoems({'pubmedium-id': pub_medium_id});
+  console.log(pub_medium_photopoems.value);
 });
 </script>
 
@@ -55,7 +60,7 @@ onMounted(async () => {
             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ pub_medium_item.publisher.name }}</td>
           </tr>
           <tr v-if="pub_medium_item.pubRhythms.length > 0">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsrhythen</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsrhythmen</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">
               <ul class="list-disc list-inside">
                 <li v-for="rhythm in pub_medium_item.pubRhythms">
@@ -80,6 +85,18 @@ onMounted(async () => {
           </tr>
           </tbody>
         </table>
+      </template>
+      <template #footer>
+        <div v-if="pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+          <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotogedichte in "{{ pub_medium_item?.title }}"</h2>
+          <div class="overflow-y-auto pb-2">
+            <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
+              <div v-for="photopoem in pub_medium_photopoems" :key="photopoem.id">
+                <PhotopoemPreview :photopoem="photopoem"/>
+              </div>
+            </div>
+          </div>
+        </div>
       </template>
     </Card>
     <div class="flex flex-row justify-between">
