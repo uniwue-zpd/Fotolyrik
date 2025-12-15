@@ -8,6 +8,7 @@ const router = useRoute();
 const photopoem_id = Number(router.params.id);
 const store = usePhotopoemStore();
 const photopoem_item = computed(() => store.currentPhotopoem);
+const file_store = useFileStore();
 
 // TIFY Viewer setup
 const has_iiif_manifest = computed(() => Boolean(photopoem_item.value?.iiifManifest));
@@ -50,15 +51,27 @@ onMounted(async () => {
       </template>
       <template #content>
         <div class="flex flex-col gap-2">
-          <div v-show="has_iiif_manifest" id="tify-photopoem" class="h-[500px]"/>
           <div v-if="photopoem_item.images.length > 0">
-            <img
-                :src="`/api/uploads/${photopoem_item?.images[0].filename}`"
-                alt="Photopoem scan"
-                class="max-h-[250px] select-none pointer-events-none"
-                oncontextmenu="return false;"
-            >
+            <Image preview>
+              <template #image>
+                <img
+                    :src="file_store.getImagePreview(`/api/uploads/${photopoem_item.images[0].filename}`)"
+                    alt="Fotogedicht Bildvorschau"
+                    class="max-h-[300px] w-auto"
+                    oncontextmenu="return false;"
+                />
+              </template>
+              <template #preview>
+                <img
+                    :src="file_store.getImagePreview(`/api/uploads/${photopoem_item.images[0].filename}`)"
+                    alt="Fotogedicht Bildvorschau"
+                    class="max-h-[80vh] select-none pointer-events-none"
+                    oncontextmenu="return false;"
+                />
+              </template>
+            </Image>
           </div>
+          <div v-show="has_iiif_manifest" id="tify-photopoem" class="h-[500px]"/>
           <Accordion value="0">
             <AccordionPanel value="0">
               <AccordionHeader>

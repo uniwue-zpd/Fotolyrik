@@ -461,7 +461,7 @@ const onFormSubmit = async (e: any) => {
               <template #option="slotProps">
                 <div class="flex flex-row space-x-2">
                   <Avatar
-                      :image="`/api/uploads/${slotProps.option.filename}`"
+                      :image="fileStore.getImagePreview(`/api/uploads/${slotProps.option.filename}`)"
                       shape="square"
                       oncontextmenu="return false;"
                   />

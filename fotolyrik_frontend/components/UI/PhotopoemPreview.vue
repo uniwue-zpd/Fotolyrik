@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const file_store = useFileStore();
+
 const props = defineProps<{
   photopoem: PhotoPoemDTO
 }>();
@@ -10,7 +12,7 @@ const props = defineProps<{
       <div class="flex justify-center">
         <div v-if="photopoem.images.length > 0">
           <Avatar
-              :image="`/api/uploads/${photopoem.images[0].filename}`"
+              :image="file_store.getImagePreview(`/api/uploads/${photopoem.images[0].filename}`)"
               shape="square"
               size="xlarge"
               oncontextmenu="return false;"

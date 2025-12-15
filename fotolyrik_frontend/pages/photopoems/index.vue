@@ -4,6 +4,7 @@ import { FilterMatchMode } from "@primevue/core";
 import { usePhotopoemStore } from "~/stores/PhotopoemStore";
 
 const store = usePhotopoemStore();
+const file_store = useFileStore();
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -66,7 +67,7 @@ useHead(() => ({
                   <Avatar
                       v-for="image in data.images"
                       :key="image.id"
-                      :image="`/api/uploads/${image.filename}`"
+                      :image="file_store.getImagePreview(`/api/uploads/${image.filename}`)"
                       shape="circle"
                       oncontextmenu="return false;"
                   />
