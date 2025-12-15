@@ -4,15 +4,21 @@ const file_store = useFileStore();
 const props = defineProps<{
   photopoem: PhotoPoemDTO
 }>();
+
+const photopoem = props.photopoem;
+const path = `/photopoems/${ photopoem.id }`;
+const image_path = photopoem.images.length > 0
+  ? file_store.getImagePreview(`/api/uploads/${ photopoem.images[0].filename }`)
+  : null;
 </script>
 
 <template>
   <div class="rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-2 h-full bg-[#F1F2F2]">
-    <NuxtLink :to="`/photopoems/${photopoem.id}`" class="flex flex-col gap-2">
+    <NuxtLink :to="path" class="flex flex-col gap-2">
       <div class="flex justify-center">
-        <div v-if="photopoem.images.length > 0">
+        <div v-if="image_path" class="rounded-md">
           <Avatar
-              :image="file_store.getImagePreview(`/api/uploads/${photopoem.images[0].filename}`)"
+              :image="image_path"
               shape="square"
               size="xlarge"
               oncontextmenu="return false;"
@@ -27,10 +33,12 @@ const props = defineProps<{
         </div>
       </div>
       <p class="text-center text-sm font-bold outfit-headline text-[#063D79]">
-        <span v-if="photopoem.title">
+        <span v-if="photopoem.title" class="line-clamp-1" :title="photopoem.title">
           {{ photopoem.title }}
         </span>
-        <span v-else>{{ photopoem.altTitle }}</span>
+        <span v-else class="line-clamp-1" :title="photopoem.altTitle ?? undefined">
+          {{ photopoem.altTitle }}
+        </span>
       </p>
     </NuxtLink>
   </div>

@@ -158,6 +158,7 @@ public class PubMediumService {
      * @param updatedPubMediumDTO {@link PubMediumDTO} projection
      * @return {@link PubMediumDTO} of the updated {@link PubMedium} object
      */
+    @Transactional
     public PubMediumDTO updatePubMedium(Long id, PubMediumDTO updatedPubMediumDTO) {
         return pubMediumRepository.findById(id)
                 .map(entity -> {
