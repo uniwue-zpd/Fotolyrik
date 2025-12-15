@@ -41,47 +41,53 @@ onMounted(async () => {
         <table class="min-w-full divide-y divide-gray-200 roboto-plain">
           <tbody v-if="pub_medium_item" class="bg-white divide-y divide-gray-200">
           <tr v-if="pub_medium_item.subtitle">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Titel-Zusatz</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ pub_medium_item.subtitle }}</td>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Titel-Zusatz</td>
+            <td class="px-6 py-4 whitespace-nowrap ">{{ pub_medium_item.subtitle }}</td>
           </tr>
           <tr v-if="pub_medium_item.publicationPlaces.length > 0">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsorte</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">
-              <span v-for="(place, index) in pub_medium_item.publicationPlaces" :key="place.id">
-                <NuxtLink :to="`/places/${ place.id }`" class="roboto-plain">
-                  {{ place.name }}
-                </NuxtLink>
-                <span v-if="index < pub_medium_item.publicationPlaces.length -1">, </span>
-              </span>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Publikationsorte</td>
+            <td class="px-6 py-4 whitespace-nowrap ">
+              <div class="flex flex-wrap gap-3.5">
+                <span v-for="place in pub_medium_item.publicationPlaces" :key="place.id">
+                  <NuxtLink
+                      :to="`/places/${place.id}`"
+                      class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-semibold"
+                  >
+                    {{ place.name }}
+                  </NuxtLink>
+                </span>
+              </div>
             </td>
           </tr>
           <tr v-if="pub_medium_item.publisher">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Herausgeber</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ pub_medium_item.publisher.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Herausgeber</td>
+            <td class="px-6 py-4 whitespace-nowrap ">{{ pub_medium_item.publisher.name }}</td>
           </tr>
           <tr v-if="pub_medium_item.pubRhythms.length > 0">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsrhythmen</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">
-              <ul class="list-disc list-inside">
-                <li v-for="rhythm in pub_medium_item.pubRhythms">
-                  {{ rhythm.value }}
-                </li>
-              </ul>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Publikationsrhythmen</td>
+            <td class="px-6 py-4 whitespace-nowrap ">
+              <div class="flex flex-wrap gap-3.5">
+                <div v-for="rhythm in pub_medium_item.pubRhythms" :key="rhythm.id">
+                  <div class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-semibold">
+                    {{ rhythm.value }}
+                  </div>
+                </div>
+              </div>
             </td>
           </tr>
           <tr v-if="pub_medium_item.startYear && pub_medium_item.endYear">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Publikationsjahre</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Publikationsjahre</td>
+            <td class="px-6 py-4 whitespace-nowrap ">
               {{ pub_medium_item.startYear }} - {{ pub_medium_item.endYear }}
             </td>
           </tr>
           <tr v-if="pub_medium_item.amountVolumes">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Jahrgänge</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ pub_medium_item.amountVolumes }}</td>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Jahrgänge</td>
+            <td class="px-6 py-4 whitespace-nowrap ">{{ pub_medium_item.amountVolumes }}</td>
           </tr>
           <tr v-if="pub_medium_item.amountIssues">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Ausgaben</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ pub_medium_item.amountIssues }}</td>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Ausgaben</td>
+            <td class="px-6 py-4 whitespace-nowrap ">{{ pub_medium_item.amountIssues }}</td>
           </tr>
           </tbody>
         </table>
