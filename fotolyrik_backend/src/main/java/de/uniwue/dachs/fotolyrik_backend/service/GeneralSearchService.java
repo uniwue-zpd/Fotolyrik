@@ -21,8 +21,15 @@ public class GeneralSearchService {
         String pattern = "%" + query.toLowerCase() + "%";
 
         return Stream.of(
-                new SearchSpec("SELECT id, CONCAT(first_name, ' ', last_name) AS title FROM person WHERE LOWER(CONCAT(first_name, ' ', last_name)) LIKE :pattern", "persons"),
-                new SearchSpec("SELECT p.id, CONCAT(p.first_name, ' ', p.last_name) AS title FROM person p JOIN person_pseudonymes pp ON p.id = pp.person_id WHERE LOWER(pp.pseudonyms) LIKE :pattern", "persons"),
+                new SearchSpec(
+                        "SELECT p.id, " +
+                                "COALESCE(NULLIF(CONCAT(p.first_name, ' ', p.last_name), ' '), pp.pseudonyms) AS title " +
+                                "FROM person p " +
+                                "LEFT JOIN person_pseudonymes pp ON p.id = pp.person_id " +
+                                "WHERE LOWER(CONCAT(p.first_name, ' ', p.last_name)) LIKE :pattern " +
+                                "OR LOWER(pp.pseudonyms) LIKE :pattern",
+                        "persons"
+                ),
                 new SearchSpec("SELECT id, title FROM photopoem WHERE LOWER(title) LIKE :pattern", "photopoems"),
                 new SearchSpec("SELECT id, title FROM photopoem WHERE LOWER(subtitle) LIKE :pattern", "photopoems"),
                 new SearchSpec("SELECT id, title FROM photopoem WHERE LOWER(alt_title) LIKE :pattern", "photopoems"),
