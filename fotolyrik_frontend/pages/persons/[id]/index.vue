@@ -31,7 +31,7 @@ onMounted(async () => {
     <Card>
       <template #title>
         <div class="flex flex-row justify-between">
-          <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ person_item?.fullName }}</h1>
+          <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ person_item?.fullName || person_item?.pseudonyms[0] }}</h1>
           <PageToolbar
               v-if="person_item"
               :id="person_item.id"
@@ -57,21 +57,21 @@ onMounted(async () => {
         <table class="min-w-full divide-y divide-gray-200 roboto-plain">
           <tbody v-if="person_item" class="bg-white divide-y divide-gray-200">
           <tr v-if="person_item.birthYear">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Geburtsjahr</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.birthYear }}</td>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Geburtsjahr</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ person_item.birthYear }}</td>
           </tr>
           <tr v-if="person_item.deathYear">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Sterbejahr</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.deathYear }}</td>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Sterbejahr</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ person_item.deathYear }}</td>
           </tr>
           <tr v-if="person_item.pseudonyms.length > 0">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Pseudonyme</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ person_item.pseudonyms.join(', ') }}</td>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Pseudonyme</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ person_item.pseudonyms.join(', ') }}</td>
           </tr>
           <tr v-if="person_item.sex">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Geschlecht</td>
-            <td v-if="person_item.sex === 'männlich'" class="px-6 py-4 whitespace-nowrap text-sm">Männlich</td>
-            <td v-else class="px-6 py-4 whitespace-nowrap text-sm">Weiblich</td>
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Geschlecht</td>
+            <td v-if="person_item.sex === 'männlich'" class="px-6 py-4 whitespace-nowrap">Männlich</td>
+            <td v-else class="px-6 py-4 whitespace-nowrap">Weiblich</td>
           </tr>
           </tbody>
         </table>

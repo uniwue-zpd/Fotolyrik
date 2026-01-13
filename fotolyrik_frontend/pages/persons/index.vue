@@ -4,6 +4,12 @@ import { FilterMatchMode } from "@primevue/core";
 import { usePersonStore } from "~/stores/PersonStore";
 
 const store = usePersonStore();
+const persons = computed(() => {
+  return store.persons.map(person => ({
+    ...person,
+    pseudonyms: person.pseudonyms.sort().join(', ')
+  }));
+})
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -20,8 +26,8 @@ const filters = ref({
       <DataTable
           v-model:filters="filters"
           filter-display="row"
-          :global-filter-fields="['fullName', 'sex', 'birthYear', 'deathYear']"
-          :value="store.persons"
+          :global-filter-fields="['fullName', 'sex', 'birthYear', 'deathYear', 'pseudonyms']"
+          :value="persons"
           stripedRows paginator :rows="10"
       >
         <template #header>
@@ -39,7 +45,7 @@ const filters = ref({
               <InputText
                   v-model="filters['global'].value"
                   type="text"
-                  placeholder="Schlagwortsuche"
+                  placeholder="Tabelle durchsuchen"
               />
             </IconField>
           </div>
@@ -50,7 +56,7 @@ const filters = ref({
                 :to="`/persons/${slotProps.data.id}`"
                 class="roboto-plain font-semibold"
             >
-              {{ slotProps.data.fullName }}
+              {{ slotProps.data.fullName || `Person mit ID: ${slotProps.data.id}` }}
             </NuxtLink>
           </template>
           <template #filter="{ filterModel, filterCallback }">
@@ -61,12 +67,12 @@ const filters = ref({
             />
           </template>
         </Column>
-        <Column field="firstName" header="Vorname" class="roboto-plain"/>
-        <Column field="lastName" header="Nachname" class="roboto-plain"/>
-        <Column field="pseudonyms" header="Pseudonyme" class="roboto-plain">
+        <Column field="firstName" header="Vorname" class="roboto-plain" :sortable="true"/>
+        <Column field="lastName" header="Nachname" class="roboto-plain" :sortable="true"/>
+        <Column field="pseudonyms" header="Pseudonyme" class="roboto-plain" :sortable="true">
           <template #body="slotProps">
-            <div v-if="slotProps.data.pseudonyms.length > 0">
-              <div class="roboto-plain">{{ slotProps.data.pseudonyms.join(', ') }}</div>
+            <div v-if="slotProps.data.pseudonyms">
+              <div class="roboto-plain">{{ slotProps.data.pseudonyms }}</div>
             </div>
             <div v-else>
               <span class="roboto-italic text-gray-500">Unbekannt</span>

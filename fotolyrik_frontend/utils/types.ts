@@ -87,6 +87,7 @@ export interface Person extends Auditable {
 export interface PersonDTO {
     id: number;
     fullName: string | null;
+    pseudonyms: [string] | [];
 }
 
 export interface PhotoPoem extends Auditable {

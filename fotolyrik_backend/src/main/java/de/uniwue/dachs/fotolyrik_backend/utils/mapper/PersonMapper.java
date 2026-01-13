@@ -42,6 +42,7 @@ public class PersonMapper {
         PersonDTO personDTO = new PersonDTO();
         personDTO.setId(person.getId());
         personDTO.setFullName(person.getFullName());
+        personDTO.setPseudonyms(person.getPseudonyms());
         return  personDTO;
     }
 

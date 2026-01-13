@@ -125,7 +125,7 @@ onMounted(async () => {
                                   :to="`/persons/${person.id}`"
                                   class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium"
                               >
-                                {{ person.fullName }}
+                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
                             </span>
                         </div>
@@ -140,7 +140,7 @@ onMounted(async () => {
                                   :to="`/persons/${person.id}`"
                                   class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium"
                               >
-                                {{ person.fullName }}
+                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
                             </span>
                         </div>
@@ -155,7 +155,7 @@ onMounted(async () => {
                                   :to="`/persons/${person.id}`"
                                   class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium"
                               >
-                                {{ person.fullName }}
+                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
                             </span>
                         </div>
@@ -198,9 +198,9 @@ onMounted(async () => {
                     <tr v-if="photopoem_item.link">
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Link</td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <a :href="photopoem_item.link" target="_blank" class="text-[#063D79]">
-                          {{ photopoem_item.link }}
-                        </a>
+                        <NuxtLink :to="photopoem_item.link" target="_blank" :title="photopoem_item.link">
+                          <Icon name="i-material-symbols-open-in-new-rounded" class="text-2xl text-[#063D79]" :title="photopoem_item.link"/>
+                        </NuxtLink>
                       </td>
                     </tr>
                     <tr v-if="photopoem_item.languages.length > 0">
