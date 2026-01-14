@@ -24,10 +24,10 @@ const resolver = ref(
       firstName: z.string().optional().nullable(),
       lastName: z.string().optional().nullable(),
       sex: z.string().optional().nullable(),
-      birthYear: z.number().optional(),
-      deathYear: z.number().optional(),
+      birthYear: z.number().optional().nullable(),
+      deathYear: z.number().optional().nullable(),
       pseudonyms: z.array(z.string()).optional(),
-      gndId: z.string().optional(),
+      gndId: z.string().optional().nullable(),
     }).refine(data => {
       if (typeof data.birthYear === "number" && typeof data.deathYear === "number") return data.birthYear <= data.deathYear
       return true

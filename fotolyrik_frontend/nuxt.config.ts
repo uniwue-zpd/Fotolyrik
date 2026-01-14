@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import Aura from '@primevue/themes/aura';
+import Aura from '@primeuix/themes/aura';
 import tailwindcss from "@tailwindcss/vite";
-import { definePreset } from "@primevue/themes";
+import { definePreset } from "@primeuix/themes";
 
 const UniwuePreset = definePreset(Aura, {
     semantic: {

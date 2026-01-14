@@ -17,9 +17,8 @@
     "@iconify-json/material-symbols": "^1.2.47",
     "@nuxt/icon": "^1.15.0",
     "@pinia/nuxt": "^0.10.1",
-    "@primevue/forms": "^4.3.7",
-    "@primevue/nuxt-module": "^4.3.1",
-    "@primevue/themes": "^4.3.1",
+    "@primeuix/themes": "^2.0.2",
+    "@primevue/forms": "^4.5.4",
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.8.4",
     "chart.js": "^4.5.0",
@@ -28,10 +27,14 @@
     "nuxt": "^3.15.4",
     "pinia": "^3.0.4",
     "primeicons": "^7.0.0",
+    "primevue": "^4.5.4",
     "tailwindcss": "^4.1.11",
     "tify": "^0.32.0",
     "vue": "latest",
     "vue-router": "latest",
     "zod": "^4.1.1"
+  },
+  "devDependencies": {
+    "@primevue/nuxt-module": "^4.5.4"
   }
 }
