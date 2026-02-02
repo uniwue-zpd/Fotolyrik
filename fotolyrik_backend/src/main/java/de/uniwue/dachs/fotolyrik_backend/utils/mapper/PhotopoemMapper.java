@@ -15,8 +15,9 @@ public class PhotopoemMapper {
     private final PhotopoemRepository photopoemRepository;
     private final LanguageMapper languageMapper;
     private final CopyrightStatusMapper copyrightStatusMapper;
+    private final PublicationDateMapper publicationDateMapper;
 
-    public PhotopoemMapper(PersonMapper personMapper, PubMediumMapper pubMediumMapper, KeywordMapper keywordMapper, FileMapper fileMapper, PhotopoemRepository photopoemRepository, LanguageMapper languageMapper, CopyrightStatusMapper copyrightStatusMapper) {
+    public PhotopoemMapper(PersonMapper personMapper, PubMediumMapper pubMediumMapper, KeywordMapper keywordMapper, FileMapper fileMapper, PhotopoemRepository photopoemRepository, LanguageMapper languageMapper, CopyrightStatusMapper copyrightStatusMapper,PublicationDateMapper publicationDateMapper) {
         this.personMapper = personMapper;
         this.pubMediumMapper = pubMediumMapper;
         this.keywordMapper = keywordMapper;
@@ -24,6 +25,7 @@ public class PhotopoemMapper {
         this.photopoemRepository = photopoemRepository;
         this.languageMapper = languageMapper;
         this.copyrightStatusMapper = copyrightStatusMapper;
+        this.publicationDateMapper = publicationDateMapper;
     }
 
     public Photopoem PhotopoemDTOToPhotopoem(PhotopoemDTO photopoemDTO) {
@@ -64,7 +66,7 @@ public class PhotopoemMapper {
         photopoemDTO.setPageNumber(photopoem.getPageNumber());
         photopoemDTO.setManifestPageNumber(photopoem.getManifestPageNumber());
         photopoemDTO.setPageCount(photopoem.getPageCount());
-        photopoemDTO.setPublicationDate(photopoem.getPublicationDate());
+        photopoemDTO.setPublicationDate(publicationDateMapper.DateToDateWithoutDashes(photopoem.getPublicationDate()));
         photopoemDTO.setPublicationMedium(pubMediumMapper.PubMediumToPubMediumPreviewDTO(photopoem.getPublicationMedium()));
         photopoemDTO.setAuthors(personMapper.PersonsToPersonDTOs(photopoem.getAuthors()));
         photopoemDTO.setPhotographers(personMapper.PersonsToPersonDTOs(photopoem.getPhotographers()));
