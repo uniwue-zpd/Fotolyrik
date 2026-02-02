@@ -117,7 +117,7 @@ onMounted(async () => {
                       </td>
                     </tr>
                     <tr v-if="photopoem_item.authors.length > 0">
-                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Author:innen</td>
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Autor:innen</td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">
                             <span v-for="person in photopoem_item.authors" :key="person.id">
