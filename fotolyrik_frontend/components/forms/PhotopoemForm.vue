@@ -200,7 +200,7 @@ const onFormSubmit = async (e: any) => {
             </IconField>
           </FormField>
           <FormField v-slot="$field" name="pageCount" class="flex flex-col gap-1 w-full">
-            <label for="pageCount" class="font-bold">Seitenzahl</label>
+            <label for="pageCount" class="font-bold">Umfang</label>
             <IconField>
               <InputIcon class="pi pi-pen-to-square" />
               <InputNumber
