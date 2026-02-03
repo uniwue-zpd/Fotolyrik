@@ -53,7 +53,7 @@ function copy_to_clipboard(copy_item: string) {
         </div>
       </div>
     </div>
-    <div class="bg-[#F1F2F2]">
+    <div class="bg-accent">
       <div class="flex flex-row max-w-[1140px] justify-between px-3 py-1 mx-auto">
         <div class="flex flex-row space-x-2">
           <div>&copy;</div>

@@ -87,11 +87,11 @@ onMounted(async () => {
     <template #footer>
       <Divider/>
       <div class="flex flex-col text-base">
-        <div v-if="keyword_item?.createdDate" class="flex flex-row space-x-2 text-black roboto-plain">
+        <div v-if="keyword_item?.createdDate" class="flex flex-row space-x-2 roboto-plain">
           <p class="font-semibold">Erstellt am:</p>
           <p>{{ new Date(keyword_item.createdDate).toLocaleDateString() }}</p>
         </div>
-        <div v-if="keyword_item?.lastModifiedDate" class="flex flex-row space-x-2 text-black roboto-plain">
+        <div v-if="keyword_item?.lastModifiedDate" class="flex flex-row space-x-2 roboto-plain">
           <p class="font-semibold">Zuletzt geändert am:</p>
           <p>{{ new Date(keyword_item.lastModifiedDate).toLocaleDateString() }}</p>
         </div>

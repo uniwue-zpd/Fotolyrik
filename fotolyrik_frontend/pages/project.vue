@@ -43,7 +43,7 @@ const events = ref([
           </span>
           </template>
           <template #content="slotProps">
-            <div class="flex flex-col gap-2 bg-[#F1F2F2] rounded-md shadow-md p-2">
+            <div class="flex flex-col gap-2 bg-accent rounded-md shadow-md p-2">
               <div class="text-lg outfit-headline font-semibold">{{ slotProps.item.date }}</div>
               <div class="text-sm roboto-plain">
                 {{ slotProps.item.text }}
@@ -54,7 +54,7 @@ const events = ref([
       </div>
       <div class="flex flex-col gap-4">
         <h2 class="text-2xl outfit-headline font-bold text-[#063D79] px-5 md:px-15">Forschungsbeiträge</h2>
-        <div class="bg-[#F1F2F2]">
+        <div class="bg-accent">
           <div class="flex flex-col gap-2 py-5 px-5 md:px-15">
             <h2 class="text-xl averia-layout font-bold italic text-[#063D79]">Artikelübersicht</h2>
             <ul class="list-disc list-inside robot-plain">
@@ -71,7 +71,7 @@ const events = ref([
       </div>
       <div class="flex flex-col gap-4">
         <h2 class="text-2xl outfit-headline font-bold text-[#063D79] px-5 md:px-15">Kooperationspartner</h2>
-        <div class="bg-[#F1F2F2]">
+        <div class="bg-accent">
           <div class="grid grid-cols-3 md:grid-cols-5 gap-4 justify-items-center px-5 md:px-15 py-5">
             <div class="w-[100px] h-[100px] bg-[#063D79]"/>
             <div class="w-[100px] h-[100px] bg-[#063D79]"/>

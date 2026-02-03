@@ -145,7 +145,7 @@ const onFormSubmit = async (e: any) => {
     </Form>
     <h1 class="text-2xl outfit-headline text-[#063D79] font-bold">Ansprechpartner</h1>
     <div class="flex flex-col">
-      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-[#F1F2F2] p-5">
+      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-accent p-5">
         <img src="https://picsum.photos/200" alt="placeholder-image"/>
         <div class="flex flex-col gap-4">
           <div class="averia-layout italic text-2xl text-[#063D79]">Max Mustermann</div>
@@ -173,7 +173,7 @@ const onFormSubmit = async (e: any) => {
         </div>
         <img src="https://picsum.photos/200" alt="placeholder-image"/>
       </div>
-      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-[#F1F2F2] p-5">
+      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-accent p-5">
         <img src="https://picsum.photos/200" alt="placeholder-image"/>
         <div class="flex flex-col gap-4">
           <div class="averia-layout italic text-2xl text-[#063D79]">Max Mustermann</div>

@@ -29,8 +29,10 @@ const setChartData = () => {
   };
 };
 const setChartOptions = () => {
-  const textColor = 'black';
-  const textColorSecondary = 'black';
+  // ODO problem: this does not react if user changes the theme
+  const darkModeTextColor = ()=>{return window.matchMedia('(prefers-color-scheme: dark)').matches? 'white':'black'};
+  const textColor = darkModeTextColor();
+  const textColorSecondary = darkModeTextColor();
 
   return {
     indexAxis: 'y',

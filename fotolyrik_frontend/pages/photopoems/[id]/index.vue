@@ -80,7 +80,7 @@ onMounted(async () => {
               <AccordionContent>
                 <div class="flex flex-col gap-2 rounded-lg shadow-lg p-3 overflow-x-auto">
                   <table class="min-w-full divide-y divide-gray-200 roboto-plain">
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="divide-y divide-gray-200">
                     <tr v-if="photopoem_item.subtitle">
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Untertitel</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.subtitle }}</td>
@@ -110,7 +110,7 @@ onMounted(async () => {
                       <td class="px-6 py-4 whitespace-nowrap">
                         <NuxtLink
                             :to="`/publication_media/${photopoem_item.publicationMedium.id}`"
-                            class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium"
+                            class="p-1.5 bg-accent rounded-md shadow-sm hover:shadow-md font-medium"
                         >
                           {{ photopoem_item.publicationMedium.title }}
                         </NuxtLink>
@@ -123,7 +123,7 @@ onMounted(async () => {
                             <span v-for="person in photopoem_item.authors" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
@@ -138,7 +138,7 @@ onMounted(async () => {
                             <span v-for="person in photopoem_item.photographers" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
@@ -153,7 +153,7 @@ onMounted(async () => {
                             <span v-for="person in photopoem_item.otherContributors" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
@@ -168,7 +168,7 @@ onMounted(async () => {
                             <span v-for="keyword in photopoem_item.themes" :key="keyword.id">
                               <NuxtLink
                                   :to="`/keywords/${keyword.id}`"
-                                  class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ keyword.value }}
                               </NuxtLink>
@@ -183,7 +183,7 @@ onMounted(async () => {
                             <span v-for="keyword in photopoem_item.imageMotifs" :key="keyword.id">
                               <NuxtLink
                                   :to="`/keywords/${keyword.id}`"
-                                  class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ keyword.value }}
                               </NuxtLink>
@@ -208,7 +208,7 @@ onMounted(async () => {
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">
                           <div v-for="language in photopoem_item.languages">
-                            <div class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-medium">
+                            <div class="p-1.5 bg-accent rounded-md shadow-sm hover:shadow-md font-medium">
                               {{ language.name }}
                             </div>
                           </div>
@@ -227,11 +227,11 @@ onMounted(async () => {
                   </table>
                   <Divider/>
                   <div class="flex flex-col text-base">
-                    <div v-if="photopoem_item?.createdDate" class="flex flex-row space-x-2 text-black roboto-plain">
+                    <div v-if="photopoem_item?.createdDate" class="flex flex-row space-x-2 roboto-plain">
                       <p class="font-semibold">Erstellt am:</p>
                       <p>{{ new Date(photopoem_item.createdDate).toLocaleDateString() }}</p>
                     </div>
-                    <div v-if="photopoem_item?.lastModifiedDate" class="flex flex-row space-x-2 text-black roboto-plain">
+                    <div v-if="photopoem_item?.lastModifiedDate" class="flex flex-row space-x-2 roboto-plain">
                       <p class="font-semibold">Zuletzt geändert am:</p>
                       <p>{{ new Date(photopoem_item.lastModifiedDate).toLocaleDateString() }}</p>
                     </div>

@@ -13,7 +13,7 @@ const image_path = photopoem.images.length > 0
 </script>
 
 <template>
-  <div class="rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-2 h-full bg-[#F1F2F2]">
+  <div class="rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-2 h-full bg-accent">
     <NuxtLink :to="path" class="flex flex-col gap-2">
       <div class="flex justify-center">
         <div v-if="image_path" class="rounded-md">

@@ -20,6 +20,12 @@ layer(base);
     border-color: var(--color-gray-200, currentcolor);
   }
 }
+@layer utilities{
+    .bg-accent {
+        /* @apply bg-[#F1F2F2] dark:bg-black; */
+        @apply bg-[#F1F2F2] dark:bg-[#302f35];
+    }
+}
 
 #__nuxt {
     display: flex;

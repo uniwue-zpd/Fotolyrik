@@ -50,7 +50,7 @@ const responsiveOptions = ref([
 
 <template>
   <div class="flex flex-col gap-5">
-    <div class="carousel bg-[#F1F2F2] md:p-5">
+    <div class="carousel bg-accent md:p-5">
       <Carousel :value="images" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
         <template #item="{ data }">
           <div class="p-4">
@@ -106,13 +106,13 @@ const responsiveOptions = ref([
     <div class="py-8 px-6 md:px-15">
       <h1 class="text-3xl outfit-headline font-bold text-[#063D79]">Sammlung</h1>
     </div>
-    <div class="collection bg-[#F1F2F2]">
+    <div class="collection bg-accent">
       <div class="flex flex-col gap-2 px-6 md:px-15 py-10 md:py-14">
         <div class="pb-3">
           <h2 class="text-3xl averia-layout italic text-[#063D79]">Highlight</h2>
         </div>
         <div class="flex flex-col md:flex-row md:space-x-5">
-          <div class="md:basis-1/4 bg-white font-bold">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+          <div class="md:basis-1/4 font-bold">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
             tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
             accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
             Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr</div>
@@ -151,14 +151,14 @@ const responsiveOptions = ref([
     <div class="title pt-10 md:pt-6 pb-4 px-6 md:px-15">
       <h2 class="text-3xl averia-layout italic font-bold text-[#063D79]">Themen</h2>
     </div>
-    <div class="topics bg-[#F1F2F2] p-5">
+    <div class="topics bg-accent p-5">
       <div class="flex flex-col gap-2">
         <Carousel :value="topics" :numVisible="4" :numScroll="1" controls="true" indicator-type="disc" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
           <template #item="{ data }">
             <NuxtLink :to="`/keywords/${data.id}`" class="flex flex-col items-center m-2">
               <p class="roboto-plain font-medium text-[#063D79]">{{ data.value }}</p>
-              <div class="bg-white p-8">
-                <Icon name="i-material-symbols-bookmark-outline" class="w-full text-5xl md:text-7xl text-black"/>
+              <div class="p-8">
+                <Icon name="i-material-symbols-bookmark-outline" class="w-full text-5xl md:text-7xl"/>
               </div>
             </NuxtLink>
           </template>
