@@ -29,7 +29,7 @@ const setChartData = () => {
   };
 };
 const setChartOptions = () => {
-  // ODO problem: this does not react if user changes the theme
+  // TODO problem: this does not react if user changes the theme
   const darkModeTextColor = ()=>{return window.matchMedia('(prefers-color-scheme: dark)').matches? 'white':'black'};
   const textColor = darkModeTextColor();
   const textColorSecondary = darkModeTextColor();
