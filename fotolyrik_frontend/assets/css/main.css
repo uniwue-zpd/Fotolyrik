@@ -22,7 +22,6 @@ layer(base);
 }
 @layer utilities{
     .bg-accent {
-        /* @apply bg-[#F1F2F2] dark:bg-black; */
         @apply bg-[#F1F2F2] dark:bg-[#302f35];
     }
 }
