@@ -36,7 +36,10 @@ export default defineNuxtConfig({
   primevue: {
     options: {
       theme: {
-        preset: UniwuePreset
+        preset: UniwuePreset,
+        options: {
+            darkModeSelector: '.dark',
+        }
       }
     },
     autoImport: true
@@ -53,4 +56,10 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  colorMode: {
+    preference: 'system',
+    fallback: 'light',
+    storage: 'localStorage',
+    storageKey: 'nuxt-color-mode'
+  }
 })

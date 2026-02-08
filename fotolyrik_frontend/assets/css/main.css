@@ -24,12 +24,11 @@ layer(base);
         --background-accent: #F1F2F2;
     }
 
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --primary-blue: #136ac6;
-            --background-accent: #302f35;
-        }
+    :root.dark{
+        --primary-blue: #136ac6;
+        --background-accent: #302f35;
     }
+
 }
 @theme {
     --color-primary-blue: var(--primary-blue);

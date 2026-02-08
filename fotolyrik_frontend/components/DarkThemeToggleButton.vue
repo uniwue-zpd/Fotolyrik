@@ -2,18 +2,21 @@
 import { ref, computed } from 'vue';
 const colorMode = useColorMode();
 
-const states = [
-    {icon: 'pi-moon', value: 'dark' },
-  {icon: 'pi-sun', value: 'light'},
-  {icon: 'pi-desktop', value: 'system'},
-];
-// Initialize index based on current preference so the icon is right on page load
-const currentIndex = ref(states.findIndex(s => s.value === colorMode.preference) || 0);
+const states = {
+  dark : {icon: 'pi-moon', next: 'light'},
+  light: {icon: 'pi-sun', next: 'system'},
+  system:{icon: 'pi-desktop', next: 'dark'},
+} as const;
+const currentIndex = ref("system" as keyof typeof states);
+onMounted(()=>{
+  console.log(colorMode.unknown)
+  currentIndex.value = colorMode.value as keyof typeof states;
+});
 const currentIcon = computed(() => `pi ${states[currentIndex.value].icon}`);
 const toggle = () => {
-  currentIndex.value = (currentIndex.value + 1) % states.length;
+  currentIndex.value = states[currentIndex.value].next;
 
-  colorMode.preference =states[currentIndex.value].value;
+  colorMode.preference = currentIndex.value;
 };
 </script>
 
