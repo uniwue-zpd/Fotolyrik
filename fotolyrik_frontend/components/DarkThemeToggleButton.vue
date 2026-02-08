@@ -8,10 +8,18 @@ const states = {
   system:{icon: 'pi-desktop', next: 'dark'},
 } as const;
 const currentIndex = ref("system" as keyof typeof states);
-onMounted(()=>{
-  console.log(colorMode.unknown)
-  currentIndex.value = colorMode.value as keyof typeof states;
-});
+
+// wait for color mode not to be unknown
+const stopWatching = watch(
+    () => colorMode.unknown,
+    (isUnknown) => {
+      if (!isUnknown) {
+        currentIndex.value = colorMode.preference as keyof typeof states;
+        stopWatching()
+      }
+    },
+    { immediate: true }
+)
 const currentIcon = computed(() => `pi ${states[currentIndex.value].icon}`);
 const toggle = () => {
   currentIndex.value = states[currentIndex.value].next;
