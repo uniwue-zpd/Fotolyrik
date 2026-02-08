@@ -68,7 +68,7 @@ watch(query, (val) => {
   </button>
   <Dialog v-model:visible="visible" modal :dismissableMask="true" position="top" class="min-w-[30%] p-2" @hide="clearResults">
     <template #header>
-      <h2 class="text-xl font-bold outfit-headline text-[#063D79]">Suchen</h2>
+      <h2 class="text-xl font-bold outfit-headline text-primary-blue">Suchen</h2>
     </template>
     <div class="flex flex-col gap-4">
       <input

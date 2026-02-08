@@ -67,7 +67,7 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-3xl font-bold outfit-headline text-[#063D79]">Orte</h1>
+    <h1 class="text-3xl font-bold outfit-headline text-primary-blue">Orte</h1>
     <div class="h-[500px] w-full mx-auto rounded-md" id="map"/>
     <DataTable
       :value="places"
@@ -82,7 +82,7 @@ onMounted(async () => {
           <div class="p-2 border border-solid rounded-md hover:shadow-md">
             <NuxtLink to="/places/create" class="flex items-center">
               <i class="pi pi-pen-to-square mr-2"/>
-              <div class="text-[#063D79] roboto-plain">Neu anlegen</div>
+              <div class="text-primary-blue roboto-plain">Neu anlegen</div>
             </NuxtLink>
           </div>
           <IconField>

@@ -34,7 +34,7 @@ onMounted(async () => {
     <template #title>
       <div class="flex flex-col">
         <div class="flex flex-row justify-between">
-          <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ keyword_item?.value }}</h1>
+          <h1 class="text-3xl font-bold text-primary-blue outfit-headline">{{ keyword_item?.value }}</h1>
           <PageToolbar
               v-if="keyword_item"
               :id="keyword_item.id"
@@ -62,7 +62,7 @@ onMounted(async () => {
       <Divider/>
       <div class="flex flex-col gap-2">
         <div v-if="is_theme.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-          <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Thematik von</h2>
+          <h2 class="text-xl font-bold text-primary-blue outfit-headline">Thematik von</h2>
           <div class="overflow-y-auto pb-2">
             <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
               <div v-for="photopoem in is_theme" :key="photopoem.id">
@@ -73,7 +73,7 @@ onMounted(async () => {
         </div>
         <Divider/>
         <div v-if="is_image_motif.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-          <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Bildmotiv von</h2>
+          <h2 class="text-xl font-bold text-primary-blue outfit-headline">Bildmotiv von</h2>
           <div class="overflow-y-auto pb-2">
             <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
               <div v-for="photopoem in is_image_motif" :key="photopoem.id">

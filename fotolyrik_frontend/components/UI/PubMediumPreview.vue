@@ -14,7 +14,7 @@ const props = defineProps<{
             size="xlarge"
         />
       </div>
-      <p class="text-center text-sm font-bold outfit-headline text-[#063D79]">
+      <p class="text-center text-sm font-bold outfit-headline text-primary-blue">
         {{ pubmedium.title }}
       </p>
     </NuxtLink>

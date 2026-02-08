@@ -13,7 +13,7 @@ const image_path = photopoem.images.length > 0
 </script>
 
 <template>
-  <div class="rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-2 h-full bg-accent">
+  <div class="rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-2 h-full bg-background-accent">
     <NuxtLink :to="path" class="flex flex-col gap-2">
       <div class="flex justify-center">
         <div v-if="image_path" class="rounded-md">
@@ -32,7 +32,7 @@ const image_path = photopoem.images.length > 0
           />
         </div>
       </div>
-      <p class="text-center text-sm font-bold outfit-headline text-[#063D79]">
+      <p class="text-center text-sm font-bold outfit-headline text-primary-blue">
         <span v-if="photopoem.title" class="line-clamp-1" :title="photopoem.title">
           {{ photopoem.title }}
         </span>

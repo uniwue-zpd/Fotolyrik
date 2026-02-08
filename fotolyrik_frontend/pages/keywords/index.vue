@@ -20,7 +20,7 @@ const filters = ref({
 
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-2xl outfit-headline text-[#063D79] font-bold">Schlagwörter</h1>
+    <h1 class="text-2xl outfit-headline text-primary-blue font-bold">Schlagwörter</h1>
     <p class="roboto-plain">
       Eine Übersicht aller Schlagwörter in der Datenbank. Klicken Sie auf ein Schlagwort, um Details anzuzeigen oder zu bearbeiten.
     </p>
@@ -48,7 +48,7 @@ const filters = ref({
                 <div class="p-2 border border-solid rounded-md hover:shadow-md">
                   <NuxtLink to="/keywords/create" class="flex items-center">
                     <i class="pi pi-pen-to-square mr-2"/>
-                    <div class="text-[#063D79] roboto-plain">Neu anlegen</div>
+                    <div class="text-primary-blue roboto-plain">Neu anlegen</div>
                   </NuxtLink>
                 </div>
                 <IconField>
