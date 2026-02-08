@@ -25,6 +25,7 @@ const toggle = (event: any) => op.value.toggle(event)
             </div>
           </Popover>
         </div>
+        <DarkThemeToggleButton></DarkThemeToggleButton>
       </div>
     </div>
   </header>
