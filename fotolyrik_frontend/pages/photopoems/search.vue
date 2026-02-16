@@ -21,7 +21,7 @@ const submit = async (formData: { query: string}) => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-3xl text-primary-blue outfit-headline font-bold">Volltextsuche</h1>
+    <h1 class="text-3xl text-primary outfit-headline font-bold">Volltextsuche</h1>
     <p class="roboto-plain">Geben Sie bitte den Suchbegriff ein, um Fotogedichte zu finden</p>
     <FormKit
         type="form"
@@ -47,7 +47,7 @@ const submit = async (formData: { query: string}) => {
     </FormKit>
     <Card v-show="submitted">
       <template #title>
-        <h2 class="text-2xl outfit-headline font-bold text-primary-blue">Suchergebnisse</h2>
+        <h2 class="text-2xl outfit-headline font-bold text-primary">Suchergebnisse</h2>
       </template>
       <template #content>
         <div v-if="query_result_status === 'success'">
@@ -60,7 +60,7 @@ const submit = async (formData: { query: string}) => {
                     <div class="roboto-plain">{{ index + 1 }}</div>
                     <NuxtLink
                         :to="`/photopoems/${ result.photopoemId }`"
-                        class="outfit-headline font-semibold text-primary-blue"
+                        class="outfit-headline font-semibold text-primary"
                     >
                       {{ result.photopoemTitle }}
                     </NuxtLink>

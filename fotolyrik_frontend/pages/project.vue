@@ -16,7 +16,7 @@ const events = ref([
     <img src= "https://unsplash.it/1200/200" alt="Placeholder image"/>
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-4 px-5 md:px-15">
-        <h1 class="text-3xl text-primary-blue outfit-headline font-bold">Fotolyrik in illustrierten Zeitschriften zwischen 1895 und 1945</h1>
+        <h1 class="text-3xl text-primary outfit-headline font-bold">Fotolyrik in illustrierten Zeitschriften zwischen 1895 und 1945</h1>
         <div class="columns-2">
           <div class="roboto-plain text-justify mb-2">
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
@@ -35,15 +35,15 @@ const events = ref([
         </div>
       </div>
       <div class="flex flex-col gap-4 px-5 md:px-15">
-        <h2 class="text-xl averia-layout font-bold italic text-primary-blue">Projektfortschritt</h2>
+        <h2 class="text-xl averia-layout font-bold italic text-primary">Projektfortschritt</h2>
         <Timeline :value="events" layout="vertical" align="alternate" class="items-center">
           <template #marker>
-          <span class="flex w-8 h-8 items-center justify-center rounded-full border-2 border-primary-blue">
+          <span class="flex w-8 h-8 items-center justify-center rounded-full border-2 border-primary">
             <i class="pi pi-calendar-clock" style="color: #063D79"/>
           </span>
           </template>
           <template #content="slotProps">
-            <div class="flex flex-col gap-2 bg-background-accent rounded-md shadow-md p-2">
+            <div class="flex flex-col gap-2 bg-surface-100 rounded-md shadow-md p-2">
               <div class="text-lg outfit-headline font-semibold">{{ slotProps.item.date }}</div>
               <div class="text-sm roboto-plain">
                 {{ slotProps.item.text }}
@@ -53,10 +53,10 @@ const events = ref([
         </Timeline>
       </div>
       <div class="flex flex-col gap-4">
-        <h2 class="text-2xl outfit-headline font-bold text-primary-blue px-5 md:px-15">Forschungsbeiträge</h2>
-        <div class="bg-background-accent">
+        <h2 class="text-2xl outfit-headline font-bold text-primary px-5 md:px-15">Forschungsbeiträge</h2>
+        <div class="bg-surface-100">
           <div class="flex flex-col gap-2 py-5 px-5 md:px-15">
-            <h2 class="text-xl averia-layout font-bold italic text-primary-blue">Artikelübersicht</h2>
+            <h2 class="text-xl averia-layout font-bold italic text-primary">Artikelübersicht</h2>
             <ul class="list-disc list-inside robot-plain">
               <li>Artikel XYZ</li>
               <li>Artikel XYZ</li>
@@ -66,23 +66,23 @@ const events = ref([
         </div>
       </div>
       <div class="flex flex-col gap-4 px-5 md:px-15">
-        <h2 class="text-2xl outfit-headline font-bold text-primary-blue">Fotolyrik in Zahlen</h2>
+        <h2 class="text-2xl outfit-headline font-bold text-primary">Fotolyrik in Zahlen</h2>
         <CollectionOverview/>
       </div>
       <div class="flex flex-col gap-4">
-        <h2 class="text-2xl outfit-headline font-bold text-primary-blue px-5 md:px-15">Kooperationspartner</h2>
-        <div class="bg-background-accent">
+        <h2 class="text-2xl outfit-headline font-bold text-primary px-5 md:px-15">Kooperationspartner</h2>
+        <div class="bg-surface-100">
           <div class="grid grid-cols-3 md:grid-cols-5 gap-4 justify-items-center px-5 md:px-15 py-5">
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
-            <div class="w-[100px] h-[100px] bg-primary-blue"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
+            <div class="w-[100px] h-[100px] bg-primary"/>
           </div>
         </div>
       </div>

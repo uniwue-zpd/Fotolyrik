@@ -2,6 +2,7 @@
 layer(base);
 
 @import 'tailwindcss';
+@import "tailwindcss-primeui";
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -12,27 +13,13 @@ layer(base);
   color utility to any element that depends on these defaults.
 */
 @layer base {
-    *,
-    ::after,
-    ::before,
-    ::backdrop,
-    ::file-selector-button {
-        border-color: var(--color-gray-200, currentcolor);
-    }
-    :root {
-        --primary-blue: #063D79;
-        --background-accent: #F1F2F2;
-    }
-
-    :root.dark{
-        --primary-blue: #136ac6;
-        --background-accent: #302f35;
-    }
-
-}
-@theme {
-    --color-primary-blue: var(--primary-blue);
-    --color-background-accent: var(--background-accent);
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
 }
 
 #__nuxt {

@@ -15,7 +15,7 @@ function copy_to_clipboard(copy_item: string) {
 
 <template>
   <footer class="flex flex-col">
-    <div class="bg-primary-blue">
+    <div class="bg-primary">
       <div class="flex flex-col gap-2 md:flex-row md:justify-between max-w-[1140px] text-white p-3 mx-auto">
         <div class="flex flex-row justify-between md:space-x-10">
           <div class="flex flex-col gap-2">
@@ -53,7 +53,7 @@ function copy_to_clipboard(copy_item: string) {
         </div>
       </div>
     </div>
-    <div class="bg-background-accent">
+    <div class="bg-surface-100">
       <div class="flex flex-row max-w-[1140px] justify-between px-3 py-1 mx-auto">
         <div class="flex flex-row space-x-2">
           <div>&copy;</div>

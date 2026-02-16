@@ -44,7 +44,7 @@ const onFormSubmit = async (e: any) => {
     <img src= "https://unsplash.it/1200/200" alt=""/>
   </div>
   <div class="flex flex-col mx-auto md:w-[80%] gap-4">
-    <h1 class="text-2xl outfit-headline text-primary-blue font-bold">Kontakt</h1>
+    <h1 class="text-2xl outfit-headline text-primary font-bold">Kontakt</h1>
     <p class="roboto-plain">
       Hier können Sie Ihre Nachricht an uns hinterlassen.
       Füllen Sie dafür bitte die unteren Felder aus
@@ -143,12 +143,12 @@ const onFormSubmit = async (e: any) => {
       </Fieldset>
       -->
     </Form>
-    <h1 class="text-2xl outfit-headline text-primary-blue font-bold">Ansprechpartner</h1>
+    <h1 class="text-2xl outfit-headline text-primary font-bold">Ansprechpartner</h1>
     <div class="flex flex-col">
-      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-background-accent p-5">
+      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-surface-100 p-5">
         <img src="https://picsum.photos/200" alt="placeholder-image"/>
         <div class="flex flex-col gap-4">
-          <div class="averia-layout italic text-2xl text-primary-blue">Max Mustermann</div>
+          <div class="averia-layout italic text-2xl text-primary">Max Mustermann</div>
           <div class="roboto-plain break-words">
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
             sed diam nonumy eirmod tempor invidunt ut labore et dolore
@@ -161,7 +161,7 @@ const onFormSubmit = async (e: any) => {
       </div>
       <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start p-5">
         <div class="flex flex-col gap-4">
-          <div class="averia-layout italic text-2xl text-primary-blue">Max Mustermann</div>
+          <div class="averia-layout italic text-2xl text-primary">Max Mustermann</div>
           <div class="roboto-plain break-words">
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
             sed diam nonumy eirmod tempor invidunt ut labore et dolore
@@ -173,10 +173,10 @@ const onFormSubmit = async (e: any) => {
         </div>
         <img src="https://picsum.photos/200" alt="placeholder-image"/>
       </div>
-      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-background-accent p-5">
+      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-surface-100 p-5">
         <img src="https://picsum.photos/200" alt="placeholder-image"/>
         <div class="flex flex-col gap-4">
-          <div class="averia-layout italic text-2xl text-primary-blue">Max Mustermann</div>
+          <div class="averia-layout italic text-2xl text-primary">Max Mustermann</div>
           <div class="roboto-plain break-words">
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
             sed diam nonumy eirmod tempor invidunt ut labore et dolore

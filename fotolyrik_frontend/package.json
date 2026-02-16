@@ -30,6 +30,7 @@
     "primeicons": "^7.0.0",
     "primevue": "^4.5.4",
     "tailwindcss": "^4.1.11",
+    "tailwindcss-primeui": "^0.6.1",
     "tify": "^0.32.0",
     "vue": "latest",
     "vue-router": "latest",

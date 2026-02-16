@@ -7,7 +7,7 @@ const toggle = (event: any) => op.value.toggle(event)
 </script>
 
 <template>
-  <header class="bg-primary-blue">
+  <header class="bg-primary">
     <div class="flex flex-row justify-between items-center max-w-[1140px] mx-auto p-3">
       <NuxtLink to="/">
         <img class="h-[40px] w-auto" src="../public/fl_wortmarke-blaugrau.svg" alt="logo">

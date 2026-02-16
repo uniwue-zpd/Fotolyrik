@@ -117,11 +117,11 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col mx-auto w-[70%] gap-4">
-    <h1 class="text-2xl outfit-headline text-primary-blue font-bold">{{ props.header }}</h1>
+    <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
     <Fieldset legend="Anleitung" class="border-2 border-solid rounded-md overflow-auto">
       <div class="flex flex-col gap-1 p-2 rounded-md roboto-plain text-black">
         <p>Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen oder anzupassen.</p>
-        <p>Sie können die Koordinaten entweder manuell einfügen oder einen Marker <i class="pi pi-map-marker text-primary-blue"/> auf der Karte setzen.</p>
+        <p>Sie können die Koordinaten entweder manuell einfügen oder einen Marker <i class="pi pi-map-marker text-primary"/> auf der Karte setzen.</p>
         <p>Falls Sie den Marker löschen wollen, drücken Sie bitte die rechte Maustaste.</p>
       </div>
     </Fieldset>

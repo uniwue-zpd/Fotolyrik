@@ -89,7 +89,7 @@ onMounted(async () => {
   <NotFoundPlaceholder v-else-if="!place_item"/>
   <div v-else class="flex flex-col gap-4 mb-9">
     <div class="flex flex-row justify-between">
-      <h1 class="text-3xl font-bold outfit-headline text-primary-blue">{{ place_item?.name }}</h1>
+      <h1 class="text-3xl font-bold outfit-headline text-primary">{{ place_item?.name }}</h1>
       <PageToolbar
           v-if="place_item"
           :id="place_item.id"
@@ -101,22 +101,22 @@ onMounted(async () => {
       <div>
         <div v-if="has_coords" id="map" class="h-[500px] rounded-md"/>
         <div v-else class="flex flex-col gap-2 items-center justify-center h-[500px] bg-[#F1F2F2] rounded-md">
-          <Icon name="material-symbols:error-outline" class="text-8xl text-primary-blue"/>
+          <Icon name="material-symbols:error-outline" class="text-8xl text-primary"/>
           <p class="roboto-plain text-center">Für diesen Ort sind bisher keine Koordinaten hinterlegt</p>
         </div>
       </div>
-      <div class="bg-primary-blue rounded-md"/>
+      <div class="bg-primary rounded-md"/>
     </div>
     <div class="text-md roboto-plain">{{ place_item?.description }}</div>
-    <h2 class="text-xl font-bold text-primary-blue outfit-headline">Häufigkeitsverteilung</h2>
-    <div class="h-[250px] bg-primary-blue rounded-md"/>
-    <h2 class="text-xl font-bold text-primary-blue outfit-headline">Netzwerke</h2>
+    <h2 class="text-xl font-bold text-primary outfit-headline">Häufigkeitsverteilung</h2>
+    <div class="h-[250px] bg-primary rounded-md"/>
+    <h2 class="text-xl font-bold text-primary outfit-headline">Netzwerke</h2>
     <div class="flex flex-col gap-2 md:grid md:grid-cols-2">
-      <div class="h-[250px] bg-primary-blue rounded-md"/>
-      <div class="h-[250px] bg-primary-blue rounded-md"/>
+      <div class="h-[250px] bg-primary rounded-md"/>
+      <div class="h-[250px] bg-primary rounded-md"/>
     </div>
     <div v-if="place_pub_media.length > 0" class="max-h-[40vh] flex flex-col gap-4">
-      <h2 class="text-xl font-bold text-primary-blue outfit-headline">Publikationsort von</h2>
+      <h2 class="text-xl font-bold text-primary outfit-headline">Publikationsort von</h2>
       <div class="overflow-y-auto pb-2">
         <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
           <div v-for="pubmedium in place_pub_media" :key="pubmedium.id">

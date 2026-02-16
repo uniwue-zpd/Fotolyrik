@@ -17,6 +17,24 @@ const UniwuePreset = definePreset(Aura, {
             800: '#00234a',
             900: '#001936',
             950: '#001328',
+        },
+        colorScheme: {
+            light: {
+                primary: {
+                    color: '#063D79',
+                },
+                surface: {
+                    100: '#F1F2F2'
+                }
+            },
+            dark: {
+                primary: {
+                    color: '#136ac6',
+                },
+                surface: {
+                    100: '#302f35',
+                }
+            }
         }
     }
 })
