@@ -50,7 +50,14 @@ export default defineNuxtConfig({
       ssr: false
     }
   },
-  modules: ['@pinia/nuxt', '@primevue/nuxt-module', '@formkit/nuxt', '@nuxt/icon', '@nuxtjs/color-mode'],
+  modules: [
+      '@pinia/nuxt',
+      '@primevue/nuxt-module',
+      '@formkit/nuxt',
+      '@nuxt/icon',
+      '@nuxtjs/color-mode',
+      '@vueuse/nuxt',
+  ],
   primevue: {
     options: {
       theme: {

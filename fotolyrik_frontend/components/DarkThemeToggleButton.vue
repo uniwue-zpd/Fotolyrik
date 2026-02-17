@@ -9,18 +9,9 @@ const states = {
 } as const;
 const currentIndex = ref("system" as keyof typeof states);
 
-// wait for color mode not to be unknown
-let stopWatching: () => void;
-stopWatching = watch(
-    () => colorMode.unknown,
-    (isUnknown) => {
-      if (!isUnknown) {
-        currentIndex.value = colorMode.preference as keyof typeof states;
-        if (stopWatching) stopWatching();
-      }
-    },
-    { immediate: true }
-);
+until(() => colorMode.unknown).toBe(false).then(() => {
+  currentIndex.value = colorMode.preference as keyof typeof states;
+});
 const currentIcon = computed(() => `pi ${states[currentIndex.value].icon}`);
 const toggle = () => {
   currentIndex.value = states[currentIndex.value].next;
