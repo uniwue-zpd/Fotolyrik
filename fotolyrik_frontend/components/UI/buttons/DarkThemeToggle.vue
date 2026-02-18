@@ -4,13 +4,12 @@ const colorMode = useColorMode();
 
 const states = {
   dark : {icon: 'pi-moon', next: 'light'},
-  light: {icon: 'pi-sun', next: 'system'},
-  system:{icon: 'pi-desktop', next: 'dark'},
+  light: {icon: 'pi-sun', next: 'dark'},
 } as const;
-const currentIndex = ref("system" as keyof typeof states);
+const currentIndex = ref("light" as keyof typeof states);
 
 until(() => colorMode.unknown).toBe(false).then(() => {
-  currentIndex.value = colorMode.preference as keyof typeof states;
+  currentIndex.value = colorMode.value as keyof typeof states;
 });
 const currentIcon = computed(() => `pi ${states[currentIndex.value].icon}`);
 const toggle = () => {
@@ -18,9 +17,6 @@ const toggle = () => {
 
   colorMode.preference = currentIndex.value;
 };
-onMounted(()=>{
-
-});
 </script>
 
 <template>
