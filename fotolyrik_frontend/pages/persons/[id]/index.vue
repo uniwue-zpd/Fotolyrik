@@ -56,6 +56,10 @@ onMounted(async () => {
         </div>
         <table class="min-w-full divide-y divide-gray-200 roboto-plain">
           <tbody v-if="person_item" class="bg-white divide-y divide-gray-200">
+          <tr v-if="person_item.studioName">
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">Studio / Agentur</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ person_item.studioName }}</td>
+          </tr>
           <tr v-if="person_item.birthYear">
             <td class="px-6 py-4 whitespace-nowrap font-semibold">Geburtsjahr</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ person_item.birthYear }}</td>

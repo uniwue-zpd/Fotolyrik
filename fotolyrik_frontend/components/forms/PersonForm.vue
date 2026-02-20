@@ -23,6 +23,7 @@ const resolver = ref(
     z.object({
       firstName: z.string().optional().nullable(),
       lastName: z.string().optional().nullable(),
+      studioName: z.string().optional().nullable(),
       sex: z.string().optional().nullable(),
       birthYear: z.number().optional().nullable(),
       deathYear: z.number().optional().nullable(),
@@ -107,6 +108,20 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
+        <FormField v-slot="$field" name="studioName" class="flex flex-col gap-1 flex-1">
+          <label for="studioName" class="font-bold">Studio / Agentur</label>
+          <IconField>
+            <InputIcon class="pi pi-shop" />
+            <InputText
+                id="studioName"
+                v-on:keydown.enter.prevent
+                fluid
+            />
+          </IconField>
+          <Message v-if="$form.studioName?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.studioName.error.message }}
+          </Message>
+        </FormField>
         <div class="flex flex-row gap-6 flex-wrap">
           <FormField v-slot="$field" name="sex" class="flex flex-col gap-1 flex-1">
             <label for="sex" class="font-bold">Geschlecht</label>

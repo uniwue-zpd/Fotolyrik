@@ -75,6 +75,7 @@ export interface LanguageDTO {
 export interface Person extends Auditable {
     firstName: string | null;
     lastName: string | null;
+    studioName: string | null;
     fullName: string | null;
     pseudonyms: [string] | [];
     birthYear: number | null;
@@ -84,9 +85,10 @@ export interface Person extends Auditable {
     image: File | null;
 }
 
-export interface PersonDTO {
+export interface PersonPreviewDTO {
     id: number;
     fullName: string | null;
+    studioName: string | null;
     pseudonyms: [string] | [];
 }
 
@@ -126,9 +128,9 @@ export interface PhotoPoemDTO extends Auditable {
     pageCount: number | null;
     publicationDate: string | null;
     publicationMedium: PubMediumPreviewDTO | null;
-    authors: PersonDTO[] | [];
-    photographers: PersonDTO[] | [];
-    otherContributors: PersonDTO[] | [];
+    authors: PersonPreviewDTO[] | [];
+    photographers: PersonPreviewDTO[] | [];
+    otherContributors: PersonPreviewDTO[] | [];
     themes: KeywordDTO[] | [];
     imageMotifs: KeywordDTO[] | [];
     form: string | null;
