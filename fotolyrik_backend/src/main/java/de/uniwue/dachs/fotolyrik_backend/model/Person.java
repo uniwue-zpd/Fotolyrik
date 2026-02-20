@@ -17,6 +17,8 @@ public class Person extends BaseEntity {
 
     private String lastName;
 
+    private String studioName;
+
     @Transient
     public String getFullName() {
         return (firstName != null ? firstName + " " : "") +

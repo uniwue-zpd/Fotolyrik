@@ -40,9 +40,9 @@ public class PhotopoemMapper {
         photopoem.setPageCount(photopoemDTO.getPageCount());
         photopoem.setPublicationDate(photopoemDTO.getPublicationDate());
         photopoem.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(photopoemDTO.getPublicationMedium()));
-        photopoem.setAuthors(personMapper.PersonDTOsToPersons(photopoemDTO.getAuthors()));
-        photopoem.setPhotographers(personMapper.PersonDTOsToPersons(photopoemDTO.getPhotographers()));
-        photopoem.setOtherContributors(personMapper.PersonDTOsToPersons(photopoemDTO.getOtherContributors()));
+        photopoem.setAuthors(personMapper.PreviewDTOsToPersons(photopoemDTO.getAuthors()));
+        photopoem.setPhotographers(personMapper.PreviewDTOsToPersons(photopoemDTO.getPhotographers()));
+        photopoem.setOtherContributors(personMapper.PreviewDTOsToPersons(photopoemDTO.getOtherContributors()));
         photopoem.setThemes(keywordMapper.KeywordDTOsToKeywords(photopoemDTO.getThemes()));
         photopoem.setImageMotifs(keywordMapper.KeywordDTOsToKeywords(photopoemDTO.getImageMotifs()));
         photopoem.setForm(photopoemDTO.getForm());

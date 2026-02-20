@@ -226,9 +226,9 @@ public class PhotopoemService {
             entity.setPageCount(updatedPhotopoem.getPageCount());
             entity.setPublicationDate(updatedPhotopoem.getPublicationDate());
             entity.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(updatedPhotopoem.getPublicationMedium()));
-            entity.setAuthors(personMapper.PersonDTOsToPersons(updatedPhotopoem.getAuthors()));
-            entity.setPhotographers(personMapper.PersonDTOsToPersons(updatedPhotopoem.getPhotographers()));
-            entity.setOtherContributors(personMapper.PersonDTOsToPersons(updatedPhotopoem.getOtherContributors()));
+            entity.setAuthors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getAuthors()));
+            entity.setPhotographers(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getPhotographers()));
+            entity.setOtherContributors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getOtherContributors()));
             entity.setThemes(keywordMapper.KeywordDTOsToKeywords(updatedPhotopoem.getThemes()));
             entity.setImageMotifs(keywordMapper.KeywordDTOsToKeywords(updatedPhotopoem.getImageMotifs()));
             entity.setForm(updatedPhotopoem.getForm());

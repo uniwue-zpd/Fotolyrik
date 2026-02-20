@@ -1,6 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
-import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import org.springframework.stereotype.Component;
@@ -18,38 +18,33 @@ public class PersonMapper {
         this.personRepository = personRepository;
     }
 
-    public Person PersonDTOToPerson(PersonDTO personDTO) {
-        if (personDTO == null) return null;
-        if (personDTO.getId() != null) {
-            return personRepository.findById(personDTO.getId()).orElse(null);
-        } else {
-            Person person = new Person();
-            personRepository.save(person);
-            return person;
-        }
+    public Person PreviewDTOToPerson(PersonPreviewDTO personPreviewDTO) {
+        if (personPreviewDTO == null || personPreviewDTO.getId() == null) return null;
+        return personRepository.findById(personPreviewDTO.getId()).orElse(null);
     }
 
-    public Set<Person> PersonDTOsToPersons(Set<PersonDTO> personDTOs) {
-        if (personDTOs.isEmpty()) return Collections.emptySet();
-        return personDTOs.stream()
-                .map(this::PersonDTOToPerson)
+    public Set<Person> PreviewDTOsToPersons(Set<PersonPreviewDTO> personPreviewDTOS) {
+        if (personPreviewDTOS.isEmpty()) return Collections.emptySet();
+        return personPreviewDTOS.stream()
+                .map(this::PreviewDTOToPerson)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
-    public PersonDTO PersonToPersonDTO(Person person) {
+    public PersonPreviewDTO PersonToPreviewDTO(Person person) {
         if (person == null) return null;
-        PersonDTO personDTO = new PersonDTO();
-        personDTO.setId(person.getId());
-        personDTO.setFullName(person.getFullName());
-        personDTO.setPseudonyms(person.getPseudonyms());
-        return  personDTO;
+        PersonPreviewDTO personPreviewDTO = new PersonPreviewDTO();
+        personPreviewDTO.setId(person.getId());
+        personPreviewDTO.setFullName(person.getFullName());
+        personPreviewDTO.setStudioName(person.getStudioName());
+        personPreviewDTO.setPseudonyms(person.getPseudonyms());
+        return personPreviewDTO;
     }
 
-    public Set<PersonDTO> PersonsToPersonDTOs(Set<Person> persons) {
+    public Set<PersonPreviewDTO> PersonsToPersonDTOs(Set<Person> persons) {
         if (persons.isEmpty()) return Collections.emptySet();
         return persons.stream()
-                .map(this::PersonToPersonDTO)
+                .map(this::PersonToPreviewDTO)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
