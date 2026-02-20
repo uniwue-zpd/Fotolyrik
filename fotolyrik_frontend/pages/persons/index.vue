@@ -20,7 +20,7 @@ const filters = ref({
 <template>
   <Card>
     <template #title>
-      <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">Personen</h1>
+      <h1 class="text-3xl font-bold text-primary outfit-headline">Personen</h1>
     </template>
     <template #content>
       <DataTable
@@ -35,7 +35,7 @@ const filters = ref({
             <div class="p-2 border border-solid rounded-md hover:shadow-md">
               <NuxtLink to="/persons/create" class="flex items-center">
                 <i class="pi pi-pen-to-square mr-2"/>
-                <div class="text-[#063D79] roboto-plain">Neu anlegen</div>
+                <div class="text-primary roboto-plain">Neu anlegen</div>
               </NuxtLink>
             </div>
             <IconField>

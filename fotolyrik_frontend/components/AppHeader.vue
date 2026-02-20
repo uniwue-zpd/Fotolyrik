@@ -2,12 +2,13 @@
 import 'primeicons/primeicons.css';
 import { ref } from 'vue';
 import GeneralSearch from "~/components/UI/GeneralSearch.vue";
+import DarkThemeToggle from "~/components/UI/buttons/DarkThemeToggle.vue";
 const op = ref();
 const toggle = (event: any) => op.value.toggle(event)
 </script>
 
 <template>
-  <header class="bg-[#063D79]">
+  <header class="bg-primary">
     <div class="flex flex-row justify-between items-center max-w-[1140px] mx-auto p-3">
       <NuxtLink to="/">
         <img class="h-[40px] w-auto" src="../public/fl_wortmarke-blaugrau.svg" alt="logo">
@@ -25,6 +26,7 @@ const toggle = (event: any) => op.value.toggle(event)
             </div>
           </Popover>
         </div>
+        <UIButtonsDarkThemeToggle></UIButtonsDarkThemeToggle>
       </div>
     </div>
   </header>

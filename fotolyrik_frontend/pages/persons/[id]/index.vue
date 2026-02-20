@@ -31,7 +31,7 @@ onMounted(async () => {
     <Card>
       <template #title>
         <div class="flex flex-row justify-between">
-          <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ person_item?.fullName || person_item?.pseudonyms[0] }}</h1>
+          <h1 class="text-3xl font-bold text-primary outfit-headline">{{ person_item?.fullName || person_item?.pseudonyms[0] }}</h1>
           <PageToolbar
               v-if="person_item"
               :id="person_item.id"
@@ -78,7 +78,7 @@ onMounted(async () => {
         <Divider/>
         <div class="flex flex-col gap-2">
           <div v-if="author_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-            <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Autor:in von</h2>
+            <h2 class="text-xl font-bold text-primary outfit-headline">Autor:in von</h2>
             <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in author_photopoems" :key="photopoem.id">
@@ -88,7 +88,7 @@ onMounted(async () => {
             </div>
           </div>
           <div v-if="photographer_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-            <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotograf:in von</h2>
+            <h2 class="text-xl font-bold text-primary outfit-headline">Fotograf:in von</h2>
             <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in photographer_photopoems" :key="photopoem.id">
@@ -98,7 +98,7 @@ onMounted(async () => {
             </div>
           </div>
           <div v-if="contributor_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-            <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Mitgewirkt an</h2>
+            <h2 class="text-xl font-bold text-primary outfit-headline">Mitgewirkt an</h2>
             <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in contributor_photopoems" :key="photopoem.id">
@@ -131,7 +131,7 @@ onMounted(async () => {
               class="flex flex-row items-center space-x-2"
           >
             <i class="pi pi-arrow-left"/>
-            <div class="text-[#063D79] roboto-plain">Vorheriger Eintrag</div>
+            <div class="text-primary roboto-plain">Vorheriger Eintrag</div>
           </NuxtLink>
         </div>
       </div>
@@ -141,7 +141,7 @@ onMounted(async () => {
               :to="`/persons/${next_person.id}`"
               class="flex flex-row items-center space-x-2"
           >
-            <div class="text-[#063D79] roboto-plain">Nächster Eintrag</div>
+            <div class="text-primary roboto-plain">Nächster Eintrag</div>
             <i class="pi pi-arrow-right"/>
           </NuxtLink>
         </div>

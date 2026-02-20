@@ -45,7 +45,7 @@ const handleImageError = (path: string) => {
 <template>
   <Card>
     <template #title>
-      <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">Dateien</h1>
+      <h1 class="text-3xl font-bold text-primary outfit-headline">Dateien</h1>
     </template>
     <template #content>
       

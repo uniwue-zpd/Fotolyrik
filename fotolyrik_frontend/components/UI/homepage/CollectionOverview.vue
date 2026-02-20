@@ -2,13 +2,13 @@
 import Chart from 'primevue/chart';
 
 const chartData = ref();
-const chartOptions = ref();
 const photopoem_store = usePhotopoemStore();
 const pubmedia_store = usePubMediumStore();
 const place_store = usePlaceStore();
 const person_store = usePersonStore();
 const keyword_store = useKeywordStore();
 
+const darkModeTextColor = computed(()=>{return useColorMode().value == 'dark'? 'white':'black'});
 const photopoemCount = computed(() => photopoem_store.photopoems.length);
 const pubmediaCount = computed(() => pubmedia_store.pub_media.length);
 const placeCount = computed(() => place_store.places.length);
@@ -28,9 +28,7 @@ const setChartData = () => {
     ],
   };
 };
-const setChartOptions = () => {
-  const textColor = 'black';
-  const textColorSecondary = 'black';
+const chartOptions = computed(() => {
 
   return {
     indexAxis: 'y',
@@ -39,14 +37,14 @@ const setChartOptions = () => {
     plugins: {
       legend: {
         labels: {
-          color: textColor
+          color: darkModeTextColor.value
         }
       }
     },
     scales: {
       x: {
         ticks: {
-          color: textColorSecondary,
+          color: darkModeTextColor.value,
           font: {
             weight: 500
           }
@@ -58,16 +56,15 @@ const setChartOptions = () => {
       },
       y: {
         ticks: {
-          color: textColorSecondary
+          color: darkModeTextColor.value
         }
       }
     }
   };
-}
+})
 
 onMounted(() => {
   chartData.value = setChartData();
-  chartOptions.value = setChartOptions();
 });
 </script>
 

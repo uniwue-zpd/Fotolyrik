@@ -68,7 +68,7 @@ watch(query, (val) => {
   </button>
   <Dialog v-model:visible="visible" modal :dismissableMask="true" position="top" class="min-w-[30%] p-2" @hide="clearResults">
     <template #header>
-      <h2 class="text-xl font-bold outfit-headline text-[#063D79]">Suchen</h2>
+      <h2 class="text-xl font-bold outfit-headline text-primary">Suchen</h2>
     </template>
     <div class="flex flex-col gap-4">
       <input
@@ -83,12 +83,12 @@ watch(query, (val) => {
             <NuxtLink
                 :to="`/${result.type}/${result.id}`"
                 @click="clearResults"
-                class="text-gray-400 hover:text-black flex flex-row items-center space-x-3 rounded-md p-2 shadow-sm hover:shadow-md hover:scale-105 transition-transform duration-300"
+                class="text-surface-500 hover:text-surface-950 flex flex-row items-center space-x-3 rounded-md p-2 shadow-sm hover:shadow-md hover:scale-105 transition-transform duration-300"
             >
               <Icon :name="icon_map[result.type]" class="text-2xl"/>
               <div class="flex flex-col gap-2">
-                <h2 class="roboto-plain text-base text-black font-semibold">{{ result.title }}</h2>
-                <p class="text-sm roboto-plain text-gray-500">{{ type_mapping[result.type] }}</p>
+                <h2 class="roboto-plain text-base text-surface-950 font-semibold">{{ result.title }}</h2>
+                <p class="text-sm roboto-plain text-surface-500">{{ type_mapping[result.type] }}</p>
               </div>
             </NuxtLink>
         </div>

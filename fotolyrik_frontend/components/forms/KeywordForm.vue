@@ -42,7 +42,7 @@ const onFormSubmit = async (e: any) => {
 
 <template>
   <div class="flex flex-col mx-auto w-[70%] gap-4">
-    <h1 class="text-2xl outfit-headline text-[#063D79] font-bold">{{ props.header }}</h1>
+    <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
     <p class="roboto-plain">
       Füllen Sie bitte die untenstehenden Felder aus, um ein Schlagwort zu erstellen oder anzupassen.
     </p>

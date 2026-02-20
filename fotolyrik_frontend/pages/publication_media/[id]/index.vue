@@ -28,7 +28,7 @@ onMounted(async () => {
     <Card>
       <template #title>
         <div class="flex flex-row justify-between">
-          <h1 class="text-3xl font-bold text-[#063D79] outfit-headline">{{ pub_medium_item?.title }}</h1>
+          <h1 class="text-3xl font-bold text-primary outfit-headline">{{ pub_medium_item?.title }}</h1>
           <PageToolbar
               v-if="pub_medium_item"
               :id="pub_medium_item.id"
@@ -94,7 +94,7 @@ onMounted(async () => {
       </template>
       <template #footer>
         <div v-if="pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-          <h2 class="text-xl font-bold text-[#063D79] outfit-headline">Fotogedichte in "{{ pub_medium_item?.title }}"</h2>
+          <h2 class="text-xl font-bold text-primary outfit-headline">Fotogedichte in "{{ pub_medium_item?.title }}"</h2>
           <div class="overflow-y-auto pb-2">
             <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
               <div v-for="photopoem in pub_medium_photopoems" :key="photopoem.id">
@@ -113,7 +113,7 @@ onMounted(async () => {
               class="flex flex-row items-center space-x-2"
           >
             <i class="pi pi-arrow-left"/>
-            <div class="text-[#063D79] roboto-plain">Vorheriger Eintrag</div>
+            <div class="text-primary roboto-plain">Vorheriger Eintrag</div>
           </NuxtLink>
         </div>
       </div>
@@ -123,7 +123,7 @@ onMounted(async () => {
               :to="`/publication_media/${ next_pub_medium.id }`"
               class="flex flex-row items-center space-x-2"
           >
-            <div class="text-[#063D79] roboto-plain">Nächster Eintrag</div>
+            <div class="text-primary roboto-plain">Nächster Eintrag</div>
             <i class="pi pi-arrow-right"/>
           </NuxtLink>
         </div>
