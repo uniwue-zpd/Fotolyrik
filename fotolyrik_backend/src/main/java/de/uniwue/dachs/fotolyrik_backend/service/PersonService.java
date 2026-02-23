@@ -22,17 +22,28 @@ public class PersonService {
         this.fileRepository = fileRepository;
     }
 
-    // GET all persons
+    /**
+     * GET all persons sorted by first name and last name
+     * @return {@link List} of {@link Person}
+     */
     public List<Person> getAllPersons() {
         return personRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName", "lastName"));
     }
 
-    // GET person by ID
+    /**
+     * GET person by ID
+     * @param id of the person
+     * @return {@link Optional} of {@link Person}
+     */
     public Optional<Person> getPersonById(Long id) {
         return personRepository.findById(id);
     }
 
-    // POST create new person
+    /**
+     * POST create a new person
+     * @param person {@link Person} to create
+     * @return created {@link Person}
+     */
     @Transactional
     public Person createPerson(Person person) {
         person.setImage(person.getImage() != null
@@ -41,13 +52,19 @@ public class PersonService {
         return personRepository.save(person);
     }
 
-    // PUT update existing person
+    /**
+     * PUT update an existing person
+     * @param id of the person to update
+     * @param updatedPerson with updated values
+     * @return updated {@link Person}
+     */
     @Transactional
     public Person updatePerson(Long id, Person updatedPerson) {
         return personRepository.findById(id)
                 .map(existingPerson -> {
                     existingPerson.setFirstName(updatedPerson.getFirstName());
                     existingPerson.setLastName(updatedPerson.getLastName());
+                    existingPerson.setStudioName(updatedPerson.getStudioName());
                     existingPerson.setBirthYear(updatedPerson.getBirthYear());
                     existingPerson.setDeathYear(updatedPerson.getDeathYear());
                     existingPerson.setPseudonyms(updatedPerson.getPseudonyms());
@@ -62,7 +79,10 @@ public class PersonService {
                 .orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
     }
 
-    // DELETE person by ID
+    /**
+     * DELETE person by ID
+     * @param id of the person to delete
+     */
     @Transactional
     public void deletePerson(Long id) {
         if (!personRepository.existsById(id)) {
@@ -71,6 +91,11 @@ public class PersonService {
         personRepository.deleteById(id);
     }
 
+    /**
+     * Helper method to get an image by ID
+     * @param id of the image
+     * @return {@link File} with the given ID
+     */
     private File getImage(Long id) {
         if (id == null) {
             throw  new IllegalArgumentException();

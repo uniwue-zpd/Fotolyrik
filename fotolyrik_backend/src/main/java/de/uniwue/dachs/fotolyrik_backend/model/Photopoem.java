@@ -27,6 +27,8 @@ public class Photopoem extends BaseEntity {
 
     private Long pageCount;
 
+    private String pictureCount;
+
     private String publicationDate;
 
     @ManyToOne

@@ -7,8 +7,9 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PersonDTO {
+public class PersonPreviewDTO {
     private Long id;
     private String fullName;
+    private String studioName;
     private List<String> pseudonyms;
 }

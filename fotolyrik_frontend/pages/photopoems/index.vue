@@ -49,7 +49,7 @@ useHead(() => ({
             </IconField>
           </div>
         </template>
-        <Column field="title" header="Titel" sortable>
+        <Column field="title" header="Titel" :sortable="true">
           <template #body="{ data }">
             <div class="flex flex-row space-x-5 items-center">
               <NuxtLink
@@ -100,6 +100,7 @@ useHead(() => ({
         <Column field="volume" header="Jahrgang" class="roboto-plain"/>
         <Column field="issue" header="Ausgabe" class="roboto-plain"/>
         <Column field="pageNumber" header="Seite(n)" class="roboto-plain"/>
+        <Column field="pageCount" header="Umfang" class="roboto-plain" :sortable="true"/>
         <Column field="publicationDate" header="Publikationsdatum" class="roboto-plain"/>
         <Column field="publicationMedium.title" header="Publikationsmedium" :sortable="true">
           <template #body="slotProps">

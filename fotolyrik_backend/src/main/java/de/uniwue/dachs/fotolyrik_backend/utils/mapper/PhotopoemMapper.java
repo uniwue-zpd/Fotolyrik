@@ -38,11 +38,12 @@ public class PhotopoemMapper {
         photopoem.setPageNumber(photopoemDTO.getPageNumber());
         photopoem.setManifestPageNumber(photopoemDTO.getManifestPageNumber());
         photopoem.setPageCount(photopoemDTO.getPageCount());
+        photopoem.setPictureCount(photopoemDTO.getPictureCount());
         photopoem.setPublicationDate(photopoemDTO.getPublicationDate());
         photopoem.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(photopoemDTO.getPublicationMedium()));
-        photopoem.setAuthors(personMapper.PersonDTOsToPersons(photopoemDTO.getAuthors()));
-        photopoem.setPhotographers(personMapper.PersonDTOsToPersons(photopoemDTO.getPhotographers()));
-        photopoem.setOtherContributors(personMapper.PersonDTOsToPersons(photopoemDTO.getOtherContributors()));
+        photopoem.setAuthors(personMapper.PreviewDTOsToPersons(photopoemDTO.getAuthors()));
+        photopoem.setPhotographers(personMapper.PreviewDTOsToPersons(photopoemDTO.getPhotographers()));
+        photopoem.setOtherContributors(personMapper.PreviewDTOsToPersons(photopoemDTO.getOtherContributors()));
         photopoem.setThemes(keywordMapper.KeywordDTOsToKeywords(photopoemDTO.getThemes()));
         photopoem.setImageMotifs(keywordMapper.KeywordDTOsToKeywords(photopoemDTO.getImageMotifs()));
         photopoem.setForm(photopoemDTO.getForm());
@@ -66,6 +67,7 @@ public class PhotopoemMapper {
         photopoemDTO.setPageNumber(photopoem.getPageNumber());
         photopoemDTO.setManifestPageNumber(photopoem.getManifestPageNumber());
         photopoemDTO.setPageCount(photopoem.getPageCount());
+        photopoemDTO.setPictureCount(photopoem.getPictureCount());
         photopoemDTO.setPublicationDate(publicationDateMapper.DateToDateWithoutDashes(photopoem.getPublicationDate()));
         photopoemDTO.setPublicationMedium(pubMediumMapper.PubMediumToPubMediumPreviewDTO(photopoem.getPublicationMedium()));
         photopoemDTO.setAuthors(personMapper.PersonsToPersonDTOs(photopoem.getAuthors()));

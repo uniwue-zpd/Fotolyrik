@@ -101,6 +101,14 @@ onMounted(async () => {
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Seite(n)</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.pageNumber }}</td>
                     </tr>
+                    <tr v-if="photopoem_item.pageCount">
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Umfang</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.pageCount }}</td>
+                    </tr>
+                    <tr v-if="photopoem_item.pictureCount">
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Anzahl der Fotografien</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.pictureCount }}</td>
+                    </tr>
                     <tr v-if="photopoem_item.publicationDate">
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Erscheinungsdatum</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.publicationDate }}</td>
