@@ -224,6 +224,7 @@ public class PhotopoemService {
             entity.setPageNumber(updatedPhotopoem.getPageNumber());
             entity.setManifestPageNumber(updatedPhotopoem.getManifestPageNumber());
             entity.setPageCount(updatedPhotopoem.getPageCount());
+            entity.setPictureCount(updatedPhotopoem.getPictureCount());
             entity.setPublicationDate(updatedPhotopoem.getPublicationDate());
             entity.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(updatedPhotopoem.getPublicationMedium()));
             entity.setAuthors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getAuthors()));

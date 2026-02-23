@@ -39,6 +39,7 @@ const resolver = ref(
       pageNumber: z.any(),
       manifestPageNumber: z.any(),
       pageCount: z.any(),
+      pictureCount: z.any(),
       publicationDate: z.any(),
       publicationMedium: z.any(),
       authors: z.any(),
@@ -137,7 +138,7 @@ const onFormSubmit = async (e: any) => {
           </IconField>
         </FormField>
         <FormField v-slot="$field" name="altTitle" class="flex flex-col gap-1 flex-auto">
-          <label for="title" class="font-bold">Alternativer Titel</label>
+          <label for="altTitle" class="font-bold">Alternativer Titel</label>
           <IconField>
             <InputIcon class="pi pi-pen-to-square" />
             <InputText
@@ -217,6 +218,18 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
+        <FormField v-slot="$field" name="pictureCount" class="flex flex-col gap-1 flex-auto">
+          <label for="pictureCount" class="font-bold">Anzahl der Fotografien</label>
+          <IconField>
+            <InputIcon class="pi pi-pen-to-square" />
+            <InputText
+                id="pictureCount"
+                placeholder="vier Fotos"
+                v-on:keydown.enter.prevent
+                fluid
+            />
+          </IconField>
+        </FormField>
         <div class="flex flex-row gap-6 flex-wrap">
           <FormField v-slot="$field" name="publicationDate" class="flex flex-col gap-1 flex-1">
             <label for="publicationDate" class="font-bold">Publikationsdatum</label>

@@ -18,6 +18,7 @@ public class PhotopoemDTO extends BaseEntity {
     private String pageNumber;
     private Long manifestPageNumber;
     private Long pageCount;
+    private String pictureCount;
     private String publicationDate;
     private PubMediumPreviewDTO publicationMedium;
     private Set<PersonPreviewDTO> authors = new HashSet<>();

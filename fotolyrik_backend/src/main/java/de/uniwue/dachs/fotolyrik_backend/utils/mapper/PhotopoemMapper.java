@@ -38,6 +38,7 @@ public class PhotopoemMapper {
         photopoem.setPageNumber(photopoemDTO.getPageNumber());
         photopoem.setManifestPageNumber(photopoemDTO.getManifestPageNumber());
         photopoem.setPageCount(photopoemDTO.getPageCount());
+        photopoem.setPictureCount(photopoemDTO.getPictureCount());
         photopoem.setPublicationDate(photopoemDTO.getPublicationDate());
         photopoem.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(photopoemDTO.getPublicationMedium()));
         photopoem.setAuthors(personMapper.PreviewDTOsToPersons(photopoemDTO.getAuthors()));
@@ -66,6 +67,7 @@ public class PhotopoemMapper {
         photopoemDTO.setPageNumber(photopoem.getPageNumber());
         photopoemDTO.setManifestPageNumber(photopoem.getManifestPageNumber());
         photopoemDTO.setPageCount(photopoem.getPageCount());
+        photopoemDTO.setPictureCount(photopoem.getPictureCount());
         photopoemDTO.setPublicationDate(publicationDateMapper.DateToDateWithoutDashes(photopoem.getPublicationDate()));
         photopoemDTO.setPublicationMedium(pubMediumMapper.PubMediumToPubMediumPreviewDTO(photopoem.getPublicationMedium()));
         photopoemDTO.setAuthors(personMapper.PersonsToPersonDTOs(photopoem.getAuthors()));

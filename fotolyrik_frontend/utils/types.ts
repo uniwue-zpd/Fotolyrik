@@ -101,6 +101,7 @@ export interface PhotoPoem extends Auditable {
     pageNumber: string | null;
     manifestPageNumber: number | null;
     pageCount: number | null;
+    pictureCount: string | null;
     publicationDate: string | null;
     publicationMedium: PubMedium | null;
     authors: Person[] | [];
@@ -126,6 +127,7 @@ export interface PhotoPoemDTO extends Auditable {
     pageNumber: string | null;
     manifestPageNumber: number | null;
     pageCount: number | null;
+    pictureCount: string | null;
     publicationDate: string | null;
     publicationMedium: PubMediumPreviewDTO | null;
     authors: PersonPreviewDTO[] | [];
