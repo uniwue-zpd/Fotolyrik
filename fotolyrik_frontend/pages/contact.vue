@@ -126,7 +126,7 @@ const onFormSubmit = async (e: any) => {
           <Checkbox inputId="dp" name="dataProtection" class="pt-0.5" binary/>
           <label for="dp">
             Ich habe die
-            <NuxtLink to="/data-protection" class="text-[#004188] font-bold">
+            <NuxtLink to="/data-protection" class="text-primary font-bold">
               Datenschutzerklärung
             </NuxtLink>
             zur Kenntnis genommen.*
