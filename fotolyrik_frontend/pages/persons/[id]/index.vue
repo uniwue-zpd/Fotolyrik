@@ -42,7 +42,7 @@ onMounted(async () => {
       </template>
       <template #content>
         <div v-if="person_item" class="flex flex-row space-x-5 justify-between p-4">
-          <div class="p-3 bg-surface-100">
+          <div class="p-3 bg-gray-accent">
             <div v-if="person_item.image">
               <img :src="`/api/uploads/${person_item.image.filename}`" alt="image"/>
             </div>
@@ -50,7 +50,7 @@ onMounted(async () => {
               <Avatar icon="pi pi-user" size="xlarge"/>
             </div>
           </div>
-          <div class="p-3 bg-surface-100">
+          <div class="p-3 bg-gray-accent">
             <i class="pi pi-chart-line"/>
           </div>
         </div>

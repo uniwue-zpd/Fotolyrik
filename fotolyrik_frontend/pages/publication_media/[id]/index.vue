@@ -51,7 +51,7 @@ onMounted(async () => {
                 <span v-for="place in pub_medium_item.publicationPlaces" :key="place.id">
                   <NuxtLink
                       :to="`/places/${place.id}`"
-                      class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-semibold"
+                      class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-semibold"
                   >
                     {{ place.name }}
                   </NuxtLink>
@@ -68,7 +68,7 @@ onMounted(async () => {
             <td class="px-6 py-4 whitespace-nowrap ">
               <div class="flex flex-wrap gap-3.5">
                 <div v-for="rhythm in pub_medium_item.pubRhythms" :key="rhythm.id">
-                  <div class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-semibold">
+                  <div class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-semibold">
                     {{ rhythm.value }}
                   </div>
                 </div>

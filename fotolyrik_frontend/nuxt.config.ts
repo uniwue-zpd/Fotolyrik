@@ -23,17 +23,11 @@ const UniwuePreset = definePreset(Aura, {
                 primary: {
                     color: '#063D79',
                 },
-                surface: {
-                    100: '#F1F2F2',
-                }
             },
             dark: {
                 primary: {
                     color: '#136ac6',
                 },
-                surface: {
-                    100: '#302f35',
-                }
             }
         }
     }
