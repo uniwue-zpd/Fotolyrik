@@ -13,6 +13,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     await keyword_store.fetchKeywords();
     await person_store.fetchPersons();
     await photopoem_store.fetchPhotopoems();
+    await photopoem_store.fetchPhotopoemHighlight();
     await place_store.fetchPlaces();
     await pub_media_store.fetchPubMedia();
     await file_store.fetchFiles();
