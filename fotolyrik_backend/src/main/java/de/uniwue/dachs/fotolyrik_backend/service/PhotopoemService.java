@@ -65,6 +65,10 @@ public class PhotopoemService {
         return photopoemRepository.findById(id).map(photopoemMapper::PhotopoemToPhotopoemDTO);
     }
 
+    /**
+     * GET a photopoem as the monthly highlight
+     * @return an {@link Optional} containing the {@link PhotopoemDTO} of the monthly highlight, or an empty {@link Optional} if no photopoems are available
+     */
     public Optional<PhotopoemDTO> getMonthlyHighlight() {
         List<Long> allIds = photopoemRepository.findAllIds();
         if (allIds.isEmpty()) return Optional.empty();
