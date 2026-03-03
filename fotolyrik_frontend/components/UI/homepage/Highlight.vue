@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const photopoem_store = usePhotopoemStore();
-const highlight = photopoem_store.photopoems.find(poem => poem.id === 18);
+const highlight = computed(() => photopoem_store.currentHighlight);
 </script>
 
 <template>
