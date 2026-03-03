@@ -91,6 +91,13 @@ public class PhotopoemController {
         );
     }
 
+    @GetMapping("/highlight")
+    public ResponseEntity<PhotopoemDTO> getMonthlyHighlight() {
+        return photopoemService.getMonthlyHighlight()
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.status(404)::build);
+    }
+
     @PostMapping
     public ResponseEntity<PhotopoemDTO> savePhotopoem(@RequestBody PhotopoemDTO photopoem) {
         PhotopoemDTO savedPhotopoem = photopoemService.createPhotopoem(photopoem);
