@@ -13,6 +13,8 @@ export const useFileStore = defineStore("files", () => {
     const loadingUp = ref(false)
     const errorUp = ref<string | null>(null)
 
+    const fileContents = ref<Map<number, string>>(new Map());
+
     async function fetchFiles() {
         loadingDown.value = true;
         errorDown.value = null;
@@ -82,6 +84,22 @@ export const useFileStore = defineStore("files", () => {
         return `${apiClient.defaults.baseURL || ''}/uploads/${encodeURIComponent(filename)}`;
     }
 
+    async function getImageContent(id: number): Promise<string | null> {
+        if (fileContents.value.has(id)) return fileContents.value.get(id)!;
+        try {
+            const response = await $fetch(`/api/files/${id}/content`, {
+                method: 'GET',
+                responseType: 'blob'
+            });
+            const url = URL.createObjectURL(response as Blob);
+            fileContents.value.set(id, url);
+            return url;
+        } catch (err) {
+            console.error('Failed to fetch image content: ', err);
+            return null;
+        }
+    }
+
     return {
         files,
         loadingDown,
@@ -93,6 +111,7 @@ export const useFileStore = defineStore("files", () => {
         refreshFilesData,
         removeFile,
         uploadFiles,
-        getImagePreview
+        getImagePreview,
+        getImageContent
     }
 })
