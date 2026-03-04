@@ -4,10 +4,12 @@ import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.service.FileService;
 import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,13 +41,28 @@ public class FileController {
         List<File> files = fileService.getFiles();
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
-    
+
 
     @GetMapping("/{id}")
     public ResponseEntity<File> getFileById(@PathVariable Long id) {
         return fileService.getFileById(id)
                 .map(ResponseEntity.status(HttpStatus.OK)::body)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @GetMapping("/{id}/content")
+    public ResponseEntity<Resource> getFileContentById(@PathVariable Long id) {
+        Optional<File> fileData = fileService.getFileById(id);
+        if (fileData.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        File file = fileData.get();
+        try {
+            Resource resource = fileService.getFileContent(id);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(file.getType()))
+                    .body(resource);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping
@@ -60,7 +77,7 @@ public class FileController {
         }
     }
 
-    @DeleteMapping 
+    @DeleteMapping
     public ResponseEntity<Map<String, List<Long>>> deleteFiles (@RequestBody Set<Long> ids) {
         try {
             Map<String, List<Long>> deletedFiles = fileService.deleteFiles(ids);
