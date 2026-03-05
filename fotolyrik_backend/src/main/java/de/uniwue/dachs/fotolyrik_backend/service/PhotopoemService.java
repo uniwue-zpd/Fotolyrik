@@ -4,6 +4,7 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PhotopoemDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.*;
 import de.uniwue.dachs.fotolyrik_backend.repository.*;
 import de.uniwue.dachs.fotolyrik_backend.specification.PhotopoemSpecification;
+import de.uniwue.dachs.fotolyrik_backend.utils.helper.PhotopoemHighlightPicker;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,6 +24,7 @@ public class PhotopoemService {
     private final FileMapper fileMapper;
     private final CopyrightStatusMapper copyrightStatusMapper;
     private final LanguageMapper languageMapper;
+    private final PhotopoemHighlightPicker photopoemHighlightPicker;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             FullTextService fullTextService,
@@ -30,7 +32,8 @@ public class PhotopoemService {
                             PubMediumMapper pubMediumMapper,
                             PersonMapper personMapper,
                             KeywordMapper keywordMapper,
-                            FileMapper fileMapper, CopyrightStatusMapper copyrightStatusMapper, LanguageMapper languageMapper) {
+                            FileMapper fileMapper, CopyrightStatusMapper copyrightStatusMapper, LanguageMapper languageMapper,
+                            PhotopoemHighlightPicker photopoemHighlightPicker) {
         this.photopoemRepository = photopoemRepository;
         this.fullTextService = fullTextService;
         this.photopoemMapper = photopoemMapper;
@@ -40,6 +43,7 @@ public class PhotopoemService {
         this.fileMapper = fileMapper;
         this.copyrightStatusMapper = copyrightStatusMapper;
         this.languageMapper = languageMapper;
+        this.photopoemHighlightPicker = photopoemHighlightPicker;
     }
 
     /**
@@ -59,6 +63,18 @@ public class PhotopoemService {
      */
     public Optional<PhotopoemDTO> getPhotopoemById(Long id) {
         return photopoemRepository.findById(id).map(photopoemMapper::PhotopoemToPhotopoemDTO);
+    }
+
+    /**
+     * GET a photopoem as the monthly highlight
+     * @return an {@link Optional} containing the {@link PhotopoemDTO} of the monthly highlight, or an empty {@link Optional} if no photopoems are available
+     */
+    public Optional<PhotopoemDTO> getMonthlyHighlight() {
+        List<Long> allIds = photopoemRepository.findAllIds();
+        if (allIds.isEmpty()) return Optional.empty();
+        int index = photopoemHighlightPicker.calculateMonthlyIndex(allIds.size());
+        Long highlightId = allIds.get(index);
+        return photopoemRepository.findById(highlightId).map(photopoemMapper::PhotopoemToPhotopoemDTO);
     }
 
     /**

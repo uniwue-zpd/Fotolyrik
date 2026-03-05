@@ -10,6 +10,7 @@ const topics = computed(() => keywordStore.keywords.slice(0, 20));
 
 import { ref } from 'vue';
 import "maplibre-gl/dist/maplibre-gl.css"
+import Highlight from "~/components/UI/homepage/Highlight.vue";
 
 const images = ref([
     'k-1.jpg',
@@ -106,22 +107,7 @@ const responsiveOptions = ref([
     <div class="py-8 px-6 md:px-15">
       <h1 class="text-3xl outfit-headline font-bold text-primary">Sammlung</h1>
     </div>
-    <div class="collection bg-gray-accent">
-      <div class="flex flex-col gap-2 px-6 md:px-15 py-10 md:py-14">
-        <div class="pb-3">
-          <h2 class="text-3xl averia-layout italic text-primary">Highlight</h2>
-        </div>
-        <div class="flex flex-col md:flex-row md:space-x-5">
-          <div class="md:basis-1/4 font-bold">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-            tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-            accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-            Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr</div>
-          <div class="pt-6 md:pt-0 md:basis-3/4">
-            <img alt="placeholder image" src="../public/s-1.jpg"/>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Highlight/>
     <div class="title py-8 pt-7 px-6 md:px-15">
       <h2 class="text-3xl averia-layout italic font-bold text-primary">Fotolyrik in Zahlen</h2>
     </div>

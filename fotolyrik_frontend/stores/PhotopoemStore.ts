@@ -6,6 +6,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
     // State
     const photopoems = ref<PhotoPoemDTO[]>([] as PhotoPoemDTO[]);
     const currentPhotopoem = ref<PhotoPoemDTO | null>(null);
+    const currentHighlight = ref<PhotoPoemDTO | null>(null);
 
     // Getters
     const isLoaded = computed(() => photopoems.value.length > 0);
@@ -48,6 +49,16 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
                 currentPhotopoem.value = data.value as PhotoPoemDTO;
             }
         }
+    }
+
+    async function fetchPhotopoemHighlight() {
+        if (currentHighlight.value) return;
+        const { data, error } = await useFetch('/api/photopoems/highlight');
+        if (error.value) {
+            console.error('Error fetching photopoem highlight:', error.value);
+            return;
+        }
+        currentHighlight.value = data.value as PhotoPoemDTO;
     }
 
         // Fetch photopoem by author's ID
@@ -140,10 +151,12 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
     return {
         photopoems,
         currentPhotopoem,
+        currentHighlight,
         isLoaded,
         fetchPhotopoems,
         refreshPhotopoemsData,
         fetchPhtotopoemById,
+        fetchPhotopoemHighlight,
         filterPhotopoems,
         createPhotopoem,
         updatePhotopoem,
