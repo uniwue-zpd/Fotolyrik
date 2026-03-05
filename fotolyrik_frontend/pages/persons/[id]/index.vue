@@ -104,7 +104,7 @@ onMounted(async () => {
             </div>
           </div>
           <div v-if="depicted_person_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-            <h2 class="text-xl font-bold text-primary outfit-headline">Gezeigt in</h2>
+            <h2 class="text-xl font-bold text-primary outfit-headline">Abgebildet in</h2>
             <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in depicted_person_photopoems" :key="photopoem.id">

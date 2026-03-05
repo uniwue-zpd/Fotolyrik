@@ -334,10 +334,10 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
           <FormField v-slot="$field" name="depictedPeople" class="flex flex-col gap-1 w-full">
-            <label for="depictedPeople" class="font-bold">Gezeigte Personen</label>
+            <label for="depictedPeople" class="font-bold">Abgebildete Personen</label>
             <MultiSelect
                 inputId="depictedPeople"
-                placeholder="Gezeigte Personen auswählen"
+                placeholder="Abgebildete Personen auswählen"
                 selectedItemsLabel="{0} Personen ausgewählt"
                 :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
                 :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
