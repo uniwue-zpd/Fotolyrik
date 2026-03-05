@@ -75,6 +75,8 @@ public class PhotopoemService {
      * @param author refers to the name of the author
      * @param photographerId refers to the ID of the photographer
      * @param photographer refers to the name of the photographer
+     * @param depictedPersonId refers to the ID of the person depicted
+     * @param depictedPerson refers to the name of the person depicted
      * @param contributorId refers to the ID of other contributors
      * @param otherContributor refers to the name of other contributors
      * @param themeId refers to the ID of the theme
@@ -102,6 +104,8 @@ public class PhotopoemService {
             String author,
             Long photographerId,
             String photographer,
+            Long depictedPersonId,
+            String depictedPerson,
             Long contributorId,
             String otherContributor,
             Long themeId,
@@ -152,6 +156,12 @@ public class PhotopoemService {
         }
         if (photographer != null && !photographer.isEmpty()) {
             spec = spec.and(PhotopoemSpecification.hasPhotographer(photographer));
+        }
+        if (depictedPersonId != null) {
+            spec = spec.and(PhotopoemSpecification.hasDepictedPersonId(depictedPersonId));
+        }
+        if (depictedPerson != null && !depictedPerson.isEmpty()) {
+            spec = spec.and(PhotopoemSpecification.hasDepictedPerson(depictedPerson));
         }
         if (contributorId != null) {
             spec = spec.and(PhotopoemSpecification.hasOtherContributorId(contributorId));
@@ -229,6 +239,7 @@ public class PhotopoemService {
             entity.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(updatedPhotopoem.getPublicationMedium()));
             entity.setAuthors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getAuthors()));
             entity.setPhotographers(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getPhotographers()));
+            entity.setDepictedPeople(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getDepictedPeople()));
             entity.setOtherContributors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getOtherContributors()));
             entity.setThemes(keywordMapper.KeywordDTOsToKeywords(updatedPhotopoem.getThemes()));
             entity.setImageMotifs(keywordMapper.KeywordDTOsToKeywords(updatedPhotopoem.getImageMotifs()));

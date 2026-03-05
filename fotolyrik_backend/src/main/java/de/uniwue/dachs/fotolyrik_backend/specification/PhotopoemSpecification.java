@@ -92,6 +92,25 @@ public class PhotopoemSpecification {
         };
     }
 
+    public static Specification<Photopoem> hasDepictedPersonId(Long depictedPersonId) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Photopoem, Person> depictedPeople = root.join("depicted_people");
+            return criteriaBuilder.equal(depictedPeople.get("id"), depictedPersonId);
+        };
+    }
+
+    public static Specification<Photopoem> hasDepictedPerson(String depictedPersonName) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Photopoem, Person> depictedPeople = root.join("depicted_people");
+            Join<Person, String> pseudonyms = depictedPeople.join("pseudonyms", JoinType.LEFT);
+            String pattern = "%" + depictedPersonName.toLowerCase() + "%";
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(criteriaBuilder.lower(depictedPeople.get("firstName")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(depictedPeople.get("lastName")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(pseudonyms), pattern)
+            );
+        };
+    }
     public static Specification<Photopoem> hasOtherContributorId(Long contributorId) {
         return (root, query, criteriaBuilder) -> {
             Join<Photopoem, Person> otherContributors = root.join("otherContributors");

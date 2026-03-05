@@ -13,5 +13,9 @@ public interface PhotopoemRepository extends JpaRepository<Photopoem, Long>, Jpa
 
     List<Photopoem> findAllByPhotographers_Id(Long photographer_id);
 
-    List<Photopoem> findAllByAuthors_IdAndPhotographers_id(Long author_id, Long photographer_id);
+    List <Photopoem> findAllByDepictedPeople_Id(Long depicted_person_id);
+
+    // TODO this there might need tweaking / be extended, but currently is not used???
+    // List<Photopoem> findAllByAuthors_IdAndPhotographers_id(Long author_id, Long photographer_id);
+    //List<Photopoem> findAllByPeople_Ids(List<Long> people_ids);
 }

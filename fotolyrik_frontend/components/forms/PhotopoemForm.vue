@@ -44,6 +44,7 @@ const resolver = ref(
       publicationMedium: z.any(),
       authors: z.any(),
       photographers: z.any(),
+      //depictedPeople: z.any(),
       otherContributors: z.any(),
       themes: z.any(),
       imageMotifs: z.any(),

@@ -23,6 +23,7 @@ public class PhotopoemDTO extends BaseEntity {
     private PubMediumPreviewDTO publicationMedium;
     private Set<PersonPreviewDTO> authors = new HashSet<>();
     private Set<PersonPreviewDTO> photographers = new HashSet<>();
+    private Set<PersonPreviewDTO> depictedPeople = new HashSet<>();
     private Set<PersonPreviewDTO> otherContributors = new HashSet<>();
     private Set<KeywordDTO> themes = new HashSet<>();
     private Set<KeywordDTO> imageMotifs = new HashSet<>();
