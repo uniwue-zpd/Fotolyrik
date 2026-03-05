@@ -20,9 +20,6 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
                 return;
             }
             photopoems.value = data.value as PhotoPoemDTO[];
-
-            console.log(JSON.stringify(data.value, null, 2))
-            //console.log(photopoems.value)
         }
     }
 

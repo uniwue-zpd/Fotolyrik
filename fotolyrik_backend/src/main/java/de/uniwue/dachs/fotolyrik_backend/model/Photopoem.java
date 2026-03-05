@@ -53,7 +53,6 @@ public class Photopoem extends BaseEntity {
 
     @ManyToMany
     @JoinTable(
-            //name = "photopoem_other_contributors",
             name = "photopoem_depicted_people",
             joinColumns = @JoinColumn(name = "photopoem_id"),
             inverseJoinColumns = @JoinColumn(name = "person_id")
