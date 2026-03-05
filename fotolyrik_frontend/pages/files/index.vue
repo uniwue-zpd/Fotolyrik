@@ -21,7 +21,7 @@ onMounted(() => {
   fileStore.fetchFiles();
 });
 
-watch (
+watch(
     () => fileStore.files,
     async (files) => {
       await Promise.all(

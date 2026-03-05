@@ -39,39 +39,32 @@ export const useFileStore = defineStore("files", () => {
     }
 
     async function removeFile(file: File) {
-        const { error } = await useFetch(`/api/files/${file.id}`, { method: 'DELETE' });
-        if (error.value) {
-            console.error('Failed to delete file: ', error.value.message);
-            errorDown.value = error.value.message || 'Failed to delete file';
-            return;
+        try {
+            await $fetch(`/api/files/${ file.id }`, { method: 'DELETE' });
+            files.value = files.value.filter(f => f.id !== file.id);
+        } catch (err: any) {
+            console.error('Failed to delete file: ', err);
+            errorDown.value = err?.message || 'Failed to delete file';
         }
-        files.value = files.value.filter(f => f.id !== file.id);
     }
 
     async function uploadFiles(fileList: FileList) {
-        progressUp.value = 0
-        loadingUp.value = true
-        errorUp.value = null
-
+        progressUp.value = 0;
+        loadingUp.value = true;
+        errorUp.value = null;
         const formData = new FormData();
         Array.from(fileList).forEach(file => {
             formData.append('file', file);
         });
-
         try {
-            const response = await apiClient.post<File[]>('/files', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                onUploadProgress: (progressEvent) => {
-                    if (progressEvent.lengthComputable) {
-                        progressUp.value = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
-                    }
-                }
+            const response = await $fetch<File[]>('/api/files', {
+                method: 'POST',
+                body: formData
             });
-            files.value.push(...response.data);
+            files.value.push(...response);
+            progressUp.value = 100;
         } catch (err: any) {
-            errorUp.value = err.message || 'Failed to upload files';
+            errorUp.value = err?.message || 'Failed to upload files';
             console.error('Error uploading files:', err);
         } finally {
             loadingUp.value = false;
