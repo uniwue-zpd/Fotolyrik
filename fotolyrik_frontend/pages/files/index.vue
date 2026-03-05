@@ -7,7 +7,7 @@ const toast = useToast();
 const fileStore = useFileStore();
 
 const imageErrors = ref<Record<string, boolean>>({});
-const uploadVisible = ref<boolean>(false);
+const previewURLs = ref<Record<number, string>>({});
 
 const filter = ref({ global: {value: null, matchMode: FilterMatchMode.CONTAINS}});
 const options: Intl.DateTimeFormatOptions = {
@@ -20,6 +20,21 @@ const options: Intl.DateTimeFormatOptions = {
 onMounted(() => {
   fileStore.fetchFiles();
 });
+
+watch (
+    () => fileStore.files,
+    async (files) => {
+      await Promise.all(
+          files.map(async (file) => {
+            if (!previewURLs.value[file.id]) {
+              const url = await fileStore.getImageContent(file.id);
+              if (url) previewURLs.value[file.id] = url;
+            }
+          })
+      );
+    },
+    { immediate: true, deep: true }
+);
 
 const onFileSelect = async (e: any) => {
   try {
@@ -48,7 +63,6 @@ const handleImageError = (path: string) => {
       <h1 class="text-3xl font-bold text-primary outfit-headline">Dateien</h1>
     </template>
     <template #content>
-      
       <DataTable
         :value="fileStore.files"
         v-model:filters="filter"
@@ -61,33 +75,33 @@ const handleImageError = (path: string) => {
       >
         <template #header>
           <div class="flex flex-row justify-between items-center">
-            <FileUpload 
-              mode="basic" 
-              name="upload[]" 
-              accept=".png,.jpg,.jpeg,image/png,image/jpeg"
-              chooseLabel="Dateien hinzufügen" 
-              invalidFileSizeMessage="Dateien sind zu groß. Maximal 20MB"
-              :maxFileSize="20000000"
-              :customUpload="true" 
-              :multiple="true" 
-              @select="onFileSelect"
-              auto
-              :pt="{ pcChooseButton: { root: { class: 'p-button-secondary p-button-outlined' } } }"
+            <FileUpload
+                mode="basic"
+                name="upload[]"
+                accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+                chooseLabel="Dateien hinzufügen"
+                invalidFileSizeMessage="Dateien sind zu groß. Maximal 20MB"
+                :maxFileSize="20000000"
+                :customUpload="true"
+                :multiple="true"
+                @select="onFileSelect"
+                auto
+                :pt="{ pcChooseButton: { root: { class: 'p-button-secondary p-button-outlined' } } }"
             />
             <IconField>
               <InputIcon>
                 <i class="pi pi-search"/>
               </InputIcon>
               <InputText
-                v-model="filter['global'].value"
-                type="text"
-                placeholder="Dateisuche"
+                  v-model="filter['global'].value"
+                  type="text"
+                  placeholder="Dateisuche"
               />
             </IconField>
           </div>
         </template>
         <Column header="Vorschau" headerClass="w-[75px]">
-          <template #body="slotProps">
+               <template #body="slotProps">
             <div class="relative w-[75px] h-[75px] rounded-full overflow-hidden object-center">
               <Image
                 alt="Vorschau"
@@ -100,11 +114,11 @@ const handleImageError = (path: string) => {
                   <i class="pi pi-search"></i>
                 </template>
                 <template #image>
-                  <img 
-                    v-if="!imageErrors[slotProps.data.path]" 
-                    @error="handleImageError(slotProps.data.path)" 
-                    :src="fileStore.getImagePreview(slotProps.data.path)" 
-                    alt="MiniPreview" 
+                  <img
+                    v-if="previewURLs[slotProps.data.id] && !imageErrors[slotProps.data.path]"
+                    @error="handleImageError(slotProps.data.path)"
+                    :src="previewURLs[slotProps.data.id]"
+                    alt="MiniPreview"
                     class="w-full h-full object-cover"
                     @contextmenu.prevent
                   />
@@ -113,10 +127,10 @@ const handleImageError = (path: string) => {
                   </div>
                 </template>
                 <template #original>
-                  <img 
-                    v-if="!imageErrors[slotProps.data.path]" 
-                    @error="handleImageError(slotProps.data.path)" 
-                    :src="fileStore.getImagePreview(slotProps.data.path)" 
+                  <img
+                    v-if="!imageErrors[slotProps.data.path]"
+                    @error="handleImageError(slotProps.data.path)"
+                    :src="previewURLs[slotProps.data.id]"
                     alt="MaxPreview"
                     class="max-w-(--breakpoint-md) max-h-screen object-contain"
                     @contextmenu.prevent
@@ -129,8 +143,8 @@ const handleImageError = (path: string) => {
             </div>
           </template>
         </Column>
-        <Column field="filename" header="Datei" sortable headerClass="w-[60%]"></Column>
-        <Column field="created_date" header="Erstellt am" sortable>
+        <Column field="filename" header="Datei" headerClass="w-[60%]" :sortable="true"/>
+        <Column field="created_date" header="Erstellt am" :sortable="true">
           <template #body="slotProps">
               {{ timestampToDate(slotProps.data.createdDate) }}
           </template>
@@ -143,9 +157,6 @@ const handleImageError = (path: string) => {
       </DataTable>
     </template>
   </Card>
-  <Dialog v-model:visible="uploadVisible" modal header="Dateien hinzufügen" :draggable="false" class="w-[40dvw] min-w-120">
-    <FormsUploadForm/>
-  </Dialog>
 </template>
 
 
