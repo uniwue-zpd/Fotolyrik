@@ -8,7 +8,7 @@ const photopoem_item = ref<PhotoPoem | null>(null);
 
 onMounted(async () => {
   await store.fetchPhtotopoemById(photopoem_id);
-  photopoem_item.value = store.currentPhotopoem;
+  photopoem_item.value = store.currentPhotopoem as PhotoPoem;
 });
 </script>
 
@@ -16,7 +16,7 @@ onMounted(async () => {
   <PhotopoemForm
       action="edit"
       header="Fotogedicht-Objekt bearbeiten"
-      :photopoem="photopoem_item ?? undefined"
+      :photopoem="photopoem_item as PhotoPoemDTO ?? undefined"
   />
 </template>
 

@@ -154,7 +154,22 @@ onMounted(async () => {
                         </div>
                       </td>
                     </tr>
-                    <tr v-if="photopoem_item.otherContributors.length > 0">
+                    <tr v-if="photopoem_item.depictedPeople.length > 0">
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Gezeigte Person</td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex flex-wrap gap-3.5">
+                            <span v-for="person in photopoem_item.depictedPeople" :key="person.id">
+                              <NuxtLink
+                                  :to="`/persons/${person.id}`"
+                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                              >
+                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                              </NuxtLink>
+                            </span>
+                        </div>
+                      </td>
+                    </tr>
+                  <tr v-if="photopoem_item.otherContributors.length > 0">
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Sonstige Mitwirkende</td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">

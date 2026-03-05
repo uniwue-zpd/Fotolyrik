@@ -106,6 +106,7 @@ export interface PhotoPoem extends Auditable {
     publicationMedium: PubMedium | null;
     authors: Person[] | [];
     photographers: Person[] | [];
+    depictedPeople: Person[] | [];
     otherContributors: Person[] | [];
     themes: Keyword[] | [];
     imageMotifs: Keyword[] | [];
@@ -132,6 +133,7 @@ export interface PhotoPoemDTO extends Auditable {
     publicationMedium: PubMediumPreviewDTO | null;
     authors: PersonPreviewDTO[] | [];
     photographers: PersonPreviewDTO[] | [];
+    depictedPeople: PersonPreviewDTO[] | [];
     otherContributors: PersonPreviewDTO[] | [];
     themes: KeywordDTO[] | [];
     imageMotifs: KeywordDTO[] | [];

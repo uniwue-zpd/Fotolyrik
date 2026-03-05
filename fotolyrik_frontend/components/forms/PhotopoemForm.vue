@@ -44,7 +44,7 @@ const resolver = ref(
       publicationMedium: z.any(),
       authors: z.any(),
       photographers: z.any(),
-      //depictedPeople: z.any(),
+      depictedPeople: z.any(),
       otherContributors: z.any(),
       themes: z.any(),
       imageMotifs: z.any(),
@@ -331,6 +331,24 @@ const onFormSubmit = async (e: any) => {
             />
             <Message v-if="$form.photographers?.invalid" severity="error" size="small" variant="simple">
               {{ $form.photographers.error.message }}
+            </Message>
+          </FormField>
+          <FormField v-slot="$field" name="depictedPeople" class="flex flex-col gap-1 w-full">
+            <label for="depictedPeople" class="font-bold">Gezeigte Personen</label>
+            <MultiSelect
+                inputId="depictedPeople"
+                placeholder="Gezeigte Personen auswählen"
+                selectedItemsLabel="{0} Personen ausgewählt"
+                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
+                :maxSelectedLabels="2"
+                :options="persons"
+                :key="persons.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                filter fluid
+            />
+            <Message v-if="$form.depictedPeople?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.depictedPeople.error.message }}
             </Message>
           </FormField>
           <FormField v-slot="$field" name="otherContributors" class="flex flex-col gap-1 w-full">
