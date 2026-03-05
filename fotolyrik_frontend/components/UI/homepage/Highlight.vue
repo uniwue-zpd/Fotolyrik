@@ -8,12 +8,13 @@ const highlight = computed(() => photopoem_store.currentHighlight);
       v-if="highlight"
       class="collection bg-surface-100"
   >
-    <div class="flex flex-col gap-5 px-6 py-10 md:p-15">
+    <div class="flex flex-col gap-2 px-6 py-10 md:p-15">
       <h2 class="text-3xl averia-layout italic text-primary">Highlight</h2>
+      <Divider/>
       <div class="flex flex-col gap-4 md:flex-row md:space-x-5 md:gap-0">
         <div class="md:basis-3/5">
           <div class="flex flex-col gap-5">
-            <span class="outfit-headline font-bold text-primary text-xl">
+            <span class="outfit-headline font-bold text-primary text-2xl">
               {{ highlight.title || highlight.altTitle }}
             </span>
             <div class="flex flex-col gap-2 text-sm roboto-plain">
@@ -64,8 +65,8 @@ const highlight = computed(() => photopoem_store.currentHighlight);
               </div>
               <div v-if="highlight.publicationDate" class="flex flex-row space-x-2">
                 <div class="md:basis-2/5 font-semibold">Erscheinungsdatum</div>
-                <div class="text-primary font-medium">
-                  {{ new Date(highlight.publicationDate).toLocaleDateString('de-DE') }}
+                <div class="font-normal">
+                  {{ highlight.publicationDate }}
                 </div>
               </div>
             </div>
