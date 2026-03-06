@@ -58,7 +58,7 @@ public class PhotopoemController {
             @RequestParam(required = false, value = "photographer-id") Long photographerId,
             @RequestParam(required = false) String photographer,
             @RequestParam(required = false, value = "depicted-person-id") Long depictedPersonId,
-            @RequestParam(required = false) String depictedPerson,
+            @RequestParam(required = false, value= "depicted-person") String depictedPerson,
             @RequestParam(required = false, value = "other-contributor-id") Long otherContributorId,
             @RequestParam(required = false, value = "other-contributor") String otherContributor,
             @RequestParam(required = false, value = "theme-id") Long themeId,
