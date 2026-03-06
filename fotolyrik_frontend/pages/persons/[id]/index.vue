@@ -135,7 +135,7 @@ onMounted(async () => {
               class="flex flex-row items-center space-x-2"
           >
             <i class="pi pi-arrow-left"/>
-            <div class="text-primary roboto-plain">Vorheriger Eintrag</div>
+            <div class=" roboto-plain">Vorheriger Eintrag</div>
           </NuxtLink>
         </div>
       </div>
@@ -145,7 +145,7 @@ onMounted(async () => {
               :to="`/persons/${next_person.id}`"
               class="flex flex-row items-center space-x-2"
           >
-            <div class="text-primary roboto-plain">Nächster Eintrag</div>
+            <div class="roboto-plain">Nächster Eintrag</div>
             <i class="pi pi-arrow-right"/>
           </NuxtLink>
         </div>
