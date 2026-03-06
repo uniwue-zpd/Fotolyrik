@@ -116,7 +116,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
     function previousPhotopoem() {
         const currentIndex = photopoems.value.findIndex(p => p.id === currentPhotopoem.value?.id);
         if (currentIndex !== -1 && currentIndex) {
-            return photopoems.value[currentIndex - 1] as PhotoPoem;
+            return photopoems.value[currentIndex - 1] as PhotoPoemDTO;
         } else {
             return null;
         }
@@ -126,7 +126,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
     function nextPhotopem() {
         const currentIndex = photopoems.value.findIndex(p => p.id === currentPhotopoem.value?.id);
         if (currentIndex !== -1 && currentIndex < photopoems.value.length - 1) {
-            return photopoems.value[currentIndex + 1] as PhotoPoem;
+            return photopoems.value[currentIndex + 1] as PhotoPoemDTO;
         } else {
             return null;
         }
