@@ -4,11 +4,11 @@ import PhotopoemForm from "~/components/forms/PhotopoemForm.vue";
 const route = useRoute();
 const photopoem_id = Number(route.params.id);
 const store = usePhotopoemStore();
-const photopoem_item = ref<PhotoPoem | null>(null);
+const photopoem_item = ref<PhotoPoemDTO | null>(null);
 
 onMounted(async () => {
   await store.fetchPhtotopoemById(photopoem_id);
-  photopoem_item.value = store.currentPhotopoem as PhotoPoem;
+  photopoem_item.value = store.currentPhotopoem;
 });
 </script>
 
@@ -16,7 +16,7 @@ onMounted(async () => {
   <PhotopoemForm
       action="edit"
       header="Fotogedicht-Objekt bearbeiten"
-      :photopoem="photopoem_item as PhotoPoemDTO ?? undefined"
+      :photopoem="photopoem_item ?? undefined"
   />
 </template>
 

@@ -155,7 +155,7 @@ onMounted(async () => {
                       </td>
                     </tr>
                     <tr v-if="photopoem_item.depictedPeople.length > 0">
-                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Abgebildete Person</td>
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Abgebildete Personen</td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">
                             <span v-for="person in photopoem_item.depictedPeople" :key="person.id">

@@ -96,8 +96,8 @@ export interface PhotoPoem extends Auditable {
     title: string | null;
     subtitle: string | null;
     altTitle: string | null;
-    volume: string | null;
-    issue: string | null;
+    volume: number | null;
+    issue: number | null;
     pageNumber: string | null;
     manifestPageNumber: number | null;
     pageCount: number | null;
