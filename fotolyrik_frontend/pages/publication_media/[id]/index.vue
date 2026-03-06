@@ -19,7 +19,6 @@ onMounted(async () => {
   previous_pub_medium.value = pubmedium_store.previousPubMedium();
   next_pub_medium.value = pubmedium_store.nextPubMedium();
   pub_medium_photopoems.value = await photopoem_store.filterPhotopoems({'pubmedium-id': pub_medium_id});
-  console.log(pub_medium_photopoems.value);
 });
 </script>
 
