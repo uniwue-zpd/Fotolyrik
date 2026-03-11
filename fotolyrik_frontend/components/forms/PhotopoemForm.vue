@@ -54,6 +54,13 @@ const resolver = ref(
       copyrightStatusImage: z.any(),
       copyrightStatusText: z.any(),
       languages: z.any(),
+      contributions: z.array(
+          z.object({
+            role: z.any(),
+            person: z.any(),
+            pseudonym: z.any(),
+          })
+      ).optional(),
     })
   )
 );

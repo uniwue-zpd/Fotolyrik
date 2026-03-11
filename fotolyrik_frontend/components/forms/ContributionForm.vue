@@ -41,6 +41,7 @@ const contributions = ref<Contribution[]>([]);
       :virtual-scroller-options="{ itemSize: 50 }"
       filter fluid
   > </Select>
+  <InputText placeholder="Pseudonym"></InputText>
   <Select
       inputId="contributionRole"
       placeholder="In Rolle"
