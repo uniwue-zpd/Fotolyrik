@@ -91,7 +91,23 @@ export interface PersonPreviewDTO {
     studioName: string | null;
     pseudonyms: [string] | [];
 }
-
+export enum ContributionRole{
+    UNKNOWN,
+    AUTHOR,
+    PHOTOGRAPHER,
+    DEPICTED,
+    OTHER,
+}
+export interface PseudonymDTO {
+    id: number;
+    name: string;
+}
+export interface ContributionDTO {
+    id: number;
+    role: ContributionRole;
+    contributor: PersonPreviewDTO;
+    underPseudonym: PseudonymDTO;
+}
 export interface PhotoPoem extends Auditable {
     title: string | null;
     subtitle: string | null;
@@ -130,9 +146,13 @@ export interface PhotoPoemDTO extends Auditable {
     pictureCount: string | null;
     publicationDate: string | null;
     publicationMedium: PubMediumPreviewDTO | null;
+    // depercated
     authors: PersonPreviewDTO[] | [];
+    // depercated
     photographers: PersonPreviewDTO[] | [];
+    // depercated
     otherContributors: PersonPreviewDTO[] | [];
+    contributions: ContributionDTO[] | [];
     themes: KeywordDTO[] | [];
     imageMotifs: KeywordDTO[] | [];
     form: string | null;

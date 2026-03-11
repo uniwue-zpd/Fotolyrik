@@ -352,6 +352,11 @@ const onFormSubmit = async (e: any) => {
           </FormField>
         </div>
         <Divider align="center">
+          <b class="px-2">Mitwirkende</b>
+        </Divider>
+        <FormsContributionForm :persons="persons"></FormsContributionForm>
+
+        <Divider align="center">
           <b class="px-2">Tags</b>
         </Divider>
         <div class="flex flex-row space-x-3">
