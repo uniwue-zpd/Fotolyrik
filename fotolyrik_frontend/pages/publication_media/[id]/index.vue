@@ -38,7 +38,7 @@ onMounted(async () => {
       </template>
       <template #content>
         <table class="min-w-full divide-y divide-gray-200 roboto-plain">
-          <tbody v-if="pub_medium_item" class="bg-white divide-y divide-gray-200">
+          <tbody v-if="pub_medium_item" class=" divide-y divide-gray-200">
           <tr v-if="pub_medium_item.subtitle">
             <td class="px-6 py-4 whitespace-nowrap font-semibold">Titel-Zusatz</td>
             <td class="px-6 py-4 whitespace-nowrap ">{{ pub_medium_item.subtitle }}</td>
@@ -50,7 +50,7 @@ onMounted(async () => {
                 <span v-for="place in pub_medium_item.publicationPlaces" :key="place.id">
                   <NuxtLink
                       :to="`/places/${place.id}`"
-                      class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-semibold"
+                      class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-semibold"
                   >
                     {{ place.name }}
                   </NuxtLink>
@@ -67,7 +67,7 @@ onMounted(async () => {
             <td class="px-6 py-4 whitespace-nowrap ">
               <div class="flex flex-wrap gap-3.5">
                 <div v-for="rhythm in pub_medium_item.pubRhythms" :key="rhythm.id">
-                  <div class="p-1.5 bg-[#F1F2F2] rounded-md shadow-sm hover:shadow-md font-semibold">
+                  <div class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-semibold">
                     {{ rhythm.value }}
                   </div>
                 </div>
@@ -112,7 +112,7 @@ onMounted(async () => {
               class="flex flex-row items-center space-x-2"
           >
             <i class="pi pi-arrow-left"/>
-            <div class="text-primary roboto-plain">Vorheriger Eintrag</div>
+            <div class="roboto-plain">Vorheriger Eintrag</div>
           </NuxtLink>
         </div>
       </div>
@@ -122,7 +122,7 @@ onMounted(async () => {
               :to="`/publication_media/${ next_pub_medium.id }`"
               class="flex flex-row items-center space-x-2"
           >
-            <div class="text-primary roboto-plain">Nächster Eintrag</div>
+            <div class=" roboto-plain">Nächster Eintrag</div>
             <i class="pi pi-arrow-right"/>
           </NuxtLink>
         </div>

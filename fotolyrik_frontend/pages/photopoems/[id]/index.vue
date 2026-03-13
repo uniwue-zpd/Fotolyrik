@@ -118,7 +118,7 @@ onMounted(async () => {
                       <td class="px-6 py-4 whitespace-nowrap">
                         <NuxtLink
                             :to="`/publication_media/${photopoem_item.publicationMedium.id}`"
-                            class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                            class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                         >
                           {{ photopoem_item.publicationMedium.title }}
                         </NuxtLink>
@@ -131,7 +131,7 @@ onMounted(async () => {
                             <span v-for="person in photopoem_item.authors" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
@@ -146,7 +146,7 @@ onMounted(async () => {
                             <span v-for="person in photopoem_item.photographers" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
@@ -176,7 +176,7 @@ onMounted(async () => {
                             <span v-for="person in photopoem_item.otherContributors" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
@@ -191,7 +191,7 @@ onMounted(async () => {
                             <span v-for="keyword in photopoem_item.themes" :key="keyword.id">
                               <NuxtLink
                                   :to="`/keywords/${keyword.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ keyword.value }}
                               </NuxtLink>
@@ -206,7 +206,7 @@ onMounted(async () => {
                             <span v-for="keyword in photopoem_item.imageMotifs" :key="keyword.id">
                               <NuxtLink
                                   :to="`/keywords/${keyword.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ keyword.value }}
                               </NuxtLink>
@@ -231,7 +231,7 @@ onMounted(async () => {
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">
                           <div v-for="language in photopoem_item.languages">
-                            <div class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium">
+                            <div class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium">
                               {{ language.name }}
                             </div>
                           </div>

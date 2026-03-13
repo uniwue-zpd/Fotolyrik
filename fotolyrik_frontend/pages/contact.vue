@@ -126,7 +126,7 @@ const onFormSubmit = async (e: any) => {
           <Checkbox inputId="dp" name="dataProtection" class="pt-0.5" binary/>
           <label for="dp">
             Ich habe die
-            <NuxtLink to="/data-protection" class="text-[#004188] font-bold">
+            <NuxtLink to="/data-protection" class="text-primary font-bold">
               Datenschutzerklärung
             </NuxtLink>
             zur Kenntnis genommen.*
@@ -145,7 +145,7 @@ const onFormSubmit = async (e: any) => {
     </Form>
     <h1 class="text-2xl outfit-headline text-primary font-bold">Ansprechpartner</h1>
     <div class="flex flex-col">
-      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-surface-100 p-5">
+      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-gray-accent p-5">
         <img src="https://picsum.photos/200" alt="placeholder-image"/>
         <div class="flex flex-col gap-4">
           <div class="averia-layout italic text-2xl text-primary">Max Mustermann</div>
@@ -173,7 +173,7 @@ const onFormSubmit = async (e: any) => {
         </div>
         <img src="https://picsum.photos/200" alt="placeholder-image"/>
       </div>
-      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-surface-100 p-5">
+      <div class="flex flex-col gap-2 md:flex-row md:space-x-5 md:items-start bg-gray-accent p-5">
         <img src="https://picsum.photos/200" alt="placeholder-image"/>
         <div class="flex flex-col gap-4">
           <div class="averia-layout italic text-2xl text-primary">Max Mustermann</div>
