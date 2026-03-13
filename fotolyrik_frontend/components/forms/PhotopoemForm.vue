@@ -78,6 +78,8 @@ async function handleRefresh() {
 }
 
 const onFormSubmit = async (e: any) => {
+  console.log(e.values);
+
   if (e.valid) {
     try {
       if (props.action === "create") {

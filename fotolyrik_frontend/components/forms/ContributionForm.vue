@@ -27,30 +27,37 @@ const contributions = ref<Contribution[]>([]);
 <template>
 <Button icon="pi pi-plus" severity="secondary" aria-label="Add" label="Mitwirkende hinzufügen"
         @click="contributions.push(createEmptyContribution())"/>
-  <div v-if="contributions.length > 0" v-for="(contribution, index) in contributions" :key="contribution.id"  >
-<div class="flex">
-  <Select
-      inputId="contributors"
-      placeholder="Mitwirkende Person auswählen"
-      selectedItemsLabel="{0} Personen ausgewählt"
-      :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-      :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-      :maxSelectedLabels="2"
-      :options="persons"
-      :key="persons?.length"
-      :virtual-scroller-options="{ itemSize: 50 }"
-      filter fluid
-  > </Select>
-  <InputText placeholder="Pseudonym"></InputText>
-  <Select
-      inputId="contributionRole"
-      placeholder="In Rolle"
-      :options="roleOptions"
-      optionLabel="label"
-      optionValue="value"
-  ></Select>
-  <Button icon="pi pi-times" severity="secondary" aria-label="Remove"
-          @click="contributions.splice(index, 1)"/>
-</div>
+  <Form @submit="(e) => console.log('Form Data:', e.values)">
+<div v-if="contributions.length > 0" v-for="(contribution, index) in contributions" :key="contribution.id"  >
+  <div class="flex">
+    <FormField v-slot="$field" :name="`contributions[${index}].contributor`">
+    <Select
+        inputId="contributors"
+        placeholder="Mitwirkende Person auswählen"
+        selectedItemsLabel="{0} Personen ausgewählt"
+        :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+        :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
+        :maxSelectedLabels="2"
+        :options="persons"
+        :key="persons?.length"
+        :virtual-scroller-options="{ itemSize: 50 }"
+        filter fluid
+    > </Select>
+    </FormField>
+    <FormField v-slot="$field" :name="`contributions[${index}].pseudonym`">
+    <InputText placeholder="Pseudonym"></InputText>
+    </FormField>
+    <FormField v-slot="$field" :name="`contributions[${index}].role`">
+    <Select
+        inputId="contributionRole"
+        placeholder="In Rolle"
+        :options="roleOptions"
+        optionLabel="label"
+        optionValue="value" ></Select> </FormField>
+    <Button icon="pi pi-times" severity="secondary" aria-label="Remove"
+            @click="contributions.splice(index, 1)"/>
   </div>
+</div>
+    <Button type="submit" label="Print Data" />
+  </Form>
 </template>
