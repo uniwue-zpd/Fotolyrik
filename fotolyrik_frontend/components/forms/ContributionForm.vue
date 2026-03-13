@@ -34,12 +34,9 @@ const contributions = ref<Contribution[]>([]);
     <Select
         inputId="contributors"
         placeholder="Mitwirkende Person auswählen"
-        selectedItemsLabel="{0} Personen ausgewählt"
         :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
         :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-        :maxSelectedLabels="2"
         :options="persons"
-        :key="persons?.length"
         :virtual-scroller-options="{ itemSize: 50 }"
         filter fluid
     > </Select>
