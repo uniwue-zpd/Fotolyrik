@@ -226,6 +226,7 @@ const contributions = ref<Contribution[]>([]);
                   v-on:keydown.enter.prevent
                   fluid
               />
+              <!-- TODO still sends multiple form field intputs even after clicking delete button -->
             </IconField>
           </FormField>
           <FormField v-slot="$field" name="pageCount" class="flex flex-col gap-1 w-full">

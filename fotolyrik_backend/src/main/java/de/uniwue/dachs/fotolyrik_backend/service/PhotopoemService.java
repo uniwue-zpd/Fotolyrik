@@ -25,6 +25,7 @@ public class PhotopoemService {
     private final CopyrightStatusMapper copyrightStatusMapper;
     private final LanguageMapper languageMapper;
     private final PhotopoemHighlightPicker photopoemHighlightPicker;
+    private final ContributionMapper contributionMapper;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             FullTextService fullTextService,
@@ -33,7 +34,7 @@ public class PhotopoemService {
                             PersonMapper personMapper,
                             KeywordMapper keywordMapper,
                             FileMapper fileMapper, CopyrightStatusMapper copyrightStatusMapper, LanguageMapper languageMapper,
-                            PhotopoemHighlightPicker photopoemHighlightPicker) {
+                            PhotopoemHighlightPicker photopoemHighlightPicker, ContributionMapper contributionMapper) {
         this.photopoemRepository = photopoemRepository;
         this.fullTextService = fullTextService;
         this.photopoemMapper = photopoemMapper;
@@ -44,6 +45,7 @@ public class PhotopoemService {
         this.copyrightStatusMapper = copyrightStatusMapper;
         this.languageMapper = languageMapper;
         this.photopoemHighlightPicker = photopoemHighlightPicker;
+        this.contributionMapper = contributionMapper;
     }
 
     /**
@@ -246,6 +248,7 @@ public class PhotopoemService {
             entity.setAuthors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getAuthors()));
             entity.setPhotographers(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getPhotographers()));
             entity.setOtherContributors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getOtherContributors()));
+            entity.setContributions(contributionMapper.ContributionDTOsToContribution(updatedPhotopoem.getContributions()));
             entity.setThemes(keywordMapper.KeywordDTOsToKeywords(updatedPhotopoem.getThemes()));
             entity.setImageMotifs(keywordMapper.KeywordDTOsToKeywords(updatedPhotopoem.getImageMotifs()));
             entity.setForm(updatedPhotopoem.getForm());

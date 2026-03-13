@@ -7,7 +7,6 @@ const props = defineProps({
 const roleOptions = [
   { label: 'Autor:in', value: ContributionRole.AUTHOR },
   { label: 'Fotograf:in', value: ContributionRole.PHOTOGRAPHER },
-  { label: 'Abgebildete Person', value: ContributionRole.DEPICTED },
   { label: 'Sonstige', value: ContributionRole.OTHER }
 ];
 interface Contribution {

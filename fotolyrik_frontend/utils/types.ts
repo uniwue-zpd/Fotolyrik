@@ -95,7 +95,6 @@ export enum ContributionRole{
     UNKNOWN,
     AUTHOR,
     PHOTOGRAPHER,
-    DEPICTED,
     OTHER,
 }
 export interface PseudonymDTO {

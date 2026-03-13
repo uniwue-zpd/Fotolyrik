@@ -59,6 +59,9 @@ public class Photopoem extends BaseEntity {
     )
     private Set<Person> otherContributors = new HashSet<>();
 
+    @OneToMany(mappedBy = "workContributedTo", cascade = CascadeType.ALL, orphanRemoval = false)//orphanRemoval=true TODO
+    private Set<Contribution> contributions = new HashSet<>();
+
     @ManyToMany
     @JoinTable(
             name = "photopoem_themes",
