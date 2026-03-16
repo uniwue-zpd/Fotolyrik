@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ContributionRole} from "~/utils/types";
 const getContributions = () => {
-  return [];
+  return contributions.value.map(({ renderId, ...rest }) => rest);
 };
 defineExpose({getContributions})
 const props = defineProps({
@@ -13,50 +13,48 @@ const roleOptions = [
   { label: 'Sonstige', value: ContributionRole.OTHER }
 ];
 interface Contribution {
-    id: string;
+    renderId: string;
+    id?: number;
     contributor: PersonPreviewDTO;
-    pseudonym: PseudonymDTO;
+    pseudonym: string;
     role: ContributionRole
 };
 const createEmptyContribution = (): Contribution => ({
-  id: crypto.randomUUID(),
+  renderId: crypto.randomUUID(),
   contributor: {} as PersonPreviewDTO,
-  pseudonym: {} as PseudonymDTO,
-  role: ContributionRole.UNKNOWN as ContributionRole
+  pseudonym: "",
+  role: ContributionRole.UNKNOWN
 });
 const contributions = ref<Contribution[]>([]);
 </script>
 <template>
 <Button icon="pi pi-plus" severity="secondary" aria-label="Add" label="Mitwirkende hinzufügen"
         @click="contributions.push(createEmptyContribution())"/>
-  <Form @submit="(e) => console.log('Form Data:', e.values)">
-<div v-if="contributions.length > 0" v-for="(contribution, index) in contributions" :key="contribution.id"  >
-  <div class="flex">
-    <FormField v-slot="$field" :name="`contributions[${index}].contributor`">
-    <Select
-        inputId="contributors"
-        placeholder="Mitwirkende Person auswählen"
-        :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-        :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-        :options="persons"
-        :virtual-scroller-options="{ itemSize: 50 }"
-        filter fluid
-    > </Select>
-    </FormField>
-    <FormField v-slot="$field" :name="`contributions[${index}].pseudonym`">
-    <InputText placeholder="Pseudonym"></InputText>
-    </FormField>
-    <FormField v-slot="$field" :name="`contributions[${index}].role`">
-    <Select
-        inputId="contributionRole"
-        placeholder="In Rolle"
-        :options="roleOptions"
-        optionLabel="label"
-        optionValue="value" ></Select> </FormField>
-    <Button icon="pi pi-times" severity="secondary" aria-label="Remove"
-            @click="contributions.splice(index, 1)"/>
+<Form @submit="(e) => console.log('Form Data:', e.values)">
+  <div v-if="contributions.length > 0" v-for="(contribution, index) in contributions" :key="contribution.renderId"  >
+    <div class="flex">
+      <Select
+          inputId="contributors"
+          placeholder="Mitwirkende Person auswählen"
+          :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+          :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
+          :options="persons"
+          :virtual-scroller-options="{ itemSize: 50 }"
+          v-model="contributions[index].contributor"
+          filter fluid
+      > </Select>
+      <InputText placeholder="Pseudonym" v-model="contributions[index].pseudonym"></InputText>
+      <Select
+          inputId="contributionRole"
+          placeholder="In Rolle"
+          :options="roleOptions"
+          optionLabel="label"
+          optionValue="value"
+          v-model="contributions[index].role"
+      ></Select>
+      <Button icon="pi pi-times" severity="secondary" aria-label="Remove"
+              @click="contributions.splice(index, 1)"/>
+    </div>
   </div>
-</div>
-    <Button type="submit" label="Print Data" />
-  </Form>
+</Form>
 </template>
