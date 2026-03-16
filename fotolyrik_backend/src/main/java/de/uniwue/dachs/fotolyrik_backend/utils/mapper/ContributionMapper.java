@@ -4,6 +4,7 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.ContributionDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Contribution;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
+import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
 import de.uniwue.dachs.fotolyrik_backend.repository.ContributionRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import org.springframework.stereotype.Component;
@@ -16,34 +17,41 @@ import java.util.stream.Collectors;
 @Component
 public class ContributionMapper {
     private final ContributionRepository contributionRepository;
+    private final PersonMapper personMapper;
 
-    public ContributionMapper(ContributionRepository contributionRepository) {
+    public ContributionMapper(ContributionRepository contributionRepository, PersonMapper personMapper) {
         this.contributionRepository = contributionRepository;
+        this.personMapper = personMapper;
     }
-
-
-    public Person PreviewDTOToPerson(PersonPreviewDTO personPreviewDTO) {
-        if (personPreviewDTO == null || personPreviewDTO.getId() == null) return null;
-        //return personRepository.findById(personPreviewDTO.getId()).orElse(null);
-        return null;
-    }
-
-    public Contribution ContributionDTOToContribution(ContributionDTO contributionDTO){
+    public Contribution ContributionDTOToContribution(ContributionDTO contributionDTO, Photopoem contributedTo){
         if (contributionDTO == null) return null;
         if (contributionDTO.getId() == null) {
             // create new contribution in db
             var contribution = new Contribution();
             contribution.setRole(contributionDTO.getRole());
-            contribution.setContributor(contribution.getContributor());
-            contribution.setPseudonym(contribution.getPseudonym());
+            contribution.setContributor(personMapper.PreviewDTOToPerson( contributionDTO.getContributor()));
+            contribution.setPseudonym(contributionDTO.getPseudonym());
+            contribution.setWorkContributedTo(contributedTo);
             return contribution;
         }else{
             return contributionRepository.findById(contributionDTO.getId()).orElse(null);
         }
     }
-
+    public Set<Contribution> ContributionDTOsToContributions(Set<ContributionDTO> contributionDTOs, Photopoem contributedTo){
+        if (contributionDTOs.isEmpty()) return Collections.emptySet();
+        return contributionDTOs.stream()
+                .map(dto -> ContributionDTOToContribution(dto, contributedTo))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
     public ContributionDTO ContributionToContributionDTO(Contribution contribution){
-        return new ContributionDTO();
+        if (contribution == null) return null;
+        var contributionDTO = new ContributionDTO();
+        contributionDTO.setId(contribution.getId());
+        contributionDTO.setContributor(personMapper.PersonToPreviewDTO(contribution.getContributor()));
+        contributionDTO.setRole(contribution.getRole());
+        contributionDTO.setPseudonym(contribution.getPseudonym());
+        return contributionDTO;
     }
     public Set<ContributionDTO> ContributionsToContributionDTOs(Set<Contribution> contributions){
         if (contributions.isEmpty()) return Collections.emptySet();
@@ -53,33 +61,4 @@ public class ContributionMapper {
                 .collect(Collectors.toSet());
     }
 
-    public Set<Contribution> ContributionDTOsToContribution(Set<ContributionDTO> contributionDTOS) {
-        System.out.println(contributionDTOS.toString());
-        return Collections.emptySet();
-    }
-    public Set<Person> PreviewDTOsToPersons(Set<PersonPreviewDTO> personPreviewDTOS) {
-        if (personPreviewDTOS.isEmpty()) return Collections.emptySet();
-        return personPreviewDTOS.stream()
-                .map(this::PreviewDTOToPerson)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
-
-    public PersonPreviewDTO PersonToPreviewDTO(Person person) {
-        if (person == null) return null;
-        PersonPreviewDTO personPreviewDTO = new PersonPreviewDTO();
-        personPreviewDTO.setId(person.getId());
-        personPreviewDTO.setFullName(person.getFullName());
-        personPreviewDTO.setStudioName(person.getStudioName());
-        personPreviewDTO.setPseudonyms(person.getPseudonyms());
-        return personPreviewDTO;
-    }
-
-    public Set<PersonPreviewDTO> PersonsToPersonDTOs(Set<Person> persons) {
-        if (persons.isEmpty()) return Collections.emptySet();
-        return persons.stream()
-                .map(this::PersonToPreviewDTO)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
 }
