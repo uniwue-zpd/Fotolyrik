@@ -100,7 +100,6 @@ const onFormSubmit = async (e: any) => {
 const roleOptions = [
   { label: 'Autor:in', value: ContributionRole.AUTHOR },
   { label: 'Fotograf:in', value: ContributionRole.PHOTOGRAPHER },
-  { label: 'Abgebildete Person', value: ContributionRole.DEPICTED },
   { label: 'Sonstige', value: ContributionRole.OTHER }
 ];
 interface Contribution {
@@ -383,6 +382,7 @@ const contributions = ref<Contribution[]>([]);
         <Divider align="center">
           <b class="px-2">Mitwirkende</b>
         </Divider>
+        {{console.log($form)}}
         <Button icon="pi pi-plus" severity="secondary" aria-label="Add" label="Mitwirkende hinzufügen"
                 @click="contributions.push(createEmptyContribution())"/>
           <div v-if="contributions.length > 0" v-for="(contribution, index) in contributions" :key="contribution.id"  >

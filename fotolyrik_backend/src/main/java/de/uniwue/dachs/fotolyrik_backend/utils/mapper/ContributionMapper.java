@@ -41,6 +41,18 @@ public class ContributionMapper {
             return contributionRepository.findById(contributionDTO.getId()).orElse(null);
         }
     }
+
+    public ContributionDTO ContributionToContributionDTO(Contribution contribution){
+        return new ContributionDTO();
+    }
+    public Set<ContributionDTO> ContributionsToContributionDTOs(Set<Contribution> contributions){
+        if (contributions.isEmpty()) return Collections.emptySet();
+        return contributions.stream()
+                .map(this::ContributionToContributionDTO)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
     public Set<Contribution> ContributionDTOsToContribution(Set<ContributionDTO> contributionDTOS) {
         System.out.println(contributionDTOS.toString());
         return Collections.emptySet();

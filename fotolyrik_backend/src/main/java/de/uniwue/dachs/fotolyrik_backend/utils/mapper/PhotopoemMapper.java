@@ -16,8 +16,9 @@ public class PhotopoemMapper {
     private final LanguageMapper languageMapper;
     private final CopyrightStatusMapper copyrightStatusMapper;
     private final PublicationDateMapper publicationDateMapper;
+    private final ContributionMapper contributionMapper;
 
-    public PhotopoemMapper(PersonMapper personMapper, PubMediumMapper pubMediumMapper, KeywordMapper keywordMapper, FileMapper fileMapper, PhotopoemRepository photopoemRepository, LanguageMapper languageMapper, CopyrightStatusMapper copyrightStatusMapper,PublicationDateMapper publicationDateMapper) {
+    public PhotopoemMapper(PersonMapper personMapper, PubMediumMapper pubMediumMapper, KeywordMapper keywordMapper, FileMapper fileMapper, PhotopoemRepository photopoemRepository, LanguageMapper languageMapper, CopyrightStatusMapper copyrightStatusMapper, PublicationDateMapper publicationDateMapper, ContributionMapper contributionMapper) {
         this.personMapper = personMapper;
         this.pubMediumMapper = pubMediumMapper;
         this.keywordMapper = keywordMapper;
@@ -26,6 +27,7 @@ public class PhotopoemMapper {
         this.languageMapper = languageMapper;
         this.copyrightStatusMapper = copyrightStatusMapper;
         this.publicationDateMapper = publicationDateMapper;
+        this.contributionMapper = contributionMapper;
     }
 
     public Photopoem PhotopoemDTOToPhotopoem(PhotopoemDTO photopoemDTO) {
@@ -73,6 +75,7 @@ public class PhotopoemMapper {
         photopoemDTO.setAuthors(personMapper.PersonsToPersonDTOs(photopoem.getAuthors()));
         photopoemDTO.setPhotographers(personMapper.PersonsToPersonDTOs(photopoem.getPhotographers()));
         photopoemDTO.setOtherContributors(personMapper.PersonsToPersonDTOs(photopoem.getOtherContributors()));
+        photopoemDTO.setContributions(contributionMapper.ContributionsToContributionDTOs(photopoem.getContributions()));
         photopoemDTO.setThemes(keywordMapper.KeywordToKeywordDTOs(photopoem.getThemes()));
         photopoemDTO.setImageMotifs(keywordMapper.KeywordToKeywordDTOs(photopoem.getImageMotifs()));
         photopoemDTO.setForm(photopoem.getForm());
