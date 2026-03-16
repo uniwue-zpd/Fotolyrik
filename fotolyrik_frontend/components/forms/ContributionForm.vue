@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import {ContributionRole} from "~/utils/types";
-
+const getContributions = () => {
+  return [];
+};
+defineExpose({getContributions})
 const props = defineProps({
   persons: Array
 });
