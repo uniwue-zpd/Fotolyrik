@@ -51,6 +51,7 @@ const resolver = ref(
       link: z.any(),
       iiifManifest: z.any(),
       images: z.any(),
+      imagesVisible: z.enum(Object.values(AccessLevel)),
       copyrightStatusImage: z.any(),
       copyrightStatusText: z.any(),
       languages: z.any(),
@@ -488,6 +489,22 @@ const onFormSubmit = async (e: any) => {
           </div>
           <Message v-if="$form.files?.invalid" severity="error" size="small" variant="simple">
             {{ $form.files.error.message }}
+          </Message>
+        </FormField>
+        <FormField v-slot="$field" name="imagesVisible" class="flex flex-col gap-1">
+          <label for="imagesVisible" class="font-bold">Sichtbarkeit der Bilder</label>
+          <IconField>
+            <InputIcon class="pi pi-eye"/>
+            <Select
+                labelId="imagesVisible"
+                placeholder="Sichtbarkeit festlegen"
+                class="pl-7"
+                :options="Object.values(AccessLevel)"
+                fluid
+            />
+          </IconField>
+          <Message v-if="$form.imagesVisible?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.imagesVisible.error.message }}
           </Message>
         </FormField>
         <Divider align="center">

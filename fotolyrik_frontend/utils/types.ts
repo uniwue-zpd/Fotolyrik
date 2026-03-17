@@ -112,7 +112,8 @@ export interface PhotoPoem extends Auditable {
     form: string | null;
     link: string | null;
     iiifManifest: string | null;
-    images: File[] | []
+    images: File[] | [];
+    imagesVisible: AccessLevel;
     copyrightStatusImage: CopyrightStatus | null;
     copyrightStatusText: CopyrightStatus | null;
     languages: Language[] | [];
@@ -138,7 +139,8 @@ export interface PhotoPoemDTO extends Auditable {
     form: string | null;
     link: string | null;
     iiifManifest: string | null;
-    images: FileDTO[] | []
+    images: FileDTO[] | [];
+    imagesVisible: AccessLevel;
     copyrightStatusImage: CopyrightStatusDTO | null;
     copyrightStatusText: CopyrightStatusDTO | null;
     languages: LanguageDTO[] | [];
@@ -225,4 +227,16 @@ export interface Keyword extends Auditable {
 export interface KeywordDTO {
     id: number;
     value: string;
+}
+
+/**
+ * Defines the access levels
+ * - PUBLIC: Visible to everyone.
+ * - INTERNAL: Only visible to authenticated users.
+ * - RESTRICTED: Only visible to users with specific permissions.
+ */
+export enum AccessLevel {
+    PUBLIC = "PUBLIC",
+    INTERNAL = "INTERNAL",
+    RESTRICTED = "RESTRICTED"
 }

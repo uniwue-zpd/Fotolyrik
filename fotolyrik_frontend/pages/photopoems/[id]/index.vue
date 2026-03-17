@@ -16,7 +16,12 @@ const has_pages = computed(() => Boolean(photopoem_item.value?.manifestPageNumbe
 const double_page = computed(() => photopoem_item.value?.pageCount === 2);
 
 // Scans handling
-const has_scans = computed(() => photopoem_item.value && photopoem_item.value.images.length > 0);
+const show_scans = computed(() => {
+  return photopoem_item.value &&
+      photopoem_item.value.images.length > 0 &&
+      photopoem_item.value?.imagesVisible === AccessLevel.PUBLIC &&
+      !has_iiif_manifest.value;
+});
 const scan_ids = computed(() => photopoem_item.value ? photopoem_item.value.images.map(image => image.id) : []);
 const scans = ref<string[]>([]);
 
@@ -26,11 +31,10 @@ useHead(() => ({
 
 onMounted(async () => {
   await store.fetchPhtotopoemById(photopoem_id);
-  if (has_scans.value) {
+  if (show_scans.value) {
     scans.value = (await Promise.all(scan_ids.value.map((id) => file_store.getImageContent(id)))
     ).filter((url) => url !== null) as string[];
   }
-  console.log(scans.value)
   if (photopoem_item.value?.iiifManifest) {
     new Tify({
       container: '#tify-photopoem',
@@ -61,7 +65,7 @@ onMounted(async () => {
       </template>
       <template #content>
         <div class="flex flex-col gap-2">
-          <div v-if="scans.length > 0 && !has_iiif_manifest" class="flex flex-row items-start">
+          <div v-if="show_scans" class="flex flex-row items-start">
             <Galleria
                 :value="scans"
                 :numVisible="1"
