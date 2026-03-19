@@ -59,7 +59,7 @@ public class Photopoem extends BaseEntity {
     )
     private Set<Person> otherContributors = new HashSet<>();
 
-    @OneToMany(mappedBy = "workContributedTo", cascade = CascadeType.ALL, orphanRemoval = false)//orphanRemoval=true TODO
+    @OneToMany(mappedBy = "workContributedTo", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Contribution> contributions = new HashSet<>();
 
     @ManyToMany
@@ -103,4 +103,11 @@ public class Photopoem extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "language_id")
     )
     private Set<Language> languages = new HashSet<>();
+
+    public void updateContributions(Set<Contribution> newContributions) {
+        this.contributions.clear();
+        if (newContributions != null) {
+            this.contributions.addAll(newContributions);
+        }
+    }
 }
