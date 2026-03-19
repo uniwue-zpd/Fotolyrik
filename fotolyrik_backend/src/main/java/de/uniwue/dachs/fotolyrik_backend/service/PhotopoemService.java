@@ -263,6 +263,7 @@ public class PhotopoemService {
             entity.setLink(updatedPhotopoem.getLink());
             entity.setIiifManifest(updatedPhotopoem.getIiifManifest());
             entity.setImages(fileMapper.FileDTOsToFiles(updatedPhotopoem.getImages()));
+            entity.setImagesVisible(updatedPhotopoem.getImagesVisible());
             entity.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusImage()));
             entity.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusText()));
             entity.setLanguages(languageMapper.LanguageDTOsToLanguages(updatedPhotopoem.getLanguages()));

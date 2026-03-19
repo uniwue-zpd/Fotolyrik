@@ -51,6 +51,7 @@ public class PhotopoemMapper {
         photopoem.setLink(photopoemDTO.getLink());
         photopoem.setIiifManifest(photopoemDTO.getIiifManifest());
         photopoem.setImages(fileMapper.FileDTOsToFiles(photopoemDTO.getImages()));
+        photopoem.setImagesVisible(photopoemDTO.getImagesVisible());
         photopoem.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusText()));
         photopoem.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusImage()));
         photopoem.setLanguages(languageMapper.LanguageDTOsToLanguages(photopoemDTO.getLanguages()));
@@ -81,6 +82,7 @@ public class PhotopoemMapper {
         photopoemDTO.setLink(photopoem.getLink());
         photopoemDTO.setIiifManifest(photopoem.getIiifManifest());
         photopoemDTO.setImages(fileMapper.FilesToFileDTOs(photopoem.getImages()));
+        photopoemDTO.setImagesVisible(photopoem.getImagesVisible());
         photopoemDTO.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(photopoem.getCopyrightStatusImage()));
         photopoemDTO.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(photopoem.getCopyrightStatusText()));
         photopoemDTO.setLanguages(languageMapper.LanguagesToLanguageDTOs(photopoem.getLanguages()));

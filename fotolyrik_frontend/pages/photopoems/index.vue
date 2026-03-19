@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch, onBeforeUnmount } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 import { usePhotopoemStore } from "~/stores/PhotopoemStore";
 
@@ -9,6 +9,46 @@ const file_store = useFileStore();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   title: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+});
+
+// Preload image object URLs
+const previewURLs = ref<Record<number, string>>({});
+watch(
+  () => store.photopoems,
+  async (photopoems) => {
+    if (!photopoems || photopoems.length === 0) return;
+    const tasks: Promise<void>[] = [];
+    photopoems.forEach((p) => {
+      if (p.images && p.images.length > 0 && p.imagesVisible === AccessLevel.PUBLIC) {
+        p.images.forEach((img: any) => {
+          if (!previewURLs.value[img.id]) {
+            tasks.push((async () => {
+              try {
+                const url = await file_store.getImageContent(img.id);
+                if (url) previewURLs.value[img.id] = url;
+              } catch (err) {
+                console.error('Failed to preload image', img.id, err);
+              }
+            })());
+          }
+        });
+      }
+    });
+    try {
+      await Promise.all(tasks);
+    } catch (e) {
+      console.error('Error preloading images', e);
+    }
+  },
+  { immediate: true, deep: true }
+);
+
+// Revoke blob URLs on unmount
+onBeforeUnmount(() => {
+  Object.values(previewURLs.value).forEach((url) => {
+    try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ }
+  });
+  previewURLs.value = {};
 });
 
 useHead(() => ({
@@ -63,11 +103,11 @@ useHead(() => ({
                 Unbenannt
               </div>
               <AvatarGroup>
-                <div v-if="data.images.length > 0">
+                <div v-if="data.images.length > 0 && data.imagesVisible === AccessLevel.PUBLIC">
                   <Avatar
                       v-for="image in data.images"
                       :key="image.id"
-                      :image="file_store.getImagePreview(`/api/uploads/${image.filename}`)"
+                      :image="previewURLs[image.id] || ''"
                       shape="circle"
                       oncontextmenu="return false;"
                   />
