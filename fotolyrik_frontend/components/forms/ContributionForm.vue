@@ -5,7 +5,8 @@ const getContributions = () => {
 };
 defineExpose({getContributions})
 const props = defineProps({
-  persons: Array
+  persons: Array,
+  contributions: Array
 });
 const roleOptions = [
   { label: 'Autor:in', value: ContributionRole.AUTHOR },
@@ -25,7 +26,12 @@ const createEmptyContribution = (): Contribution => ({
   pseudonym: "",
   role: ContributionRole.UNKNOWN
 });
-const contributions = ref<Contribution[]>([]);
+const contributions = ref<Contribution[]>(
+    props.contributions?.map(item => ({
+      ...item,
+      role: ContributionRole[item.role as keyof typeof ContributionRole]
+    })) ?? []
+);
 </script>
 <template>
 <Button icon="pi pi-plus" severity="secondary" aria-label="Add" label="Mitwirkende hinzufügen"

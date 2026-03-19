@@ -361,7 +361,11 @@ const onFormSubmit = async (e: any) => {
         <Divider align="center">
           <b class="px-2">Mitwirkende</b>
         </Divider>
-        <FormsContributionForm :persons="persons" ref="contributionsForm" :contributions="$form.conributions"></FormsContributionForm>
+        <FormsContributionForm
+            :persons="persons"
+            :contributions="props.photopoem?.contributions"
+            ref="contributionsForm">
+        </FormsContributionForm>
         <!-- NEAL-->
 
         <Divider align="center">
