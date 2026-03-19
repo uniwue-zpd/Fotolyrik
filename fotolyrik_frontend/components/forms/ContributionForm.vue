@@ -14,7 +14,7 @@ const roleOptions = [
   { label: 'Sonstige', value: ContributionRole.OTHER }
 ];
 interface Contribution {
-    renderId: string;
+    renderId?: string;
     id?: number;
     contributor: PersonPreviewDTO;
     pseudonym: string;
@@ -27,10 +27,7 @@ const createEmptyContribution = (): Contribution => ({
   role: ContributionRole.UNKNOWN
 });
 const contributions = ref<Contribution[]>(
-    props.contributions?.map(item => ({
-      ...item,
-      role: ContributionRole[item.role as keyof typeof ContributionRole]
-    })) ?? []
+    (props.contributions as ContributionDTO[])?? []
 );
 </script>
 <template>

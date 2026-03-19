@@ -92,10 +92,10 @@ export interface PersonPreviewDTO {
     pseudonyms: [string] | [];
 }
 export enum ContributionRole{
-    UNKNOWN,
-    AUTHOR,
-    PHOTOGRAPHER,
-    OTHER,
+    UNKNOWN = "UNKNOWN",
+    AUTHOR = "AUTHOR",
+    PHOTOGRAPHER = "PHOTOGRAPHER",
+    OTHER = "OTHER",
 }
 export interface PseudonymDTO {
     id: number;
@@ -105,7 +105,7 @@ export interface ContributionDTO {
     id: number;
     role: ContributionRole;
     contributor: PersonPreviewDTO;
-    underPseudonym: PseudonymDTO;
+    pseudonym: string;
 }
 export interface PhotoPoem extends Auditable {
     title: string | null;
