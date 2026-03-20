@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,17 +25,24 @@ public class ContributionMapper {
         this.personMapper = personMapper;
     }
     public Contribution ContributionDTOToContribution(ContributionDTO contributionDTO, Photopoem contributedTo){
-        if (contributionDTO == null) return null;
-        if (contributionDTO.getId() == null) {
-            // create new contribution in db
-            var contribution = new Contribution();
+        Consumer<Contribution> updateContribution = (contribution)->{
             contribution.setRole(contributionDTO.getRole());
             contribution.setContributor(personMapper.PreviewDTOToPerson( contributionDTO.getContributor()));
             contribution.setPseudonym(contributionDTO.getPseudonym());
             contribution.setWorkContributedTo(contributedTo);
+        };
+
+        if (contributionDTO == null) throw new RuntimeException("No Contribution DTO provided");
+        if (contributionDTO.getId() == null) {
+            // create new contribution in db
+            var contribution = new Contribution();
+            updateContribution.accept(contribution);
             return contribution;
         }else{
-            return contributionRepository.findById(contributionDTO.getId()).orElse(null);
+            var contribution = contributionRepository.findById(contributionDTO.getId()).orElse(null);
+            if (contribution == null) throw new RuntimeException("Contribution id not found");
+            updateContribution.accept(contribution);
+            return contribution;
         }
     }
     public Set<Contribution> ContributionDTOsToContributions(Set<ContributionDTO> contributionDTOs, Photopoem contributedTo){
