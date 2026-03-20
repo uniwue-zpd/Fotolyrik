@@ -3,6 +3,7 @@ import 'tify'
 import 'tify/dist/tify.css'
 import { onMounted } from "vue";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
+import {ContributionRole} from "~/utils/types";
 
 const router = useRoute();
 const photopoem_id = Number(router.params.id);
@@ -33,6 +34,12 @@ onMounted(async () => {
     });
   }
 });
+const roleText = {
+  UNKNOWN: '',
+  AUTHOR: 'Autor:in',
+  PHOTOGRAPHER: 'Fotograf:in',
+  OTHER: 'Sonstige',
+};
 </script>
 
 <template>
@@ -174,15 +181,14 @@ onMounted(async () => {
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">
                             <span v-for="contribution in photopoem_item.contributions" :key="contribution.id">
-                              <!-- muss den stuff noch linken
                               <NuxtLink
-                                  :to="`/persons/${person.id}`"
+                                  :to="`/persons/${contribution.contributor.id}`"
                                   class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
                               >
-                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                <p class="font-light inline mr-2">{{roleText[contribution.role] + " :"}}</p>
+                                {{  contribution.contributor.fullName }}
+                                 <p class="font-light inline mr-2">{{ (contribution.pseudonym !== ""? " as " + contribution.pseudonym : "") }}</p>
                               </NuxtLink>
-                              -->
-                              {{ contribution }}
                             </span>
                         </div>
                       </td>
