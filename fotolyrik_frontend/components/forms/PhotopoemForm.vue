@@ -76,7 +76,6 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     e.values.contributions = contributionsForm.value?.getContributions();
     console.log(e.values);
-// NEAL
     try {
       if (props.action === "create") {
         await photopoemStore.createPhotopoem(e.values);
@@ -366,7 +365,6 @@ const onFormSubmit = async (e: any) => {
             :contributions="props.photopoem?.contributions"
             ref="contributionsForm">
         </FormsContributionForm>
-        <!-- NEAL-->
 
         <Divider align="center">
           <b class="px-2">Tags</b>

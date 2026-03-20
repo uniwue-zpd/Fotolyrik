@@ -145,11 +145,8 @@ export interface PhotoPoemDTO extends Auditable {
     pictureCount: string | null;
     publicationDate: string | null;
     publicationMedium: PubMediumPreviewDTO | null;
-    // depercated
     authors: PersonPreviewDTO[] | [];
-    // depercated
     photographers: PersonPreviewDTO[] | [];
-    // depercated
     otherContributors: PersonPreviewDTO[] | [];
     contributions: ContributionDTO[] | [];
     themes: KeywordDTO[] | [];
