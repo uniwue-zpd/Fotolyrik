@@ -51,6 +51,7 @@ const responsiveOptions = ref([
 
 <template>
   <div class="flex flex-col gap-5">
+    <!--
     <div class="carousel bg-gray-accent md:p-5">
       <Carousel :value="images" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
         <template #item="{ data }">
@@ -60,6 +61,7 @@ const responsiveOptions = ref([
         </template>
       </Carousel>
     </div>
+    -->
     <div class="intro py-10 px-6 md:px-15">
       <h1 class="text-3xl outfit-headline font-bold text-primary">
         Fotolyrik in illustrierten Zeitschriften zwischen 1895 und 1945
