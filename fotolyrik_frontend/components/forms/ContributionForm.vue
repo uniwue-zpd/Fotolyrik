@@ -60,6 +60,7 @@ const contributions = ref<Contribution[]>(
       > </Select>
       <InputText placeholder="Pseudonym" v-model="contributions[index].pseudonym"></InputText>
       <Select
+          class="w-64"
           inputId="contributionRole"
           placeholder="In Rolle"
           :options="roleOptions"
