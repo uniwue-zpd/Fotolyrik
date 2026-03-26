@@ -51,6 +51,8 @@ public class PhotopoemSpecification {
 
     private static Specification<Photopoem> hasRoleId(Long id, ContributionRole role, String tableName){
         return (root, query, criteriaBuilder) -> {
+            assert query != null;
+            query.distinct(true);
             Join<Photopoem, Person> table = root.join(tableName, JoinType.LEFT);
 
             Join<Photopoem, Contribution> contributions = root.join("contributions", JoinType.LEFT);
@@ -64,21 +66,36 @@ public class PhotopoemSpecification {
                     ));
         };
     }
+    private static Specification<Photopoem> hasRole(String name, ContributionRole role, String tableName){
+        return (root, query, criteriaBuilder) -> {
+            String pattern = "%" + name.toLowerCase() + "%";
+
+            Join<Photopoem, Contribution> contributions = root.join("contributions", JoinType.LEFT);
+            Join<Contribution, Person> contributor = contributions.join("contributor", JoinType.LEFT);
+
+            Join<Photopoem, Person> authors = root.join(tableName, JoinType.LEFT);
+            Join<Person, String> oldPseudonyms = authors.join("pseudonyms", JoinType.LEFT);
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(criteriaBuilder.lower(authors.get("firstName")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(authors.get("lastName")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(oldPseudonyms), pattern),
+                    criteriaBuilder.and(
+                            criteriaBuilder.equal(contributions.get("role"), role),
+                            criteriaBuilder.or(
+                                    criteriaBuilder.like(criteriaBuilder.lower(contributor.get("firstName")), pattern),
+                                    criteriaBuilder.like(criteriaBuilder.lower(contributor.get("lastName")), pattern),
+                                    criteriaBuilder.like(criteriaBuilder.lower(contributions.get("pseudonym")), pattern)
+                            )
+                    )
+            );
+        };
+    }
     public static Specification<Photopoem> hasAuthorId(Long authorId) {
         return hasRoleId(authorId, ContributionRole.AUTHOR, "authors");
     }
 
     public static Specification<Photopoem> hasAuthor(String authorName) {
-        return (root, query, criteriaBuilder) -> {
-            Join<Photopoem, Person> authors = root.join("authors");
-            Join<Person, String> pseudonyms = authors.join("pseudonyms", JoinType.LEFT);
-            String pattern = "%" + authorName.toLowerCase() + "%";
-            return criteriaBuilder.or(
-                    criteriaBuilder.like(criteriaBuilder.lower(authors.get("firstName")), pattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(authors.get("lastName")), pattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(pseudonyms), pattern)
-            );
-        };
+        return hasRole(authorName, ContributionRole.AUTHOR, "authors");
     }
 
     public static Specification<Photopoem> hasPhotographerId(Long photographerId) {
@@ -86,16 +103,7 @@ public class PhotopoemSpecification {
     }
 
     public static Specification<Photopoem> hasPhotographer(String photographerName) {
-        return (root, query, criteriaBuilder) -> {
-            Join<Photopoem, Person> photographers = root.join("photographers");
-            Join<Person, String> pseudonyms = photographers.join("pseudonyms", JoinType.LEFT);
-            String pattern = "%" + photographerName.toLowerCase() + "%";
-            return criteriaBuilder.or(
-                    criteriaBuilder.like(criteriaBuilder.lower(photographers.get("firstName")), pattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(photographers.get("lastName")), pattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(pseudonyms), pattern)
-            );
-        };
+        return hasRole(photographerName, ContributionRole.PHOTOGRAPHER,"photographers");
     }
 
     public static Specification<Photopoem> hasOtherContributorId(Long contributorId) {
@@ -103,16 +111,7 @@ public class PhotopoemSpecification {
     }
 
     public static Specification<Photopoem> hasOtherContributor(String contributorName) {
-        return (root, query, criteriaBuilder) -> {
-            Join<Photopoem, Person> otherContributors = root.join("otherContributors");
-            Join<Person, String> pseudonyms = otherContributors.join("pseudonyms", JoinType.LEFT);
-            String pattern = "%" + contributorName.toLowerCase() + "%";
-            return criteriaBuilder.or(
-                    criteriaBuilder.like(criteriaBuilder.lower(otherContributors.get("firstName")), pattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(otherContributors.get("lastName")), pattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(pseudonyms), pattern)
-            );
-        };
+        return hasRole(contributorName, ContributionRole.OTHER, "otherContributors");
     }
 
     public static Specification<Photopoem> hasThemeId(Long themeId) {
