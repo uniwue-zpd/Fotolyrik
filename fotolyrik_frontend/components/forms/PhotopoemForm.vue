@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {ContributionRole, type PhotoPoemDTO} from "~/utils/types";
+import { type PhotoPoemDTO} from "~/utils/types";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 import { Form } from '@primevue/forms';
 import { FormField } from '@primevue/forms';
-import type {FormsContributionForm} from "#components";
+import ContributionForm from "~/components/forms/ContributionForm.vue";
 
 const toast = useToast();
 const personStore = usePersonStore();
@@ -360,11 +360,11 @@ const onFormSubmit = async (e: any) => {
         <Divider align="center">
           <b class="px-2">Mitwirkende</b>
         </Divider>
-        <FormsContributionForm
+        <ContributionForm
             :persons="persons"
             :contributions="props.photopoem?.contributions"
             ref="contributionsForm">
-        </FormsContributionForm>
+        </ContributionForm>
 
         <Divider align="center">
           <b class="px-2">Tags</b>
