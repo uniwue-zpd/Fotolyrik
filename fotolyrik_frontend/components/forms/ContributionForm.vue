@@ -45,6 +45,7 @@ const contributions = ref<Contribution[]>(
 );
 </script>
 <template>
+  {{console.log(contributions)}}
 <div v-if="contributions.length > 0" v-for="(contribution, index) in contributions" :key="contribution.renderId"  >
   <div>
     <div class="flex">
@@ -55,10 +56,10 @@ const contributions = ref<Contribution[]>(
           :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
           :options="persons"
           :virtual-scroller-options="{ itemSize: 50 }"
-          v-model="contributions[index].contributor"
+          v-model="contribution.contributor"
           filter fluid
       > </Select>
-      <InputText placeholder="Pseudonym" v-model="contributions[index].pseudonym"></InputText>
+      <InputText placeholder="Pseudonym" v-model="contribution.pseudonym"></InputText>
       <Select
           class="w-64"
           inputId="contributionRole"
@@ -66,7 +67,7 @@ const contributions = ref<Contribution[]>(
           :options="roleOptions"
           optionLabel="label"
           optionValue="value"
-          v-model="contributions[index].role"
+          v-model="contribution.role"
       ></Select>
       <Button icon="pi pi-times" severity="secondary" aria-label="Remove"
               @click="contributions.splice(index, 1)"/>
