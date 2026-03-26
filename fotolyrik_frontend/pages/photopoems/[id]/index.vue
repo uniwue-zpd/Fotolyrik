@@ -35,7 +35,6 @@ onMounted(async () => {
   }
 });
 const roleText = {
-  UNKNOWN: '',
   AUTHOR: 'Autor:in',
   PHOTOGRAPHER: 'Fotograf:in',
   OTHER: 'Sonstige',

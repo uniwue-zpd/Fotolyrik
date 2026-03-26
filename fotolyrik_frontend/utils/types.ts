@@ -92,7 +92,6 @@ export interface PersonPreviewDTO {
     pseudonyms: [string] | [];
 }
 export enum ContributionRole{
-    UNKNOWN = "UNKNOWN",
     AUTHOR = "AUTHOR",
     PHOTOGRAPHER = "PHOTOGRAPHER",
     OTHER = "OTHER",
