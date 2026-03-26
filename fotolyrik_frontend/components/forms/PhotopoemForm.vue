@@ -70,10 +70,10 @@ async function handleRefresh() {
     data_refreshing.value = false;
   }
 }
-const contributionsForm: Ref<InstanceType<typeof FormsContributionForm> | null> = ref(null);
+const contributionsForm: Ref<InstanceType<typeof ContributionForm> | null> = ref(null);
 
 const onFormSubmit = async (e: any) => {
-  if (e.valid) {
+  if (e.valid && contributionsForm.value?.isValid()) {
     e.values.contributions = contributionsForm.value?.getContributions();
     console.log(e.values);
     try {

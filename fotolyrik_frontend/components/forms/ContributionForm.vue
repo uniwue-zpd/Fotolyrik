@@ -3,7 +3,22 @@ import {ContributionRole} from "~/utils/types";
 const getContributions = () => {
   return contributions.value.map(({ renderId, ...rest }) => rest);
 };
-defineExpose({getContributions})
+const isValid = () =>{
+  let valid = true;
+  for(const contribution of contributions.value){
+    contribution.errorMessage = "";
+    if (!contribution.contributor) {
+      contribution.errorMessage += "Invalid contributor. ";
+      valid = false;
+    }
+    if (!contribution.role) {
+      contribution.errorMessage += "Invalid role. ";
+      valid = false;
+    }
+  }
+  return valid;
+};
+defineExpose({getContributions, isValid})
 const props = defineProps({
   persons: Array,
   contributions: Array
@@ -15,26 +30,23 @@ const roleOptions = [
 ];
 interface Contribution {
     renderId?: string;
+    errorMessage?: string;
     id?: number;
-    contributor: PersonPreviewDTO;
+    contributor?: PersonPreviewDTO;
     pseudonym: string;
-    role: ContributionRole
-};
+    role?: ContributionRole
+}
 const createEmptyContribution = (): Contribution => ({
   renderId: crypto.randomUUID(),
-  contributor: {} as PersonPreviewDTO,
-  pseudonym: "",
-  role: ContributionRole.UNKNOWN
+  pseudonym: ""
 });
 const contributions = ref<Contribution[]>(
     (props.contributions as ContributionDTO[])?? []
 );
 </script>
 <template>
-<Button icon="pi pi-plus" severity="secondary" aria-label="Add" label="Mitwirkende hinzufügen"
-        @click="contributions.push(createEmptyContribution())"/>
-<Form @submit="(e) => console.log('Form Data:', e.values)">
-  <div v-if="contributions.length > 0" v-for="(contribution, index) in contributions" :key="contribution.renderId"  >
+<div v-if="contributions.length > 0" v-for="(contribution, index) in contributions" :key="contribution.renderId"  >
+  <div>
     <div class="flex">
       <Select
           inputId="contributors"
@@ -58,6 +70,9 @@ const contributions = ref<Contribution[]>(
       <Button icon="pi pi-times" severity="secondary" aria-label="Remove"
               @click="contributions.splice(index, 1)"/>
     </div>
+    <p class="text-red-500 text-center">{{contribution.errorMessage}}</p>
   </div>
-</Form>
+</div>
+<Button icon="pi pi-plus" severity="secondary" aria-label="Add" label="Mitwirkende hinzufügen"
+        @click="contributions.push(createEmptyContribution())"/>
 </template>
