@@ -1,9 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.specification;
 
-import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
-import de.uniwue.dachs.fotolyrik_backend.model.Language;
-import de.uniwue.dachs.fotolyrik_backend.model.Person;
-import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
+import de.uniwue.dachs.fotolyrik_backend.model.*;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
@@ -52,11 +49,23 @@ public class PhotopoemSpecification {
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("publicationMedium").get("title")), "%" + pubMedium.toLowerCase() + "%");
     }
 
-    public static Specification<Photopoem> hasAuthorId(Long authorId) {
+    private static Specification<Photopoem> hasRoleId(Long id, ContributionRole role, String tableName){
         return (root, query, criteriaBuilder) -> {
-            Join<Photopoem, Person> authors = root.join("authors");
-            return criteriaBuilder.equal(authors.get("id"), authorId);
+            Join<Photopoem, Person> table = root.join(tableName, JoinType.LEFT);
+
+            Join<Photopoem, Contribution> contributions = root.join("contributions", JoinType.LEFT);
+            Join<Contribution, Person> contributor = contributions.join("contributor", JoinType.LEFT);
+
+            return criteriaBuilder.or(
+                    criteriaBuilder.equal(table.get("id"), id),
+                    criteriaBuilder.and(
+                            criteriaBuilder.equal(contributor.get("id"), id),
+                            criteriaBuilder.equal(contributions.get("role"), role)
+                    ));
         };
+    }
+    public static Specification<Photopoem> hasAuthorId(Long authorId) {
+        return hasRoleId(authorId, ContributionRole.AUTHOR, "authors");
     }
 
     public static Specification<Photopoem> hasAuthor(String authorName) {
@@ -73,10 +82,7 @@ public class PhotopoemSpecification {
     }
 
     public static Specification<Photopoem> hasPhotographerId(Long photographerId) {
-        return (root, query, criteriaBuilder) -> {
-            Join<Photopoem, Person> photographers = root.join("photographers");
-            return criteriaBuilder.equal(photographers.get("id"), photographerId);
-        };
+        return hasRoleId(photographerId, ContributionRole.PHOTOGRAPHER, "photographers");
     }
 
     public static Specification<Photopoem> hasPhotographer(String photographerName) {
@@ -93,10 +99,7 @@ public class PhotopoemSpecification {
     }
 
     public static Specification<Photopoem> hasOtherContributorId(Long contributorId) {
-        return (root, query, criteriaBuilder) -> {
-            Join<Photopoem, Person> otherContributors = root.join("otherContributors");
-            return criteriaBuilder.equal(otherContributors.get("id"), contributorId);
-        };
+        return hasRoleId(contributorId, ContributionRole.OTHER, "otherContributors");
     }
 
     public static Specification<Photopoem> hasOtherContributor(String contributorName) {
