@@ -96,10 +96,6 @@ export enum ContributionRole{
     PHOTOGRAPHER = "PHOTOGRAPHER",
     OTHER = "OTHER",
 }
-export interface PseudonymDTO {
-    id: number;
-    name: string;
-}
 export interface ContributionDTO {
     id: number;
     role: ContributionRole;
