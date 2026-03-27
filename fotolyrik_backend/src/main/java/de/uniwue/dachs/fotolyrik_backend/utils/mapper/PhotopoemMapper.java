@@ -46,6 +46,7 @@ public class PhotopoemMapper {
         photopoem.setAuthors(personMapper.PreviewDTOsToPersons(photopoemDTO.getAuthors()));
         photopoem.setPhotographers(personMapper.PreviewDTOsToPersons(photopoemDTO.getPhotographers()));
         photopoem.setOtherContributors(personMapper.PreviewDTOsToPersons(photopoemDTO.getOtherContributors()));
+        photopoem.setContributions(contributionMapper.DTOsToContributions(photopoemDTO.getContributions(), photopoem));
         photopoem.setThemes(keywordMapper.KeywordDTOsToKeywords(photopoemDTO.getThemes()));
         photopoem.setImageMotifs(keywordMapper.KeywordDTOsToKeywords(photopoemDTO.getImageMotifs()));
         photopoem.setForm(photopoemDTO.getForm());
@@ -75,7 +76,7 @@ public class PhotopoemMapper {
         photopoemDTO.setAuthors(personMapper.PersonsToPersonDTOs(photopoem.getAuthors()));
         photopoemDTO.setPhotographers(personMapper.PersonsToPersonDTOs(photopoem.getPhotographers()));
         photopoemDTO.setOtherContributors(personMapper.PersonsToPersonDTOs(photopoem.getOtherContributors()));
-        photopoemDTO.setContributions(contributionMapper.ContributionsToContributionDTOs(photopoem.getContributions()));
+        photopoemDTO.setContributions(contributionMapper.ContributionsToDTOs(photopoem.getContributions()));
         photopoemDTO.setThemes(keywordMapper.KeywordToKeywordDTOs(photopoem.getThemes()));
         photopoemDTO.setImageMotifs(keywordMapper.KeywordToKeywordDTOs(photopoem.getImageMotifs()));
         photopoemDTO.setForm(photopoem.getForm());
