@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.ContributionDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PhotopoemDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.*;
 import de.uniwue.dachs.fotolyrik_backend.repository.*;
@@ -26,6 +27,7 @@ public class PhotopoemService {
     private final LanguageMapper languageMapper;
     private final PhotopoemHighlightPicker photopoemHighlightPicker;
     private final ContributionMapper contributionMapper;
+    private final PersonRepository personRepository;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             FullTextService fullTextService,
@@ -34,7 +36,7 @@ public class PhotopoemService {
                             PersonMapper personMapper,
                             KeywordMapper keywordMapper,
                             FileMapper fileMapper, CopyrightStatusMapper copyrightStatusMapper, LanguageMapper languageMapper,
-                            PhotopoemHighlightPicker photopoemHighlightPicker, ContributionMapper contributionMapper) {
+                            PhotopoemHighlightPicker photopoemHighlightPicker, ContributionMapper contributionMapper, PersonRepository personRepository) {
         this.photopoemRepository = photopoemRepository;
         this.fullTextService = fullTextService;
         this.photopoemMapper = photopoemMapper;
@@ -46,6 +48,7 @@ public class PhotopoemService {
         this.languageMapper = languageMapper;
         this.photopoemHighlightPicker = photopoemHighlightPicker;
         this.contributionMapper = contributionMapper;
+        this.personRepository = personRepository;
     }
 
     /**
@@ -223,6 +226,10 @@ public class PhotopoemService {
     public PhotopoemDTO createPhotopoem(PhotopoemDTO photopoemDTO) {
         Photopoem photopoem = photopoemMapper.PhotopoemDTOToPhotopoem(photopoemDTO);
         Photopoem createdPhotopoem = photopoemRepository.save(photopoem);
+
+        // Update the pseudonyms of the person entities based on the contributions of the photopoem
+        updatePersonPseudonymsFromContributions(photopoemDTO);
+
         return photopoemMapper.PhotopoemToPhotopoemDTO(createdPhotopoem);
     }
 
@@ -259,6 +266,9 @@ public class PhotopoemService {
             entity.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusText()));
             entity.setLanguages(languageMapper.LanguageDTOsToLanguages(updatedPhotopoem.getLanguages()));
 
+            // Update the pseudonyms of the person entities based on the contributions of the photopoem
+            updatePersonPseudonymsFromContributions(updatedPhotopoem);
+
             Photopoem savedPhotopoem = photopoemRepository.save(entity);
             return photopoemMapper.PhotopoemToPhotopoemDTO(savedPhotopoem);
         }).orElseThrow(() -> new EntityNotFoundException("Photopoem with id'" + id + "' can't be found"));
@@ -274,5 +284,27 @@ public class PhotopoemService {
         }
         fullTextService.deleteFullTextByPhotopoemID(id);
         photopoemRepository.deleteById(id);
+    }
+
+    /**
+     * Performs an update of the pseudonyms field of some person entity based on the contribution of a photopoem.
+     * It allows to keep track of the pseudonyms used by a person in different contributions and to update the pseudonyms field of the person entity accordingly.
+     * @param photopoemDTO {@link PhotopoemDTO} object containing the contributions based on which the pseudonyms should be updated
+     */
+    private void updatePersonPseudonymsFromContributions(PhotopoemDTO photopoemDTO) {
+        if (photopoemDTO == null || photopoemDTO.getContributions() == null) return;
+        for (ContributionDTO contribution: photopoemDTO.getContributions()) {
+            if (contribution == null) continue;
+            var pseudonym = contribution.getPseudonym();
+            var contributor = contribution.getContributor();
+            if (pseudonym != null && !pseudonym.isBlank() && contributor != null && contributor.getId() != null) {
+                personRepository.findById(contributor.getId()).ifPresent(person -> {
+                    if (!person.getPseudonyms().contains(pseudonym)) {
+                        person.getPseudonyms().add(pseudonym);
+                        personRepository.save(person);
+                    }
+                });
+            }
+        }
     }
 }
