@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PhotopoemService {
@@ -299,7 +300,13 @@ public class PhotopoemService {
             var contributor = contribution.getContributor();
             if (pseudonym != null && !pseudonym.isBlank() && contributor != null && contributor.getId() != null) {
                 personRepository.findById(contributor.getId()).ifPresent(person -> {
-                    if (!person.getPseudonyms().contains(pseudonym)) {
+                    Set<String> cleanedPseudonyms = person.getPseudonyms().stream()
+                            .filter(Objects::nonNull)
+                            .map(String::trim)
+                            .map(String::toLowerCase)
+                            .filter(s -> !s.isEmpty())
+                            .collect(Collectors.toSet());
+                    if (!cleanedPseudonyms.contains(pseudonym.trim().toLowerCase())) {
                         person.getPseudonyms().add(pseudonym);
                         personRepository.save(person);
                     }
