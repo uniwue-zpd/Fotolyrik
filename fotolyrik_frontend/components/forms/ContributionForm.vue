@@ -75,9 +75,12 @@ const contributions = ref<Contribution[]>(
             filter fluid
         />
         <AutoComplete
-            placeholder="Pseudonym" v-model="contribution.pseudonym"
-            :suggestions="contribution.suggestions" @complete="searchPseudonyms($event, contribution)"
-        ></AutoComplete>
+            placeholder="Pseudonym"
+            v-model="contribution.pseudonym"
+            :suggestions="contribution.suggestions"
+            @complete="searchPseudonyms($event, contribution)"
+            dropdown
+        />
         <Select
             class="w-64"
             inputId="contributionRole"
@@ -87,10 +90,11 @@ const contributions = ref<Contribution[]>(
             optionValue="value"
             v-model="contribution.role"
         />
-        <Button icon="pi pi-times"
-                severity="secondary"
-                aria-label="Remove"
-                @click="contributions.splice(index, 1)"
+        <Button
+            icon="pi pi-times"
+            severity="secondary"
+            aria-label="Remove"
+            @click="contributions.splice(index, 1)"
         />
       </div>
       <p class="text-red-500 text-center">{{contribution.errorMessage}}</p>
