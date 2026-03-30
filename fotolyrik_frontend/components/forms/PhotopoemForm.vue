@@ -75,7 +75,6 @@ const contributionsForm: Ref<InstanceType<typeof ContributionForm> | null> = ref
 const onFormSubmit = async (e: any) => {
   if (e.valid && contributionsForm.value?.isValid()) {
     e.values.contributions = contributionsForm.value?.getContributions();
-    contributionsForm.value?.checkRefetch();
     try {
       if (props.action === "create") {
         await photopoemStore.createPhotopoem(e.values);
@@ -90,6 +89,7 @@ const onFormSubmit = async (e: any) => {
       console.log(error);
       toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
     }
+    contributionsForm.value?.checkRefetch();
   }
 };
 

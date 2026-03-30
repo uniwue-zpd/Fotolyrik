@@ -5,13 +5,17 @@ const getContributions = () => {
   return contributions.value.map(({ renderId, ...rest }) => rest);
 };
 const checkRefetch = () => {
-  const refetch = () =>{
-    usePersonStore().refreshPersonsData();
+  const refetch = (id: number) =>{
+    usePersonStore().refreshPersonsDataById(id);
   };
   for (const contribution of contributions.value){
-    const trimmedPseudonyms = contribution.contributor?.pseudonyms.map(contribution => contribution.trim().toLowerCase() );
-    if(!trimmedPseudonyms?.includes(contribution.pseudonym)){
-      refetch();
+    if (contribution.contributor ===  undefined){
+      console.error("Contribution Missing contributor on submit, form validation failed.")
+      return;
+    }
+    const trimmedPseudonyms = contribution.contributor.pseudonyms.map(contribution => contribution.trim().toLowerCase() );
+    if(!trimmedPseudonyms.includes(contribution.pseudonym)){
+      refetch(contribution.contributor.id);
     }
   }
 };
