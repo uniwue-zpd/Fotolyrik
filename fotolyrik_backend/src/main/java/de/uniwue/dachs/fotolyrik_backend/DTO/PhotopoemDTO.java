@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.DTO;
 
 import de.uniwue.dachs.fotolyrik_backend.model.BaseEntity;
+import de.uniwue.dachs.fotolyrik_backend.utils.enums.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,7 @@ public class PhotopoemDTO extends BaseEntity {
     private PubMediumPreviewDTO publicationMedium;
     private Set<PersonPreviewDTO> authors = new HashSet<>();
     private Set<PersonPreviewDTO> photographers = new HashSet<>();
+    private Set<PersonPreviewDTO> depictedPeople = new HashSet<>();
     private Set<PersonPreviewDTO> otherContributors = new HashSet<>();
     private Set<ContributionDTO> contributions = new HashSet<>();
     private Set<KeywordDTO> themes = new HashSet<>();
@@ -31,6 +33,7 @@ public class PhotopoemDTO extends BaseEntity {
     private String link;
     private String iiifManifest;
     private Set<FileDTO> images = new HashSet<>();
+    private AccessLevel imagesVisible = AccessLevel.INTERNAL;
     private CopyrightStatusDTO copyrightStatusImage;
     private CopyrightStatusDTO copyrightStatusText;
     private Set<LanguageDTO> languages = new HashSet<>();

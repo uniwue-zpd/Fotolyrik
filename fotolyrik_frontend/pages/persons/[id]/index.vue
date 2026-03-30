@@ -13,6 +13,7 @@ const previous_person = ref<Person | null>(null);
 const next_person = ref<Person | null>(null);
 const author_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const photographer_photopoems = ref<PhotoPoemDTO[] | []>([]);
+const depicted_person_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const contributor_photopoems = ref<PhotoPoemDTO[] | []>([]);
 
 onMounted(async () => {
@@ -22,6 +23,7 @@ onMounted(async () => {
   next_person.value = person_store.nextPerson();
   author_photopoems.value = await photopoem_store.filterPhotopoems({ 'author-id': person_id });
   photographer_photopoems.value = await photopoem_store.filterPhotopoems({ 'photographer-id': person_id });
+  depicted_person_photopoems.value = await photopoem_store.filterPhotopoems({ 'depicted-person-id': person_id });
   contributor_photopoems.value = await photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id });
 });
 </script>
@@ -42,7 +44,7 @@ onMounted(async () => {
       </template>
       <template #content>
         <div v-if="person_item" class="flex flex-row space-x-5 justify-between p-4">
-          <div class="p-3 bg-[#F1F2F2]">
+          <div class="p-3 bg-gray-accent">
             <div v-if="person_item.image">
               <img :src="`/api/uploads/${person_item.image.filename}`" alt="image"/>
             </div>
@@ -50,12 +52,12 @@ onMounted(async () => {
               <Avatar icon="pi pi-user" size="xlarge"/>
             </div>
           </div>
-          <div class="p-3 bg-[#F1F2F3]">
+          <div class="p-3 bg-gray-accent">
             <i class="pi pi-chart-line"/>
           </div>
         </div>
         <table class="min-w-full divide-y divide-gray-200 roboto-plain">
-          <tbody v-if="person_item" class="bg-white divide-y divide-gray-200">
+          <tbody v-if="person_item" class=" divide-y divide-gray-200">
           <tr v-if="person_item.studioName">
             <td class="px-6 py-4 whitespace-nowrap font-semibold">Studio / Agentur</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ person_item.studioName }}</td>
@@ -101,6 +103,16 @@ onMounted(async () => {
               </div>
             </div>
           </div>
+          <div v-if="depicted_person_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-primary outfit-headline">Abgebildet in</h2>
+            <div class="overflow-y-auto pb-2">
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
+                <div v-for="photopoem in depicted_person_photopoems" :key="photopoem.id">
+                  <PhotopoemPreview :photopoem="photopoem"/>
+                </div>
+              </div>
+            </div>
+          </div>
           <div v-if="contributor_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Mitgewirkt an</h2>
             <div class="overflow-y-auto pb-2">
@@ -116,11 +128,11 @@ onMounted(async () => {
       <template #footer>
         <Divider/>
         <div class="flex flex-col text-base">
-          <div v-if="person_item?.createdDate" class="flex flex-row space-x-2 text-black roboto-plain">
+          <div v-if="person_item?.createdDate" class="flex flex-row space-x-2  roboto-plain">
             <p class="font-semibold">Erstellt am:</p>
             <p>{{ new Date(person_item.createdDate).toLocaleDateString() }}</p>
           </div>
-          <div v-if="person_item?.lastModifiedDate" class="flex flex-row space-x-2 text-black roboto-plain">
+          <div v-if="person_item?.lastModifiedDate" class="flex flex-row space-x-2  roboto-plain">
             <p class="font-semibold">Zuletzt geändert am:</p>
             <p>{{ new Date(person_item.lastModifiedDate).toLocaleDateString() }}</p>
           </div>
@@ -135,7 +147,7 @@ onMounted(async () => {
               class="flex flex-row items-center space-x-2"
           >
             <i class="pi pi-arrow-left"/>
-            <div class="text-primary roboto-plain">Vorheriger Eintrag</div>
+            <div class=" roboto-plain">Vorheriger Eintrag</div>
           </NuxtLink>
         </div>
       </div>
@@ -145,7 +157,7 @@ onMounted(async () => {
               :to="`/persons/${next_person.id}`"
               class="flex flex-row items-center space-x-2"
           >
-            <div class="text-primary roboto-plain">Nächster Eintrag</div>
+            <div class="roboto-plain">Nächster Eintrag</div>
             <i class="pi pi-arrow-right"/>
           </NuxtLink>
         </div>

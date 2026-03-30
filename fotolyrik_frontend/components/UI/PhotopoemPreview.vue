@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {ref, watch} from 'vue';
+
 const file_store = useFileStore();
 
 const props = defineProps<{
@@ -7,13 +9,25 @@ const props = defineProps<{
 
 const photopoem = props.photopoem;
 const path = `/photopoems/${ photopoem.id }`;
-const image_path = photopoem.images.length > 0
-  ? file_store.getImagePreview(`/api/uploads/${ photopoem.images[0].filename }`)
-  : null;
+const image_path = ref<string | null>(null);
+
+async function loadFirstImage() {
+  try {
+    if (photopoem && photopoem.images.length > 0 && photopoem.imagesVisible === AccessLevel.PUBLIC) {
+      image_path.value = await file_store.getImageContent(photopoem.images[0].id);
+      return;
+    }
+  } catch (e) {
+    console.error('Failed to load photopoem image content', e);
+  }
+  image_path.value = null;
+}
+
+watch(() => props.photopoem, loadFirstImage, { immediate: true, deep: true });
 </script>
 
 <template>
-  <div class="rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-2 h-full bg-surface-100">
+  <div class="rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-2 h-full bg-gray-accent">
     <NuxtLink :to="path" class="flex flex-col gap-2">
       <div class="flex justify-center">
         <div v-if="image_path" class="rounded-md">

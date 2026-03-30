@@ -6,7 +6,7 @@ const highlight = computed(() => photopoem_store.currentHighlight);
 <template>
   <div
       v-if="highlight"
-      class="collection bg-surface-100"
+      class="collection bg-gray-accent"
   >
     <div class="flex flex-col gap-2 px-6 py-10 md:p-15">
       <h2 class="text-3xl averia-layout italic text-primary">Highlight</h2>

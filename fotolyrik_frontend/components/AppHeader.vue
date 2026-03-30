@@ -2,7 +2,6 @@
 import 'primeicons/primeicons.css';
 import { ref } from 'vue';
 import GeneralSearch from "~/components/UI/GeneralSearch.vue";
-import DarkThemeToggle from "~/components/UI/buttons/DarkThemeToggle.vue";
 const op = ref();
 const toggle = (event: any) => op.value.toggle(event)
 </script>

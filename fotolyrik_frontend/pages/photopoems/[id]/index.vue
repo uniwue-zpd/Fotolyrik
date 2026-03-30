@@ -26,12 +26,26 @@ const has_iiif_manifest = computed(() => Boolean(photopoem_item.value?.iiifManif
 const has_pages = computed(() => Boolean(photopoem_item.value?.manifestPageNumber));
 const double_page = computed(() => photopoem_item.value?.pageCount === 2);
 
+// Scans handling
+const show_scans = computed(() => {
+  return photopoem_item.value &&
+      photopoem_item.value.images.length > 0 &&
+      photopoem_item.value?.imagesVisible === AccessLevel.PUBLIC &&
+      !has_iiif_manifest.value;
+});
+const scan_ids = computed(() => photopoem_item.value ? photopoem_item.value.images.map(image => image.id) : []);
+const scans = ref<string[]>([]);
+
 useHead(() => ({
   title: photopoem_item.value?.title ? `${photopoem_item.value?.title}` : photopoem_item.value?.altTitle
 }));
 
 onMounted(async () => {
   await store.fetchPhtotopoemById(photopoem_id);
+  if (show_scans.value) {
+    scans.value = (await Promise.all(scan_ids.value.map((id) => file_store.getImageContent(id)))
+    ).filter((url) => url !== null) as string[];
+  }
   if (photopoem_item.value?.iiifManifest) {
     new Tify({
       container: '#tify-photopoem',
@@ -67,25 +81,33 @@ const roleText = {
       </template>
       <template #content>
         <div class="flex flex-col gap-2">
-          <div v-if="photopoem_item.images.length > 0">
-            <Image preview>
-              <template #image>
-                <img
-                    :src="file_store.getImagePreview(`/api/uploads/${photopoem_item.images[0].filename}`)"
-                    alt="Fotogedicht Bildvorschau"
-                    class="max-h-[300px] w-auto"
-                    oncontextmenu="return false;"
-                />
+          <div v-if="show_scans" class="flex flex-row items-start">
+            <Galleria
+                :value="scans"
+                :numVisible="1"
+            >
+              <template #item="slotProps">
+                <Image preview>
+                  <template #image>
+                    <img
+                        :src="slotProps.item"
+                        alt="Fotogedicht Bildvorschau"
+                        class="max-h-[300px] w-auto"
+                        oncontextmenu="return false;"
+                    />
+                  </template>
+                  <template #preview="slotPropsPreview">
+                    <img
+                        :src="slotProps.item"
+                        alt="Fotogedicht Bildvorschau"
+                        class="max-h-[80vh] select-none pointer-events-none"
+                        oncontextmenu="return false;"
+                        :style="slotPropsPreview.style"
+                    />
+                  </template>
+                </Image>
               </template>
-              <template #preview>
-                <img
-                    :src="file_store.getImagePreview(`/api/uploads/${photopoem_item.images[0].filename}`)"
-                    alt="Fotogedicht Bildvorschau"
-                    class="max-h-[80vh] select-none pointer-events-none"
-                    oncontextmenu="return false;"
-                />
-              </template>
-            </Image>
+            </Galleria>
           </div>
           <div v-show="has_iiif_manifest" id="tify-photopoem" class="h-[500px]"/>
           <Accordion value="0">
@@ -134,7 +156,7 @@ const roleText = {
                       <td class="px-6 py-4 whitespace-nowrap">
                         <NuxtLink
                             :to="`/publication_media/${photopoem_item.publicationMedium.id}`"
-                            class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                            class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                         >
                           {{ photopoem_item.publicationMedium.title }}
                         </NuxtLink>
@@ -147,7 +169,7 @@ const roleText = {
                             <span v-for="person in authors" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
@@ -160,6 +182,21 @@ const roleText = {
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">
                             <span v-for="person in photographers" :key="person.id">
+                              <NuxtLink
+                                  :to="`/persons/${person.id}`"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
+                              >
+                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                              </NuxtLink>
+                            </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="photopoem_item.depictedPeople.length > 0">
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Abgebildete Personen</td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex flex-wrap gap-3.5">
+                            <span v-for="person in photopoem_item.depictedPeople" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
                                   class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
@@ -177,7 +214,7 @@ const roleText = {
                             <span v-for="person in otherContributors" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
@@ -210,7 +247,7 @@ const roleText = {
                             <span v-for="keyword in photopoem_item.themes" :key="keyword.id">
                               <NuxtLink
                                   :to="`/keywords/${keyword.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ keyword.value }}
                               </NuxtLink>
@@ -225,7 +262,7 @@ const roleText = {
                             <span v-for="keyword in photopoem_item.imageMotifs" :key="keyword.id">
                               <NuxtLink
                                   :to="`/keywords/${keyword.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ keyword.value }}
                               </NuxtLink>
@@ -250,7 +287,7 @@ const roleText = {
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">
                           <div v-for="language in photopoem_item.languages">
-                            <div class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium">
+                            <div class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium">
                               {{ language.name }}
                             </div>
                           </div>

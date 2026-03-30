@@ -45,6 +45,7 @@ const resolver = ref(
       publicationMedium: z.any(),
       authors: z.any(),
       photographers: z.any(),
+      depictedPeople: z.any(),
       otherContributors: z.any(),
       themes: z.any(),
       imageMotifs: z.any(),
@@ -52,6 +53,7 @@ const resolver = ref(
       link: z.any(),
       iiifManifest: z.any(),
       images: z.any(),
+      imagesVisible: z.enum(Object.values(AccessLevel)),
       copyrightStatusImage: z.any(),
       copyrightStatusText: z.any(),
       languages: z.any(),
@@ -338,6 +340,24 @@ const onFormSubmit = async (e: any) => {
               {{ $form.photographers.error.message }}
             </Message>
           </FormField>
+          <FormField v-slot="$field" name="depictedPeople" class="flex flex-col gap-1 w-full">
+            <label for="depictedPeople" class="font-bold">Abgebildete Personen</label>
+            <MultiSelect
+                inputId="depictedPeople"
+                placeholder="Abgebildete Personen auswählen"
+                selectedItemsLabel="{0} Personen ausgewählt"
+                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
+                :maxSelectedLabels="2"
+                :options="persons"
+                :key="persons.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                filter fluid
+            />
+            <Message v-if="$form.depictedPeople?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.depictedPeople.error.message }}
+            </Message>
+          </FormField>
           <FormField v-slot="$field" name="otherContributors" class="flex flex-col gap-1 w-full">
             <label for="otherContributors" class="font-bold">Sonstige Mitwirkende</label>
             <MultiSelect
@@ -503,6 +523,22 @@ const onFormSubmit = async (e: any) => {
           </div>
           <Message v-if="$form.files?.invalid" severity="error" size="small" variant="simple">
             {{ $form.files.error.message }}
+          </Message>
+        </FormField>
+        <FormField v-slot="$field" name="imagesVisible" class="flex flex-col gap-1">
+          <label for="imagesVisible" class="font-bold">Sichtbarkeit der Bilder</label>
+          <IconField>
+            <InputIcon class="pi pi-eye"/>
+            <Select
+                labelId="imagesVisible"
+                placeholder="Sichtbarkeit festlegen"
+                class="pl-7"
+                :options="Object.values(AccessLevel)"
+                fluid
+            />
+          </IconField>
+          <Message v-if="$form.imagesVisible?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.imagesVisible.error.message }}
           </Message>
         </FormField>
         <Divider align="center">

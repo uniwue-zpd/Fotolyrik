@@ -106,6 +106,25 @@ public class PhotopoemSpecification {
         return hasRole(photographerName, ContributionRole.PHOTOGRAPHER,"photographers");
     }
 
+    public static Specification<Photopoem> hasDepictedPersonId(Long depictedPersonId) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Photopoem, Person> depictedPeople = root.join("depictedPeople");
+            return criteriaBuilder.equal(depictedPeople.get("id"), depictedPersonId);
+        };
+    }
+
+    public static Specification<Photopoem> hasDepictedPerson(String depictedPersonName) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Photopoem, Person> depictedPeople = root.join("depictedPeople");
+            Join<Person, String> pseudonyms = depictedPeople.join("pseudonyms", JoinType.LEFT);
+            String pattern = "%" + depictedPersonName.toLowerCase() + "%";
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(criteriaBuilder.lower(depictedPeople.get("firstName")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(depictedPeople.get("lastName")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(pseudonyms), pattern)
+            );
+        };
+    }
     public static Specification<Photopoem> hasOtherContributorId(Long contributorId) {
         return hasRoleId(contributorId, ContributionRole.OTHER, "otherContributors");
     }

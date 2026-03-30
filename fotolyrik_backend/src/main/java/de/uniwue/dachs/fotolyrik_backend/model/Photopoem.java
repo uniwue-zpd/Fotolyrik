@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.model;
 
+import de.uniwue.dachs.fotolyrik_backend.utils.enums.AccessLevel;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,6 +54,14 @@ public class Photopoem extends BaseEntity {
 
     @ManyToMany
     @JoinTable(
+            name = "photopoem_depicted_people",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id")
+    )
+    private Set<Person> depictedPeople = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
             name = "photopoem_other_contributors",
             joinColumns = @JoinColumn(name = "photopoem_id"),
             inverseJoinColumns = @JoinColumn(name = "person_id")
@@ -87,6 +96,10 @@ public class Photopoem extends BaseEntity {
     @OneToMany
     @JoinColumn(name = "photopoem_id")
     private Set<File> images = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(255) default 'INTERNAL'")
+    private AccessLevel imagesVisible = AccessLevel.INTERNAL;
 
     @ManyToOne
     @JoinColumn(name = "copyrightstatus_image_id")

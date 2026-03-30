@@ -13,6 +13,8 @@ export const useFileStore = defineStore("files", () => {
     const loadingUp = ref(false)
     const errorUp = ref<string | null>(null)
 
+    const fileContents = ref<Map<number, string>>(new Map());
+
     async function fetchFiles() {
         loadingDown.value = true;
         errorDown.value = null;
@@ -37,39 +39,32 @@ export const useFileStore = defineStore("files", () => {
     }
 
     async function removeFile(file: File) {
-        const { error } = await useFetch(`/api/files/${file.id}`, { method: 'DELETE' });
-        if (error.value) {
-            console.error('Failed to delete file: ', error.value.message);
-            errorDown.value = error.value.message || 'Failed to delete file';
-            return;
+        try {
+            await $fetch(`/api/files/${ file.id }`, { method: 'DELETE' });
+            files.value = files.value.filter(f => f.id !== file.id);
+        } catch (err: any) {
+            console.error('Failed to delete file: ', err);
+            errorDown.value = err?.message || 'Failed to delete file';
         }
-        files.value = files.value.filter(f => f.id !== file.id);
     }
 
     async function uploadFiles(fileList: FileList) {
-        progressUp.value = 0
-        loadingUp.value = true
-        errorUp.value = null
-
+        progressUp.value = 0;
+        loadingUp.value = true;
+        errorUp.value = null;
         const formData = new FormData();
         Array.from(fileList).forEach(file => {
             formData.append('file', file);
         });
-
         try {
-            const response = await apiClient.post<File[]>('/files', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                onUploadProgress: (progressEvent) => {
-                    if (progressEvent.lengthComputable) {
-                        progressUp.value = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
-                    }
-                }
+            const response = await $fetch<File[]>('/api/files', {
+                method: 'POST',
+                body: formData
             });
-            files.value.push(...response.data);
+            files.value.push(...response);
+            progressUp.value = 100;
         } catch (err: any) {
-            errorUp.value = err.message || 'Failed to upload files';
+            errorUp.value = err?.message || 'Failed to upload files';
             console.error('Error uploading files:', err);
         } finally {
             loadingUp.value = false;
@@ -80,6 +75,22 @@ export const useFileStore = defineStore("files", () => {
         if (!path) return '';
         const filename = path.split(/[\\/]/).pop() || '';
         return `${apiClient.defaults.baseURL || ''}/uploads/${encodeURIComponent(filename)}`;
+    }
+
+    async function getImageContent(id: number): Promise<string | null> {
+        if (fileContents.value.has(id)) return fileContents.value.get(id)!;
+        try {
+            const response = await $fetch(`/api/files/${id}/content`, {
+                method: 'GET',
+                responseType: 'blob'
+            });
+            const url = URL.createObjectURL(response as Blob);
+            fileContents.value.set(id, url);
+            return url;
+        } catch (err) {
+            console.error('Failed to fetch image content: ', err);
+            return null;
+        }
     }
 
     return {
@@ -93,6 +104,7 @@ export const useFileStore = defineStore("files", () => {
         refreshFilesData,
         removeFile,
         uploadFiles,
-        getImagePreview
+        getImagePreview,
+        getImageContent
     }
 })

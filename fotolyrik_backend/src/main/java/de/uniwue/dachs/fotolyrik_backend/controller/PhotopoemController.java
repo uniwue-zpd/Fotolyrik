@@ -57,6 +57,8 @@ public class PhotopoemController {
             @RequestParam(required = false) String author,
             @RequestParam(required = false, value = "photographer-id") Long photographerId,
             @RequestParam(required = false) String photographer,
+            @RequestParam(required = false, value = "depicted-person-id") Long depictedPersonId,
+            @RequestParam(required = false, value= "depicted-person") String depictedPerson,
             @RequestParam(required = false, value = "other-contributor-id") Long otherContributorId,
             @RequestParam(required = false, value = "other-contributor") String otherContributor,
             @RequestParam(required = false, value = "theme-id") Long themeId,
@@ -73,9 +75,10 @@ public class PhotopoemController {
         List<Object> paramsCount = Stream.<Object>of(
                 title, subtitle, altTitle, volume, issue, publicationDate,
                 pubMediumId, pubMedium, authorId, author, photographerId,
-                photographer, otherContributorId, otherContributor, themeId,
-                theme, imageMotifId, imageMotif, copyrightStatusImageId,
-                copyrightStatusImage, copyrightStatusTextId, copyrightStatusText, languageId, language
+                photographer,depictedPersonId, depictedPerson, otherContributorId,
+                otherContributor, themeId, theme, imageMotifId, imageMotif,
+                copyrightStatusImageId, copyrightStatusImage, copyrightStatusTextId,
+                copyrightStatusText, languageId, language
         )
                 .filter(Objects::nonNull)
                 .toList();
@@ -84,9 +87,10 @@ public class PhotopoemController {
                 photopoemService.filterPhotopoems(
                         title, subtitle, altTitle, volume, issue, publicationDate,
                         pubMediumId, pubMedium, authorId, author, photographerId,
-                        photographer, otherContributorId, otherContributor, themeId,
-                        theme, imageMotifId, imageMotif, copyrightStatusImageId, copyrightStatusImage,
-                        copyrightStatusTextId, copyrightStatusText, languageId, language
+                        photographer,depictedPersonId, depictedPerson, otherContributorId,
+                        otherContributor, themeId, theme, imageMotifId, imageMotif,
+                        copyrightStatusImageId, copyrightStatusImage, copyrightStatusTextId,
+                        copyrightStatusText, languageId, language
                 )
         );
     }
