@@ -65,6 +65,7 @@ const contributions = ref<Contribution[]>(
     <div>
       <div class="flex flex-row space-x-2 p-2 bg-surface-50 rounded-md shadow-sm">
         <Select
+            class="flex-1 min-w-0"
             inputId="contributors"
             placeholder="Mitwirkende Person auswählen"
             :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
@@ -75,6 +76,7 @@ const contributions = ref<Contribution[]>(
             filter fluid
         />
         <AutoComplete
+            class="flex-2 min-w-0"
             placeholder="Pseudonym"
             v-model="contribution.pseudonym"
             :suggestions="contribution.suggestions"
@@ -82,7 +84,7 @@ const contributions = ref<Contribution[]>(
             dropdown
         />
         <Select
-            class="w-64"
+            class="min-w-0 flex-1"
             inputId="contributionRole"
             placeholder="In Rolle"
             :options="roleOptions"
