@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {ContributionRole} from "~/utils/types";
+import type {AutoCompleteCompleteEvent} from "primevue";
 const getContributions = () => {
   return contributions.value.map(({ renderId, ...rest }) => rest);
 };
@@ -34,12 +35,23 @@ interface Contribution {
     id?: number;
     contributor?: PersonPreviewDTO;
     pseudonym: string;
-    role?: ContributionRole
+    role?: ContributionRole;
+    suggestions?: string[];
 }
 const createEmptyContribution = (): Contribution => ({
   renderId: crypto.randomUUID(),
   pseudonym: ""
 });
+const searchPseudonyms = (event : AutoCompleteCompleteEvent, contribution: Contribution) => {
+  const query = event.query.toLowerCase();
+  const pseudonyms  = contribution.contributor?.pseudonyms;
+
+  if (pseudonyms){
+    contribution.suggestions = pseudonyms.filter(pseudonym => {
+      return pseudonym.toLowerCase().includes(query);
+    });
+  }
+};
 const contributions = ref<Contribution[]>(
     (props.contributions as ContributionDTO[])?? []
 );
@@ -62,7 +74,10 @@ const contributions = ref<Contribution[]>(
             v-model="contribution.contributor"
             filter fluid
         />
-        <InputText placeholder="Pseudonym" v-model="contribution.pseudonym"></InputText>
+        <AutoComplete
+            placeholder="Pseudonym" v-model="contribution.pseudonym"
+            :suggestions="contribution.suggestions" @complete="searchPseudonyms($event, contribution)"
+        ></AutoComplete>
         <Select
             class="w-64"
             inputId="contributionRole"
