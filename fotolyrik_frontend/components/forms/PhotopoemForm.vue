@@ -75,7 +75,7 @@ const contributionsForm: Ref<InstanceType<typeof ContributionForm> | null> = ref
 const onFormSubmit = async (e: any) => {
   if (e.valid && contributionsForm.value?.isValid()) {
     e.values.contributions = contributionsForm.value?.getContributions();
-    console.log(e.values);
+    contributionsForm.value?.checkRefetch();
     try {
       if (props.action === "create") {
         await photopoemStore.createPhotopoem(e.values);

@@ -4,6 +4,17 @@ import type {AutoCompleteCompleteEvent} from "primevue";
 const getContributions = () => {
   return contributions.value.map(({ renderId, ...rest }) => rest);
 };
+const checkRefetch = () => {
+  const refetch = () =>{
+    usePersonStore().refreshPersonsData();
+  };
+  for (const contribution of contributions.value){
+    const trimmedPseudonyms = contribution.contributor?.pseudonyms.map(contribution => contribution.trim().toLowerCase() );
+    if(!trimmedPseudonyms?.includes(contribution.pseudonym)){
+      refetch();
+    }
+  }
+};
 const isValid = () =>{
   let valid = true;
   for(const contribution of contributions.value){
@@ -19,7 +30,7 @@ const isValid = () =>{
   }
   return valid;
 };
-defineExpose({getContributions, isValid})
+defineExpose({getContributions, isValid, checkRefetch})
 const props = defineProps({
   persons: Array,
   contributions: Array
