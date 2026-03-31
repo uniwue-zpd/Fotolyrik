@@ -295,8 +295,26 @@ const onFormSubmit = async (e: any) => {
             {{ $form.publicationMedium.error.message }}
           </Message>
         </FormField>
+        <FormField v-slot="$field" name="depictedPeople" class="flex flex-col gap-1 w-full">
+          <label for="depictedPeople" class="font-bold">Abgebildete Personen</label>
+          <MultiSelect
+              inputId="depictedPeople"
+              placeholder="Abgebildete Personen auswählen"
+              selectedItemsLabel="{0} Personen ausgewählt"
+              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+              :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
+              :maxSelectedLabels="2"
+              :options="persons"
+              :key="persons.length"
+              :virtual-scroller-options="{ itemSize: 50 }"
+              filter fluid
+          />
+          <Message v-if="$form.depictedPeople?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.depictedPeople.error.message }}
+          </Message>
+        </FormField>
         <Divider align="center">
-          <b class="px-2">Personen</b>
+          <b class="px-2 text-red-500">Personen (deprecated)</b>
         </Divider>
         <div class="flex flex-row gap-4">
           <NuxtLink to="/persons/create" target="_blank">
@@ -316,7 +334,7 @@ const onFormSubmit = async (e: any) => {
                 :options="persons"
                 :key="persons.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid
+                filter fluid disabled
             />
             <Message v-if="$form.authors?.invalid" severity="error" size="small" variant="simple">
               {{ $form.authors.error.message }}
@@ -334,28 +352,10 @@ const onFormSubmit = async (e: any) => {
                 :options="persons"
                 :key="persons.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid
+                filter fluid disabled
             />
             <Message v-if="$form.photographers?.invalid" severity="error" size="small" variant="simple">
               {{ $form.photographers.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="depictedPeople" class="flex flex-col gap-1 w-full">
-            <label for="depictedPeople" class="font-bold">Abgebildete Personen</label>
-            <MultiSelect
-                inputId="depictedPeople"
-                placeholder="Abgebildete Personen auswählen"
-                selectedItemsLabel="{0} Personen ausgewählt"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-                :maxSelectedLabels="2"
-                :options="persons"
-                :key="persons.length"
-                :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid
-            />
-            <Message v-if="$form.depictedPeople?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.depictedPeople.error.message }}
             </Message>
           </FormField>
           <FormField v-slot="$field" name="otherContributors" class="flex flex-col gap-1 w-full">
@@ -370,7 +370,7 @@ const onFormSubmit = async (e: any) => {
                 :options="persons"
                 :key="persons.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid
+                filter fluid disabled
             />
             <Message v-if="$form.otherContributors?.invalid" severity="error" size="small" variant="simple">
               {{ $form.otherContributors.error.message }}
