@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import {ContributionRole} from "~/utils/types";
+import { ContributionRole } from "~/utils/types";
 import type {AutoCompleteCompleteEvent} from "primevue";
+
 const getContributions = () => {
   return contributions.value.map(({ renderId, ...rest }) => rest);
 };
+
 const checkRefetch = () => {
-  const refetch = (id: number) =>{
+  const refetch = (id: number) => {
     usePersonStore().refreshPersonsDataById(id);
   };
-  for (const contribution of contributions.value){
-    if (contribution.contributor ===  undefined){
+  for (const contribution of contributions.value) {
+    if (contribution.contributor ===  undefined) {
       console.error("Contribution Missing contributor on submit, form validation failed.")
       return;
     }
-    const trimmedPseudonyms = contribution.contributor.pseudonyms.map(contribution => contribution.trim().toLowerCase() );
-    if(!trimmedPseudonyms.includes(contribution.pseudonym)){
+    const trimmedPseudonyms = contribution.contributor.pseudonyms.map(contribution => contribution.trim().toLowerCase());
+    if (!trimmedPseudonyms.includes(contribution.pseudonym)) {
       refetch(contribution.contributor.id);
     }
   }
 };
-const isValid = () =>{
+
+const isValid = () => {
   let valid = true;
-  for(const contribution of contributions.value){
+  for (const contribution of contributions.value){
     contribution.errorMessage = "";
     if (!contribution.contributor) {
       contribution.errorMessage += "Invalid contributor. ";
@@ -34,16 +37,19 @@ const isValid = () =>{
   }
   return valid;
 };
-defineExpose({getContributions, isValid, checkRefetch})
+
+defineExpose({ getContributions, isValid, checkRefetch })
 const props = defineProps({
   persons: Array,
   contributions: Array
 });
+
 const roleOptions = [
   { label: 'Autor:in', value: ContributionRole.AUTHOR },
   { label: 'Fotograf:in', value: ContributionRole.PHOTOGRAPHER },
   { label: 'Sonstige', value: ContributionRole.OTHER }
 ];
+
 interface Contribution {
     renderId?: string;
     errorMessage?: string;
@@ -53,24 +59,28 @@ interface Contribution {
     role?: ContributionRole;
     suggestions?: string[];
 }
+
 const createEmptyContribution = (): Contribution => ({
   renderId: crypto.randomUUID(),
   pseudonym: ""
 });
+
 const searchPseudonyms = (event : AutoCompleteCompleteEvent, contribution: Contribution) => {
   const query = event.query.toLowerCase();
   const pseudonyms  = contribution.contributor?.pseudonyms;
 
-  if (pseudonyms){
+  if (pseudonyms) {
     contribution.suggestions = pseudonyms.filter(pseudonym => {
       return pseudonym.toLowerCase().includes(query);
     });
   }
 };
+
 const contributions = ref<Contribution[]>(
     (props.contributions as ContributionDTO[])?? []
 );
 </script>
+
 <template>
   <div
       v-if="contributions.length > 0"
