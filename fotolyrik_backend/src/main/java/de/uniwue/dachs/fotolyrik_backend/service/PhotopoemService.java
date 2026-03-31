@@ -316,7 +316,7 @@ public class PhotopoemService {
                             .filter(Objects::nonNull)
                             .map(String::trim)
                             .map(String::toLowerCase)
-                            .filter(s -> !s.isEmpty())
+                            .filter(s -> !s.isBlank())
                             .collect(Collectors.toSet());
                     if (!cleanedPseudonyms.contains(pseudonym.trim().toLowerCase())) {
                         person.getPseudonyms().add(pseudonym);
