@@ -13,13 +13,13 @@ const file_store = useFileStore();
 
 const authors = computed(() => photopoem_item.value?.contributions
     .filter(contribution => contribution.role === ContributionRole.AUTHOR)
-    .map(contribution => contribution.contributor) || []);
+    .map(contribution => ({...contribution.contributor, pseudonym: contribution.pseudonym || null })) || []);
 const photographers = computed(() => photopoem_item.value?.contributions
     .filter(contribution => contribution.role === ContributionRole.PHOTOGRAPHER)
-    .map(contribution => contribution.contributor) || []);
+    .map(contribution => ({...contribution.contributor, pseudonym: contribution.pseudonym || null })) || []);
 const otherContributors = computed(() => photopoem_item.value?.contributions
     .filter(contribution => contribution.role === ContributionRole.OTHER)
-    .map(contribution => contribution.contributor) || []);
+    .map(contribution => ({...contribution.contributor, pseudonym: contribution.pseudonym || null })) || []);
 
 // TIFY Viewer setup
 const has_iiif_manifest = computed(() => Boolean(photopoem_item.value?.iiifManifest));
@@ -169,9 +169,12 @@ const roleText = {
                             <span v-for="person in authors" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
                               >
-                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                <span class="font-medium">
+                                  {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                </span>
+                                <span v-if="person.pseudonym" class="font-light italic">als {{  person.pseudonym }}</span>
                               </NuxtLink>
                             </span>
                         </div>
@@ -184,9 +187,30 @@ const roleText = {
                             <span v-for="person in photographers" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
+                                  class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
                               >
-                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                <span class="font-medium">
+                                  {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                </span>
+                                <span v-if="person.pseudonym" class="font-light italic">als {{  person.pseudonym }}</span>
+                              </NuxtLink>
+                            </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="otherContributors.length > 0">
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Sonstige Mitwirkende</td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex flex-wrap gap-3.5">
+                            <span v-for="person in photographers" :key="person.id">
+                              <NuxtLink
+                                  :to="`/persons/${person.id}`"
+                                  class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
+                              >
+                                <span class="font-medium">
+                                  {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                </span>
+                                <span v-if="person.pseudonym" class="font-light italic">als {{  person.pseudonym }}</span>
                               </NuxtLink>
                             </span>
                         </div>
@@ -202,39 +226,6 @@ const roleText = {
                                   class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
                               >
                                 {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
-                              </NuxtLink>
-                            </span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr v-if="otherContributors.length > 0">
-                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Sonstige Mitwirkende</td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex flex-wrap gap-3.5">
-                            <span v-for="person in otherContributors" :key="person.id">
-                              <NuxtLink
-                                  :to="`/persons/${person.id}`"
-                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
-                              >
-                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
-                              </NuxtLink>
-                            </span>
-                        </div>
-                      </td>
-                    </tr>
-                    <!-- Discuss -->
-                    <tr v-if="photopoem_item.contributions.length > 0">
-                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Mitwirkende</td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex flex-wrap gap-3.5">
-                            <span v-for="contribution in photopoem_item.contributions" :key="contribution.id">
-                              <NuxtLink
-                                  :to="`/persons/${contribution.contributor.id}`"
-                                  class="p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
-                              >
-                                <p class="font-light inline mr-2">{{roleText[contribution.role] + " :"}}</p>
-                                {{  contribution.contributor.fullName }}
-                                 <p class="font-light inline mr-2">{{ (contribution.pseudonym !== ""? " as " + contribution.pseudonym : "") }}</p>
                               </NuxtLink>
                             </span>
                         </div>
