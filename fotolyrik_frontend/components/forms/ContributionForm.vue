@@ -102,6 +102,7 @@ const contributions = ref<Contribution[]>(
         />
         <AutoComplete
             class="flex-2 min-w-0"
+            inputId="pseudonym"
             placeholder="Pseudonym"
             v-model="contribution.pseudonym"
             :suggestions="contribution.suggestions"
