@@ -155,11 +155,11 @@ useHead(() => ({
           </template>
         </Column>
         <Column header ="Autor:innen" field="contributions">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.contributions && slotProps.data.contributions.length > 0">
+          <template #body="slotProps: {data:PhotoPoemDTO}">
+            <div v-if="slotProps.data.contributions && slotProps.data.contributions.filter(x => x.role === ContributionRole.AUTHOR).length > 0">
               <ul class="list-inside">
-                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === 'AUTHOR')" :key="c.person?.id ?? index">
-                  <NuxtLink :to="`/persons/${c.person?.id}`" class="roboto-plain">
+                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === ContributionRole.AUTHOR)" :key="c.contributor?.id ?? index">
+                  <NuxtLink :to="`/persons/${c.contributor?.id}`" class="roboto-plain">
                     {{ c.contributor.fullName }}
                   </NuxtLink>
                 </li>
@@ -171,11 +171,11 @@ useHead(() => ({
           </template>
         </Column>
         <Column header ="Fotograf:innen" field="contributions">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.contributions && slotProps.data.contributions.length > 0">
+          <template #body="slotProps: {data:PhotoPoemDTO}">
+            <div v-if="slotProps.data.contributions && slotProps.data.contributions.filter(x => x.role === ContributionRole.PHOTOGRAPHER).length > 0">
               <ul class="list-inside">
-                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === 'PHOTOGRAPHER')" :key="c.person?.id ?? index">
-                  <NuxtLink :to="`/persons/${c.person?.id}`" class="roboto-plain">
+                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === ContributionRole.PHOTOGRAPHER)" :key="c.contributor?.id ?? index">
+                  <NuxtLink :to="`/persons/${c.contributor?.id}`" class="roboto-plain">
                     {{ c.contributor.fullName }}
                   </NuxtLink>
                 </li>
@@ -187,11 +187,11 @@ useHead(() => ({
           </template>
         </Column>
         <Column header ="Sonstige Mitwirkende" field="contributions">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.contributions && slotProps.data.contributions.length > 0">
+          <template #body="slotProps: {data:PhotoPoemDTO}">
+            <div v-if="slotProps.data.contributions && slotProps.data.contributions.filter(x => x.role === ContributionRole.OTHER).length > 0">
               <ul class="list-inside">
-                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === 'OTHER')" :key="c.person?.id ?? index">
-                  <NuxtLink :to="`/persons/${c.person?.id}`" class="roboto-plain">
+                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === ContributionRole.OTHER)" :key="c.contributor?.id ?? index">
+                  <NuxtLink :to="`/persons/${c.contributor?.id}`" class="roboto-plain">
                     {{ c.contributor.fullName }}
                   </NuxtLink>
                 </li>
