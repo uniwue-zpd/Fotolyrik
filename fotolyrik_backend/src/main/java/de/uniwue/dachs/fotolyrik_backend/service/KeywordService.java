@@ -39,6 +39,7 @@ public class KeywordService {
     public Keyword updateKeyword(Long id, Keyword updatedKeyword) {
         return keywordRepository.findById(id)
                 .map(existingKeyword -> {
+                    existingKeyword.mapBaseEntityFields(updatedKeyword);
                     existingKeyword.setValue(updatedKeyword.getValue());
                     existingKeyword.setGndId(updatedKeyword.getGndId());
                     return keywordRepository.save(existingKeyword);

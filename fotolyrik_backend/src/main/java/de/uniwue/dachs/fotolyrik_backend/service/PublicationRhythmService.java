@@ -47,6 +47,7 @@ public class PublicationRhythmService {
     public PublicationRhythm updatePublicationRhythm(Long id, PublicationRhythm publicationRhythm) {
         return publicationRhythmRepository.findById(id)
                 .map(entity -> {
+                    entity.mapBaseEntityFields(publicationRhythm);
                     entity.setValue(publicationRhythm.getValue());
                     entity.setDescription(publicationRhythm.getDescription());
                     return publicationRhythmRepository.save(entity);

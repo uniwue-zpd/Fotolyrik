@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,4 +35,16 @@ public abstract class BaseEntity implements Serializable {
 
     @LastModifiedBy
     protected String lastModifiedBy;
+
+    @Lob
+    @JsonIgnore
+    private String internalNotes;
+
+    @Lob
+    private String generalNotes;
+
+    public void mapBaseEntityFields(BaseEntity source) {
+        generalNotes = (source.getGeneralNotes());
+        internalNotes = (source.getInternalNotes());
+    }
 }
