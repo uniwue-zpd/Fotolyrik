@@ -22,7 +22,7 @@ public class GeneralSearchService {
 
         return Stream.of(
                 new SearchSpec(
-                        "SELECT p.id, " +
+                        "SELECT DISTINCT p.id, " +
                                 "COALESCE(NULLIF(CONCAT(p.first_name, ' ', p.last_name), ' '), pp.pseudonyms) AS title " +
                                 "FROM person p " +
                                 "LEFT JOIN person_pseudonymes pp ON p.id = pp.person_id " +
