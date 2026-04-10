@@ -15,6 +15,7 @@ export const useLocationStore = defineStore('location', () => {
     async function fetchLocations() {
         if (!isLoaded.value) {
             const { data, error } = await useFetch('/api/locations');
+            console.log({data, error, message: "here this is it"} );
             if (error.value) {
                 console.error('Error fetching locations:', error.value);
                 return;

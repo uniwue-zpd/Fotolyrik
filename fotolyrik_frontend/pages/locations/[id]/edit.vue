@@ -21,13 +21,13 @@ onMounted(async () => {
   <div v-if="!location_item">
     <div class="flex flex-row space-x-2 items-center justify-center p-2 bg-[#F1F2F2] rounded-md">
       <i class="pi pi-spin pi-spinner"/>
-      <p class="roboto-plain">Ort wird geladen</p>
+      <p class="roboto-plain">Fundort wird geladen</p>
     </div>
   </div>
   <LocationForm
       v-else
       action="edit"
-      header="Ort bearbeiten"
+      header="Fundort bearbeiten"
       :location="location_item"
   />
 </template>

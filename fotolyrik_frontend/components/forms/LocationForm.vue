@@ -44,7 +44,7 @@ const onFormSubmit = async (e: any) => {
   <div class="flex flex-col mx-auto w-[70%] gap-4">
     <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
     <p class="roboto-plain">
-      Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen oder anzupassen.
+      Füllen Sie bitte die untenstehenden Felder aus, um einen Fundort zu erstellen oder anzupassen.
     </p>
     <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
       <Form
@@ -56,7 +56,7 @@ const onFormSubmit = async (e: any) => {
           @submit="onFormSubmit"
       >
         <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-1">
-          <label for="name" class="font-bold">Fundort Name</label>
+          <label for="name" class="font-bold">Name</label>
           <IconField>
             <InputIcon class="pi pi-map-marker" />
             <InputText
