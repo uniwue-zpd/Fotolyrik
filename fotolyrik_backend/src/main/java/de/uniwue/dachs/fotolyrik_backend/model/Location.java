@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "LOCATION")
+@Table(name = "location") // location/organization =  fundort
 @Getter
 @Setter
 public class Location extends BaseEntity {

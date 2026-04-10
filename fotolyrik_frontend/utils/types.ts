@@ -185,6 +185,10 @@ export interface PubMediumPreviewDTO {
     id: number;
     title: number;
 }
+export interface LocationDTO extends Auditable {
+    name: string;
+    description: string;
+}
 
 export interface PubMediumDTO extends Auditable {
     title: string;

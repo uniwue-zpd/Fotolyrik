@@ -13,12 +13,14 @@ const fileStore = useFileStore();
 const languageStore = useLanguageStore();
 const copyrightStatusStore = useCopyrightStatusStore();
 const keywordStore = useKeywordStore();
+const locationStore = useLocationStore();
 
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed(() => keywordStore.keywords.map(k => ({ id: k.id, value: k.value })));
 const languages = computed(() => languageStore.languages.map(l => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
 const files = computed(() => fileStore.files.map(f => ({ id: f.id, filename: f.filename, originalFilename: f.originalFilename })));
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
+const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 
 const data_refreshing = ref(false);
 
@@ -287,6 +289,29 @@ const onFormSubmit = async (e: any) => {
           </div>
           <Message v-if="$form.publicationMedium?.invalid" severity="error" size="small" variant="simple">
             {{ $form.publicationMedium.error.message }}
+          </Message>
+        </FormField>
+        <FormField v-slot="$field" name="location" class="flex flex-col gap-1">
+          <label for="location" class="font-bold">Fundort</label>
+          <div class="flex flex-row gap-4 flex-nowrap">
+            <IconField class="flex-1 min-w-0">
+              <InputIcon class="pi pi-book"/>
+              <MultiSelect
+                  labelId="location"
+                  placeholder="Fundort auswählen"
+                  class="pl-7"
+                  optionLabel="name"
+                  :options="locations"
+                  :key="locations.length"
+                  fluid
+              />
+            </IconField>
+            <NuxtLink to="/location/create" target="_blank">
+              <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
+            </NuxtLink>
+          </div>
+          <Message v-if="$form.publicationMedium?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.location.error.message }}
           </Message>
         </FormField>
         <Divider align="center">
