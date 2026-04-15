@@ -146,6 +146,21 @@ onMounted(async () => {
                         </NuxtLink>
                       </td>
                     </tr>
+                    <tr v-if="photopoem_item.locations.length > 0">
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Fundort</td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex flex-wrap gap-3.5">
+                            <span v-for="location in photopoem_item.locations" :key="location.id">
+                              <NuxtLink
+                                  :to="`/locations/${location.id}`"
+                                  class="p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md font-medium"
+                              >
+                                {{ location.name }}
+                              </NuxtLink>
+                            </span>
+                        </div>
+                      </td>
+                    </tr>
                     <tr v-if="photopoem_item.authors.length > 0">
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Autor:innen</td>
                       <td class="px-6 py-4 whitespace-nowrap">
