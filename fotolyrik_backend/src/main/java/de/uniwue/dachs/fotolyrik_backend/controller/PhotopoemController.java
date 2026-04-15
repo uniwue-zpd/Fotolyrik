@@ -53,6 +53,7 @@ public class PhotopoemController {
             @RequestParam(required = false, value = "publication-date") String publicationDate,
             @RequestParam(required = false, value = "pubmedium-id") Long pubMediumId,
             @RequestParam(required = false, value = "pubmedium") String pubMedium,
+            @RequestParam(required = false, value = "location-id") Long locationId,
             @RequestParam(required = false, value = "author-id") Long authorId,
             @RequestParam(required = false) String author,
             @RequestParam(required = false, value = "photographer-id") Long photographerId,
@@ -74,7 +75,7 @@ public class PhotopoemController {
     ) {
         List<Object> paramsCount = Stream.<Object>of(
                 title, subtitle, altTitle, volume, issue, publicationDate,
-                pubMediumId, pubMedium, authorId, author, photographerId,
+                pubMediumId, pubMedium, locationId, authorId, author, photographerId,
                 photographer,depictedPersonId, depictedPerson, otherContributorId,
                 otherContributor, themeId, theme, imageMotifId, imageMotif,
                 copyrightStatusImageId, copyrightStatusImage, copyrightStatusTextId,
@@ -86,7 +87,7 @@ public class PhotopoemController {
         return ResponseEntity.ok(
                 photopoemService.filterPhotopoems(
                         title, subtitle, altTitle, volume, issue, publicationDate,
-                        pubMediumId, pubMedium, authorId, author, photographerId,
+                        pubMediumId, pubMedium, locationId, authorId, author, photographerId,
                         photographer,depictedPersonId, depictedPerson, otherContributorId,
                         otherContributor, themeId, theme, imageMotifId, imageMotif,
                         copyrightStatusImageId, copyrightStatusImage, copyrightStatusTextId,
