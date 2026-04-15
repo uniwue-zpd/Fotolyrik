@@ -38,6 +38,14 @@ public class Photopoem extends BaseEntity {
 
     @ManyToMany
     @JoinTable(
+            name = "photopoem_locations",
+            joinColumns = @JoinColumn(name = "photopoem_id"),
+            inverseJoinColumns = @JoinColumn(name = "location_id")
+    )
+    private Set<Location> foundIn = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
             name = "photopoem_authors",
             joinColumns = @JoinColumn(name = "photopoem_id"),
             inverseJoinColumns = @JoinColumn(name = "person_id")

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class PhotopoemMapper {
     private final PersonMapper personMapper;
     private final PubMediumMapper pubMediumMapper;
+    private final LocationMapper locationMapper;
     private final KeywordMapper keywordMapper;
     private final FileMapper fileMapper;
     private final PhotopoemRepository photopoemRepository;
@@ -17,9 +18,10 @@ public class PhotopoemMapper {
     private final CopyrightStatusMapper copyrightStatusMapper;
     private final PublicationDateMapper publicationDateMapper;
 
-    public PhotopoemMapper(PersonMapper personMapper, PubMediumMapper pubMediumMapper, KeywordMapper keywordMapper, FileMapper fileMapper, PhotopoemRepository photopoemRepository, LanguageMapper languageMapper, CopyrightStatusMapper copyrightStatusMapper,PublicationDateMapper publicationDateMapper) {
+    public PhotopoemMapper(PersonMapper personMapper, PubMediumMapper pubMediumMapper, LocationMapper locationMapper, KeywordMapper keywordMapper, FileMapper fileMapper, PhotopoemRepository photopoemRepository, LanguageMapper languageMapper, CopyrightStatusMapper copyrightStatusMapper, PublicationDateMapper publicationDateMapper) {
         this.personMapper = personMapper;
         this.pubMediumMapper = pubMediumMapper;
+        this.locationMapper = locationMapper;
         this.keywordMapper = keywordMapper;
         this.fileMapper = fileMapper;
         this.photopoemRepository = photopoemRepository;
@@ -41,6 +43,7 @@ public class PhotopoemMapper {
         photopoem.setPictureCount(photopoemDTO.getPictureCount());
         photopoem.setPublicationDate(photopoemDTO.getPublicationDate());
         photopoem.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(photopoemDTO.getPublicationMedium()));
+        photopoem.setFoundIn(locationMapper.LocationDTOsToLocations(photopoemDTO.getLocations()));
         photopoem.setAuthors(personMapper.PreviewDTOsToPersons(photopoemDTO.getAuthors()));
         photopoem.setPhotographers(personMapper.PreviewDTOsToPersons(photopoemDTO.getPhotographers()));
         photopoem.setDepictedPeople(personMapper.PreviewDTOsToPersons(photopoemDTO.getDepictedPeople()));
@@ -72,6 +75,7 @@ public class PhotopoemMapper {
         photopoemDTO.setPictureCount(photopoem.getPictureCount());
         photopoemDTO.setPublicationDate(publicationDateMapper.DateToDateWithoutDashes(photopoem.getPublicationDate()));
         photopoemDTO.setPublicationMedium(pubMediumMapper.PubMediumToPubMediumPreviewDTO(photopoem.getPublicationMedium()));
+        photopoemDTO.setLocations(locationMapper.LocationsToLocationDTOs(photopoem.getFoundIn()));
         photopoemDTO.setAuthors(personMapper.PersonsToPersonDTOs(photopoem.getAuthors()));
         photopoemDTO.setPhotographers(personMapper.PersonsToPersonDTOs(photopoem.getPhotographers()));
         photopoemDTO.setDepictedPeople(personMapper.PersonsToPersonDTOs(photopoem.getDepictedPeople()));

@@ -25,6 +25,7 @@ public class PhotopoemService {
     private final CopyrightStatusMapper copyrightStatusMapper;
     private final LanguageMapper languageMapper;
     private final PhotopoemHighlightPicker photopoemHighlightPicker;
+    private final LocationMapper locationMapper;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             FullTextService fullTextService,
@@ -33,7 +34,7 @@ public class PhotopoemService {
                             PersonMapper personMapper,
                             KeywordMapper keywordMapper,
                             FileMapper fileMapper, CopyrightStatusMapper copyrightStatusMapper, LanguageMapper languageMapper,
-                            PhotopoemHighlightPicker photopoemHighlightPicker) {
+                            PhotopoemHighlightPicker photopoemHighlightPicker, LocationMapper locationMapper) {
         this.photopoemRepository = photopoemRepository;
         this.fullTextService = fullTextService;
         this.photopoemMapper = photopoemMapper;
@@ -44,6 +45,7 @@ public class PhotopoemService {
         this.copyrightStatusMapper = copyrightStatusMapper;
         this.languageMapper = languageMapper;
         this.photopoemHighlightPicker = photopoemHighlightPicker;
+        this.locationMapper = locationMapper;
     }
 
     /**
@@ -253,6 +255,7 @@ public class PhotopoemService {
             entity.setPictureCount(updatedPhotopoem.getPictureCount());
             entity.setPublicationDate(updatedPhotopoem.getPublicationDate());
             entity.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(updatedPhotopoem.getPublicationMedium()));
+            entity.setFoundIn(locationMapper.LocationDTOsToLocations(updatedPhotopoem.getLocations()));
             entity.setAuthors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getAuthors()));
             entity.setPhotographers(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getPhotographers()));
             entity.setDepictedPeople(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getDepictedPeople()));
