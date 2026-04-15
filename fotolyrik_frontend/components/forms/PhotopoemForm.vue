@@ -44,6 +44,7 @@ const resolver = ref(
       pictureCount: z.any(),
       publicationDate: z.any(),
       publicationMedium: z.any(),
+      locations: z.any(),
       authors: z.any(),
       photographers: z.any(),
       depictedPeople: z.any(),
@@ -75,6 +76,7 @@ async function handleRefresh() {
 }
 
 const onFormSubmit = async (e: any) => {
+  console.log(e.values);
   if (e.valid) {
     try {
       if (props.action === "create") {
@@ -291,21 +293,20 @@ const onFormSubmit = async (e: any) => {
             {{ $form.publicationMedium.error.message }}
           </Message>
         </FormField>
-        <FormField v-slot="$field" name="location" class="flex flex-col gap-1">
-          <label for="location" class="font-bold">Fundort</label>
+        <FormField v-slot="$field" name="locations" class="flex flex-col gap-1">
+          <label for="locations" class="font-bold">Fundort</label>
           <div class="flex flex-row gap-4 flex-nowrap">
-            <IconField class="flex-1 min-w-0">
-              <InputIcon class="pi pi-book"/>
               <MultiSelect
-                  labelId="location"
-                  placeholder="Fundort auswählen"
-                  class="pl-7"
+                  inputId="locations"
+                  placeholder="Fundorte auswählen"
+                  selectedItemsLabel="{0} Fundorte ausgewählt"
                   optionLabel="name"
                   :options="locations"
                   :key="locations.length"
-                  fluid
+                  :virtual-scroller-options="{ itemSize: 50 }"
+                  :maxSelectedLabels="3"
+                  filter fluid
               />
-            </IconField>
             <NuxtLink to="/locations/create" target="_blank">
               <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
             </NuxtLink>
