@@ -4,7 +4,7 @@ import { useConfirm } from 'primevue/useconfirm';
 
 const props = defineProps<{
   id: number;
-  entity_type: 'person' | 'place' | 'photopoem' | 'pub_medium' | 'keyword';
+  entity_type: 'person' | 'place' | 'photopoem' | 'pub_medium' | 'keyword' | 'location';
   page_url: string;
 }>();
 

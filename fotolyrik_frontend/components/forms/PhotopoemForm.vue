@@ -306,7 +306,7 @@ const onFormSubmit = async (e: any) => {
                   fluid
               />
             </IconField>
-            <NuxtLink to="/location/create" target="_blank">
+            <NuxtLink to="/locations/create" target="_blank">
               <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
             </NuxtLink>
           </div>
