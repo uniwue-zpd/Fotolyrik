@@ -44,7 +44,7 @@ const resolver = ref(
       pictureCount: z.any(),
       publicationDate: z.any(),
       publicationMedium: z.any(),
-      locations: z.any(),
+      foundIn: z.any(),
       authors: z.any(),
       photographers: z.any(),
       depictedPeople: z.any(),
@@ -293,11 +293,11 @@ const onFormSubmit = async (e: any) => {
             {{ $form.publicationMedium.error.message }}
           </Message>
         </FormField>
-        <FormField v-slot="$field" name="locations" class="flex flex-col gap-1">
-          <label for="locations" class="font-bold">Fundort</label>
+        <FormField v-slot="$field" name="foundIn" class="flex flex-col gap-1">
+          <label for="foundIn" class="font-bold">Fundort</label>
           <div class="flex flex-row gap-4 flex-nowrap">
               <MultiSelect
-                  inputId="locations"
+                  inputId="foundIn"
                   placeholder="Fundorte auswählen"
                   selectedItemsLabel="{0} Fundorte ausgewählt"
                   optionLabel="name"
@@ -311,8 +311,8 @@ const onFormSubmit = async (e: any) => {
               <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
             </NuxtLink>
           </div>
-          <Message v-if="$form.publicationMedium?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.location.error.message }}
+          <Message v-if="$form.foundIn?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.foundIn.error.message }}
           </Message>
         </FormField>
         <Divider align="center">
