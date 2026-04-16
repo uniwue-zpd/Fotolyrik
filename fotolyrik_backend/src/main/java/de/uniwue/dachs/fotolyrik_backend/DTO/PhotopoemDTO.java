@@ -26,6 +26,7 @@ public class PhotopoemDTO extends BaseEntity {
     private Set<PersonPreviewDTO> photographers = new HashSet<>();
     private Set<PersonPreviewDTO> depictedPeople = new HashSet<>();
     private Set<PersonPreviewDTO> otherContributors = new HashSet<>();
+    private Set<ContributionDTO> contributions = new HashSet<>();
     private Set<KeywordDTO> themes = new HashSet<>();
     private Set<KeywordDTO> imageMotifs = new HashSet<>();
     private String form;
