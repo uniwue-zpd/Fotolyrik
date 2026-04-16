@@ -50,6 +50,7 @@ public class LanguageService {
     public Language updateLanguage(Long id, Language language) {
         return languageRepository.findById(id)
                 .map(entity -> {
+                    entity.mapBaseEntityFields(language);
                     entity.setName(language.getName());
                     entity.setIsoDesignation(language.getIsoDesignation());
                     return languageRepository.save(entity);
