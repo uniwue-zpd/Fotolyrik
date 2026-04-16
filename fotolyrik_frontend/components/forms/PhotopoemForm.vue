@@ -14,12 +14,14 @@ const fileStore = useFileStore();
 const languageStore = useLanguageStore();
 const copyrightStatusStore = useCopyrightStatusStore();
 const keywordStore = useKeywordStore();
+const locationStore = useLocationStore();
 
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed(() => keywordStore.keywords.map(k => ({ id: k.id, value: k.value })));
 const languages = computed(() => languageStore.languages.map(l => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
 const files = computed(() => fileStore.files.map(f => ({ id: f.id, filename: f.filename, originalFilename: f.originalFilename })));
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
+const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
 
 const data_refreshing = ref(false);
@@ -44,6 +46,7 @@ const resolver = ref(
       pictureCount: z.any(),
       publicationDate: z.any(),
       publicationMedium: z.any(),
+      foundIn: z.any(),
       authors: z.any(),
       photographers: z.any(),
       depictedPeople: z.any(),
@@ -95,8 +98,6 @@ const onFormSubmit = async (e: any) => {
     contributionsForm.value?.checkRefetch();
   }
 };
-
-
 </script>
 
 <template>
@@ -296,6 +297,28 @@ const onFormSubmit = async (e: any) => {
             {{ $form.publicationMedium.error.message }}
           </Message>
         </FormField>
+        <FormField v-slot="$field" name="foundIn" class="flex flex-col gap-1">
+          <label for="foundIn" class="font-bold">Fundort</label>
+          <div class="flex flex-row gap-4 flex-nowrap">
+            <MultiSelect
+                inputId="foundIn"
+                placeholder="Fundorte auswählen"
+                selectedItemsLabel="{0} Fundorte ausgewählt"
+                optionLabel="name"
+                :options="locations"
+                :key="locations.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                :maxSelectedLabels="3"
+                filter fluid
+            />
+            <NuxtLink to="/locations/create" target="_blank">
+              <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
+            </NuxtLink>
+          </div>
+          <Message v-if="$form.foundIn?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.foundIn.error.message }}
+          </Message>
+        </FormField>
         <FormField v-slot="$field" name="depictedPeople" class="flex flex-col gap-1 w-full">
           <label for="depictedPeople" class="font-bold">Abgebildete Personen</label>
           <MultiSelect
@@ -386,7 +409,6 @@ const onFormSubmit = async (e: any) => {
             :contributions="props.photopoem?.contributions"
             ref="contributionsForm">
         </ContributionForm>
-
         <Divider align="center">
           <b class="px-2">Tags</b>
         </Divider>

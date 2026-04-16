@@ -12,6 +12,7 @@ const type_mapping: { [key: string]: string } = {
   persons: 'Person',
   places: 'Ort',
   publication_media: 'Publikationsmedium',
+  locations: "Fundort",
   keywords: 'Schlagwort'
 }
 
@@ -20,6 +21,7 @@ const icon_map: Record<string, string> = {
   persons: 'i-material-symbols-person-3-outline-rounded',
   places: 'i-material-symbols-location-on-outline-rounded',
   publication_media: 'i-material-symbols-book-5-rounded',
+  locations: 'i-material-symbols-location-on-outline-rounded',
   keywords: 'i-material-symbols-tag'
 }
 

@@ -49,6 +49,11 @@ public class PhotopoemSpecification {
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("publicationMedium").get("title")), "%" + pubMedium.toLowerCase() + "%");
     }
 
+    public static Specification<Photopoem> hasLocationId(Long locationId) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("foundIn").get("id"), locationId);
+    }
+
     private static Specification<Photopoem> hasRoleId(Long id, ContributionRole role, String tableName){
         return (root, query, criteriaBuilder) -> {
             assert query != null;
@@ -66,6 +71,7 @@ public class PhotopoemSpecification {
                     ));
         };
     }
+
     private static Specification<Photopoem> hasRole(String name, ContributionRole role, String tableName){
         return (root, query, criteriaBuilder) -> {
             String pattern = "%" + name.toLowerCase() + "%";
@@ -90,6 +96,7 @@ public class PhotopoemSpecification {
             );
         };
     }
+
     public static Specification<Photopoem> hasAuthorId(Long authorId) {
         return hasRoleId(authorId, ContributionRole.AUTHOR, "authors");
     }

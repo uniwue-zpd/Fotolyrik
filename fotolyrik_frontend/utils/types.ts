@@ -142,6 +142,7 @@ export interface PhotoPoemDTO extends Auditable {
     pictureCount: string | null;
     publicationDate: string | null;
     publicationMedium: PubMediumPreviewDTO | null;
+    foundIn: LocationDTO[] | [];
     authors: PersonPreviewDTO[] | [];
     photographers: PersonPreviewDTO[] | [];
     depictedPeople: PersonPreviewDTO[] | [];
@@ -195,6 +196,10 @@ export interface PubMedium extends Auditable {
 export interface PubMediumPreviewDTO {
     id: number;
     title: number;
+}
+export interface LocationDTO extends Auditable {
+    name: string;
+    description: string;
 }
 
 export interface PubMediumDTO extends Auditable {

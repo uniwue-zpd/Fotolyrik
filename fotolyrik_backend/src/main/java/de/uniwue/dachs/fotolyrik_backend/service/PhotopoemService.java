@@ -27,6 +27,7 @@ public class PhotopoemService {
     private final CopyrightStatusMapper copyrightStatusMapper;
     private final LanguageMapper languageMapper;
     private final PhotopoemHighlightPicker photopoemHighlightPicker;
+    private final LocationMapper locationMapper;
     private final ContributionMapper contributionMapper;
     private final PersonRepository personRepository;
 
@@ -37,7 +38,7 @@ public class PhotopoemService {
                             PersonMapper personMapper,
                             KeywordMapper keywordMapper,
                             FileMapper fileMapper, CopyrightStatusMapper copyrightStatusMapper, LanguageMapper languageMapper,
-                            PhotopoemHighlightPicker photopoemHighlightPicker, ContributionMapper contributionMapper, PersonRepository personRepository) {
+                            PhotopoemHighlightPicker photopoemHighlightPicker, LocationMapper locationMapper, PersonRepository personRepository, ContributionMapper contributionMapper) {
         this.photopoemRepository = photopoemRepository;
         this.fullTextService = fullTextService;
         this.photopoemMapper = photopoemMapper;
@@ -50,6 +51,7 @@ public class PhotopoemService {
         this.photopoemHighlightPicker = photopoemHighlightPicker;
         this.contributionMapper = contributionMapper;
         this.personRepository = personRepository;
+        this.locationMapper = locationMapper;
     }
 
     /**
@@ -122,6 +124,7 @@ public class PhotopoemService {
             String publicationDate,
             Long pubMediumId,
             String pubMedium,
+            Long locationId,
             Long authorId,
             String author,
             Long photographerId,
@@ -166,6 +169,9 @@ public class PhotopoemService {
         }
         if (pubMedium != null && !pubMedium.isEmpty()) {
             spec = spec.and(PhotopoemSpecification.hasPubMedium(pubMedium));
+        }
+        if (locationId != null){
+            spec = spec.and(PhotopoemSpecification.hasLocationId(locationId));
         }
         if (authorId != null) {
             spec = spec.and(PhotopoemSpecification.hasAuthorId(authorId));
@@ -264,6 +270,7 @@ public class PhotopoemService {
             entity.setPictureCount(updatedPhotopoem.getPictureCount());
             entity.setPublicationDate(updatedPhotopoem.getPublicationDate());
             entity.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(updatedPhotopoem.getPublicationMedium()));
+            entity.setFoundIn(locationMapper.LocationDTOsToLocations(updatedPhotopoem.getFoundIn()));
             entity.setAuthors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getAuthors()));
             entity.setPhotographers(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getPhotographers()));
             entity.setDepictedPeople(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getDepictedPeople()));
