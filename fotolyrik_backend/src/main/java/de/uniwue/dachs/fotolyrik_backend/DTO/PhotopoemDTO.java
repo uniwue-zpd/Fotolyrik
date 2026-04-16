@@ -22,7 +22,7 @@ public class PhotopoemDTO extends BaseEntity {
     private String pictureCount;
     private String publicationDate;
     private PubMediumPreviewDTO publicationMedium;
-    private Set<LocationDTO> locations;
+    private Set<LocationDTO> foundIn;
     private Set<PersonPreviewDTO> authors = new HashSet<>();
     private Set<PersonPreviewDTO> photographers = new HashSet<>();
     private Set<PersonPreviewDTO> depictedPeople = new HashSet<>();
