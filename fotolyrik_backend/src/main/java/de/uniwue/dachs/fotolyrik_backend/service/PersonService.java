@@ -62,6 +62,7 @@ public class PersonService {
     public Person updatePerson(Long id, Person updatedPerson) {
         return personRepository.findById(id)
                 .map(existingPerson -> {
+                    existingPerson.mapBaseEntityFields(updatedPerson);
                     existingPerson.setFirstName(updatedPerson.getFirstName());
                     existingPerson.setLastName(updatedPerson.getLastName());
                     existingPerson.setStudioName(updatedPerson.getStudioName());

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { PhotoPoemDTO } from "~/utils/types";
+import { type PhotoPoemDTO} from "~/utils/types";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 import { Form } from '@primevue/forms';
 import { FormField } from '@primevue/forms';
+import ContributionForm from "~/components/forms/ContributionForm.vue";
 
 const toast = useToast();
 const personStore = usePersonStore();
@@ -21,6 +22,7 @@ const languages = computed(() => languageStore.languages.map(l => ({ id: l.id, n
 const files = computed(() => fileStore.files.map(f => ({ id: f.id, filename: f.filename, originalFilename: f.originalFilename })));
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
+const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
 
 const data_refreshing = ref(false);
 
@@ -74,10 +76,11 @@ async function handleRefresh() {
     data_refreshing.value = false;
   }
 }
+const contributionsForm: Ref<InstanceType<typeof ContributionForm> | null> = ref(null);
 
 const onFormSubmit = async (e: any) => {
-  console.log(e.values);
-  if (e.valid) {
+  if (e.valid && contributionsForm.value?.isValid()) {
+    e.values.contributions = contributionsForm.value?.getContributions();
     try {
       if (props.action === "create") {
         await photopoemStore.createPhotopoem(e.values);
@@ -92,6 +95,7 @@ const onFormSubmit = async (e: any) => {
       console.log(error);
       toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
     }
+    contributionsForm.value?.checkRefetch();
   }
 };
 </script>
@@ -296,17 +300,17 @@ const onFormSubmit = async (e: any) => {
         <FormField v-slot="$field" name="foundIn" class="flex flex-col gap-1">
           <label for="foundIn" class="font-bold">Fundort</label>
           <div class="flex flex-row gap-4 flex-nowrap">
-              <MultiSelect
-                  inputId="foundIn"
-                  placeholder="Fundorte auswählen"
-                  selectedItemsLabel="{0} Fundorte ausgewählt"
-                  optionLabel="name"
-                  :options="locations"
-                  :key="locations.length"
-                  :virtual-scroller-options="{ itemSize: 50 }"
-                  :maxSelectedLabels="3"
-                  filter fluid
-              />
+            <MultiSelect
+                inputId="foundIn"
+                placeholder="Fundorte auswählen"
+                selectedItemsLabel="{0} Fundorte ausgewählt"
+                optionLabel="name"
+                :options="locations"
+                :key="locations.length"
+                :virtual-scroller-options="{ itemSize: 50 }"
+                :maxSelectedLabels="3"
+                filter fluid
+            />
             <NuxtLink to="/locations/create" target="_blank">
               <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
             </NuxtLink>
@@ -315,8 +319,26 @@ const onFormSubmit = async (e: any) => {
             {{ $form.foundIn.error.message }}
           </Message>
         </FormField>
+        <FormField v-slot="$field" name="depictedPeople" class="flex flex-col gap-1 w-full">
+          <label for="depictedPeople" class="font-bold">Abgebildete Personen</label>
+          <MultiSelect
+              inputId="depictedPeople"
+              placeholder="Abgebildete Personen auswählen"
+              selectedItemsLabel="{0} Personen ausgewählt"
+              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+              :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
+              :maxSelectedLabels="2"
+              :options="persons"
+              :key="persons.length"
+              :virtual-scroller-options="{ itemSize: 50 }"
+              filter fluid
+          />
+          <Message v-if="$form.depictedPeople?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.depictedPeople.error.message }}
+          </Message>
+        </FormField>
         <Divider align="center">
-          <b class="px-2">Personen</b>
+          <b class="px-2 text-red-500">Personen (deprecated)</b>
         </Divider>
         <div class="flex flex-row gap-4">
           <NuxtLink to="/persons/create" target="_blank">
@@ -336,7 +358,7 @@ const onFormSubmit = async (e: any) => {
                 :options="persons"
                 :key="persons.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid
+                filter fluid disabled
             />
             <Message v-if="$form.authors?.invalid" severity="error" size="small" variant="simple">
               {{ $form.authors.error.message }}
@@ -354,28 +376,10 @@ const onFormSubmit = async (e: any) => {
                 :options="persons"
                 :key="persons.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid
+                filter fluid disabled
             />
             <Message v-if="$form.photographers?.invalid" severity="error" size="small" variant="simple">
               {{ $form.photographers.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="depictedPeople" class="flex flex-col gap-1 w-full">
-            <label for="depictedPeople" class="font-bold">Abgebildete Personen</label>
-            <MultiSelect
-                inputId="depictedPeople"
-                placeholder="Abgebildete Personen auswählen"
-                selectedItemsLabel="{0} Personen ausgewählt"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-                :maxSelectedLabels="2"
-                :options="persons"
-                :key="persons.length"
-                :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid
-            />
-            <Message v-if="$form.depictedPeople?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.depictedPeople.error.message }}
             </Message>
           </FormField>
           <FormField v-slot="$field" name="otherContributors" class="flex flex-col gap-1 w-full">
@@ -390,13 +394,21 @@ const onFormSubmit = async (e: any) => {
                 :options="persons"
                 :key="persons.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid
+                filter fluid disabled
             />
             <Message v-if="$form.otherContributors?.invalid" severity="error" size="small" variant="simple">
               {{ $form.otherContributors.error.message }}
             </Message>
           </FormField>
         </div>
+        <Divider align="center">
+          <b class="px-2">Mitwirkende</b>
+        </Divider>
+        <ContributionForm
+            :persons="persons"
+            :contributions="props.photopoem?.contributions"
+            ref="contributionsForm">
+        </ContributionForm>
         <Divider align="center">
           <b class="px-2">Tags</b>
         </Divider>
@@ -565,7 +577,7 @@ const onFormSubmit = async (e: any) => {
                 placeholder="Status auswählen"
                 class="pl-7"
                 optionLabel="value"
-                :options="copyrightStatusStore.copyrightStatuses.map(status => ({id: status.id, value: status.value, description: status.description}))"
+                :options="copyrightStatuses"
                 fluid
               />
             </IconField>
@@ -582,7 +594,7 @@ const onFormSubmit = async (e: any) => {
                 placeholder="Status auswählen"
                 class="pl-7"
                 optionLabel="value"
-                :options="copyrightStatusStore.copyrightStatuses.map(status => ({id: status.id, value: status.value, description: status.description}))"
+                :options="copyrightStatuses"
                 fluid
               />
             </IconField>

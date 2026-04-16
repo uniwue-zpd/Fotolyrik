@@ -65,7 +65,7 @@ useHead(() => ({
       <DataTable
           v-model:filters="filters"
           filter-display="row"
-          :global-filter-fields="['title', 'altTitle', 'volume', 'issue', 'pageNumber', 'publicationDate', 'publicationMedium.title']"
+          :global-filter-fields="['title', 'altTitle', 'volume', 'issue', 'pageNumber', 'publicationDate', 'publicationMedium.title', 'contributions.contributor.fullName']"
           :value="store.photopoems"
           stripedRows paginator :rows="10"
       >
@@ -154,30 +154,48 @@ useHead(() => ({
             </div>
           </template>
         </Column>
-        <Column header ="Autor:innen" field="authors">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.authors != null && slotProps.data.authors.length > 0">
-              <span v-for="(author, index) in slotProps.data.authors" :key="author.id">
-                <NuxtLink :to="`/persons/${author.id}`" class="roboto-plain">
-                  {{ author.fullName }}
-                </NuxtLink>
-                <span v-if="index < slotProps.data.authors.length -1">, </span>
-              </span>
+        <Column header ="Autor:innen" field="contributions">
+          <template #body="slotProps: {data:PhotoPoemDTO}">
+            <div v-if="slotProps.data.contributions && slotProps.data.contributions.filter(x => x.role === ContributionRole.AUTHOR).length > 0">
+              <ul class="list-inside">
+                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === ContributionRole.AUTHOR)" :key="c.contributor?.id ?? index">
+                  <NuxtLink :to="`/persons/${c.contributor?.id}`" class="roboto-plain">
+                    {{ c.contributor.fullName }}
+                  </NuxtLink>
+                </li>
+              </ul>
             </div>
             <div v-else>
               <span class="roboto-italic text-gray-500">Unbekannt</span>
             </div>
           </template>
         </Column>
-        <Column header ="Fotograf:innen" field="photographers">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.photographers != null && slotProps.data.photographers.length > 0">
-              <span v-for="(photographer, index) in slotProps.data.photographers" :key="photographer.id">
-                <NuxtLink :to="`/persons/${photographer.id}`" class="roboto-plain">
-                  {{ photographer.fullName }}
-                </NuxtLink>
-                <span v-if="index < slotProps.data.photographers.length -1">, </span>
-              </span>
+        <Column header ="Fotograf:innen" field="contributions">
+          <template #body="slotProps: {data:PhotoPoemDTO}">
+            <div v-if="slotProps.data.contributions && slotProps.data.contributions.filter(x => x.role === ContributionRole.PHOTOGRAPHER).length > 0">
+              <ul class="list-inside">
+                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === ContributionRole.PHOTOGRAPHER)" :key="c.contributor?.id ?? index">
+                  <NuxtLink :to="`/persons/${c.contributor?.id}`" class="roboto-plain">
+                    {{ c.contributor.fullName }}
+                  </NuxtLink>
+                </li>
+              </ul>
+            </div>
+            <div v-else>
+              <span class="roboto-italic text-gray-500">Unbekannt</span>
+            </div>
+          </template>
+        </Column>
+        <Column header ="Sonstige Mitwirkende" field="contributions">
+          <template #body="slotProps: {data:PhotoPoemDTO}">
+            <div v-if="slotProps.data.contributions && slotProps.data.contributions.filter(x => x.role === ContributionRole.OTHER).length > 0">
+              <ul class="list-inside">
+                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === ContributionRole.OTHER)" :key="c.contributor?.id ?? index">
+                  <NuxtLink :to="`/persons/${c.contributor?.id}`" class="roboto-plain">
+                    {{ c.contributor.fullName }}
+                  </NuxtLink>
+                </li>
+              </ul>
             </div>
             <div v-else>
               <span class="roboto-italic text-gray-500">Unbekannt</span>

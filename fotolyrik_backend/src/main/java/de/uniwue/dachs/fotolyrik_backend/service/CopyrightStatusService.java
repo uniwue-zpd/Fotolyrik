@@ -50,6 +50,7 @@ public class CopyrightStatusService {
     public CopyrightStatus updateCopyrightStatus(Long id, CopyrightStatus copyrightStatus) {
         return copyrightStatusRepository.findById(id)
                 .map(entity -> {
+                    entity.mapBaseEntityFields(copyrightStatus);
                     entity.setValue(copyrightStatus.getValue());
                     entity.setDescription(copyrightStatus.getDescription());
                     return copyrightStatusRepository.save(entity);

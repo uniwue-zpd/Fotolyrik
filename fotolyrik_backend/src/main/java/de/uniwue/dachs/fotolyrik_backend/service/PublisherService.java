@@ -50,6 +50,7 @@ public class PublisherService {
     public Publisher updatePublisher(Long id, Publisher publisher) {
         return publisherRepository.findById(id)
                 .map(entity -> {
+                    entity.mapBaseEntityFields(publisher);
                     entity.setName(publisher.getName());
                     entity.setDescription(publisher.getDescription());
                     return publisherRepository.save(entity);
