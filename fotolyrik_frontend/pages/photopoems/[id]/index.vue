@@ -217,7 +217,7 @@ const roleText = {
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Sonstige Mitwirkende</td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">
-                            <span v-for="person in photographers" :key="person.id">
+                            <span v-for="person in otherContributors" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
                                   class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
