@@ -1,9 +1,8 @@
-import type { CopyrightStatus } from "~/utils/types";
 
 export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
         // State
-    const copyrightStatuses = ref<CopyrightStatus[]>([] as CopyrightStatus[]);
-    const currentCopyrightStatus = ref<CopyrightStatus|null>(null);
+    const copyrightStatuses = ref<CopyrightStatusDTO[]>([] as CopyrightStatusDTO[]);
+    const currentCopyrightStatus = ref<CopyrightStatusDTO|null>(null);
 
     // Getters
     const isLoaded = computed(() => copyrightStatuses.value.length > 0);
@@ -17,7 +16,7 @@ export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
                 console.error(error.value);
                 return;
             }
-            copyrightStatuses.value = data.value as CopyrightStatus[];
+            copyrightStatuses.value = data.value as CopyrightStatusDTO[];
         }
     }
 
@@ -25,7 +24,7 @@ export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
     async function refreshCopyrighStatusesData() {
         try {
             const data = await $fetch('/api/copyright_statuses');
-            copyrightStatuses.value = data as CopyrightStatus[];
+            copyrightStatuses.value = data as CopyrightStatusDTO[];
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
@@ -43,13 +42,13 @@ export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
                     console.error('Unable to fetch the copyright status: ', error.value);
                     return;
                 }
-                currentCopyrightStatus.value = data.value as CopyrightStatus;
+                currentCopyrightStatus.value = data.value as CopyrightStatusDTO;
             }
         }
     }
 
         // POST Create new copyright status
-    async function createCopyrightStatus(payload: Partial<CopyrightStatus>) {
+    async function createCopyrightStatus(payload: Partial<CopyrightStatusDTO>) {
         const { data, error } = await useFetch('/api/copyright_statuses', {
             method: 'POST',
             body: payload
@@ -58,13 +57,13 @@ export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
             console.error('Unable to create copyright status: ', error.value);
             return;
         }
-        const newCopyrightStatus = data.value as CopyrightStatus;
+        const newCopyrightStatus = data.value as CopyrightStatusDTO;
         copyrightStatuses.value.push(newCopyrightStatus);
         return newCopyrightStatus;
     }
 
         // PUT Update existing copyright status
-    async function updateCopyrightStatus(payload: Partial<CopyrightStatus>, id: number) {
+    async function updateCopyrightStatus(payload: Partial<CopyrightStatusDTO>, id: number) {
         const { data, error } = await useFetch(`/api/copyright_statuses/${id}`, {
             method: 'PUT',
             body: payload
@@ -73,7 +72,7 @@ export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
             console.error('Unable to update copyright status :', error.value);
             return;
         }
-        const updatedCopyrightStatus = data.value as CopyrightStatus;
+        const updatedCopyrightStatus = data.value as CopyrightStatusDTO;
         const index = copyrightStatuses.value.findIndex(k => k.id === id);
         if (index !== -1) copyrightStatuses.value[index] = updatedCopyrightStatus;
         if (currentCopyrightStatus.value?.id === id) currentCopyrightStatus.value = updatedCopyrightStatus;

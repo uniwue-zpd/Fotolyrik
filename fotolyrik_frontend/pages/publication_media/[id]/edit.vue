@@ -5,7 +5,7 @@ import PubMediumForm from "~/components/forms/PubMediumForm.vue";
 const route = useRoute();
 const pub_medium_id = Number(route.params.id);
 const store = usePubMediumStore();
-const pub_medium_item = ref<PubMedium | null>(null);
+const pub_medium_item = ref<PubMediumDTO | null>(null);
 
 onMounted(async () => {
   await store.fetchPubMediumById(pub_medium_id);

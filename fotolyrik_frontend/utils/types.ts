@@ -14,10 +14,6 @@ export interface ContactForm {
     message: string | null
 }
 
-export interface CopyrightStatus extends Auditable {
-    value: string;
-    description: string | null;
-}
 
 export interface CopyrightStatusDTO {
     id: number;
@@ -40,7 +36,7 @@ export interface FileDTO {
 }
 
 export interface FullText extends Auditable {
-    photopoem: PhotoPoem;
+    photopoem: PhotoPoemDTO;
     fullText: string | null;
 }
 
@@ -101,33 +97,6 @@ export interface ContributionDTO {
     role: ContributionRole;
     contributor: PersonPreviewDTO;
     pseudonym: string;
-}
-export interface PhotoPoem extends Auditable {
-    title: string | null;
-    subtitle: string | null;
-    altTitle: string | null;
-    volume: number | null;
-    issue: number | null;
-    pageNumber: string | null;
-    manifestPageNumber: number | null;
-    pageCount: number | null;
-    pictureCount: string | null;
-    publicationDate: string | null;
-    publicationMedium: PubMedium | null;
-    authors: Person[] | [];
-    photographers: Person[] | [];
-    depictedPeople: Person[] | [];
-    otherContributors: Person[] | [];
-    themes: Keyword[] | [];
-    imageMotifs: Keyword[] | [];
-    form: string | null;
-    link: string | null;
-    iiifManifest: string | null;
-    images: File[] | [];
-    imagesVisible: AccessLevel;
-    copyrightStatusImage: CopyrightStatus | null;
-    copyrightStatusText: CopyrightStatus | null;
-    languages: Language[] | [];
 }
 
 export interface PhotoPoemDTO extends Auditable {
