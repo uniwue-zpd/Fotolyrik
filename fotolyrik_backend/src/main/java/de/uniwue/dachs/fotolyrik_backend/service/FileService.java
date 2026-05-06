@@ -1,5 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.FileDTO;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.FileMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -26,29 +28,32 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class FileService {
     private final FileRepository fileRepository;
+    private final FileMapper fileMapper;
 
     @Value("${config.files.upload-dir}")
     private String uploadDirValue;
 
-    public FileService(FileRepository fileRepository) {
+    public FileService(FileRepository fileRepository, FileMapper fileMapper) {
         this.fileRepository = fileRepository;
+        this.fileMapper = fileMapper;
     }
 
     /**
      * GET returns all file metadata entries in the database
-     * @return {@link List} of all {@link File} entries in the database
+     * @return {@link List} of all {@link File} entries in the database as {@link FileDTO}
      */
-    public List<File> getFiles() {
-        return fileRepository.findAll();
+    public List<FileDTO> getFiles() {
+        return fileMapper.FilesToFileDTOs(fileRepository.findAll());
     }
 
     /**
      * GET returns a paginated list of file metadata entries in the database
      * @param pageable pagination information (page number, page size, sorting)
-     * @return {@link Page} of {@link File} entries in the database according to the pagination information
+     * @return {@link Page} of {@link File} represented as {@link FileDTO} entries in the database according to the pagination information
      */
-    public Page<File> getFiles(Pageable pageable) {
-        return fileRepository.findAll(pageable);
+    public Page<FileDTO> getFiles(Pageable pageable) {
+        Page<File> filePage = fileRepository.findAll(pageable);
+        return filePage.map(fileMapper::FileToFileDTO);
     }
 
     /**
@@ -56,8 +61,8 @@ public class FileService {
      * @param id ID of the file metadata entry to return
      * @return {@link Optional} containing the {@link File} entry with the given id, or an empty {@link Optional} if no such entry exists
      */
-    public Optional<File> getFileById(Long id) {
-        return fileRepository.findById(id);
+    public Optional<FileDTO> getFileById(Long id) {
+        return  fileRepository.findById(id).map(fileMapper::FileToFileDTO);
     }
 
     /**

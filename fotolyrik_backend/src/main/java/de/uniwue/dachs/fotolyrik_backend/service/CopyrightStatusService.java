@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CopyrightStatusService {
@@ -26,10 +25,7 @@ public class CopyrightStatusService {
      * @return a {@link List} of all available {@link CopyrightStatus} entries as {@link CopyrightStatusDTO}
      */
     public List<CopyrightStatusDTO> getAllCopyrightStatuses() {
-        return copyrightStatusRepository.findAll()
-                .stream()
-                .map(copyrightStatusMapper::CopyrightStatusToCopyrightStatusDTO)
-                .collect(Collectors.toList());
+        return  copyrightStatusMapper.CopyrightStatusesToCopyrightStatusDTOs(copyrightStatusRepository.findAll());
     }
 
     /**
