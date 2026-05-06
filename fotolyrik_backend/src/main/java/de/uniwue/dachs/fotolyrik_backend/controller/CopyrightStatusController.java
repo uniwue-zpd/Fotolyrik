@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.CopyrightStatusDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.CopyrightStatus;
 import de.uniwue.dachs.fotolyrik_backend.service.CopyrightStatusService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,28 +19,28 @@ public class CopyrightStatusController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CopyrightStatus>> getAllCopyrightStatuses() {
-        List<CopyrightStatus> copyrightStatuses = copyrightStatusService.getAllCopyrightStatuses();
+    public ResponseEntity<List<CopyrightStatusDTO>> getAllCopyrightStatuses() {
+        List<CopyrightStatusDTO> copyrightStatuses = copyrightStatusService.getAllCopyrightStatuses();
         return ResponseEntity.ok().body(copyrightStatuses);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CopyrightStatus> getCopyrightStatusById(@PathVariable Long id) {
+    public ResponseEntity<CopyrightStatusDTO> getCopyrightStatusById(@PathVariable Long id) {
         return copyrightStatusService.getCopyrightStatusById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public ResponseEntity<CopyrightStatus> createCopyrightStatus(@RequestBody CopyrightStatus copyrightStatus) {
-        CopyrightStatus createdCopyrightStatus = copyrightStatusService.createCopyrightStatus(copyrightStatus);
-        return ResponseEntity.status(201).body(createdCopyrightStatus);
+    public ResponseEntity<CopyrightStatusDTO> createCopyrightStatus(@RequestBody CopyrightStatusDTO copyrightStatusDTO) {
+        CopyrightStatusDTO created = copyrightStatusService.createCopyrightStatus(copyrightStatusDTO);
+        return ResponseEntity.status(201).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CopyrightStatus> updateCopyrightStatus(@PathVariable Long id, @RequestBody CopyrightStatus copyrightStatus) {
+    public ResponseEntity<CopyrightStatusDTO> updateCopyrightStatus(@PathVariable Long id, @RequestBody CopyrightStatusDTO copyrightStatusDTO) {
         try {
-            CopyrightStatus updatedCopyrightStatus = copyrightStatusService.updateCopyrightStatus(id, copyrightStatus);
+            CopyrightStatusDTO updatedCopyrightStatus = copyrightStatusService.updateCopyrightStatus(id, copyrightStatusDTO);
             return ResponseEntity.status(201).body(updatedCopyrightStatus);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
