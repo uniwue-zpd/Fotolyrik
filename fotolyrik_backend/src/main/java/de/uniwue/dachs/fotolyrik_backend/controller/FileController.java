@@ -46,7 +46,7 @@ public class FileController {
 
     @GetMapping("/{id}")
     public ResponseEntity<FileDTO> getFileById(@PathVariable Long id) {
-        return fileService.getFileById(id)
+        return fileService.getFileDTOById(id)
                 .map(ResponseEntity.status(HttpStatus.OK)::body)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
@@ -67,9 +67,9 @@ public class FileController {
     }
 
     @PostMapping
-    public ResponseEntity<List<File>> uploadFiles(@RequestParam("file") MultipartFile[] files) {
+    public ResponseEntity<List<FileDTO>> uploadFiles(@RequestParam("file") MultipartFile[] files) {
         try {
-            List<File> uploadedFiles = fileService.uploadFiles(files);
+            List<FileDTO> uploadedFiles = fileService.uploadFiles(files);
             return ResponseEntity.status(HttpStatus.CREATED).body(uploadedFiles);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -89,9 +89,9 @@ public class FileController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<File> deleteFileById(@PathVariable Long id) {
+    public ResponseEntity<FileDTO> deleteFileById(@PathVariable Long id) {
         try {
-            File deletedFile = fileService.deleteFileById(id);
+            FileDTO deletedFile = fileService.deleteFileById(id);
             return ResponseEntity.status(HttpStatus.OK).body(deletedFile);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
