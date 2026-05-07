@@ -6,6 +6,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,17 +26,10 @@ public class KeywordMapper {
         } else {
             Keyword keyword = new Keyword();
             keyword.setValue(keywordDTO.getValue());
+            keyword.setGndId(keywordDTO.getGndId());
             keywordRepository.save(keyword);
             return keyword;
         }
-    }
-
-    public Set<Keyword> KeywordDTOsToKeywords(Set<KeywordDTO> keywordDTOs) {
-        if (keywordDTOs.isEmpty()) return Collections.emptySet();
-        return keywordDTOs.stream()
-                .map(this::KeywordDTOToKeyword)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
     }
 
     public KeywordDTO KeywordToKeywordDTO(Keyword keyword) {
@@ -43,14 +37,20 @@ public class KeywordMapper {
         KeywordDTO keywordDTO = new KeywordDTO();
         keywordDTO.setId(keyword.getId());
         keywordDTO.setValue(keyword.getValue());
+        keywordDTO.setGndId(keyword.getGndId());
         return  keywordDTO;
     }
 
+    public Set<Keyword> KeywordDTOsToKeywords(Set<KeywordDTO> keywordDTOs) {
+        return MapperUtils.mapSet(keywordDTOs, this::KeywordDTOToKeyword);
+    }
     public Set<KeywordDTO> KeywordToKeywordDTOs(Set<Keyword> keywords) {
-        if (keywords.isEmpty()) return Collections.emptySet();
-        return keywords.stream()
-                .map(this::KeywordToKeywordDTO)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return MapperUtils.mapSet(keywords, this::KeywordToKeywordDTO);
+    }
+    public List<Keyword> KeywordDTOsToKeywords(List<KeywordDTO> keywordDTOs) {
+        return MapperUtils.mapList(keywordDTOs, this::KeywordDTOToKeyword);
+    }
+    public List<KeywordDTO> KeywordToKeywordDTOs(List<Keyword> keywords) {
+        return MapperUtils.mapList(keywords, this::KeywordToKeywordDTO);
     }
 }

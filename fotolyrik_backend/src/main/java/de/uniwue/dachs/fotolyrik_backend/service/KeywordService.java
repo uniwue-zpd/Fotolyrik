@@ -1,7 +1,9 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.KeywordMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -13,37 +15,41 @@ import java.util.Optional;
 @Service
 public class KeywordService {
     private final KeywordRepository keywordRepository;
+    private final KeywordMapper keywordMapper;
 
-    public KeywordService(KeywordRepository keywordRepository) {
+    public KeywordService(KeywordRepository keywordRepository, KeywordMapper keywordMapper) {
         this.keywordRepository = keywordRepository;
+        this.keywordMapper = keywordMapper;
     }
 
     // GET all keywords
-    public List<Keyword> getAllKeywords() {
-        return keywordRepository.findAll(Sort.by(Sort.Direction.ASC, "value"));
+    public List<KeywordDTO> getAllKeywords() {
+        return keywordMapper.KeywordToKeywordDTOs(keywordRepository.findAll(Sort.by(Sort.Direction.ASC, "value")));
     }
 
     // GET keyword by ID
-    public Optional<Keyword> getKeywordById(Long id) {
-        return keywordRepository.findById(id);
+    public Optional<KeywordDTO> getKeywordById(Long id) {
+        return keywordRepository.findById(id).map(keywordMapper::KeywordToKeywordDTO);
     }
 
     // POST create new keyword
     @Transactional
-    public Keyword createKeyword(Keyword keyword) {
-        return keywordRepository.save(keyword);
+    public KeywordDTO createKeyword(KeywordDTO keywordDTO) {
+        var entity = keywordMapper.KeywordDTOToKeyword(keywordDTO);
+        var savedEntity = keywordRepository.save(entity);
+        return keywordMapper.KeywordToKeywordDTO(savedEntity);
     }
 
     // PUT update existing keyword
     @Transactional
-    public Keyword updateKeyword(Long id, Keyword updatedKeyword) {
+    public KeywordDTO updateKeyword(Long id, KeywordDTO updatedKeyword) {
         return keywordRepository.findById(id)
                 .map(existingKeyword -> {
                     existingKeyword.mapBaseEntityFields(updatedKeyword);
                     existingKeyword.setValue(updatedKeyword.getValue());
                     existingKeyword.setGndId(updatedKeyword.getGndId());
                     return keywordRepository.save(existingKeyword);
-                })
+                }).map(keywordMapper::KeywordToKeywordDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
     }
 
