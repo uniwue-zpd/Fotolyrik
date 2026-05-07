@@ -25,7 +25,7 @@ watch(
     () => fileStore.files,
     async (files) => {
       await Promise.all(
-          files.map(async (file) => {
+          files.map(async (file: FileDTO) => {
             if (!previewURLs.value[file.id]) {
               const url = await fileStore.getImageContent(file.id);
               if (url) previewURLs.value[file.id] = url;

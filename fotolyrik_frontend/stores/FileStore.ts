@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from 'vue';
 import apiClient from "~/service/api";
-import type { File } from "~/utils/types"
+import type { FileDTO } from "~/utils/types"
 
 export const useFileStore = defineStore("files", () => {
-    const files = ref<File[]>([])
+    const files = ref<FileDTO[]>([])
 
     const loadingDown = ref(false)
     const errorDown = ref<string | null>(null)
@@ -25,20 +25,20 @@ export const useFileStore = defineStore("files", () => {
             errorDown.value = error.value.message || "Failed to fetch files";
             return;
         }
-        files.value = data.value as File[];
+        files.value = data.value as FileDTO[];
         loadingDown.value = false;
     }
 
     async function refreshFilesData() {
         try {
             const data = await $fetch('/api/files/all');
-            files.value = data as File[];
+            files.value = data as FileDTO[];
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
     }
 
-    async function removeFile(file: File) {
+    async function removeFile(file: FileDTO) {
         try {
             await $fetch(`/api/files/${ file.id }`, { method: 'DELETE' });
             files.value = files.value.filter(f => f.id !== file.id);
@@ -57,7 +57,7 @@ export const useFileStore = defineStore("files", () => {
             formData.append('file', file);
         });
         try {
-            const response = await $fetch<File[]>('/api/files', {
+            const response = await $fetch<FileDTO[]>('/api/files', {
                 method: 'POST',
                 body: formData
             });

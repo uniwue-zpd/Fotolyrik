@@ -21,13 +21,6 @@ export interface CopyrightStatusDTO {
     description: string | null;
 }
 
-export interface File extends Auditable {
-    originalFilename: string | null;
-    filename: string | null;
-    path: string | null;
-    type: string | null;
-    size: number | null
-}
 
 export interface FileDTO {
     id: number;
@@ -78,7 +71,7 @@ export interface Person extends Auditable {
     deathYear: number | null;
     sex: "weiblich" | "männlich" | null;
     gndId: string | null;
-    image: File | null;
+    image: FileDTO | null;
 }
 
 export interface PersonPreviewDTO {
