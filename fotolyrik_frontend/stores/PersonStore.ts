@@ -39,7 +39,6 @@ export const usePersonStore = defineStore('person', () => {
             const data = await $fetch(`/api/persons/${id}`);
             const index = persons.value.findIndex(p => p.id === id);
             persons.value[index] = data as Person;
-            //console.log({index, persons, data})
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }

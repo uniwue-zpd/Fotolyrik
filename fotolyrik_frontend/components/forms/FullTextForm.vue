@@ -40,7 +40,6 @@ const onPhotopoemReload = async () => {
 
 const onFormSubmit = async (e: any) => {
   if (e.valid) {
-    console.log("Submitting form with values:", e.values);
     try {
       if (props.action === "create") {
         await fullTextStore.createFullText(e.values);

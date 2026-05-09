@@ -38,6 +38,7 @@ public class KeywordMapper {
         keywordDTO.setId(keyword.getId());
         keywordDTO.setValue(keyword.getValue());
         keywordDTO.setGndId(keyword.getGndId());
+        keywordDTO.setBaseEntityFields(keyword);
         return  keywordDTO;
     }
 

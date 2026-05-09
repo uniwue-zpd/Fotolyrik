@@ -199,14 +199,10 @@ export interface PubRhythmDTO {
     value: string | null;
 }
 
-export interface Keyword extends Auditable {
-    value: string;
-    gndId: string | null;
-}
-
-export interface KeywordDTO {
+export interface KeywordDTO extends Auditable {
     id: number;
     value: string;
+    gndId: string | null;
 }
 
 /**

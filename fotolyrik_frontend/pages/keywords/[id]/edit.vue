@@ -4,7 +4,7 @@ import KeywordForm from "~/components/forms/KeywordForm.vue";
 const route = useRoute();
 const keyword_id = Number(route.params.id);
 const keywordStore = useKeywordStore();
-const keyword_item = ref<Keyword | null>(null);
+const keyword_item = ref<KeywordDTO | null>(null);
 const loading = ref(true);
 
 onMounted(async () => {

@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { Keyword } from '~/utils/types';
+import type { KeywordDTO } from '~/utils/types';
 
 export const useKeywordStore = defineStore('keyword', () => {
     // State
-    const keywords = ref<Keyword[]>([] as Keyword[]);
-    const currentKeyword = ref<Keyword | null>(null);
+    const keywords = ref<KeywordDTO[]>([] as KeywordDTO[]);
+    const currentKeyword = ref<KeywordDTO | null>(null);
 
     // Getters
     const isLoaded = computed(() => keywords.value.length > 0);
@@ -19,7 +19,7 @@ export const useKeywordStore = defineStore('keyword', () => {
                 console.error('Error fetching keywords:', error.value);
                 return;
             }
-            keywords.value = data.value as Keyword[];
+            keywords.value = data.value as KeywordDTO[];
         }
     }
 
@@ -27,7 +27,7 @@ export const useKeywordStore = defineStore('keyword', () => {
     async function refreshKeywordsData() {
         try {
             const data = await $fetch('/api/keywords');
-            keywords.value = data as Keyword[];
+            keywords.value = data as KeywordDTO[];
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
@@ -45,13 +45,13 @@ export const useKeywordStore = defineStore('keyword', () => {
                     console.error(`Error fetching keyword with id ${id}:`, error.value);
                     return;
                 }
-                currentKeyword.value = data.value as Keyword;
+                currentKeyword.value = data.value as KeywordDTO;
             }
         }
     }
 
         // POST Create new keyword
-    async function createKeyword(payload: Partial<Keyword>) {
+    async function createKeyword(payload: Partial<KeywordDTO>) {
         const { data, error } = await useFetch('/api/keywords', {
             method: 'POST',
             body: payload
@@ -60,13 +60,13 @@ export const useKeywordStore = defineStore('keyword', () => {
             console.error('Error creating keyword:', error.value);
             return;
         }
-        const newKeyword = data.value as Keyword;
+        const newKeyword = data.value as KeywordDTO;
         keywords.value.push(newKeyword);
         return newKeyword;
     }
 
         // PUT Update existing keyword
-    async function updateKeyword(payload: Partial<Keyword>, id: number) {
+    async function updateKeyword(payload: Partial<KeywordDTO>, id: number) {
         const { data, error } = await useFetch(`/api/keywords/${id}`, {
             method: 'PUT',
             body: payload
@@ -75,7 +75,7 @@ export const useKeywordStore = defineStore('keyword', () => {
             console.error('Error updating keyword:', error.value);
             return;
         }
-        const updatedKeyword = data.value as Keyword;
+        const updatedKeyword = data.value as KeywordDTO;
         const index = keywords.value.findIndex(k => k.id === id);
         if (index !== -1) keywords.value[index] = updatedKeyword;
         if (currentKeyword.value?.id === id) currentKeyword.value = updatedKeyword;

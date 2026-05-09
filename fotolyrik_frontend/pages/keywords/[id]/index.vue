@@ -7,7 +7,7 @@ const photopoem_store = usePhotopoemStore();
 
 const router = useRoute();
 const keyword_id = Number(router.params.id);
-const keyword_item = ref<Keyword | null>(null);
+const keyword_item = ref<KeywordDTO | null>(null);
 
 const loading = ref(true);
 
