@@ -6,6 +6,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.LocationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,14 +30,6 @@ public class LocationMapper {
         }
     }
 
-    public Set<Location> LocationDTOsToLocations(Set<LocationDTO> locationDTOs) {
-        if (locationDTOs == null || locationDTOs.isEmpty()) return Collections.emptySet();
-        return locationDTOs.stream()
-                .map(this::LocationDTOToLocation)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
-
     public LocationDTO LocationToLocationDTO(Location location) {
         if (location == null) return null;
         LocationDTO locationDTO = new LocationDTO();
@@ -45,11 +38,16 @@ public class LocationMapper {
         return locationDTO;
     }
 
+    public Set<Location> LocationDTOsToLocations(Set<LocationDTO> locationDTOs) {
+        return MapperUtils.mapSet(locationDTOs, this::LocationDTOToLocation);
+    }
     public Set<LocationDTO> LocationsToLocationDTOs(Set<Location> locations) {
-        if (locations == null || locations.isEmpty()) return Collections.emptySet();
-        return locations.stream()
-                .map(this::LocationToLocationDTO)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return MapperUtils.mapSet(locations, this::LocationToLocationDTO);
+    }
+    public List<Location> LocationDTOsToLocations(List<LocationDTO> locationDTOs) {
+        return MapperUtils.mapList(locationDTOs, this::LocationDTOToLocation);
+    }
+    public List<LocationDTO> LocationsToLocationDTOs(List<Location> locations) {
+        return MapperUtils.mapList(locations, this::LocationToLocationDTO);
     }
 }

@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.LocationDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Location;
 import de.uniwue.dachs.fotolyrik_backend.service.LocationService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,28 +19,28 @@ public class LocationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Location>> getAllLocations() {
-        List<Location> locations = locationService.getAllLocations();
+    public ResponseEntity<List<LocationDTO>> getAllLocations() {
+        List<LocationDTO> locations = locationService.getAllLocations();
         return ResponseEntity.ok(locations);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Location> getLocationById(@PathVariable Long id) {
+    public ResponseEntity<LocationDTO> getLocationById(@PathVariable Long id) {
         return locationService.getLocationById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public ResponseEntity<Location> createLocation(@RequestBody Location location) {
-        Location createdLocation = locationService.createLocation(location);
+    public ResponseEntity<LocationDTO> createLocation(@RequestBody LocationDTO locationDTO) {
+        LocationDTO createdLocation = locationService.createLocation(locationDTO);
         return ResponseEntity.status(201).body(createdLocation);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Location> updateLocation(@PathVariable Long id, @RequestBody Location location) {
+    public ResponseEntity<LocationDTO> updateLocation(@PathVariable Long id, @RequestBody LocationDTO locationDTO) {
         try {
-            Location updatedLocation = locationService.updateLocation(id, location);
+            LocationDTO updatedLocation = locationService.updateLocation(id, locationDTO);
             return ResponseEntity.status(201).body(updatedLocation);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
