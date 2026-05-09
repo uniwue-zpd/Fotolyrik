@@ -6,6 +6,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.LanguageRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,13 +32,6 @@ public class LanguageMapper {
         }
     }
 
-    public Set<Language> LanguageDTOsToLanguages(Set<LanguageDTO> languageDTOs) {
-        if (languageDTOs.isEmpty()) return Collections.emptySet();
-        return languageDTOs.stream()
-                .map(this::LanguageDTOToLanguage)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
 
     public LanguageDTO LanguageToLanguageDTO(Language language) {
         if (language == null) return null;
@@ -47,12 +41,16 @@ public class LanguageMapper {
         languageDTO.setIsoDesignation(language.getIsoDesignation());
         return languageDTO;
     }
-
     public Set<LanguageDTO> LanguagesToLanguageDTOs(Set<Language> languages) {
-        if (languages.isEmpty()) return Collections.emptySet();
-        return languages.stream()
-                .map(this::LanguageToLanguageDTO)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return MapperUtils.mapSet(languages, this::LanguageToLanguageDTO);
+    }
+    public Set<Language> LanguageDTOsToLanguages(Set<LanguageDTO> languageDTOs) {
+        return MapperUtils.mapSet(languageDTOs, this::LanguageDTOToLanguage);
+    }
+    public List<LanguageDTO> LanguagesToLanguageDTOs(List<Language> languages) {
+        return MapperUtils.mapList(languages, this::LanguageToLanguageDTO);
+    }
+    public List<Language> LanguageDTOsToLanguages(List<LanguageDTO> languageDTOs) {
+        return MapperUtils.mapList(languageDTOs, this::LanguageDTOToLanguage);
     }
 }

@@ -1,7 +1,9 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.LanguageDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Language;
 import de.uniwue.dachs.fotolyrik_backend.repository.LanguageRepository;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.LanguageMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,49 +14,54 @@ import java.util.Optional;
 @Service
 public class LanguageService {
     private final LanguageRepository languageRepository;
+    private final LanguageMapper languageMapper;
 
-    public LanguageService(LanguageRepository languageRepository) {
+    public LanguageService(LanguageRepository languageRepository, LanguageMapper languageMapper) {
         this.languageRepository = languageRepository;
+        this.languageMapper = languageMapper;
     }
 
     /**
-     * @return a {@link List} of available {@link Language} objects
+     * @return a {@link List} of available {@link Language} as {@link LanguageDTO} objects
      */
-    public List<Language> getAllLanguages() {
-        return languageRepository.findAll();
+    public List<LanguageDTO> getAllLanguages() {
+        return languageMapper.LanguagesToLanguageDTOs(languageRepository.findAll());
     }
 
     /**
      * @param id ID of the {@link Language} to be found
-     * @return an {@link Optional} object of the {@link Language}
+     * @return an {@link Optional} object of the {@link Language} as {@link LanguageDTO}
      */
-    public Optional<Language> getLanguageById(Long id) {
-        return languageRepository.findById(id);
+    public Optional<LanguageDTO> getLanguageById(Long id) {
+        return languageRepository.findById(id).map(languageMapper::LanguageToLanguageDTO);
     }
 
     /**
-     * @param language a {@link Language} object to be saved
-     * @return saved {@link Language} entry
+     * @param languageDTO a {@link LanguageDTO} object to be saved
+     * @return {@link LanguageDTO} of saved {@link Language} entry
      */
     @Transactional
-    public Language createLanguage(Language language) {
-        return languageRepository.save(language);
+    public LanguageDTO createLanguage(LanguageDTO languageDTO) {
+        var entity = languageMapper.LanguageDTOToLanguage(languageDTO);
+        var savedEntity = languageRepository.save(entity);
+        return languageMapper.LanguageToLanguageDTO(savedEntity);
     }
 
     /**
      * @param id ID of the {@link Language} object to be updated
-     * @param language {@link Language} entry with updated data
-     * @return updated {@link Language} object
+     * @param languageDTO {@link LanguageDTO} entry with updated data
+     * @return updated {@link LanguageDTO} object
      */
     @Transactional
-    public Language updateLanguage(Long id, Language language) {
+    public LanguageDTO updateLanguage(Long id, LanguageDTO languageDTO) {
         return languageRepository.findById(id)
                 .map(entity -> {
-                    entity.updateBaseEntityNotes(language);
-                    entity.setName(language.getName());
-                    entity.setIsoDesignation(language.getIsoDesignation());
+                    entity.updateBaseEntityNotes(languageDTO);
+                    entity.setName(languageDTO.getName());
+                    entity.setIsoDesignation(languageDTO.getIsoDesignation());
                     return languageRepository.save(entity);
-                }).orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
+                }).map(languageMapper::LanguageToLanguageDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
     }
 
     /**
