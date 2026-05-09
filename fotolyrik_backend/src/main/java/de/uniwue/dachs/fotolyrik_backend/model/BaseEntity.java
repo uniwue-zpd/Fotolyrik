@@ -43,8 +43,16 @@ public abstract class BaseEntity implements Serializable {
     @Lob
     private String generalNotes;
 
-    public void mapBaseEntityFields(BaseEntity source) {
-        generalNotes = (source.getGeneralNotes());
-        internalNotes = (source.getInternalNotes());
+    public void updateBaseEntityNotes(BaseEntity source) {
+        generalNotes = source.getGeneralNotes();
+        internalNotes = source.getInternalNotes();
+    }
+    public void setBaseEntityFields(BaseEntity source) {
+        createdDate = source.getCreatedDate();
+        createdBy = source.getCreatedBy();
+        lastModifiedDate = source.getLastModifiedDate();
+        lastModifiedBy = source.getLastModifiedBy();
+        generalNotes = source.getGeneralNotes();
+        internalNotes = source.getInternalNotes();
     }
 }

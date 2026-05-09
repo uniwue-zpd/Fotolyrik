@@ -22,7 +22,7 @@ export interface CopyrightStatusDTO {
 }
 
 
-export interface FileDTO {
+export interface FileDTO extends Auditable {
     id: number;
     originalFilename: string;
     filename: string;

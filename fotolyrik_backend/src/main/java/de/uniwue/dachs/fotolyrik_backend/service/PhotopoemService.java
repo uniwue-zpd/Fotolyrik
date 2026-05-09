@@ -258,7 +258,7 @@ public class PhotopoemService {
     @Transactional
     public PhotopoemDTO updatePhotopoem(Long id, PhotopoemDTO updatedPhotopoem) {
         return photopoemRepository.findById(id).map(entity -> {
-            entity.mapBaseEntityFields(updatedPhotopoem);
+            entity.updateBaseEntityNotes(updatedPhotopoem);
             entity.setTitle(updatedPhotopoem.getTitle());
             entity.setSubtitle(updatedPhotopoem.getSubtitle());
             entity.setAltTitle(updatedPhotopoem.getAltTitle());

@@ -30,6 +30,7 @@ public class FileMapper {
         fileDTO.setId(file.getId());
         fileDTO.setOriginalFilename(file.getOriginalFilename());
         fileDTO.setFilename(file.getFilename());
+        fileDTO.setBaseEntityFields(file);
         return fileDTO;
     }
 

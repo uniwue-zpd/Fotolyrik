@@ -162,7 +162,7 @@ public class PubMediumService {
     public PubMediumDTO updatePubMedium(Long id, PubMediumDTO updatedPubMediumDTO) {
         return pubMediumRepository.findById(id)
                 .map(entity -> {
-                    entity.mapBaseEntityFields(updatedPubMediumDTO);
+                    entity.updateBaseEntityNotes(updatedPubMediumDTO);
                     entity.setTitle(updatedPubMediumDTO.getTitle());
                     entity.setSubtitle(updatedPubMediumDTO.getSubtitle());
                     entity.setPublicationPlaces(placeMapper.PlaceDTOsToPlaces(updatedPubMediumDTO.getPublicationPlaces()));

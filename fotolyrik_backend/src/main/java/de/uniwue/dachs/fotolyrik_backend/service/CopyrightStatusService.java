@@ -60,7 +60,7 @@ public class CopyrightStatusService {
         var copyrightStatus = copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(copyrightStatusDTO);
         return copyrightStatusRepository.findById(id)
                 .map(entity -> {
-                    entity.mapBaseEntityFields(copyrightStatus);
+                    entity.updateBaseEntityNotes(copyrightStatus);
                     entity.setValue(copyrightStatus.getValue());
                     entity.setDescription(copyrightStatus.getDescription());
                     var savedEntity = copyrightStatusRepository.save(entity);

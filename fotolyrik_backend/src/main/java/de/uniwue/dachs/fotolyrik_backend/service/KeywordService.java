@@ -1,7 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
-import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.KeywordMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,7 +44,7 @@ public class KeywordService {
     public KeywordDTO updateKeyword(Long id, KeywordDTO updatedKeyword) {
         return keywordRepository.findById(id)
                 .map(existingKeyword -> {
-                    existingKeyword.mapBaseEntityFields(updatedKeyword);
+                    existingKeyword.updateBaseEntityNotes(updatedKeyword);
                     existingKeyword.setValue(updatedKeyword.getValue());
                     existingKeyword.setGndId(updatedKeyword.getGndId());
                     return keywordRepository.save(existingKeyword);

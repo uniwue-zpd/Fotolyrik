@@ -35,7 +35,7 @@ public class PlaceService {
     public Place updatePlace(Long id, Place place) {
         return placeRepository.findById(id)
                 .map(entity -> {
-                    entity.mapBaseEntityFields(place);
+                    entity.updateBaseEntityNotes(place);
                     entity.setName(place.getName());
                     entity.setDescription(place.getDescription());
                     entity.setLatitude(place.getLatitude());

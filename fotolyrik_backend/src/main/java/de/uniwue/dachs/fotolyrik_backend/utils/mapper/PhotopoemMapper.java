@@ -94,10 +94,7 @@ public class PhotopoemMapper {
         photopoemDTO.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(photopoem.getCopyrightStatusImage()));
         photopoemDTO.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(photopoem.getCopyrightStatusText()));
         photopoemDTO.setLanguages(languageMapper.LanguagesToLanguageDTOs(photopoem.getLanguages()));
-        photopoemDTO.setCreatedDate(photopoem.getCreatedDate());
-        photopoemDTO.setCreatedBy(photopoem.getCreatedBy());
-        photopoemDTO.setLastModifiedDate(photopoem.getLastModifiedDate());
-        photopoemDTO.setLastModifiedBy(photopoem.getLastModifiedBy());
+        photopoemDTO.setBaseEntityFields(photopoem);
         return photopoemDTO;
     }
 
