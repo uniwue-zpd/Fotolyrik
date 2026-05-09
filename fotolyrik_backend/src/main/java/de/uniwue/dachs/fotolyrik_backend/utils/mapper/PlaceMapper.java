@@ -3,9 +3,11 @@ package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import de.uniwue.dachs.fotolyrik_backend.repository.PlaceRepository;
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,14 +31,6 @@ public class PlaceMapper {
         return place;
     }
 
-    public Set<Place> PlaceDTOsToPlaces(Set<PlaceDTO> placeDTOs) {
-        if (placeDTOs.isEmpty()) return Collections.emptySet();
-        return placeDTOs.stream()
-                .map(this::PlaceDTOToPlace)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
-
     public PlaceDTO PlaceToPlaceDTO(Place place) {
         if (place == null) return null;
         PlaceDTO placeDTO = new PlaceDTO();
@@ -46,10 +40,18 @@ public class PlaceMapper {
     }
 
     public Set<PlaceDTO> PlacesToPlaceDTOs(Set<Place> places) {
-        if (places.isEmpty()) return Collections.emptySet();
-        return places.stream()
-                .map(this::PlaceToPlaceDTO)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return MapperUtils.mapSet(places, this::PlaceToPlaceDTO);
+    }
+
+    public Set<Place> PlaceDTOsToPlaces(Set<PlaceDTO> placeDTOs) {
+        return MapperUtils.mapSet(placeDTOs, this::PlaceDTOToPlace);
+    }
+
+    public List<PlaceDTO> PlacesToPlaceDTOs(List<Place> places) {
+        return MapperUtils.mapList(places, this::PlaceToPlaceDTO);
+    }
+
+    public List<Place> PlaceDTOsToPlaces(List<PlaceDTO> placeDTOs) {
+        return MapperUtils.mapList(placeDTOs, this::PlaceDTOToPlace);
     }
 }
