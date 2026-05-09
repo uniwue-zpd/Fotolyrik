@@ -4,7 +4,7 @@ import PublisherForm from "~/components/forms/PublisherForm.vue";
 const route = useRoute();
 const publisher_id = Number(route.params.id);
 const publisherStore = usePublisherStore();
-const publisher_item = ref<Publisher | null>(null);
+const publisher_item = ref<PublisherDTO | null>(null);
 const loading = ref(true);
 
 onMounted(async () => {

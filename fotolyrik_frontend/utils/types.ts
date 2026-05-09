@@ -134,7 +134,7 @@ export interface PubMedium extends Auditable {
     title: string;
     subtitle: string | null;
     publicationPlaces: PlaceDTO[] | [];
-    publisher: Publisher | null;
+    publisher: PublisherDTO | null;
     pubRhythms: PubRhythmDTO[] | [];
     editorialOffice: string | null;
     startYear: string | null;
@@ -169,15 +169,11 @@ export interface PubMediumDTO extends Auditable {
     notes: string | null;
 }
 
-export interface Publisher extends Auditable {
+export interface PublisherDTO extends Auditable {
     name: string | null;
     description: string | null;
 }
 
-export interface PublisherDTO {
-    id: number;
-    name: string | null;
-}
 
 export interface PubRhythmDTO extends Auditable {
     value: string | null;
