@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.PersonFullDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,28 +19,28 @@ public class PersonController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Person>> getAllPersons() {
-        List<Person> persons = personService.getAllPersons();
+    public ResponseEntity<List<PersonFullDTO>> getAllPersons() {
+        List<PersonFullDTO> persons = personService.getAllPersons();
         return ResponseEntity.ok(persons);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> getPersonById(@PathVariable Long id) {
+    public ResponseEntity<PersonFullDTO> getPersonById(@PathVariable Long id) {
         return personService.getPersonById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
-        Person createdPerson = personService.createPerson(person);
+    public ResponseEntity<PersonFullDTO> createPerson(@RequestBody PersonFullDTO personFullDTO) {
+        PersonFullDTO createdPerson = personService.createPerson(personFullDTO);
         return ResponseEntity.status(201).body(createdPerson);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(@PathVariable Long id, @RequestBody Person person) {
+    public ResponseEntity<PersonFullDTO> updatePerson(@PathVariable Long id, @RequestBody PersonFullDTO personFullDTO) {
         try {
-            Person updatedPerson = personService.updatePerson(id, person);
+            PersonFullDTO updatedPerson = personService.updatePerson(id, personFullDTO);
             return ResponseEntity.status(201).body(updatedPerson);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
