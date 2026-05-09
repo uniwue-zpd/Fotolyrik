@@ -5,7 +5,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 const props = defineProps<{
   action: 'create' | 'edit';
   header: string;
-  place?: Place;
+  place?: PlaceDTO;
 }>();
 
 const placeStore = usePlaceStore();
@@ -131,7 +131,7 @@ onMounted(async () => {
           v-slot="$form"
           @submit="onFormSubmit"
           class="flex flex-col gap-4"
-          :initial-values="props.place ? props.place : {} as Place"
+          :initial-values="props.place ? props.place : {} as PlaceDTO"
       >
         <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-auto">
           <label for="name" class="font-bold">Ortsname*</label>

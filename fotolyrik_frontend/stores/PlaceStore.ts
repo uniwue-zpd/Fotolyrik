@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { Place } from "~/utils/types";
+import type { PlaceDTO } from "~/utils/types";
 
 export const usePlaceStore = defineStore('place', () => {
     // State
-    const places = ref<Place[]>([] as Place[]);
-    const current_place = ref<Place | null>(null);
+    const places = ref<PlaceDTO[]>([] as PlaceDTO[]);
+    const current_place = ref<PlaceDTO | null>(null);
 
     // Getters
     const isLoaded = computed(() => places.value.length > 0);
@@ -19,7 +19,7 @@ export const usePlaceStore = defineStore('place', () => {
                 console.error('Error fetching places:', error.value);
                 return;
             }
-            places.value = data.value as Place[];
+            places.value = data.value as PlaceDTO[];
         }
     }
 
@@ -27,7 +27,7 @@ export const usePlaceStore = defineStore('place', () => {
     async function refreshPlacesData() {
         try {
             const data = await $fetch('/api/places');
-            places.value = data as Place[];
+            places.value = data as PlaceDTO[];
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
@@ -45,13 +45,13 @@ export const usePlaceStore = defineStore('place', () => {
                     console.error(`Error fetching place with id ${id}:`, error.value);
                     return;
                 }
-                current_place.value = data.value as Place;
+                current_place.value = data.value as PlaceDTO;
             }
         }
     }
 
         // POST Create new place
-    async function createPlace(payload: Partial<Place>) {
+    async function createPlace(payload: Partial<PlaceDTO>) {
         const { data, error } = await useFetch('/api/places', {
             method: 'POST',
             body: payload
@@ -60,13 +60,13 @@ export const usePlaceStore = defineStore('place', () => {
             console.error('Error creating place:', error.value);
             return;
         }
-        const newPlace = data.value as Place;
+        const newPlace = data.value as PlaceDTO;
         places.value.push(newPlace);
         return newPlace;
     }
 
         // PUT Update existing place
-    async function updatePlace(payload: Partial<Place>, id: number) {
+    async function updatePlace(payload: Partial<PlaceDTO>, id: number) {
         const { data, error } = await useFetch(`/api/places/${id}`, {
             method: 'PUT',
             body: payload
@@ -75,7 +75,7 @@ export const usePlaceStore = defineStore('place', () => {
             console.error('Error updating place:', error.value);
             return;
         }
-        const updatedPlace = data.value as Place;
+        const updatedPlace = data.value as PlaceDTO;
         const index = places.value.findIndex(p => p.id === id);
         if (index !== -1) places.value[index] = updatedPlace;
         if (current_place.value?.id === id) current_place.value = updatedPlace;
@@ -97,7 +97,7 @@ export const usePlaceStore = defineStore('place', () => {
     function previousPlace() {
         const current_index = places.value.findIndex(p => p.id === current_place.value?.id);
         if (current_index !== -1 && current_index) {
-            return places.value[current_index - 1] as Place;
+            return places.value[current_index - 1] as PlaceDTO;
         } else {
             return null;
         }
@@ -107,7 +107,7 @@ export const usePlaceStore = defineStore('place', () => {
     function nextPlace() {
         const current_index = places.value.findIndex(p => p.id === current_place.value?.id);
         if (current_index !== -1 && current_index < places.value.length - 1) {
-            return places.value[current_index + 1] as Place;
+            return places.value[current_index + 1] as PlaceDTO;
         } else {
             return null;
         }

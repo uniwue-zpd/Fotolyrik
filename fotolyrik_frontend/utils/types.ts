@@ -122,22 +122,18 @@ export interface PhotoPoemPreviewDTO {
     altTitle: string | null;
 }
 
-export interface Place extends Auditable {
+export interface PlaceDTO extends Auditable {
     name: string;
     description: string | null;
     latitude: number | null;
     longitude: number | null
 }
 
-export interface PlaceDTO {
-    id: number;
-    name: string | null;
-}
 
 export interface PubMedium extends Auditable {
     title: string;
     subtitle: string | null;
-    publicationPlaces: Place[] | [];
+    publicationPlaces: PlaceDTO[] | [];
     publisher: Publisher | null;
     pubRhythms: PubRhythm[] | [];
     editorialOffice: string | null;
