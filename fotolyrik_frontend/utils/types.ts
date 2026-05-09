@@ -55,7 +55,7 @@ export interface LanguageDTO {
     isoDesignation: string;
 }
 
-export interface Person extends Auditable {
+export interface PersonFullDTO extends Auditable {
     firstName: string | null;
     lastName: string | null;
     studioName: string | null;

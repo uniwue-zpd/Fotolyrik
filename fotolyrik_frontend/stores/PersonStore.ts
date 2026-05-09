@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { Person } from "~/utils/types";
+import type { PersonFullDTO } from "~/utils/types";
 
 export const usePersonStore = defineStore('person', () => {
     // State
-    const persons = ref<Person[]>([] as Person[]);
-    const currentPerson = ref<Person | null>(null);
+    const persons = ref<PersonFullDTO[]>([] as PersonFullDTO[]);
+    const currentPerson = ref<PersonFullDTO | null>(null);
 
     // Getters
     const isLoaded = computed(() => persons.value.length > 0);
@@ -19,7 +19,7 @@ export const usePersonStore = defineStore('person', () => {
                 console.error('Error fetching persons:', error.value);
                 return;
             }
-            persons.value = data.value as Person[];
+            persons.value = data.value as PersonFullDTO[];
         }
     }
 
@@ -27,7 +27,7 @@ export const usePersonStore = defineStore('person', () => {
     async function refreshPersonsData() {
         try {
             const data = await $fetch('/api/persons');
-            persons.value = data as Person[];
+            persons.value = data as PersonFullDTO[];
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
@@ -38,7 +38,7 @@ export const usePersonStore = defineStore('person', () => {
         try {
             const data = await $fetch(`/api/persons/${id}`);
             const index = persons.value.findIndex(p => p.id === id);
-            persons.value[index] = data as Person;
+            persons.value[index] = data as PersonFullDTO;
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
@@ -55,13 +55,13 @@ export const usePersonStore = defineStore('person', () => {
                     console.error(`Error fetching person with id ${id}:`, error.value);
                     return;
                 }
-                currentPerson.value = data.value as Person;
+                currentPerson.value = data.value as PersonFullDTO;
             }
         }
     }
 
         // Create new person
-    async function createPerson(payload: Partial<Person>) {
+    async function createPerson(payload: Partial<PersonFullDTO>) {
         const { data, error } = await useFetch('/api/persons', {
             method: 'POST',
             body: payload
@@ -70,13 +70,13 @@ export const usePersonStore = defineStore('person', () => {
             console.error('Error creating person:', error.value);
             return;
         }
-        const newPerson = data.value as Person;
+        const newPerson = data.value as PersonFullDTO;
         persons.value.push(newPerson);
         return newPerson;
     }
 
         // Update existing person
-    async function updatePerson(payload: Partial<Person>, id: number) {
+    async function updatePerson(payload: Partial<PersonFullDTO>, id: number) {
         const { data, error } = await useFetch(`/api/persons/${id}`, {
             method: 'PUT',
             body: payload
@@ -85,7 +85,7 @@ export const usePersonStore = defineStore('person', () => {
             console.error('Error updating person:', error.value);
             return;
         }
-        const updatedPerson = data.value as Person;
+        const updatedPerson = data.value as PersonFullDTO;
         const index = persons.value.findIndex(p => p.id === id);
         if (index !== -1) persons.value[index] = updatedPerson;
         if (currentPerson.value?.id === id) currentPerson.value = updatedPerson;
@@ -107,7 +107,7 @@ export const usePersonStore = defineStore('person', () => {
     function previousPerson() {
         const currentIndex = persons.value.findIndex(p => p.id === currentPerson.value?.id);
         if (currentIndex !== -1 && currentIndex) {
-            return persons.value[currentIndex - 1] as Person;
+            return persons.value[currentIndex - 1] as PersonFullDTO;
         } else {
             return null;
         }
@@ -117,7 +117,7 @@ export const usePersonStore = defineStore('person', () => {
     function nextPerson() {
         const currentIndex = persons.value.findIndex(p => p.id === currentPerson.value?.id);
         if (currentIndex !== -1 && currentIndex < persons.value.length - 1) {
-            return persons.value[currentIndex + 1] as Person;
+            return persons.value[currentIndex + 1] as PersonFullDTO;
         } else {
             return null;
         }
