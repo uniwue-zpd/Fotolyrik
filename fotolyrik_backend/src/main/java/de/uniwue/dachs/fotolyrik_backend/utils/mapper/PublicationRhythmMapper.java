@@ -27,6 +27,7 @@ public class PublicationRhythmMapper {
             PublicationRhythm publicationRhythm = new PublicationRhythm();
             publicationRhythm.setValue(publicationRhythmDTO.getValue());
             publicationRhythm.setDescription(publicationRhythmDTO.getDescription());
+            publicationRhythm.setBaseEntityFields(publicationRhythmDTO);
             publicationRhythmRepository.save(publicationRhythm);
             return publicationRhythm;
         }
@@ -38,6 +39,7 @@ public class PublicationRhythmMapper {
         publicationRhythmDTO.setId(publicationRhythm.getId());
         publicationRhythmDTO.setValue(publicationRhythm.getValue());
         publicationRhythmDTO.setDescription(publicationRhythm.getDescription());
+        publicationRhythmDTO.setBaseEntityFields(publicationRhythm);
         return publicationRhythmDTO;
     }
 
