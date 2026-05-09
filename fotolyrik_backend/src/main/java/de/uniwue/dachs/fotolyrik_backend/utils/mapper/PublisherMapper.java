@@ -6,6 +6,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.PublisherRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,17 +26,11 @@ public class PublisherMapper {
         } else {
             Publisher publisher = new Publisher();
             publisher.setName(publisherDTO.getName());
+            publisher.setDescription(publisherDTO.getDescription());
+            publisher.setBaseEntityFields(publisherDTO);
             publisherRepository.save(publisher);
             return publisher;
         }
-    }
-
-    public Set<Publisher> PublisherDTOsToPublishers(Set<PublisherDTO> publisherDTOs) {
-        if (publisherDTOs.isEmpty()) return Collections.emptySet();
-        return publisherDTOs.stream()
-                .map(this::PublisherDTOToPublisher)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
     }
 
     public PublisherDTO PublisherToPublisherDTO(Publisher publisher) {
@@ -43,14 +38,21 @@ public class PublisherMapper {
         PublisherDTO publisherDTO = new PublisherDTO();
         publisherDTO.setId(publisher.getId());
         publisherDTO.setName(publisher.getName());
+        publisherDTO.setDescription(publisher.getDescription());
+        publisherDTO.setBaseEntityFields(publisher);
         return publisherDTO;
     }
 
+    public Set<Publisher> PublisherDTOsToPublishers(Set<PublisherDTO> publisherDTOs) {
+        return MapperUtils.mapSet(publisherDTOs, this::PublisherDTOToPublisher);
+    }
     public Set<PublisherDTO> PublishersToPublisherDTOs(Set<Publisher> publishers) {
-        if (publishers.isEmpty()) return Collections.emptySet();
-        return publishers.stream()
-                .map(this::PublisherToPublisherDTO)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return MapperUtils.mapSet(publishers, this::PublisherToPublisherDTO);
+    }
+    public List<Publisher> PublisherDTOsToPublishers(List<PublisherDTO> publisherDTOs) {
+        return MapperUtils.mapList(publisherDTOs, this::PublisherDTOToPublisher);
+    }
+    public List<PublisherDTO> PublishersToPublisherDTOs(List<Publisher> publishers) {
+        return MapperUtils.mapList(publishers, this::PublisherToPublisherDTO);
     }
 }

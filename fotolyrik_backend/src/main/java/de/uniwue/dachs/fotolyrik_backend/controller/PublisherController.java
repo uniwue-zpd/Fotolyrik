@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.PublisherDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Publisher;
 import de.uniwue.dachs.fotolyrik_backend.service.PublisherService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,28 +19,28 @@ public class PublisherController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Publisher>> getPublishers() {
-        List<Publisher> publishers = publisherService.getAllPublishers();
+    public ResponseEntity<List<PublisherDTO>> getPublishers() {
+        List<PublisherDTO> publishers = publisherService.getAllPublishers();
         return ResponseEntity.ok().body(publishers);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Publisher> getPublisher(@PathVariable Long id) {
+    public ResponseEntity<PublisherDTO> getPublisher(@PathVariable Long id) {
         return publisherService.getPublisherById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public ResponseEntity<Publisher> createPublisher(@RequestBody Publisher publisher) {
-        Publisher createdPublisher = publisherService.createPublisher(publisher);
+    public ResponseEntity<PublisherDTO> createPublisher(@RequestBody PublisherDTO publisherDTO) {
+        PublisherDTO createdPublisher = publisherService.createPublisher(publisherDTO);
         return ResponseEntity.status(201).body(createdPublisher);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Publisher> updatePublisher(@PathVariable Long id, @RequestBody Publisher publisher) {
+    public ResponseEntity<PublisherDTO> updatePublisher(@PathVariable Long id, @RequestBody PublisherDTO publisherDTO) {
         try {
-            Publisher updatedPublisher = publisherService.updatePublisher(id, publisher);
+            PublisherDTO updatedPublisher = publisherService.updatePublisher(id, publisherDTO);
             return ResponseEntity.status(201).body(updatedPublisher);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
