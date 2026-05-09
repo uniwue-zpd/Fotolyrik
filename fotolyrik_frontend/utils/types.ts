@@ -23,7 +23,6 @@ export interface CopyrightStatusDTO {
 
 
 export interface FileDTO extends Auditable {
-    id: number;
     originalFilename: string;
     filename: string;
 }
@@ -48,11 +47,6 @@ export interface GeneralSearchResult {
     id: number;
     title: string;
     type: string;
-}
-
-export interface Language extends Auditable {
-    name: string;
-    isoDesignation: string;
 }
 
 export interface LanguageDTO {
@@ -200,7 +194,6 @@ export interface PubRhythmDTO {
 }
 
 export interface KeywordDTO extends Auditable {
-    id: number;
     value: string;
     gndId: string | null;
 }
