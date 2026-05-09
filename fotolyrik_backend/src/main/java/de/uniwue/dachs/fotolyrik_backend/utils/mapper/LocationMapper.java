@@ -35,6 +35,7 @@ public class LocationMapper {
         LocationDTO locationDTO = new LocationDTO();
         locationDTO.setId(location.getId());
         locationDTO.setName(location.getName());
+        locationDTO.setBaseEntityFields(location);
         return locationDTO;
     }
 

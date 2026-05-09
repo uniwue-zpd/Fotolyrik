@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GeneralSearchDTO {
-    private Long id;
     private String title;
     private String type;
 }

@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PublisherDTO extends BaseEntity {
-    private Long id;
     private String name;
     private String description;
 }

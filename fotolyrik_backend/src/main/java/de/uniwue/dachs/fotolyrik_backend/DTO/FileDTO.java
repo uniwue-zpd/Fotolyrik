@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FileDTO extends BaseEntity {
-    private Long id;
     private String originalFilename;
     private String filename;
 }

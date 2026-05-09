@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LanguageDTO extends BaseEntity {
-    private Long id;
     private String name;
     private String isoDesignation;
 }

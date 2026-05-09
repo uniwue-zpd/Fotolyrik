@@ -87,6 +87,7 @@ public class PersonMapper {
         personFullDTO.setGndId(person.getGndId());
         personFullDTO.setNotes(person.getNotes());
         personFullDTO.setImage(fileMapper.FileToFileDTO(person.getImage()));
+        personFullDTO.setBaseEntityFields(person);
         return personFullDTO;
     }
     public Set<PersonFullDTO> PersonsToPersonFullDTOs(Set<Person> persons) {

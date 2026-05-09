@@ -39,6 +39,7 @@ public class LanguageMapper {
         languageDTO.setId(language.getId());
         languageDTO.setName(language.getName());
         languageDTO.setIsoDesignation(language.getIsoDesignation());
+        language.setBaseEntityFields(languageDTO);
         return languageDTO;
     }
     public Set<LanguageDTO> LanguagesToLanguageDTOs(Set<Language> languages) {

@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PublicationRhythmDTO extends BaseEntity {
-    private Long id;
     private String value;
     private String description;
 }

@@ -15,7 +15,7 @@ export interface ContactForm {
 }
 
 
-export interface CopyrightStatusDTO {
+export interface CopyrightStatusDTO extends Auditable {
     id: number;
     value: string;
     description: string | null;
@@ -25,11 +25,6 @@ export interface CopyrightStatusDTO {
 export interface FileDTO extends Auditable {
     originalFilename: string;
     filename: string;
-}
-
-export interface FullText extends Auditable {
-    photopoem: PhotoPoemDTO;
-    fullText: string | null;
 }
 
 export interface FullTextDTO extends Auditable {
@@ -49,8 +44,7 @@ export interface GeneralSearchResult {
     type: string;
 }
 
-export interface LanguageDTO {
-    id: number;
+export interface LanguageDTO extends Auditable {
     name: string;
     isoDesignation: string;
 }

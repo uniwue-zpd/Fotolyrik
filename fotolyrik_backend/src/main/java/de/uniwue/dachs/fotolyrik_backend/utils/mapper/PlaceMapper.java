@@ -30,7 +30,6 @@ public class PlaceMapper {
         place.setDescription(placeDTO.getDescription());
         place.setLatitude(placeDTO.getLatitude());
         place.setLongitude(placeDTO.getLongitude());
-        place.setBaseEntityFields(placeDTO);
         placeRepository.save(place);
         return place;
     }

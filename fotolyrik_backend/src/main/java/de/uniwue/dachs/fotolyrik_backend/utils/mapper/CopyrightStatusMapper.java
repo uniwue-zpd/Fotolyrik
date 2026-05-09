@@ -38,6 +38,7 @@ public class CopyrightStatusMapper {
         CopyrightStatusDTO copyrightStatusDTO = new CopyrightStatusDTO();
         copyrightStatusDTO.setId(copyrightStatus.getId());
         copyrightStatusDTO.setValue(copyrightStatus.getValue());
+        copyrightStatusDTO.setBaseEntityFields(copyrightStatus);
         return  copyrightStatusDTO;
     }
 
