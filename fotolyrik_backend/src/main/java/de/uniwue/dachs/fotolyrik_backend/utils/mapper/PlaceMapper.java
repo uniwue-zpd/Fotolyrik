@@ -27,6 +27,10 @@ public class PlaceMapper {
         }
         Place place = new Place();
         place.setName(placeDTO.getName());
+        place.setDescription(placeDTO.getDescription());
+        place.setLatitude(placeDTO.getLatitude());
+        place.setLongitude(placeDTO.getLongitude());
+        place.setBaseEntityFields(placeDTO);
         placeRepository.save(place);
         return place;
     }
@@ -36,6 +40,10 @@ public class PlaceMapper {
         PlaceDTO placeDTO = new PlaceDTO();
         placeDTO.setId(place.getId());
         placeDTO.setName(place.getName());
+        placeDTO.setDescription(place.getDescription());
+        placeDTO.setLatitude(place.getLatitude());
+        placeDTO.setLongitude(place.getLongitude());
+        placeDTO.setBaseEntityFields(place);
         return placeDTO;
     }
 
