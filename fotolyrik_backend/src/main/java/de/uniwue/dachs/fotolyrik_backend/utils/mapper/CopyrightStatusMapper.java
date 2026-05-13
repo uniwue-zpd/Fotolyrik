@@ -72,16 +72,16 @@ public class CopyrightStatusMapper {
         return  keywordPreviewDTO;
     }
 
-    public Set<CopyrightStatus> CopyrightStatusPreviewDTOsToCopyrightStatuss(Set<CopyrightStatusPreviewDTO> keywordPreviewDTOs) {
+    public Set<CopyrightStatus> CopyrightStatusPreviewDTOsToCopyrightStatuses(Set<CopyrightStatusPreviewDTO> keywordPreviewDTOs) {
         return MapperUtils.mapSet(keywordPreviewDTOs, this::CopyrightStatusPreviewDTOToCopyrightStatus);
     }
-    public Set<CopyrightStatusPreviewDTO> CopyrightStatusToCopyrightStatusPreviewDTOs(Set<CopyrightStatus> keywords) {
+    public Set<CopyrightStatusPreviewDTO> CopyrightStatusesToCopyrightStatusPreviewDTOs(Set<CopyrightStatus> keywords) {
         return MapperUtils.mapSet(keywords, this::CopyrightStatusToCopyrightStatusPreviewDTO);
     }
-    public List<CopyrightStatus> CopyrightStatusPreviewDTOsToCopyrightStatuss(List<CopyrightStatusPreviewDTO> keywordPreviewDTOs) {
+    public List<CopyrightStatus> CopyrightStatusPreviewDTOsToCopyrightStatuses(List<CopyrightStatusPreviewDTO> keywordPreviewDTOs) {
         return MapperUtils.mapList(keywordPreviewDTOs, this::CopyrightStatusPreviewDTOToCopyrightStatus);
     }
-    public List<CopyrightStatusPreviewDTO> CopyrightStatusToCopyrightStatusPreviewDTOs(List<CopyrightStatus> keywords) {
+    public List<CopyrightStatusPreviewDTO> CopyrightStatusesToCopyrightStatusPreviewDTOs(List<CopyrightStatus> keywords) {
         return MapperUtils.mapList(keywords, this::CopyrightStatusToCopyrightStatusPreviewDTO);
     }
 }

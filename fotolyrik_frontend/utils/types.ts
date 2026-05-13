@@ -52,6 +52,10 @@ export interface LanguageDTO extends Auditable {
     name: string;
     isoDesignation: string;
 }
+export interface LanguagePreviewDTO {
+    id: number;
+    name: string;
+}
 
 export interface PersonDTO extends Auditable {
     firstName: string | null;
@@ -111,7 +115,7 @@ export interface PhotoPoemDTO extends Auditable {
     imagesVisible: AccessLevel;
     copyrightStatusImage: CopyrightStatusPreviewDTO | null;
     copyrightStatusText: CopyrightStatusPreviewDTO | null;
-    languages: LanguageDTO[] | [];
+    languages: LanguagePreviewDTO[] | [];
 }
 
 export interface PhotoPoemPreviewDTO {

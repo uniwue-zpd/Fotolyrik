@@ -72,13 +72,13 @@ public class KeywordMapper {
     public Set<Keyword> KeywordPreviewDTOsToKeywords(Set<KeywordPreviewDTO> keywordPreviewDTOs) {
         return MapperUtils.mapSet(keywordPreviewDTOs, this::KeywordPreviewDTOToKeyword);
     }
-    public Set<KeywordPreviewDTO> KeywordToKeywordPreviewDTOs(Set<Keyword> keywords) {
+    public Set<KeywordPreviewDTO> KeywordsToKeywordPreviewDTOs(Set<Keyword> keywords) {
         return MapperUtils.mapSet(keywords, this::KeywordToKeywordPreviewDTO);
     }
     public List<Keyword> KeywordPreviewDTOsToKeywords(List<KeywordPreviewDTO> keywordPreviewDTOs) {
         return MapperUtils.mapList(keywordPreviewDTOs, this::KeywordPreviewDTOToKeyword);
     }
-    public List<KeywordPreviewDTO> KeywordToKeywordPreviewDTOs(List<Keyword> keywords) {
+    public List<KeywordPreviewDTO> KeywordsToKeywordPreviewDTOs(List<Keyword> keywords) {
         return MapperUtils.mapList(keywords, this::KeywordToKeywordPreviewDTO);
     }
 

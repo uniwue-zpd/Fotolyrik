@@ -62,7 +62,7 @@ public class PhotopoemMapper {
                 copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusText()));
         photopoem.setCopyrightStatusImage(
                 copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusImage()));
-        photopoem.setLanguages(languageMapper.LanguageDTOsToLanguages(photopoemDTO.getLanguages()));
+        photopoem.setLanguages(languageMapper.LanguagePreviewDTOsToLanguages(photopoemDTO.getLanguages()));
         return photopoem;
     }
 
@@ -86,8 +86,8 @@ public class PhotopoemMapper {
         photopoemDTO.setDepictedPeople(personMapper.PersonsToPreviewDTOs(photopoem.getDepictedPeople()));
         photopoemDTO.setOtherContributors(personMapper.PersonsToPreviewDTOs(photopoem.getOtherContributors()));
         photopoemDTO.setContributions(contributionMapper.ContributionsToDTOs(photopoem.getContributions()));
-        photopoemDTO.setThemes(keywordMapper.KeywordToKeywordPreviewDTOs(photopoem.getThemes()));
-        photopoemDTO.setImageMotifs(keywordMapper.KeywordToKeywordPreviewDTOs(photopoem.getImageMotifs()));
+        photopoemDTO.setThemes(keywordMapper.KeywordsToKeywordPreviewDTOs(photopoem.getThemes()));
+        photopoemDTO.setImageMotifs(keywordMapper.KeywordsToKeywordPreviewDTOs(photopoem.getImageMotifs()));
         photopoemDTO.setForm(photopoem.getForm());
         photopoemDTO.setLink(photopoem.getLink());
         photopoemDTO.setIiifManifest(photopoem.getIiifManifest());
@@ -97,7 +97,7 @@ public class PhotopoemMapper {
                 copyrightStatusMapper.CopyrightStatusToCopyrightStatusPreviewDTO(photopoem.getCopyrightStatusImage()));
         photopoemDTO.setCopyrightStatusText(
                 copyrightStatusMapper.CopyrightStatusToCopyrightStatusPreviewDTO(photopoem.getCopyrightStatusText()));
-        photopoemDTO.setLanguages(languageMapper.LanguagesToLanguageDTOs(photopoem.getLanguages()));
+        photopoemDTO.setLanguages(languageMapper.LanguagesToLanguagePreviewDTOs(photopoem.getLanguages()));
         photopoemDTO.setBaseEntityFields(photopoem);
         return photopoemDTO;
     }
@@ -113,5 +113,6 @@ public class PhotopoemMapper {
         photopoemPreviewDTO.setTitle(photopoem.getTitle());
         photopoemPreviewDTO.setAltTitle(photopoem.getAltTitle());
         return photopoemPreviewDTO;
+
     }
 }

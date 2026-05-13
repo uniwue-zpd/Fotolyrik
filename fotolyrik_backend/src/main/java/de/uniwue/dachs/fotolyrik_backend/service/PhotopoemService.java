@@ -283,9 +283,9 @@ public class PhotopoemService {
             entity.setIiifManifest(updatedPhotopoem.getIiifManifest());
             entity.setImages(fileMapper.FileDTOsToFiles(updatedPhotopoem.getImages()));
             entity.setImagesVisible(updatedPhotopoem.getImagesVisible());
-            entity.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusImage()));
-            entity.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusText()));
-            entity.setLanguages(languageMapper.LanguageDTOsToLanguages(updatedPhotopoem.getLanguages()));
+            entity.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusImage()));
+            entity.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusText()));
+            entity.setLanguages(languageMapper.LanguagePreviewDTOsToLanguages(updatedPhotopoem.getLanguages()));
 
             // Update the pseudonyms of the person entities based on the contributions of the photopoem
             updatePersonPseudonymsFromContributions(updatedPhotopoem);
