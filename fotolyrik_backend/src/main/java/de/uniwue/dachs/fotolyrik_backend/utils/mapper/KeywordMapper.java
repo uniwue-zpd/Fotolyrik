@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
 import org.springframework.stereotype.Component;
@@ -54,4 +55,31 @@ public class KeywordMapper {
     public List<KeywordDTO> KeywordToKeywordDTOs(List<Keyword> keywords) {
         return MapperUtils.mapList(keywords, this::KeywordToKeywordDTO);
     }
+
+    public Keyword KeywordPreviewDTOToKeyword(KeywordPreviewDTO keywordPreviewDTO) {
+        if (keywordPreviewDTO == null || keywordPreviewDTO.getId() == null) return null;
+        return keywordRepository.findById(keywordPreviewDTO.getId()).orElse(null);
+    }
+
+    public KeywordPreviewDTO KeywordToKeywordPreviewDTO(Keyword keyword) {
+        if (keyword == null) return null;
+        KeywordPreviewDTO keywordPreviewDTO = new KeywordPreviewDTO();
+        keywordPreviewDTO.setId(keyword.getId());
+        keywordPreviewDTO.setValue(keyword.getValue());
+        return  keywordPreviewDTO;
+    }
+
+    public Set<Keyword> KeywordPreviewDTOsToKeywords(Set<KeywordPreviewDTO> keywordPreviewDTOs) {
+        return MapperUtils.mapSet(keywordPreviewDTOs, this::KeywordPreviewDTOToKeyword);
+    }
+    public Set<KeywordPreviewDTO> KeywordToKeywordPreviewDTOs(Set<Keyword> keywords) {
+        return MapperUtils.mapSet(keywords, this::KeywordToKeywordPreviewDTO);
+    }
+    public List<Keyword> KeywordPreviewDTOsToKeywords(List<KeywordPreviewDTO> keywordPreviewDTOs) {
+        return MapperUtils.mapList(keywordPreviewDTOs, this::KeywordPreviewDTOToKeyword);
+    }
+    public List<KeywordPreviewDTO> KeywordToKeywordPreviewDTOs(List<Keyword> keywords) {
+        return MapperUtils.mapList(keywords, this::KeywordToKeywordPreviewDTO);
+    }
+
 }
