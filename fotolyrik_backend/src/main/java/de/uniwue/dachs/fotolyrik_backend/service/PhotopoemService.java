@@ -257,40 +257,15 @@ public class PhotopoemService {
      */
     @Transactional
     public PhotopoemDTO updatePhotopoem(Long id, PhotopoemDTO updatedPhotopoem) {
-        return photopoemRepository.findById(id).map(entity -> {
-            entity.updateBaseEntityNotes(updatedPhotopoem);
-            entity.setTitle(updatedPhotopoem.getTitle());
-            entity.setSubtitle(updatedPhotopoem.getSubtitle());
-            entity.setAltTitle(updatedPhotopoem.getAltTitle());
-            entity.setVolume(updatedPhotopoem.getVolume());
-            entity.setIssue(updatedPhotopoem.getIssue());
-            entity.setPageNumber(updatedPhotopoem.getPageNumber());
-            entity.setManifestPageNumber(updatedPhotopoem.getManifestPageNumber());
-            entity.setPageCount(updatedPhotopoem.getPageCount());
-            entity.setPictureCount(updatedPhotopoem.getPictureCount());
-            entity.setPublicationDate(updatedPhotopoem.getPublicationDate());
-            entity.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(updatedPhotopoem.getPublicationMedium()));
-            entity.setFoundIn(locationMapper.LocationPreviewDTOsToLocations(updatedPhotopoem.getFoundIn()));
-            entity.setAuthors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getAuthors()));
-            entity.setPhotographers(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getPhotographers()));
-            entity.setDepictedPeople(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getDepictedPeople()));
-            entity.setOtherContributors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getOtherContributors()));
-            entity.updateContributions(contributionMapper.DTOsToContributions(updatedPhotopoem.getContributions(), entity));
-            entity.setThemes(keywordMapper.KeywordPreviewDTOsToKeywords(updatedPhotopoem.getThemes()));
-            entity.setImageMotifs(keywordMapper.KeywordPreviewDTOsToKeywords(updatedPhotopoem.getImageMotifs()));
-            entity.setForm(updatedPhotopoem.getForm());
-            entity.setLink(updatedPhotopoem.getLink());
-            entity.setIiifManifest(updatedPhotopoem.getIiifManifest());
-            entity.setImages(fileMapper.FileDTOsToFiles(updatedPhotopoem.getImages()));
-            entity.setImagesVisible(updatedPhotopoem.getImagesVisible());
-            entity.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusImage()));
-            entity.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(updatedPhotopoem.getCopyrightStatusText()));
-            entity.setLanguages(languageMapper.LanguagePreviewDTOsToLanguages(updatedPhotopoem.getLanguages()));
+        return photopoemRepository.findById(id).map(photopoemToUpdate -> {
+            photopoemToUpdate.updateBaseEntityNotes(updatedPhotopoem);
+            photopoemMapper.updatePhotopoemFromDTO(photopoemToUpdate, updatedPhotopoem);
 
             // Update the pseudonyms of the person entities based on the contributions of the photopoem
+            photopoemToUpdate.updateContributions(contributionMapper.DTOsToContributions(updatedPhotopoem.getContributions(), photopoemToUpdate));
             updatePersonPseudonymsFromContributions(updatedPhotopoem);
 
-            Photopoem savedPhotopoem = photopoemRepository.save(entity);
+            Photopoem savedPhotopoem = photopoemRepository.save(photopoemToUpdate);
             return photopoemMapper.PhotopoemToPhotopoemDTO(savedPhotopoem);
         }).orElseThrow(() -> new EntityNotFoundException("Photopoem with id'" + id + "' can't be found"));
     }

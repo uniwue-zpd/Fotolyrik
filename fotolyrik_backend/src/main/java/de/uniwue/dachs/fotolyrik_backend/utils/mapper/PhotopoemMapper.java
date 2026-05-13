@@ -32,37 +32,41 @@ public class PhotopoemMapper {
         this.contributionMapper = contributionMapper;
     }
 
+    public void updatePhotopoemFromDTO(Photopoem photopoemToUpdate, PhotopoemDTO photopoemDTO) {
+        photopoemToUpdate.setTitle(photopoemDTO.getTitle());
+        photopoemToUpdate.setSubtitle(photopoemDTO.getSubtitle());
+        photopoemToUpdate.setAltTitle(photopoemDTO.getAltTitle());
+        photopoemToUpdate.setVolume(photopoemDTO.getVolume());
+        photopoemToUpdate.setIssue(photopoemDTO.getIssue());
+        photopoemToUpdate.setPageNumber(photopoemDTO.getPageNumber());
+        photopoemToUpdate.setManifestPageNumber(photopoemDTO.getManifestPageNumber());
+        photopoemToUpdate.setPageCount(photopoemDTO.getPageCount());
+        photopoemToUpdate.setPictureCount(photopoemDTO.getPictureCount());
+        photopoemToUpdate.setPublicationDate(photopoemDTO.getPublicationDate());
+        photopoemToUpdate.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(photopoemDTO.getPublicationMedium()));
+        photopoemToUpdate.setFoundIn(locationMapper.LocationPreviewDTOsToLocations(photopoemDTO.getFoundIn()));
+        photopoemToUpdate.setAuthors(personMapper.PreviewDTOsToPersons(photopoemDTO.getAuthors()));
+        photopoemToUpdate.setPhotographers(personMapper.PreviewDTOsToPersons(photopoemDTO.getPhotographers()));
+        photopoemToUpdate.setDepictedPeople(personMapper.PreviewDTOsToPersons(photopoemDTO.getDepictedPeople()));
+        photopoemToUpdate.setOtherContributors(personMapper.PreviewDTOsToPersons(photopoemDTO.getOtherContributors()));
+        photopoemToUpdate.setThemes(keywordMapper.KeywordPreviewDTOsToKeywords(photopoemDTO.getThemes()));
+        photopoemToUpdate.setImageMotifs(keywordMapper.KeywordPreviewDTOsToKeywords(photopoemDTO.getImageMotifs()));
+        photopoemToUpdate.setForm(photopoemDTO.getForm());
+        photopoemToUpdate.setLink(photopoemDTO.getLink());
+        photopoemToUpdate.setIiifManifest(photopoemDTO.getIiifManifest());
+        photopoemToUpdate.setImages(fileMapper.FileDTOsToFiles(photopoemDTO.getImages()));
+        photopoemToUpdate.setImagesVisible(photopoemDTO.getImagesVisible());
+        photopoemToUpdate.setCopyrightStatusText(
+                copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusText()));
+        photopoemToUpdate.setCopyrightStatusImage(
+                copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusImage()));
+        photopoemToUpdate.setLanguages(languageMapper.LanguagePreviewDTOsToLanguages(photopoemDTO.getLanguages()));
+    }
+    
     public Photopoem PhotopoemDTOToPhotopoem(PhotopoemDTO photopoemDTO) {
         Photopoem photopoem = new Photopoem();
-        photopoem.setTitle(photopoemDTO.getTitle());
-        photopoem.setSubtitle(photopoemDTO.getSubtitle());
-        photopoem.setAltTitle(photopoemDTO.getAltTitle());
-        photopoem.setVolume(photopoemDTO.getVolume());
-        photopoem.setIssue(photopoemDTO.getIssue());
-        photopoem.setPageNumber(photopoemDTO.getPageNumber());
-        photopoem.setManifestPageNumber(photopoemDTO.getManifestPageNumber());
-        photopoem.setPageCount(photopoemDTO.getPageCount());
-        photopoem.setPictureCount(photopoemDTO.getPictureCount());
-        photopoem.setPublicationDate(photopoemDTO.getPublicationDate());
-        photopoem.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(photopoemDTO.getPublicationMedium()));
-        photopoem.setFoundIn(locationMapper.LocationPreviewDTOsToLocations(photopoemDTO.getFoundIn()));
-        photopoem.setAuthors(personMapper.PreviewDTOsToPersons(photopoemDTO.getAuthors()));
-        photopoem.setPhotographers(personMapper.PreviewDTOsToPersons(photopoemDTO.getPhotographers()));
-        photopoem.setDepictedPeople(personMapper.PreviewDTOsToPersons(photopoemDTO.getDepictedPeople()));
-        photopoem.setOtherContributors(personMapper.PreviewDTOsToPersons(photopoemDTO.getOtherContributors()));
         photopoem.setContributions(contributionMapper.DTOsToContributions(photopoemDTO.getContributions(), photopoem));
-        photopoem.setThemes(keywordMapper.KeywordPreviewDTOsToKeywords(photopoemDTO.getThemes()));
-        photopoem.setImageMotifs(keywordMapper.KeywordPreviewDTOsToKeywords(photopoemDTO.getImageMotifs()));
-        photopoem.setForm(photopoemDTO.getForm());
-        photopoem.setLink(photopoemDTO.getLink());
-        photopoem.setIiifManifest(photopoemDTO.getIiifManifest());
-        photopoem.setImages(fileMapper.FileDTOsToFiles(photopoemDTO.getImages()));
-        photopoem.setImagesVisible(photopoemDTO.getImagesVisible());
-        photopoem.setCopyrightStatusText(
-                copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusText()));
-        photopoem.setCopyrightStatusImage(
-                copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusImage()));
-        photopoem.setLanguages(languageMapper.LanguagePreviewDTOsToLanguages(photopoemDTO.getLanguages()));
+        updatePhotopoemFromDTO(photopoem, photopoemDTO);
         return photopoem;
     }
 
