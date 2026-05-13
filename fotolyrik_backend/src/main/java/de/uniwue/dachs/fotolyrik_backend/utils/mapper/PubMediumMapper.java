@@ -44,7 +44,7 @@ public class PubMediumMapper {
         PubMedium pubMedium = new PubMedium();
         pubMedium.setTitle(pubMediumDTO.getTitle());
         pubMedium.setSubtitle(pubMediumDTO.getSubtitle());
-        pubMedium.setPublicationPlaces(placeMapper.PlaceDTOsToPlaces(pubMediumDTO.getPublicationPlaces()));
+        pubMedium.setPublicationPlaces(placeMapper.PlacePreviewDTOsToPlaces(pubMediumDTO.getPublicationPlaces()));
         pubMedium.setPublisher(publisherMapper.PublisherDTOToPublisher(pubMediumDTO.getPublisher()));
         pubMedium.setPubRhytms(publicationRhythmMapper.PublicationRhythmDTOsToPublicationRhythms(pubMediumDTO.getPubRhythms()));
         pubMedium.setEditorialOffice(pubMediumDTO.getEditorialOffice());
@@ -66,7 +66,7 @@ public class PubMediumMapper {
         pubMediumDTO.setLastModifiedBy(pubMedium.getLastModifiedBy());
         pubMediumDTO.setTitle(pubMedium.getTitle());
         pubMediumDTO.setSubtitle(pubMedium.getSubtitle());
-        pubMediumDTO.setPublicationPlaces(placeMapper.PlacesToPlaceDTOs(pubMedium.getPublicationPlaces()));
+        pubMediumDTO.setPublicationPlaces(placeMapper.PlacesToPlacePreviewDTOs(pubMedium.getPublicationPlaces()));
         pubMediumDTO.setPublisher(publisherMapper.PublisherToPublisherDTO(pubMedium.getPublisher()));
         pubMediumDTO.setPubRhythms(publicationRhythmMapper.PublicationRhythmsToPublicationRhythmDTOs(pubMedium.getPubRhytms()));
         pubMediumDTO.setEditorialOffice(pubMedium.getEditorialOffice());

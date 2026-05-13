@@ -14,7 +14,7 @@ import java.util.Set;
 public class PubMediumDTO extends BaseEntity {
     private String title;
     private String subtitle;
-    private Set<PlaceDTO> publicationPlaces = new HashSet<>();
+    private Set<PlacePreviewDTO> publicationPlaces = new HashSet<>();
     private PublisherDTO publisher;
     private Set<PublicationRhythmDTO> pubRhythms = new HashSet<>();
     private String editorialOffice;
