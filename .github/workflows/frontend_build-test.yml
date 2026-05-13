@@ -17,7 +17,12 @@ jobs:
         run: npm install
         working-directory: ./fotolyrik_frontend
 
+      - name: Run typechecks
+        run: npm run typecheck --if-present
+        working-directory: ./fotolyrik_frontend
+
       - name: Build project
         run: npm run build --if-present
         working-directory: ./fotolyrik_frontend
-        
+
+
