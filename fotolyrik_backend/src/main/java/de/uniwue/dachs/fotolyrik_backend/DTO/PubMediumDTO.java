@@ -1,6 +1,9 @@
 package de.uniwue.dachs.fotolyrik_backend.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PlacePreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PublicationRhythmPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PublisherPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;

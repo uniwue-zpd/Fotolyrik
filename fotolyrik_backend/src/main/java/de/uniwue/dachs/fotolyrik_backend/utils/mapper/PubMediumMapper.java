@@ -1,7 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import org.springframework.stereotype.Component;

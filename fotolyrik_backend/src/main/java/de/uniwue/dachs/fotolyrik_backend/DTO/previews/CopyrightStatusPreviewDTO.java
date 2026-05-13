@@ -1,6 +1,5 @@
-package de.uniwue.dachs.fotolyrik_backend.DTO;
+package de.uniwue.dachs.fotolyrik_backend.DTO.previews;
 
-import de.uniwue.dachs.fotolyrik_backend.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 

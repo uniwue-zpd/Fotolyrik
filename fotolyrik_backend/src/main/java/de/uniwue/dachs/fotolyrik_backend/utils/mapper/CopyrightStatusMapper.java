@@ -1,20 +1,13 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.CopyrightStatusDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.CopyrightStatusPreviewDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.FileDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.CopyrightStatusPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.CopyrightStatus;
-import de.uniwue.dachs.fotolyrik_backend.model.File;
-import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.repository.CopyrightStatusRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class CopyrightStatusMapper {

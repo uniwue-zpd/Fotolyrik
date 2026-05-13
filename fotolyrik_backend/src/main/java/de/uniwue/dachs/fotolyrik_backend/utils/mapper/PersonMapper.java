@@ -1,17 +1,13 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
-import de.uniwue.dachs.fotolyrik_backend.DTO.FileDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.PersonPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class PersonMapper {

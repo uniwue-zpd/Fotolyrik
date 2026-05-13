@@ -1,18 +1,13 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
-import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PublicationRhythmDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.PublicationRhythmPreviewDTO;
-import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PublicationRhythmPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PublicationRhythm;
 import de.uniwue.dachs.fotolyrik_backend.repository.PublicationRhythmRepository;
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class PublicationRhythmMapper {

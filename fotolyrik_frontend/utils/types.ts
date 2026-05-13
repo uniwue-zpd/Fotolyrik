@@ -131,20 +131,9 @@ export interface PlaceDTO extends Auditable {
     longitude: number | null
 }
 
-
-export interface PubMedium extends Auditable {
-    title: string;
-    subtitle: string | null;
-    publicationPlaces: PlaceDTO[] | [];
-    publisher: PublisherDTO | null;
-    pubRhythms: PubRhythmDTO[] | [];
-    editorialOffice: string | null;
-    startYear: string | null;
-    endYear: string | null;
-    amountVolumes: number | null;
-    amountIssues: number | null;
-    zdbId: string | null;
-    notes: string | null;
+export interface PlacePreviewDTO {
+    id: number;
+    name: string;
 }
 
 export interface PubMediumPreviewDTO {
@@ -164,9 +153,9 @@ export interface LocationPreviewDTO {
 export interface PubMediumDTO extends Auditable {
     title: string;
     subtitle: string | null;
-    publicationPlaces: PlaceDTO[] | [];
-    publisher: PublisherDTO | null;
-    pubRhythms: PubRhythmDTO[] | [];
+    publicationPlaces: PlacePreviewDTO[] | [];
+    publisher: PublisherPreviewDTO | null;
+    pubRhythms: PubRhythmPreviewDTO[] | [];
     editorialOffice: string | null;
     startYear: string | null;
     endYear: string | null;
@@ -181,11 +170,22 @@ export interface PublisherDTO extends Auditable {
     description: string | null;
 }
 
+export interface PublisherPreviewDTO {
+    id: number;
+    name: string | null;
+}
+
 
 export interface PubRhythmDTO extends Auditable {
     value: string | null;
     description: string | null;
 }
+
+export interface PubRhythmPreviewDTO {
+    id: number
+    value: string | null;
+}
+
 
 
 export interface KeywordDTO extends Auditable {

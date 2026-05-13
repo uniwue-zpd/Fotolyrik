@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.DTO;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.*;
 import de.uniwue.dachs.fotolyrik_backend.model.BaseEntity;
 import de.uniwue.dachs.fotolyrik_backend.utils.enums.AccessLevel;
 import lombok.Getter;
