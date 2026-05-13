@@ -165,9 +165,9 @@ public class PubMediumService {
                     entity.updateBaseEntityNotes(updatedPubMediumDTO);
                     entity.setTitle(updatedPubMediumDTO.getTitle());
                     entity.setSubtitle(updatedPubMediumDTO.getSubtitle());
-                    entity.setPublicationPlaces(placeMapper.PlaceDTOsToPlaces(updatedPubMediumDTO.getPublicationPlaces()));
+                    entity.setPublicationPlaces(placeMapper.PlacePreviewDTOsToPlaces(updatedPubMediumDTO.getPublicationPlaces()));
                     entity.setPublisher(publisherMapper.PublisherDTOToPublisher(updatedPubMediumDTO.getPublisher()));
-                    entity.setPubRhytms(publicationRhythmMapper.PublicationRhythmDTOsToPublicationRhythms(updatedPubMediumDTO.getPubRhythms()));
+                    entity.setPubRhytms(publicationRhythmMapper.PublicationRhythmPreviewDTOsToPublicationRhythms(updatedPubMediumDTO.getPubRhythms()));
                     entity.setEditorialOffice(updatedPubMediumDTO.getEditorialOffice());
                     entity.setStartYear(updatedPubMediumDTO.getStartYear());
                     entity.setEndYear(updatedPubMediumDTO.getEndYear());

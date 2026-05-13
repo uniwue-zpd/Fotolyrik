@@ -46,7 +46,7 @@ public class PubMediumMapper {
         pubMedium.setSubtitle(pubMediumDTO.getSubtitle());
         pubMedium.setPublicationPlaces(placeMapper.PlacePreviewDTOsToPlaces(pubMediumDTO.getPublicationPlaces()));
         pubMedium.setPublisher(publisherMapper.PublisherDTOToPublisher(pubMediumDTO.getPublisher()));
-        pubMedium.setPubRhytms(publicationRhythmMapper.PublicationRhythmDTOsToPublicationRhythms(pubMediumDTO.getPubRhythms()));
+        pubMedium.setPubRhytms(publicationRhythmMapper.PublicationRhythmPreviewDTOsToPublicationRhythms(pubMediumDTO.getPubRhythms()));
         pubMedium.setEditorialOffice(pubMediumDTO.getEditorialOffice());
         pubMedium.setStartYear(pubMediumDTO.getStartYear());
         pubMedium.setEndYear(pubMediumDTO.getEndYear());
@@ -68,7 +68,7 @@ public class PubMediumMapper {
         pubMediumDTO.setSubtitle(pubMedium.getSubtitle());
         pubMediumDTO.setPublicationPlaces(placeMapper.PlacesToPlacePreviewDTOs(pubMedium.getPublicationPlaces()));
         pubMediumDTO.setPublisher(publisherMapper.PublisherToPublisherDTO(pubMedium.getPublisher()));
-        pubMediumDTO.setPubRhythms(publicationRhythmMapper.PublicationRhythmsToPublicationRhythmDTOs(pubMedium.getPubRhytms()));
+        pubMediumDTO.setPubRhythms(publicationRhythmMapper.PublicationRhythmsToPublicationRhythmPreviewDTOs(pubMedium.getPubRhytms()));
         pubMediumDTO.setEditorialOffice(pubMedium.getEditorialOffice());
         pubMediumDTO.setStartYear(pubMedium.getStartYear());
         pubMediumDTO.setEndYear(pubMedium.getEndYear());

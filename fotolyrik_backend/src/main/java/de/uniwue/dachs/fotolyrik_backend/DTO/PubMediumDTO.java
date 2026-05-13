@@ -16,7 +16,7 @@ public class PubMediumDTO extends BaseEntity {
     private String subtitle;
     private Set<PlacePreviewDTO> publicationPlaces = new HashSet<>();
     private PublisherDTO publisher;
-    private Set<PublicationRhythmDTO> pubRhythms = new HashSet<>();
+    private Set<PublicationRhythmPreviewDTO> pubRhythms = new HashSet<>();
     private String editorialOffice;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
