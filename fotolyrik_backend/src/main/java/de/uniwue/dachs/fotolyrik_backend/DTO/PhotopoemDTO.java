@@ -28,8 +28,8 @@ public class PhotopoemDTO extends BaseEntity {
     private Set<PersonPreviewDTO> depictedPeople = new HashSet<>();
     private Set<PersonPreviewDTO> otherContributors = new HashSet<>();
     private Set<ContributionDTO> contributions = new HashSet<>();
-    private Set<KeywordDTO> themes = new HashSet<>();
-    private Set<KeywordDTO> imageMotifs = new HashSet<>();
+    private Set<KeywordPreviewDTO> themes = new HashSet<>();
+    private Set<KeywordPreviewDTO> imageMotifs = new HashSet<>();
     private String form;
     private String link;
     private String iiifManifest;

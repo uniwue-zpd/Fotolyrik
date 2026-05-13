@@ -98,8 +98,8 @@ export interface PhotoPoemDTO extends Auditable {
     depictedPeople: PersonPreviewDTO[] | [];
     otherContributors: PersonPreviewDTO[] | [];
     contributions: ContributionDTO[] | [];
-    themes: KeywordDTO[] | [];
-    imageMotifs: KeywordDTO[] | [];
+    themes: KeywordPreviewDTO[] | [];
+    imageMotifs: KeywordPreviewDTO[] | [];
     form: string | null;
     link: string | null;
     iiifManifest: string | null;
@@ -178,6 +178,10 @@ export interface PubRhythmDTO extends Auditable {
 export interface KeywordDTO extends Auditable {
     value: string;
     gndId: string | null;
+}
+export interface KeywordPreviewDTO {
+    id: number;
+    value: string;
 }
 
 /**

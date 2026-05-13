@@ -276,8 +276,8 @@ public class PhotopoemService {
             entity.setDepictedPeople(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getDepictedPeople()));
             entity.setOtherContributors(personMapper.PreviewDTOsToPersons(updatedPhotopoem.getOtherContributors()));
             entity.updateContributions(contributionMapper.DTOsToContributions(updatedPhotopoem.getContributions(), entity));
-            entity.setThemes(keywordMapper.KeywordDTOsToKeywords(updatedPhotopoem.getThemes()));
-            entity.setImageMotifs(keywordMapper.KeywordDTOsToKeywords(updatedPhotopoem.getImageMotifs()));
+            entity.setThemes(keywordMapper.KeywordPreviewDTOsToKeywords(updatedPhotopoem.getThemes()));
+            entity.setImageMotifs(keywordMapper.KeywordPreviewDTOsToKeywords(updatedPhotopoem.getImageMotifs()));
             entity.setForm(updatedPhotopoem.getForm());
             entity.setLink(updatedPhotopoem.getLink());
             entity.setIiifManifest(updatedPhotopoem.getIiifManifest());
