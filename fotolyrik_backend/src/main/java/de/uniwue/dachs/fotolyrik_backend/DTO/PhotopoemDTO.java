@@ -35,7 +35,7 @@ public class PhotopoemDTO extends BaseEntity {
     private String iiifManifest;
     private Set<FileDTO> images = new HashSet<>();
     private AccessLevel imagesVisible = AccessLevel.INTERNAL;
-    private CopyrightStatusDTO copyrightStatusImage;
-    private CopyrightStatusDTO copyrightStatusText;
+    private CopyrightStatusPreviewDTO copyrightStatusImage;
+    private CopyrightStatusPreviewDTO copyrightStatusText;
     private Set<LanguageDTO> languages = new HashSet<>();
 }

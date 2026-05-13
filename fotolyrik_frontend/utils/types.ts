@@ -20,6 +20,10 @@ export interface CopyrightStatusDTO extends Auditable {
     value: string;
     description: string | null;
 }
+export interface CopyrightStatusPreviewDTO {
+    id: number;
+    value: string;
+}
 
 
 export interface FileDTO extends Auditable {
@@ -105,8 +109,8 @@ export interface PhotoPoemDTO extends Auditable {
     iiifManifest: string | null;
     images: FileDTO[] | [];
     imagesVisible: AccessLevel;
-    copyrightStatusImage: CopyrightStatusDTO | null;
-    copyrightStatusText: CopyrightStatusDTO | null;
+    copyrightStatusImage: CopyrightStatusPreviewDTO | null;
+    copyrightStatusText: CopyrightStatusPreviewDTO | null;
     languages: LanguageDTO[] | [];
 }
 

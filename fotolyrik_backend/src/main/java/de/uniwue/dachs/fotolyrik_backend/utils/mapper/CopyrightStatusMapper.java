@@ -1,9 +1,12 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.CopyrightStatusDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.CopyrightStatusPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.FileDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.CopyrightStatus;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
+import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.repository.CopyrightStatusRepository;
 import org.springframework.stereotype.Component;
 
@@ -54,5 +57,31 @@ public class CopyrightStatusMapper {
 
     public List<CopyrightStatusDTO> CopyrightStatusesToCopyrightStatusDTOs(List<CopyrightStatus> copyrightStatuses) {
         return MapperUtils.mapList(copyrightStatuses, this::CopyrightStatusToCopyrightStatusDTO);
+    }
+
+
+    public CopyrightStatus CopyrightStatusPreviewDTOToCopyrightStatus(CopyrightStatusPreviewDTO copyrightStatusPreviewDTO) {
+        if (copyrightStatusPreviewDTO == null || copyrightStatusPreviewDTO.getId() == null) return null;
+        return copyrightStatusRepository.findById(copyrightStatusPreviewDTO.getId()).orElse(null);
+    }
+    public CopyrightStatusPreviewDTO CopyrightStatusToCopyrightStatusPreviewDTO(CopyrightStatus keyword) {
+        if (keyword == null) return null;
+        CopyrightStatusPreviewDTO keywordPreviewDTO = new CopyrightStatusPreviewDTO();
+        keywordPreviewDTO.setId(keyword.getId());
+        keywordPreviewDTO.setValue(keyword.getValue());
+        return  keywordPreviewDTO;
+    }
+
+    public Set<CopyrightStatus> CopyrightStatusPreviewDTOsToCopyrightStatuss(Set<CopyrightStatusPreviewDTO> keywordPreviewDTOs) {
+        return MapperUtils.mapSet(keywordPreviewDTOs, this::CopyrightStatusPreviewDTOToCopyrightStatus);
+    }
+    public Set<CopyrightStatusPreviewDTO> CopyrightStatusToCopyrightStatusPreviewDTOs(Set<CopyrightStatus> keywords) {
+        return MapperUtils.mapSet(keywords, this::CopyrightStatusToCopyrightStatusPreviewDTO);
+    }
+    public List<CopyrightStatus> CopyrightStatusPreviewDTOsToCopyrightStatuss(List<CopyrightStatusPreviewDTO> keywordPreviewDTOs) {
+        return MapperUtils.mapList(keywordPreviewDTOs, this::CopyrightStatusPreviewDTOToCopyrightStatus);
+    }
+    public List<CopyrightStatusPreviewDTO> CopyrightStatusToCopyrightStatusPreviewDTOs(List<CopyrightStatus> keywords) {
+        return MapperUtils.mapList(keywords, this::CopyrightStatusToCopyrightStatusPreviewDTO);
     }
 }

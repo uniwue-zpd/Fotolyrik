@@ -58,8 +58,10 @@ public class PhotopoemMapper {
         photopoem.setIiifManifest(photopoemDTO.getIiifManifest());
         photopoem.setImages(fileMapper.FileDTOsToFiles(photopoemDTO.getImages()));
         photopoem.setImagesVisible(photopoemDTO.getImagesVisible());
-        photopoem.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusText()));
-        photopoem.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusImage()));
+        photopoem.setCopyrightStatusText(
+                copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusText()));
+        photopoem.setCopyrightStatusImage(
+                copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusImage()));
         photopoem.setLanguages(languageMapper.LanguageDTOsToLanguages(photopoemDTO.getLanguages()));
         return photopoem;
     }
@@ -91,8 +93,10 @@ public class PhotopoemMapper {
         photopoemDTO.setIiifManifest(photopoem.getIiifManifest());
         photopoemDTO.setImages(fileMapper.FilesToFileDTOs(photopoem.getImages()));
         photopoemDTO.setImagesVisible(photopoem.getImagesVisible());
-        photopoemDTO.setCopyrightStatusImage(copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(photopoem.getCopyrightStatusImage()));
-        photopoemDTO.setCopyrightStatusText(copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(photopoem.getCopyrightStatusText()));
+        photopoemDTO.setCopyrightStatusImage(
+                copyrightStatusMapper.CopyrightStatusToCopyrightStatusPreviewDTO(photopoem.getCopyrightStatusImage()));
+        photopoemDTO.setCopyrightStatusText(
+                copyrightStatusMapper.CopyrightStatusToCopyrightStatusPreviewDTO(photopoem.getCopyrightStatusText()));
         photopoemDTO.setLanguages(languageMapper.LanguagesToLanguageDTOs(photopoem.getLanguages()));
         photopoemDTO.setBaseEntityFields(photopoem);
         return photopoemDTO;
