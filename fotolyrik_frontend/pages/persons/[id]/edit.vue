@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import type { PersonFullDTO } from "~/utils/types";
+import type { PersonDTO } from "~/utils/types";
 import PersonForm from "~/components/forms/PersonForm.vue";
 
 const route = useRoute();
 const person_id = Number(route.params.id);
 const store = usePersonStore();
-const person_item = ref<PersonFullDTO |null>(null);
+const person_item = ref<PersonDTO |null>(null);
 
 onMounted(async () => {
   await store.fetchPersonById(person_id);

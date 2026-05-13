@@ -1,7 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.FileDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.PersonFullDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
@@ -28,13 +28,6 @@ public class PersonMapper {
         return personRepository.findById(personPreviewDTO.getId()).orElse(null);
     }
 
-    public Set<Person> PreviewDTOsToPersons(Set<PersonPreviewDTO> personPreviewDTOS) {
-        if (personPreviewDTOS.isEmpty()) return Collections.emptySet();
-        return personPreviewDTOS.stream()
-                .map(this::PreviewDTOToPerson)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
 
     public PersonPreviewDTO PersonToPreviewDTO(Person person) {
         if (person == null) return null;
@@ -46,62 +39,70 @@ public class PersonMapper {
         return personPreviewDTO;
     }
 
-    public Set<PersonPreviewDTO> PersonsToPersonDTOs(Set<Person> persons) {
-        if (persons.isEmpty()) return Collections.emptySet();
-        return persons.stream()
-                .map(this::PersonToPreviewDTO)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
-    public Person PersonFullDTOToPerson(PersonFullDTO personFullDTO) {
-        if (personFullDTO == null) return null;
-        if (personFullDTO.getId() != null){
-            return personRepository.findById(personFullDTO.getId()).orElse(null); } else{
+    public Person PersonDTOToPerson(PersonDTO personDTO) {
+        if (personDTO == null) return null;
+        if (personDTO.getId() != null){
+            return personRepository.findById(personDTO.getId()).orElse(null); } else{
             Person person = new Person();
-            person.setFirstName(personFullDTO.getFirstName());
-            person.setLastName(personFullDTO.getLastName());
-            person.setStudioName(personFullDTO.getStudioName());
-            person.setPseudonyms(personFullDTO.getPseudonyms());
-            person.setBirthYear(personFullDTO.getBirthYear());
-            person.setDeathYear(personFullDTO.getDeathYear());
-            person.setSex(personFullDTO.getSex());
-            person.setGndId(personFullDTO.getGndId());
-            person.setNotes(personFullDTO.getNotes());
-            person.setImage(fileMapper.FileDTOToFile(personFullDTO.getImage()));
+            person.setFirstName(personDTO.getFirstName());
+            person.setLastName(personDTO.getLastName());
+            person.setStudioName(personDTO.getStudioName());
+            person.setPseudonyms(personDTO.getPseudonyms());
+            person.setBirthYear(personDTO.getBirthYear());
+            person.setDeathYear(personDTO.getDeathYear());
+            person.setSex(personDTO.getSex());
+            person.setGndId(personDTO.getGndId());
+            person.setNotes(personDTO.getNotes());
+            person.setImage(fileMapper.FileDTOToFile(personDTO.getImage()));
             personRepository.save(person);
             return person;
         }
     }
-    public PersonFullDTO PersonToPersonFullDTO(Person person){
+    public PersonDTO PersonToPersonDTO(Person person){
         if (person == null) return null;
-        PersonFullDTO personFullDTO = new PersonFullDTO();
-        personFullDTO.setId(person.getId());
-        personFullDTO.setFirstName(person.getFirstName());
-        personFullDTO.setLastName(person.getLastName());
-        personFullDTO.setStudioName(person.getStudioName());
-        personFullDTO.setFullName(person.getFullName());
-        personFullDTO.setPseudonyms(person.getPseudonyms());
-        personFullDTO.setBirthYear(person.getBirthYear());
-        personFullDTO.setDeathYear(person.getDeathYear());
-        personFullDTO.setSex(person.getSex());
-        personFullDTO.setGndId(person.getGndId());
-        personFullDTO.setNotes(person.getNotes());
-        personFullDTO.setImage(fileMapper.FileToFileDTO(person.getImage()));
-        personFullDTO.setBaseEntityFields(person);
-        return personFullDTO;
+        PersonDTO personDTO = new PersonDTO();
+        personDTO.setId(person.getId());
+        personDTO.setFirstName(person.getFirstName());
+        personDTO.setLastName(person.getLastName());
+        personDTO.setStudioName(person.getStudioName());
+        personDTO.setFullName(person.getFullName());
+        personDTO.setPseudonyms(person.getPseudonyms());
+        personDTO.setBirthYear(person.getBirthYear());
+        personDTO.setDeathYear(person.getDeathYear());
+        personDTO.setSex(person.getSex());
+        personDTO.setGndId(person.getGndId());
+        personDTO.setNotes(person.getNotes());
+        personDTO.setImage(fileMapper.FileToFileDTO(person.getImage()));
+        personDTO.setBaseEntityFields(person);
+        return personDTO;
     }
-    public Set<PersonFullDTO> PersonsToPersonFullDTOs(Set<Person> persons) {
-        return MapperUtils.mapSet(persons, this::PersonToPersonFullDTO);
-    }
-
-    public Set<Person> PersonFullDTOsToPersons(Set<PersonFullDTO> personFullDTOS) {
-        return MapperUtils.mapSet(personFullDTOS, this::PersonFullDTOToPerson);
-    }
-    public List<PersonFullDTO> PersonsToPersonFullDTOs(List<Person> persons) {
-        return MapperUtils.mapList(persons, this::PersonToPersonFullDTO);
+    public Set<PersonDTO> PersonsToPersonDTOs(Set<Person> persons) {
+        return MapperUtils.mapSet(persons, this::PersonToPersonDTO);
     }
 
-    public List<Person> PersonFullDTOsToPersons(List<PersonFullDTO> personFullDTOS) {
-        return MapperUtils.mapList(personFullDTOS, this::PersonFullDTOToPerson);
+    public Set<Person> PersonDTOsToPersons(Set<PersonDTO> personDTOS) {
+        return MapperUtils.mapSet(personDTOS, this::PersonDTOToPerson);
+    }
+    public List<PersonDTO> PersonsToPersonDTOs(List<Person> persons) {
+        return MapperUtils.mapList(persons, this::PersonToPersonDTO);
+    }
+
+    public List<Person> PersonDTOsToPersons(List<PersonDTO> personDTOS) {
+        return MapperUtils.mapList(personDTOS, this::PersonDTOToPerson);
+    }
+
+    public Set<PersonPreviewDTO> PersonsToPreviewDTOs(Set<Person> persons) {
+        return MapperUtils.mapSet(persons, this::PersonToPreviewDTO);
+    }
+
+    public Set<Person> PreviewDTOsToPersons(Set<PersonPreviewDTO> personPreviewDTOS) {
+        return MapperUtils.mapSet(personPreviewDTOS, this::PreviewDTOToPerson);
+    }
+    public List<PersonPreviewDTO> PersonsToPreviewDTOs(List<Person> persons) {
+        return MapperUtils.mapList(persons, this::PersonToPreviewDTO);
+    }
+
+    public List<Person> PreviewDTOsToPersons(List<PersonPreviewDTO> personPreviewDTOS) {
+        return MapperUtils.mapList(personPreviewDTOS, this::PreviewDTOToPerson);
     }
 }

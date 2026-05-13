@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PersonFullDTO } from "~/utils/types";
+import type { PersonDTO } from "~/utils/types";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 
@@ -9,7 +9,7 @@ const personStore = usePersonStore();
 const props = defineProps<{
   action: "create" | "edit";
   header: string;
-  person?: PersonFullDTO;
+  person?: PersonDTO;
 }>();
 
 const sex = ref([

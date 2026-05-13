@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import type { PersonFullDTO } from "~/utils/types";
+import type { PersonDTO } from "~/utils/types";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 
@@ -8,9 +8,9 @@ const router = useRoute();
 const person_id = Number(router.params.id);
 const person_store = usePersonStore();
 const photopoem_store = usePhotopoemStore();
-const person_item = ref<PersonFullDTO | null>(null);
-const previous_person = ref<PersonFullDTO | null>(null);
-const next_person = ref<PersonFullDTO | null>(null);
+const person_item = ref<PersonDTO | null>(null);
+const previous_person = ref<PersonDTO | null>(null);
+const next_person = ref<PersonDTO | null>(null);
 const author_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const photographer_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const depicted_person_photopoems = ref<PhotoPoemDTO[] | []>([]);

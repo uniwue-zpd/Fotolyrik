@@ -1,6 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
-import de.uniwue.dachs.fotolyrik_backend.DTO.PersonFullDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
@@ -28,44 +28,44 @@ public class PersonService {
 
     /**
      * GET all persons sorted by first name and last name
-     * @return {@link List} of {@link Person} as {@link PersonFullDTO}
+     * @return {@link List} of {@link Person} as {@link PersonDTO}
      */
-    public List<PersonFullDTO> getAllPersons() {
-        return personMapper.PersonsToPersonFullDTOs(personRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName", "lastName")));
+    public List<PersonDTO> getAllPersons() {
+        return personMapper.PersonsToPersonDTOs(personRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName", "lastName")));
     }
 
     /**
      * GET person by ID
      * @param id of the person
-     * @return {@link Optional} of {@link Person} as {@link PersonFullDTO}
+     * @return {@link Optional} of {@link Person} as {@link PersonDTO}
      */
-    public Optional<PersonFullDTO> getPersonById(Long id) {
-        return personRepository.findById(id).map(personMapper::PersonToPersonFullDTO);
+    public Optional<PersonDTO> getPersonById(Long id) {
+        return personRepository.findById(id).map(personMapper::PersonToPersonDTO);
     }
 
     /**
      * POST create a new person
-     * @param personFullDTO {@link PersonFullDTO} to create
-     * @return the {@link PersonFullDTO} of {@link Person} created
+     * @param personDTO {@link PersonDTO} to create
+     * @return the {@link PersonDTO} of {@link Person} created
      */
     @Transactional
-    public PersonFullDTO createPerson(PersonFullDTO personFullDTO) {
-        var entity = personMapper.PersonFullDTOToPerson(personFullDTO);
+    public PersonDTO createPerson(PersonDTO personDTO) {
+        var entity = personMapper.PersonDTOToPerson(personDTO);
         entity.setImage(entity.getImage() != null
                 ? getImage(entity.getImage().getId())
                 : null);
         var savedEntity = personRepository.save(entity);
-        return personMapper.PersonToPersonFullDTO(savedEntity);
+        return personMapper.PersonToPersonDTO(savedEntity);
     }
 
     /**
      * PUT update an existing person
      * @param id of the person to update
      * @param updatedPerson with updated values
-     * @return {@link PersonFullDTO} of updated {@link Person}
+     * @return {@link PersonDTO} of updated {@link Person}
      */
     @Transactional
-    public PersonFullDTO updatePerson(Long id, PersonFullDTO updatedPerson) {
+    public PersonDTO updatePerson(Long id, PersonDTO updatedPerson) {
         return personRepository.findById(id)
                 .map(existingPerson -> {
                     existingPerson.updateBaseEntityNotes(updatedPerson);
@@ -82,7 +82,7 @@ public class PersonService {
                             ? getImage(updatedPerson.getImage().getId())
                             : null);
                     return personRepository.save(existingPerson);
-                }).map(personMapper::PersonToPersonFullDTO)
+                }).map(personMapper::PersonToPersonDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
     }
 

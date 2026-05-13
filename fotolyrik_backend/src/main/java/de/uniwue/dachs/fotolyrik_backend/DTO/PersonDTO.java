@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PersonFullDTO extends BaseEntity {
+public class PersonDTO extends BaseEntity {
     private String firstName;
     private String lastName;
     private String studioName;

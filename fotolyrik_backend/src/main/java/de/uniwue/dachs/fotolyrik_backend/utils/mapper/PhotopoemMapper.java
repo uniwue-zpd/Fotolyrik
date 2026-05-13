@@ -79,10 +79,10 @@ public class PhotopoemMapper {
         photopoemDTO.setPublicationDate(publicationDateMapper.DateToDateWithoutDashes(photopoem.getPublicationDate()));
         photopoemDTO.setPublicationMedium(pubMediumMapper.PubMediumToPubMediumPreviewDTO(photopoem.getPublicationMedium()));
         photopoemDTO.setFoundIn(locationMapper.LocationsToLocationDTOs(photopoem.getFoundIn()));
-        photopoemDTO.setAuthors(personMapper.PersonsToPersonDTOs(photopoem.getAuthors()));
-        photopoemDTO.setPhotographers(personMapper.PersonsToPersonDTOs(photopoem.getPhotographers()));
-        photopoemDTO.setDepictedPeople(personMapper.PersonsToPersonDTOs(photopoem.getDepictedPeople()));
-        photopoemDTO.setOtherContributors(personMapper.PersonsToPersonDTOs(photopoem.getOtherContributors()));
+        photopoemDTO.setAuthors(personMapper.PersonsToPreviewDTOs(photopoem.getAuthors()));
+        photopoemDTO.setPhotographers(personMapper.PersonsToPreviewDTOs(photopoem.getPhotographers()));
+        photopoemDTO.setDepictedPeople(personMapper.PersonsToPreviewDTOs(photopoem.getDepictedPeople()));
+        photopoemDTO.setOtherContributors(personMapper.PersonsToPreviewDTOs(photopoem.getOtherContributors()));
         photopoemDTO.setContributions(contributionMapper.ContributionsToDTOs(photopoem.getContributions()));
         photopoemDTO.setThemes(keywordMapper.KeywordToKeywordDTOs(photopoem.getThemes()));
         photopoemDTO.setImageMotifs(keywordMapper.KeywordToKeywordDTOs(photopoem.getImageMotifs()));
