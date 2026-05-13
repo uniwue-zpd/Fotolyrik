@@ -45,7 +45,7 @@ public class PhotopoemMapper {
         photopoem.setPictureCount(photopoemDTO.getPictureCount());
         photopoem.setPublicationDate(photopoemDTO.getPublicationDate());
         photopoem.setPublicationMedium(pubMediumMapper.PubMediumPreviewDTOToPubMedium(photopoemDTO.getPublicationMedium()));
-        photopoem.setFoundIn(locationMapper.LocationDTOsToLocations(photopoemDTO.getFoundIn()));
+        photopoem.setFoundIn(locationMapper.LocationPreviewDTOsToLocations(photopoemDTO.getFoundIn()));
         photopoem.setAuthors(personMapper.PreviewDTOsToPersons(photopoemDTO.getAuthors()));
         photopoem.setPhotographers(personMapper.PreviewDTOsToPersons(photopoemDTO.getPhotographers()));
         photopoem.setDepictedPeople(personMapper.PreviewDTOsToPersons(photopoemDTO.getDepictedPeople()));
@@ -80,7 +80,7 @@ public class PhotopoemMapper {
         photopoemDTO.setPictureCount(photopoem.getPictureCount());
         photopoemDTO.setPublicationDate(publicationDateMapper.DateToDateWithoutDashes(photopoem.getPublicationDate()));
         photopoemDTO.setPublicationMedium(pubMediumMapper.PubMediumToPubMediumPreviewDTO(photopoem.getPublicationMedium()));
-        photopoemDTO.setFoundIn(locationMapper.LocationsToLocationDTOs(photopoem.getFoundIn()));
+        photopoemDTO.setFoundIn(locationMapper.LocationsToLocationPreviewDTOs(photopoem.getFoundIn()));
         photopoemDTO.setAuthors(personMapper.PersonsToPreviewDTOs(photopoem.getAuthors()));
         photopoemDTO.setPhotographers(personMapper.PersonsToPreviewDTOs(photopoem.getPhotographers()));
         photopoemDTO.setDepictedPeople(personMapper.PersonsToPreviewDTOs(photopoem.getDepictedPeople()));
