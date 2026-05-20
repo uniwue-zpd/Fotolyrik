@@ -74,6 +74,15 @@ export default defineNuxtConfig({
   css: ['./assets/css/main.css'],
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: [
+        '@formkit/addons',
+        '@formkit/core',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'axios',
+      ]
+    }
   },
   colorMode: {
     preference: 'system',
