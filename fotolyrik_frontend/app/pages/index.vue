@@ -51,7 +51,7 @@ const responsiveOptions = ref([
 
 <template>
   <div class="flex flex-col gap-5">
-    <!--
+   <!--
     <div class="carousel bg-gray-accent md:p-5">
       <Carousel :value="images" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
         <template #item="{ data }">
