@@ -14,7 +14,9 @@ export const usePersonStore = defineStore('person', () => {
         // Fetch all persons
     async function fetchPersons() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/persons');
+            const { data, error } = await useFetch('/api/persons', {
+                deep: true
+            });
             if (error.value) {
                 console.error('Error fetching persons:', error.value);
                 return;
@@ -50,7 +52,9 @@ export const usePersonStore = defineStore('person', () => {
             if (cachedPerson) {
                 currentPerson.value = cachedPerson;
             } else {
-                const { data, error } = await useFetch(`/api/persons/${id}`);
+                const { data, error } = await useFetch(`/api/persons/${id}`, {
+                    deep: true
+                });
                 if (error.value) {
                     console.error(`Error fetching person with id ${id}:`, error.value);
                     return;

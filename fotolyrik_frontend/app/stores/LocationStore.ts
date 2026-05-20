@@ -14,7 +14,9 @@ export const useLocationStore = defineStore('location', () => {
     // GET all locations
     async function fetchLocations() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/locations');
+            const { data, error } = await useFetch('/api/locations', {
+                deep: true
+            });
             if (error.value) {
                 console.error('Error fetching locations:', error.value);
                 return;
@@ -40,7 +42,9 @@ export const useLocationStore = defineStore('location', () => {
             if (cachedLocation) {
                 current_location.value = cachedLocation;
             } else {
-                const { data, error } = await useFetch(`/api/locations/${id}`);
+                const { data, error } = await useFetch(`/api/locations/${id}`, {
+                    deep: true
+                });
                 if (error.value) {
                     console.error(`Error fetching location with id ${id}:`, error.value);
                     return;

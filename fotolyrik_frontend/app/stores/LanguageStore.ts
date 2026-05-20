@@ -12,7 +12,9 @@ export const useLanguageStore = defineStore('language', () => {
         // GET Fetch all languages
     async function fetchLanguages() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/languages');
+            const { data, error } = await useFetch('/api/languages', {
+                deep: true
+            });
             if (error.value) {
                 console.error(error.value);
                 return;
@@ -38,7 +40,9 @@ export const useLanguageStore = defineStore('language', () => {
             if (cachedLanguage) {
                 currentLanguage.value = cachedLanguage;
             } else {
-                const { data, error } = await useFetch(`/api/languages/${id}`);
+                const { data, error } = await useFetch(`/api/languages/${id}`, {
+                    deep: true
+                });
                 if (error.value) {
                     console.error('Unable to fetch the language: ', error.value);
                     return;

@@ -11,7 +11,9 @@ export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
         // GET Fetch all copyright statuses
     async function fetchCopyrightStatuses() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/copyright_statuses');
+            const { data, error } = await useFetch('/api/copyright_statuses', {
+                deep: true
+            });
             if (error.value) {
                 console.error(error.value);
                 return;
@@ -37,7 +39,9 @@ export const useCopyrightStatusStore = defineStore('copyrightStatus', () => {
             if (cachedCopyrightStatus) {
                 currentCopyrightStatus.value = cachedCopyrightStatus;
             } else {
-                const { data, error } = await useFetch(`/api/copyright_statuses/${id}`);
+                const { data, error } = await useFetch(`/api/copyright_statuses/${id}`, {
+                    deep: true
+                });
                 if (error.value) {
                     console.error('Unable to fetch the copyright status: ', error.value);
                     return;

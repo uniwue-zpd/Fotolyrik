@@ -14,7 +14,9 @@ export const useKeywordStore = defineStore('keyword', () => {
         // GET Fetch all keywords
     async function fetchKeywords() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/keywords');
+            const { data, error } = await useFetch('/api/keywords', {
+                deep: true
+            });
             if (error.value) {
                 console.error('Error fetching keywords:', error.value);
                 return;
@@ -40,7 +42,9 @@ export const useKeywordStore = defineStore('keyword', () => {
             if (cachedKeyword) {
                 currentKeyword.value = cachedKeyword;
             } else {
-                const { data, error } = await useFetch(`/api/keywords/${id}`);
+                const { data, error } = await useFetch(`/api/keywords/${id}`, {
+                    deep: true
+                });
                 if (error.value) {
                     console.error(`Error fetching keyword with id ${id}:`, error.value);
                     return;
