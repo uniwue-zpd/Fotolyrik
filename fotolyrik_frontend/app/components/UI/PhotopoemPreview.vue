@@ -13,7 +13,8 @@ const image_path = ref<string | null>(null);
 
 async function loadFirstImage() {
   try {
-    if (photopoem && photopoem.images.length > 0 && photopoem.imagesVisible === AccessLevel.PUBLIC) {
+    if (photopoem && photopoem.images.length > 0 && photopoem.images[0] !== undefined &&
+        photopoem.imagesVisible === AccessLevel.PUBLIC) {
       image_path.value = await file_store.getImageContent(photopoem.images[0].id);
       return;
     }

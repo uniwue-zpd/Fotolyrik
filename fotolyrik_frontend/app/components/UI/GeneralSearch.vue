@@ -87,7 +87,7 @@ watch(query, (val) => {
                 @click="clearResults"
                 class="text-surface-500 hover:text-[var(--p-text-color)] flex flex-row items-center space-x-3 rounded-md p-2 shadow-sm hover:shadow-md hover:scale-105 transition-transform duration-300"
             >
-              <Icon :name="icon_map[result.type]" class="text-2xl"/>
+              <Icon :name="icon_map[result.type] || 'i-material-symbols-help'" class="text-2xl"/>
               <div class="flex flex-col gap-2">
                 <h2 class="roboto-plain text-base text-[var(--p-text-color)] font-semibold">{{ result.title }}</h2>
                 <p class="text-sm roboto-plain text-surface-500">{{ type_mapping[result.type] }}</p>
