@@ -1,7 +1,7 @@
 export const usePubRhythmStore = defineStore('publication_rhythm', () => {
     // State
-    const publication_rhythms = ref<PubRhythm[]>([] as PubRhythm[]);
-    const currentPubRhythm = ref<PubRhythm | null>(null);
+    const publication_rhythms = ref<PubRhythmDTO[]>([] as PubRhythmDTO[]);
+    const currentPubRhythm = ref<PubRhythmDTO | null>(null);
 
     // Getters
     const isLoaded = computed(() => publication_rhythms.value.length > 0);
@@ -15,7 +15,7 @@ export const usePubRhythmStore = defineStore('publication_rhythm', () => {
                 console.error('Error fetching publication_rhythms:', error.value);
                 return;
             }
-            publication_rhythms.value = data.value as PubRhythm[];
+            publication_rhythms.value = data.value as PubRhythmDTO[];
         }
     }
 
@@ -23,7 +23,7 @@ export const usePubRhythmStore = defineStore('publication_rhythm', () => {
     async function refreshPubRhythmsData() {
         try {
             const data = await $fetch('/api/publication_rhythms');
-            publication_rhythms.value = data as PubRhythm[];
+            publication_rhythms.value = data as PubRhythmDTO[];
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
@@ -41,13 +41,13 @@ export const usePubRhythmStore = defineStore('publication_rhythm', () => {
                     console.error(`Error fetching publication rhythm with id ${id}:`, error.value);
                     return;
                 }
-                currentPubRhythm.value = data.value as PubRhythm;
+                currentPubRhythm.value = data.value as PubRhythmDTO;
             }
         }
     }
 
     // POST Create new publication rhythm
-    async function createPubRhythm(payload: Partial<PubRhythm>) {
+    async function createPubRhythm(payload: Partial<PubRhythmDTO>) {
         const { data, error } = await useFetch('/api/publication_rhythms', {
             method: 'POST',
             body: payload
@@ -56,13 +56,13 @@ export const usePubRhythmStore = defineStore('publication_rhythm', () => {
             console.error('Error creating publication rhythm:', error.value);
             return;
         }
-        const newPubRhythm = data.value as PubRhythm;
+        const newPubRhythm = data.value as PubRhythmDTO;
         publication_rhythms.value.push(newPubRhythm);
         return newPubRhythm;
     }
 
     // PUT Update existing publication rhythm
-    async function updatePubRhythm(payload: Partial<PubRhythm>, id: number) {
+    async function updatePubRhythm(payload: Partial<PubRhythmDTO>, id: number) {
         const { data, error } = await useFetch(`/api/publication_rhythms/${id}`, {
             method: 'PUT',
             body: payload
@@ -71,7 +71,7 @@ export const usePubRhythmStore = defineStore('publication_rhythm', () => {
             console.error('Error updating publication rhythm:', error.value);
             return;
         }
-        const updatedPubRhythm = data.value as PubRhythm;
+        const updatedPubRhythm = data.value as PubRhythmDTO;
         const index = publication_rhythms.value.findIndex(k => k.id === id);
         if (index !== -1) publication_rhythms.value[index] = updatedPubRhythm;
         if (currentPubRhythm.value?.id === id) currentPubRhythm.value = updatedPubRhythm;

@@ -1,9 +1,9 @@
-import type { Language } from "~/utils/types";
+import type { LanguageDTO } from "~/utils/types";
 
 export const useLanguageStore = defineStore('language', () => {
     // State
-    const languages = ref<Language[]>([] as Language[]);
-    const currentLanguage = ref<Language|null>(null);
+    const languages = ref<LanguageDTO[]>([] as LanguageDTO[]);
+    const currentLanguage = ref<LanguageDTO|null>(null);
 
     // Getters
     const isLoaded = computed(() => languages.value.length > 0);
@@ -17,7 +17,7 @@ export const useLanguageStore = defineStore('language', () => {
                 console.error(error.value);
                 return;
             }
-            languages.value = data.value as Language[];
+            languages.value = data.value as LanguageDTO[];
         }
     }
 
@@ -25,7 +25,7 @@ export const useLanguageStore = defineStore('language', () => {
     async function refreshLanguagesData() {
         try {
             const data = await $fetch('/api/languages');
-            languages.value = data as Language[];
+            languages.value = data as LanguageDTO[];
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
@@ -43,13 +43,13 @@ export const useLanguageStore = defineStore('language', () => {
                     console.error('Unable to fetch the language: ', error.value);
                     return;
                 }
-                currentLanguage.value = data.value as Language;
+                currentLanguage.value = data.value as LanguageDTO;
             }
         }
     }
 
         // POST Create new language
-    async function createLanguage(payload: Partial<Language>) {
+    async function createLanguage(payload: Partial<LanguageDTO>) {
         const { data, error } = await useFetch('/api/languages', {
             method: 'POST',
             body: payload
@@ -58,13 +58,13 @@ export const useLanguageStore = defineStore('language', () => {
             console.error('Unable to create the language: ', error.value);
             return;
         }
-        const newLanguage = data.value as Language;
+        const newLanguage = data.value as LanguageDTO;
         languages.value.push(newLanguage);
         return newLanguage;
     }
 
         // PUT Update existing language
-    async function updateLanguage(payload: Partial<Language>, id: number) {
+    async function updateLanguage(payload: Partial<LanguageDTO>, id: number) {
         const { data, error } = await useFetch(`/api/languages/${id}`, {
             method: 'PUT',
             body: payload
@@ -73,7 +73,7 @@ export const useLanguageStore = defineStore('language', () => {
             console.error('Unable to update the language :', error.value);
             return;
         }
-        const updatedLanguage = data.value as Language;
+        const updatedLanguage = data.value as LanguageDTO;
         const index = languages.value.findIndex(k => k.id === id);
         if (index !== -1) languages.value[index] = updatedLanguage;
         if (currentLanguage.value?.id === id) currentLanguage.value = updatedLanguage;

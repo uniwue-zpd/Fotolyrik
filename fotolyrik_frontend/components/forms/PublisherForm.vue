@@ -8,7 +8,7 @@ const toast = useToast();
 const props = defineProps<{
   action: "create" | "edit";
   header: string;
-  publisher?: Publisher | null;
+  publisher?: PublisherDTO | null;
 }>();
 
 const resolver = ref(

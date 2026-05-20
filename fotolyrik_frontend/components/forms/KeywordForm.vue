@@ -8,7 +8,7 @@ const keywordStore = useKeywordStore();
 const props = defineProps<{
   action: "create" | "edit";
   header: string;
-  keyword?: Keyword;
+  keyword?: KeywordDTO;
 }>();
 
 const resolver = ref(

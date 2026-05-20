@@ -1,14 +1,13 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.LanguageDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.LanguagePreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Language;
 import de.uniwue.dachs.fotolyrik_backend.repository.LanguageRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class LanguageMapper {
@@ -31,13 +30,6 @@ public class LanguageMapper {
         }
     }
 
-    public Set<Language> LanguageDTOsToLanguages(Set<LanguageDTO> languageDTOs) {
-        if (languageDTOs.isEmpty()) return Collections.emptySet();
-        return languageDTOs.stream()
-                .map(this::LanguageDTOToLanguage)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
 
     public LanguageDTO LanguageToLanguageDTO(Language language) {
         if (language == null) return null;
@@ -45,14 +37,45 @@ public class LanguageMapper {
         languageDTO.setId(language.getId());
         languageDTO.setName(language.getName());
         languageDTO.setIsoDesignation(language.getIsoDesignation());
+        language.setBaseEntityFields(languageDTO);
         return languageDTO;
     }
-
     public Set<LanguageDTO> LanguagesToLanguageDTOs(Set<Language> languages) {
-        if (languages.isEmpty()) return Collections.emptySet();
-        return languages.stream()
-                .map(this::LanguageToLanguageDTO)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return MapperUtils.mapSet(languages, this::LanguageToLanguageDTO);
+    }
+    public Set<Language> LanguageDTOsToLanguages(Set<LanguageDTO> languageDTOs) {
+        return MapperUtils.mapSet(languageDTOs, this::LanguageDTOToLanguage);
+    }
+    public List<LanguageDTO> LanguagesToLanguageDTOs(List<Language> languages) {
+        return MapperUtils.mapList(languages, this::LanguageToLanguageDTO);
+    }
+    public List<Language> LanguageDTOsToLanguages(List<LanguageDTO> languageDTOs) {
+        return MapperUtils.mapList(languageDTOs, this::LanguageDTOToLanguage);
+    }
+
+    public Language LanguagePreviewDTOToLanguage(LanguagePreviewDTO languagePreviewDTO) {
+        if (languagePreviewDTO == null || languagePreviewDTO.getId() == null) return null;
+        return languageRepository.findById(languagePreviewDTO.getId()).orElse(null);
+    }
+
+    public LanguagePreviewDTO LanguageToLanguagePreviewDTO(Language language) {
+        if (language == null) return null;
+        LanguagePreviewDTO languagePreviewDTO = new LanguagePreviewDTO();
+        languagePreviewDTO.setId(language.getId());
+        languagePreviewDTO.setName(language.getName());
+        return  languagePreviewDTO;
+    }
+
+    public Set<Language> LanguagePreviewDTOsToLanguages(Set<LanguagePreviewDTO> languagePreviewDTOs) {
+        return MapperUtils.mapSet(languagePreviewDTOs, this::LanguagePreviewDTOToLanguage);
+    }
+    public Set<LanguagePreviewDTO> LanguagesToLanguagePreviewDTOs(Set<Language> languages) {
+        return MapperUtils.mapSet(languages, this::LanguageToLanguagePreviewDTO);
+    }
+    public List<Language> LanguagePreviewDTOsToLanguages(List<LanguagePreviewDTO> languagePreviewDTOs) {
+        return MapperUtils.mapList(languagePreviewDTOs, this::LanguagePreviewDTOToLanguage);
+    }
+    public List<LanguagePreviewDTO> LanguagesToLanguagePreviewDTOs(List<Language> languages) {
+        return MapperUtils.mapList(languages, this::LanguageToLanguagePreviewDTO);
     }
 }

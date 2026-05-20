@@ -17,9 +17,9 @@ const keywordStore = useKeywordStore();
 const locationStore = useLocationStore();
 
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
-const keywords = computed(() => keywordStore.keywords.map(k => ({ id: k.id, value: k.value })));
-const languages = computed(() => languageStore.languages.map(l => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
-const files = computed(() => fileStore.files.map(f => ({ id: f.id, filename: f.filename, originalFilename: f.originalFilename })));
+const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
+const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
+const files = computed(() => fileStore.files.map((f: FileDTO) => ({ id: f.id, filename: f.filename, originalFilename: f.originalFilename })));
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));

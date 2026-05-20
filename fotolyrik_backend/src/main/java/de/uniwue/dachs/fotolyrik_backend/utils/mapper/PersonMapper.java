@@ -1,21 +1,22 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
-import de.uniwue.dachs.fotolyrik_backend.DTO.PersonPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class PersonMapper {
     private final PersonRepository personRepository;
+    private final FileMapper fileMapper;
 
-    public PersonMapper(PersonRepository personRepository) {
+    public PersonMapper(PersonRepository personRepository, FileMapper fileMapper) {
         this.personRepository = personRepository;
+        this.fileMapper = fileMapper;
     }
 
     public Person PreviewDTOToPerson(PersonPreviewDTO personPreviewDTO) {
@@ -23,13 +24,6 @@ public class PersonMapper {
         return personRepository.findById(personPreviewDTO.getId()).orElse(null);
     }
 
-    public Set<Person> PreviewDTOsToPersons(Set<PersonPreviewDTO> personPreviewDTOS) {
-        if (personPreviewDTOS.isEmpty()) return Collections.emptySet();
-        return personPreviewDTOS.stream()
-                .map(this::PreviewDTOToPerson)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
 
     public PersonPreviewDTO PersonToPreviewDTO(Person person) {
         if (person == null) return null;
@@ -41,11 +35,70 @@ public class PersonMapper {
         return personPreviewDTO;
     }
 
-    public Set<PersonPreviewDTO> PersonsToPersonDTOs(Set<Person> persons) {
-        if (persons.isEmpty()) return Collections.emptySet();
-        return persons.stream()
-                .map(this::PersonToPreviewDTO)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+    public Person PersonDTOToPerson(PersonDTO personDTO) {
+        if (personDTO == null) return null;
+        if (personDTO.getId() != null){
+            return personRepository.findById(personDTO.getId()).orElse(null); } else{
+            Person person = new Person();
+            person.setFirstName(personDTO.getFirstName());
+            person.setLastName(personDTO.getLastName());
+            person.setStudioName(personDTO.getStudioName());
+            person.setPseudonyms(personDTO.getPseudonyms());
+            person.setBirthYear(personDTO.getBirthYear());
+            person.setDeathYear(personDTO.getDeathYear());
+            person.setSex(personDTO.getSex());
+            person.setGndId(personDTO.getGndId());
+            person.setNotes(personDTO.getNotes());
+            person.setImage(fileMapper.FileDTOToFile(personDTO.getImage()));
+            personRepository.save(person);
+            return person;
+        }
+    }
+    public PersonDTO PersonToPersonDTO(Person person){
+        if (person == null) return null;
+        PersonDTO personDTO = new PersonDTO();
+        personDTO.setId(person.getId());
+        personDTO.setFirstName(person.getFirstName());
+        personDTO.setLastName(person.getLastName());
+        personDTO.setStudioName(person.getStudioName());
+        personDTO.setFullName(person.getFullName());
+        personDTO.setPseudonyms(person.getPseudonyms());
+        personDTO.setBirthYear(person.getBirthYear());
+        personDTO.setDeathYear(person.getDeathYear());
+        personDTO.setSex(person.getSex());
+        personDTO.setGndId(person.getGndId());
+        personDTO.setNotes(person.getNotes());
+        personDTO.setImage(fileMapper.FileToFileDTO(person.getImage()));
+        personDTO.setBaseEntityFields(person);
+        return personDTO;
+    }
+    public Set<PersonDTO> PersonsToPersonDTOs(Set<Person> persons) {
+        return MapperUtils.mapSet(persons, this::PersonToPersonDTO);
+    }
+
+    public Set<Person> PersonDTOsToPersons(Set<PersonDTO> personDTOS) {
+        return MapperUtils.mapSet(personDTOS, this::PersonDTOToPerson);
+    }
+    public List<PersonDTO> PersonsToPersonDTOs(List<Person> persons) {
+        return MapperUtils.mapList(persons, this::PersonToPersonDTO);
+    }
+
+    public List<Person> PersonDTOsToPersons(List<PersonDTO> personDTOS) {
+        return MapperUtils.mapList(personDTOS, this::PersonDTOToPerson);
+    }
+
+    public Set<PersonPreviewDTO> PersonsToPreviewDTOs(Set<Person> persons) {
+        return MapperUtils.mapSet(persons, this::PersonToPreviewDTO);
+    }
+
+    public Set<Person> PreviewDTOsToPersons(Set<PersonPreviewDTO> personPreviewDTOS) {
+        return MapperUtils.mapSet(personPreviewDTOS, this::PreviewDTOToPerson);
+    }
+    public List<PersonPreviewDTO> PersonsToPreviewDTOs(List<Person> persons) {
+        return MapperUtils.mapList(persons, this::PersonToPreviewDTO);
+    }
+
+    public List<Person> PreviewDTOsToPersons(List<PersonPreviewDTO> personPreviewDTOS) {
+        return MapperUtils.mapList(personPreviewDTOS, this::PreviewDTOToPerson);
     }
 }

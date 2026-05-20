@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.DTO;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.*;
 import de.uniwue.dachs.fotolyrik_backend.model.BaseEntity;
 import de.uniwue.dachs.fotolyrik_backend.utils.enums.AccessLevel;
 import lombok.Getter;
@@ -22,20 +23,20 @@ public class PhotopoemDTO extends BaseEntity {
     private String pictureCount;
     private String publicationDate;
     private PubMediumPreviewDTO publicationMedium;
-    private Set<LocationDTO> foundIn;
+    private Set<LocationPreviewDTO> foundIn;
     private Set<PersonPreviewDTO> authors = new HashSet<>();
     private Set<PersonPreviewDTO> photographers = new HashSet<>();
     private Set<PersonPreviewDTO> depictedPeople = new HashSet<>();
     private Set<PersonPreviewDTO> otherContributors = new HashSet<>();
     private Set<ContributionDTO> contributions = new HashSet<>();
-    private Set<KeywordDTO> themes = new HashSet<>();
-    private Set<KeywordDTO> imageMotifs = new HashSet<>();
+    private Set<KeywordPreviewDTO> themes = new HashSet<>();
+    private Set<KeywordPreviewDTO> imageMotifs = new HashSet<>();
     private String form;
     private String link;
     private String iiifManifest;
     private Set<FileDTO> images = new HashSet<>();
     private AccessLevel imagesVisible = AccessLevel.INTERNAL;
-    private CopyrightStatusDTO copyrightStatusImage;
-    private CopyrightStatusDTO copyrightStatusText;
-    private Set<LanguageDTO> languages = new HashSet<>();
+    private CopyrightStatusPreviewDTO copyrightStatusImage;
+    private CopyrightStatusPreviewDTO copyrightStatusText;
+    private Set<LanguagePreviewDTO> languages = new HashSet<>();
 }

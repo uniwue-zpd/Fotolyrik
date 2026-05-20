@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.LanguageDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Language;
 import de.uniwue.dachs.fotolyrik_backend.service.LanguageService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,28 +19,28 @@ public class LanguageController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Language>> getAllLanguages() {
-        List<Language> languages = languageService.getAllLanguages();
+    public ResponseEntity<List<LanguageDTO>> getAllLanguages() {
+        List<LanguageDTO> languages = languageService.getAllLanguages();
         return ResponseEntity.ok().body(languages);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Language> getLanguageById(@PathVariable Long id) {
+    public ResponseEntity<LanguageDTO> getLanguageById(@PathVariable Long id) {
         return languageService.getLanguageById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public ResponseEntity<Language> createLanguage(@RequestBody Language language) {
-        Language createdLanguage = languageService.createLanguage(language);
+    public ResponseEntity<LanguageDTO> createLanguage(@RequestBody LanguageDTO languageDTO) {
+        LanguageDTO createdLanguage = languageService.createLanguage(languageDTO);
         return ResponseEntity.status(201).body(createdLanguage);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Language> updateLanguage(@PathVariable Long id, @RequestBody Language language) {
+    public ResponseEntity<LanguageDTO> updateLanguage(@PathVariable Long id, @RequestBody LanguageDTO languageDTO) {
         try {
-            Language updatedLanguage = languageService.updateLanguage(id, language);
+            LanguageDTO updatedLanguage = languageService.updateLanguage(id, languageDTO);
             return ResponseEntity.status(201).body(updatedLanguage);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();

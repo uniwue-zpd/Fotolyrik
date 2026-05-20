@@ -1,9 +1,11 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PersonMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,53 +18,57 @@ import java.util.Optional;
 public class PersonService {
     private final PersonRepository personRepository;
     private final FileRepository fileRepository;
+    private final PersonMapper personMapper;
 
-    public PersonService(PersonRepository personRepository, FileRepository fileRepository) {
+    public PersonService(PersonRepository personRepository, FileRepository fileRepository, PersonMapper personMapper) {
         this.personRepository = personRepository;
         this.fileRepository = fileRepository;
+        this.personMapper = personMapper;
     }
 
     /**
      * GET all persons sorted by first name and last name
-     * @return {@link List} of {@link Person}
+     * @return {@link List} of {@link Person} as {@link PersonDTO}
      */
-    public List<Person> getAllPersons() {
-        return personRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName", "lastName"));
+    public List<PersonDTO> getAllPersons() {
+        return personMapper.PersonsToPersonDTOs(personRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName", "lastName")));
     }
 
     /**
      * GET person by ID
      * @param id of the person
-     * @return {@link Optional} of {@link Person}
+     * @return {@link Optional} of {@link Person} as {@link PersonDTO}
      */
-    public Optional<Person> getPersonById(Long id) {
-        return personRepository.findById(id);
+    public Optional<PersonDTO> getPersonById(Long id) {
+        return personRepository.findById(id).map(personMapper::PersonToPersonDTO);
     }
 
     /**
      * POST create a new person
-     * @param person {@link Person} to create
-     * @return created {@link Person}
+     * @param personDTO {@link PersonDTO} to create
+     * @return the {@link PersonDTO} of {@link Person} created
      */
     @Transactional
-    public Person createPerson(Person person) {
-        person.setImage(person.getImage() != null
-                ? getImage(person.getImage().getId())
+    public PersonDTO createPerson(PersonDTO personDTO) {
+        var entity = personMapper.PersonDTOToPerson(personDTO);
+        entity.setImage(entity.getImage() != null
+                ? getImage(entity.getImage().getId())
                 : null);
-        return personRepository.save(person);
+        var savedEntity = personRepository.save(entity);
+        return personMapper.PersonToPersonDTO(savedEntity);
     }
 
     /**
      * PUT update an existing person
      * @param id of the person to update
      * @param updatedPerson with updated values
-     * @return updated {@link Person}
+     * @return {@link PersonDTO} of updated {@link Person}
      */
     @Transactional
-    public Person updatePerson(Long id, Person updatedPerson) {
+    public PersonDTO updatePerson(Long id, PersonDTO updatedPerson) {
         return personRepository.findById(id)
                 .map(existingPerson -> {
-                    existingPerson.mapBaseEntityFields(updatedPerson);
+                    existingPerson.updateBaseEntityNotes(updatedPerson);
                     existingPerson.setFirstName(updatedPerson.getFirstName());
                     existingPerson.setLastName(updatedPerson.getLastName());
                     existingPerson.setStudioName(updatedPerson.getStudioName());
@@ -76,7 +82,7 @@ public class PersonService {
                             ? getImage(updatedPerson.getImage().getId())
                             : null);
                     return personRepository.save(existingPerson);
-                })
+                }).map(personMapper::PersonToPersonDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
     }
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FullText } from "~/utils/types";
+import type { FullTextDTO } from "~/utils/types";
 import { useToast } from "primevue/usetoast";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
@@ -14,7 +14,7 @@ const photopoemLoading = ref(false);
 const props = defineProps<{
   action: "create" | "edit" | "edit-by-photopoem";
   header: string;
-  fulltext?: FullText;
+  fulltext?: FullTextDTO;
 }>();
 
 const resolver = ref(
@@ -40,7 +40,6 @@ const onPhotopoemReload = async () => {
 
 const onFormSubmit = async (e: any) => {
   if (e.valid) {
-    console.log("Submitting form with values:", e.values);
     try {
       if (props.action === "create") {
         await fullTextStore.createFullText(e.values);

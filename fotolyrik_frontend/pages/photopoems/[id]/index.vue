@@ -4,12 +4,13 @@ import 'tify/dist/tify.css'
 import { onMounted } from "vue";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import {ContributionRole} from "~/utils/types";
-
 const router = useRoute();
 const photopoem_id = Number(router.params.id);
 const store = usePhotopoemStore();
 const photopoem_item = computed(() => store.currentPhotopoem);
 const file_store = useFileStore();
+
+declare const Tify: any; // stops type errors, Tify comes from plain JS library
 
 const authors = computed(() => photopoem_item.value?.contributions
     .filter(contribution => contribution.role === ContributionRole.AUTHOR)
@@ -46,14 +47,15 @@ onMounted(async () => {
     scans.value = (await Promise.all(scan_ids.value.map((id) => file_store.getImageContent(id)))
     ).filter((url) => url !== null) as string[];
   }
+  const manifestPageNumber = photopoem_item.value?.manifestPageNumber ?? 1;
   if (photopoem_item.value?.iiifManifest) {
     new Tify({
       container: '#tify-photopoem',
       manifestUrl: photopoem_item.value.iiifManifest,
       pages: has_pages.value
           ? (double_page.value
-              ? [photopoem_item.value.manifestPageNumber, photopoem_item.value.manifestPageNumber + 1]
-              : [photopoem_item.value.manifestPageNumber])
+              ? [manifestPageNumber, manifestPageNumber + 1]
+              : [manifestPageNumber])
           : [1]
     });
   }

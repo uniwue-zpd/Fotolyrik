@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.FileDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.service.FileService;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,22 +31,22 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @GetMapping
-    public ResponseEntity<Page<File>> getFiles(@PageableDefault(size = 10) Pageable pageable) {
-        Page<File> files = fileService.getFiles(pageable);
+    @GetMapping("/all")
+    public ResponseEntity<List<FileDTO>> getAllFiles() {
+        List<FileDTO> files = fileService.getFiles();
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<File>> getAllFiles() {
-        List<File> files = fileService.getFiles();
+    @GetMapping
+    public ResponseEntity<Page<FileDTO>> getFiles(@PageableDefault(size = 10) Pageable pageable) {
+        Page<FileDTO> files = fileService.getFiles(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<File> getFileById(@PathVariable Long id) {
-        return fileService.getFileById(id)
+    public ResponseEntity<FileDTO> getFileById(@PathVariable Long id) {
+        return fileService.getFileDTOById(id)
                 .map(ResponseEntity.status(HttpStatus.OK)::body)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
@@ -66,9 +67,9 @@ public class FileController {
     }
 
     @PostMapping
-    public ResponseEntity<List<File>> uploadFiles(@RequestParam("file") MultipartFile[] files) {
+    public ResponseEntity<List<FileDTO>> uploadFiles(@RequestParam("file") MultipartFile[] files) {
         try {
-            List<File> uploadedFiles = fileService.uploadFiles(files);
+            List<FileDTO> uploadedFiles = fileService.uploadFiles(files);
             return ResponseEntity.status(HttpStatus.CREATED).body(uploadedFiles);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -88,9 +89,9 @@ public class FileController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<File> deleteFileById(@PathVariable Long id) {
+    public ResponseEntity<FileDTO> deleteFileById(@PathVariable Long id) {
         try {
-            File deletedFile = fileService.deleteFileById(id);
+            FileDTO deletedFile = fileService.deleteFileById(id);
             return ResponseEntity.status(HttpStatus.OK).body(deletedFile);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

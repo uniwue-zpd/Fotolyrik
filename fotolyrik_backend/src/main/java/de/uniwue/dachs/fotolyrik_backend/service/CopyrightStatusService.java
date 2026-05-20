@@ -1,7 +1,9 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.CopyrightStatusDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.CopyrightStatus;
 import de.uniwue.dachs.fotolyrik_backend.repository.CopyrightStatusRepository;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.CopyrightStatusMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,48 +14,57 @@ import java.util.Optional;
 @Service
 public class CopyrightStatusService {
     private final CopyrightStatusRepository copyrightStatusRepository;
+    private final CopyrightStatusMapper copyrightStatusMapper;
 
-    public CopyrightStatusService(CopyrightStatusRepository copyrightStatusRepository) {
+    public CopyrightStatusService(CopyrightStatusRepository copyrightStatusRepository, CopyrightStatusMapper copyrightStatusMapper) {
         this.copyrightStatusRepository = copyrightStatusRepository;
+        this.copyrightStatusMapper = copyrightStatusMapper;
     }
 
     /**
-     * @return a {@link List} of all available {@link CopyrightStatus} entries
+     * @return a {@link List} of all available {@link CopyrightStatus} entries as {@link CopyrightStatusDTO}
      */
-    public List<CopyrightStatus> getAllCopyrightStatuses() {
-        return copyrightStatusRepository.findAll();
+    public List<CopyrightStatusDTO> getAllCopyrightStatuses() {
+        return  copyrightStatusMapper.CopyrightStatusesToCopyrightStatusDTOs(copyrightStatusRepository.findAll());
     }
 
     /**
      * @param id ID of the {@link CopyrightStatus} to be found
-     * @return an {@link Optional} object of the {@link CopyrightStatus}
+     * @return an {@link Optional} object of the {@link CopyrightStatus} as {@link CopyrightStatusDTO}
      */
-    public Optional<CopyrightStatus> getCopyrightStatusById(Long id) {
-        return copyrightStatusRepository.findById(id);
+    public Optional<CopyrightStatusDTO> getCopyrightStatusById(Long id) {
+        return copyrightStatusRepository.findById(id)
+                .map(copyrightStatusMapper::CopyrightStatusToCopyrightStatusDTO);
     }
 
+
     /**
-     * @param copyrightStatus a {@link CopyrightStatus} object to be saved
-     * @return saved {@link CopyrightStatus} entry
+     * @param copyrightStatusDTO a {@link CopyrightStatusDTO} representation of the {@link CopyrightStatus} object to be saved
+     * @return {@link CopyrightStatusDTO} of the saved {@link CopyrightStatus} entry
      */
+
     @Transactional
-    public CopyrightStatus createCopyrightStatus(CopyrightStatus copyrightStatus) {
-        return copyrightStatusRepository.save(copyrightStatus);
+    public CopyrightStatusDTO createCopyrightStatus(CopyrightStatusDTO copyrightStatusDTO) {
+        var entity = copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(copyrightStatusDTO);
+        var savedEntity = copyrightStatusRepository.save(entity);
+        return copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(savedEntity);
     }
 
     /**
      * @param id ID of the {@link CopyrightStatus} object to be updated
-     * @param copyrightStatus {@link CopyrightStatus} entry with updated data
-     * @return updated {@link CopyrightStatus} object
+     * @param copyrightStatusDTO {@link CopyrightStatusDTO} entry with updated data
+     * @return {@link CopyrightStatusDTO} of updated {@link CopyrightStatus} object
      */
     @Transactional
-    public CopyrightStatus updateCopyrightStatus(Long id, CopyrightStatus copyrightStatus) {
+    public CopyrightStatusDTO updateCopyrightStatus(Long id, CopyrightStatusDTO copyrightStatusDTO) {
+        var copyrightStatus = copyrightStatusMapper.CopyrightStatusDTOToCopyrightStatus(copyrightStatusDTO);
         return copyrightStatusRepository.findById(id)
                 .map(entity -> {
-                    entity.mapBaseEntityFields(copyrightStatus);
+                    entity.updateBaseEntityNotes(copyrightStatus);
                     entity.setValue(copyrightStatus.getValue());
                     entity.setDescription(copyrightStatus.getDescription());
-                    return copyrightStatusRepository.save(entity);
+                    var savedEntity = copyrightStatusRepository.save(entity);
+                    return copyrightStatusMapper.CopyrightStatusToCopyrightStatusDTO(savedEntity);
                 }).orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
     }
 

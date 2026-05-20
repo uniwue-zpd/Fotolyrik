@@ -107,7 +107,7 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
     function previousPubMedium() {
         const currentIndex = pub_media.value.findIndex(p => p.id === current_pub_medium.value?.id);
         if (currentIndex !== -1 && currentIndex) {
-            return pub_media.value[currentIndex - 1] as PubMedium;
+            return pub_media.value[currentIndex - 1] as PubMediumDTO;
         } else {
             return null;
         }
@@ -117,7 +117,7 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
     function nextPubMedium() {
         const currentIndex = pub_media.value.findIndex(p => p.id === current_pub_medium.value?.id);
         if (currentIndex !== -1 && currentIndex < pub_media.value.length - 1) {
-            return pub_media.value[currentIndex + 1] as PubMedium;
+            return pub_media.value[currentIndex + 1] as PubMediumDTO;
         } else {
             return null;
         }

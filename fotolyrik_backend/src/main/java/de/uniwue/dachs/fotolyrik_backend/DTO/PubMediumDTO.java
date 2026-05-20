@@ -1,6 +1,9 @@
 package de.uniwue.dachs.fotolyrik_backend.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PlacePreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PublicationRhythmPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PublisherPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +17,9 @@ import java.util.Set;
 public class PubMediumDTO extends BaseEntity {
     private String title;
     private String subtitle;
-    private Set<PlaceDTO> publicationPlaces = new HashSet<>();
-    private PublisherDTO publisher;
-    private Set<PublicationRhythmDTO> pubRhythms = new HashSet<>();
+    private Set<PlacePreviewDTO> publicationPlaces = new HashSet<>();
+    private PublisherPreviewDTO publisher;
+    private Set<PublicationRhythmPreviewDTO> pubRhythms = new HashSet<>();
     private String editorialOffice;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")

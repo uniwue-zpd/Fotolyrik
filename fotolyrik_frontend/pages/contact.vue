@@ -26,7 +26,6 @@ const resolver = ref(
 
 const onFormSubmit = async (e: any) => {
   if (e.valid) {
-    console.log(e.values)
     try {
       await apiClient.post("/contact", e.values)
       toast.add({severity: "success", detail: "Erfolgreich zugestellt", life: 3000});

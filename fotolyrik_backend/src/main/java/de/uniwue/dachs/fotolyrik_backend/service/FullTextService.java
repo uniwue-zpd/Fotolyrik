@@ -90,7 +90,7 @@ public class FullTextService {
     @Transactional
     public FullTextDTO updateFullText(Long id, FullTextDTO updatedFullText) {
         return fullTextRepository.findById(id).map(entity -> {
-            entity.mapBaseEntityFields(updatedFullText);
+            entity.updateBaseEntityNotes(updatedFullText);
             entity.setFullText(updatedFullText.getFullText());
             entity.setPhotopoem(photopoemMapper.PhotopoemPreviewDTOToPhotopoem(updatedFullText.getPhotopoem()));
             FullText savedEntity = fullTextRepository.save(entity);

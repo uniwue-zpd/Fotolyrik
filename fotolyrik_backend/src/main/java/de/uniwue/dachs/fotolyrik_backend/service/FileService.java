@@ -1,5 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.FileDTO;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.FileMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -26,29 +28,41 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class FileService {
     private final FileRepository fileRepository;
+    private final FileMapper fileMapper;
 
     @Value("${config.files.upload-dir}")
     private String uploadDirValue;
 
-    public FileService(FileRepository fileRepository) {
+    public FileService(FileRepository fileRepository, FileMapper fileMapper) {
         this.fileRepository = fileRepository;
+        this.fileMapper = fileMapper;
     }
 
     /**
      * GET returns all file metadata entries in the database
-     * @return {@link List} of all {@link File} entries in the database
+     * @return {@link List} of all {@link File} entries in the database as {@link FileDTO}
      */
-    public List<File> getFiles() {
-        return fileRepository.findAll();
+    public List<FileDTO> getFiles() {
+        return fileMapper.FilesToFileDTOs(fileRepository.findAll());
     }
 
     /**
      * GET returns a paginated list of file metadata entries in the database
      * @param pageable pagination information (page number, page size, sorting)
-     * @return {@link Page} of {@link File} entries in the database according to the pagination information
+     * @return {@link Page} of {@link File} represented as {@link FileDTO} entries in the database according to the pagination information
      */
-    public Page<File> getFiles(Pageable pageable) {
-        return fileRepository.findAll(pageable);
+    public Page<FileDTO> getFiles(Pageable pageable) {
+        Page<File> filePage = fileRepository.findAll(pageable);
+        return filePage.map(fileMapper::FileToFileDTO);
+    }
+
+    /**
+     * GET returns the file metadata entry with the given id as {@link FileDTO}
+     * @param id ID of the file metadata entry to return
+     * @return {@link Optional} containing the {@link File} entry with the given id, or an empty {@link Optional} if no such entry exists
+     */
+    public Optional<FileDTO> getFileDTOById(Long id) {
+        return  fileRepository.findById(id).map(fileMapper::FileToFileDTO);
     }
 
     /**
@@ -57,18 +71,18 @@ public class FileService {
      * @return {@link Optional} containing the {@link File} entry with the given id, or an empty {@link Optional} if no such entry exists
      */
     public Optional<File> getFileById(Long id) {
-        return fileRepository.findById(id);
+        return  fileRepository.findById(id);
     }
 
     /**
      * POST uploads one or more files, saves them to the file system and creates corresponding metadata entries in the database. Only image files are accepted.
      * @param files array of files to upload
-     * @return {@link List} of {@link File} entries corresponding to the uploaded files
+     * @return {@link List} of {@link FileDTO} entries corresponding to the uploaded files
      * @throws IllegalArgumentException if no files were passed or if any of the files is not an image
      * @throws IOException if there was an error saving any of the files to the file system
      */
     @Transactional
-    public List<File> uploadFiles(MultipartFile[] files) throws IllegalArgumentException, IOException {
+    public List<FileDTO> uploadFiles(MultipartFile[] files) throws IllegalArgumentException, IOException {
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("No files where passed");
         }
@@ -108,7 +122,7 @@ public class FileService {
         }
 
         fileRepository.saveAll(savedFiles);
-        return savedFiles;
+        return fileMapper.FilesToFileDTOs(savedFiles);
 
     }
 
@@ -120,7 +134,7 @@ public class FileService {
      * @throws IOException if there was an error deleting the file from the file system
      */
     @Transactional
-    public File deleteFileById(Long id) throws EntityNotFoundException, IOException {
+    public FileDTO deleteFileById(Long id) throws EntityNotFoundException, IOException {
         File file = fileRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("File not found with id: " + id));
 
@@ -132,7 +146,7 @@ public class FileService {
         }
 
         fileRepository.delete(file);
-        return file;
+        return fileMapper.FileToFileDTO(file);
     }
 
     /**

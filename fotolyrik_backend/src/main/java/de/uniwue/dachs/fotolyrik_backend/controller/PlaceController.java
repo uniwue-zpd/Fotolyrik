@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import de.uniwue.dachs.fotolyrik_backend.service.PlaceService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,28 +19,28 @@ public class PlaceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Place>> getAllPlaces() {
-        List<Place> places = placeService.getAllPlaces();
+    public ResponseEntity<List<PlaceDTO>> getAllPlaces() {
+        List<PlaceDTO> places = placeService.getAllPlaces();
         return ResponseEntity.ok().body(places);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Place> getPlaceById(@PathVariable Long id) {
+    public ResponseEntity<PlaceDTO> getPlaceById(@PathVariable Long id) {
         return placeService.getPlaceById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping
-    public ResponseEntity<Place> createPlace(@RequestBody Place place) {
-        Place createdPlace = placeService.createPlace(place);
+    public ResponseEntity<PlaceDTO> createPlace(@RequestBody PlaceDTO placeDTO) {
+        PlaceDTO createdPlace = placeService.createPlace(placeDTO);
         return ResponseEntity.status(201).body(createdPlace);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Place> updatePlace(@PathVariable Long id, @RequestBody Place place) {
+    public ResponseEntity<PlaceDTO> updatePlace(@PathVariable Long id, @RequestBody PlaceDTO placeDTO) {
         try {
-            Place updatedPlace = placeService.updatePlace(id, place);
+            PlaceDTO updatedPlace = placeService.updatePlace(id, placeDTO);
             return ResponseEntity.status(201).body(updatedPlace);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();

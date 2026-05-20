@@ -14,34 +14,21 @@ export interface ContactForm {
     message: string | null
 }
 
-export interface CopyrightStatus extends Auditable {
-    value: string;
-    description: string | null;
-}
 
-export interface CopyrightStatusDTO {
+export interface CopyrightStatusDTO extends Auditable {
     id: number;
     value: string;
     description: string | null;
 }
-
-export interface File extends Auditable {
-    originalFilename: string | null;
-    filename: string | null;
-    path: string | null;
-    type: string | null;
-    size: number | null
+export interface CopyrightStatusPreviewDTO {
+    id: number;
+    value: string;
 }
 
-export interface FileDTO {
-    id: number;
+
+export interface FileDTO extends Auditable {
     originalFilename: string;
     filename: string;
-}
-
-export interface FullText extends Auditable {
-    photopoem: PhotoPoem;
-    fullText: string | null;
 }
 
 export interface FullTextDTO extends Auditable {
@@ -61,18 +48,16 @@ export interface GeneralSearchResult {
     type: string;
 }
 
-export interface Language extends Auditable {
+export interface LanguageDTO extends Auditable {
     name: string;
     isoDesignation: string;
 }
-
-export interface LanguageDTO {
+export interface LanguagePreviewDTO {
     id: number;
     name: string;
-    isoDesignation: string;
 }
 
-export interface Person extends Auditable {
+export interface PersonDTO extends Auditable {
     firstName: string | null;
     lastName: string | null;
     studioName: string | null;
@@ -82,7 +67,7 @@ export interface Person extends Auditable {
     deathYear: number | null;
     sex: "weiblich" | "männlich" | null;
     gndId: string | null;
-    image: File | null;
+    image: FileDTO | null;
 }
 
 export interface PersonPreviewDTO {
@@ -102,33 +87,6 @@ export interface ContributionDTO {
     contributor: PersonPreviewDTO;
     pseudonym: string;
 }
-export interface PhotoPoem extends Auditable {
-    title: string | null;
-    subtitle: string | null;
-    altTitle: string | null;
-    volume: number | null;
-    issue: number | null;
-    pageNumber: string | null;
-    manifestPageNumber: number | null;
-    pageCount: number | null;
-    pictureCount: string | null;
-    publicationDate: string | null;
-    publicationMedium: PubMedium | null;
-    authors: Person[] | [];
-    photographers: Person[] | [];
-    depictedPeople: Person[] | [];
-    otherContributors: Person[] | [];
-    themes: Keyword[] | [];
-    imageMotifs: Keyword[] | [];
-    form: string | null;
-    link: string | null;
-    iiifManifest: string | null;
-    images: File[] | [];
-    imagesVisible: AccessLevel;
-    copyrightStatusImage: CopyrightStatus | null;
-    copyrightStatusText: CopyrightStatus | null;
-    languages: Language[] | [];
-}
 
 export interface PhotoPoemDTO extends Auditable {
     title: string | null;
@@ -142,22 +100,22 @@ export interface PhotoPoemDTO extends Auditable {
     pictureCount: string | null;
     publicationDate: string | null;
     publicationMedium: PubMediumPreviewDTO | null;
-    foundIn: LocationDTO[] | [];
+    foundIn: LocationPreviewDTO[] | [];
     authors: PersonPreviewDTO[] | [];
     photographers: PersonPreviewDTO[] | [];
     depictedPeople: PersonPreviewDTO[] | [];
     otherContributors: PersonPreviewDTO[] | [];
     contributions: ContributionDTO[] | [];
-    themes: KeywordDTO[] | [];
-    imageMotifs: KeywordDTO[] | [];
+    themes: KeywordPreviewDTO[] | [];
+    imageMotifs: KeywordPreviewDTO[] | [];
     form: string | null;
     link: string | null;
     iiifManifest: string | null;
     images: FileDTO[] | [];
     imagesVisible: AccessLevel;
-    copyrightStatusImage: CopyrightStatusDTO | null;
-    copyrightStatusText: CopyrightStatusDTO | null;
-    languages: LanguageDTO[] | [];
+    copyrightStatusImage: CopyrightStatusPreviewDTO | null;
+    copyrightStatusText: CopyrightStatusPreviewDTO | null;
+    languages: LanguagePreviewDTO[] | [];
 }
 
 export interface PhotoPoemPreviewDTO {
@@ -166,31 +124,16 @@ export interface PhotoPoemPreviewDTO {
     altTitle: string | null;
 }
 
-export interface Place extends Auditable {
+export interface PlaceDTO extends Auditable {
     name: string;
     description: string | null;
     latitude: number | null;
     longitude: number | null
 }
 
-export interface PlaceDTO {
+export interface PlacePreviewDTO {
     id: number;
-    name: string | null;
-}
-
-export interface PubMedium extends Auditable {
-    title: string;
-    subtitle: string | null;
-    publicationPlaces: Place[] | [];
-    publisher: Publisher | null;
-    pubRhythms: PubRhythm[] | [];
-    editorialOffice: string | null;
-    startYear: string | null;
-    endYear: string | null;
-    amountVolumes: number | null;
-    amountIssues: number | null;
-    zdbId: string | null;
-    notes: string | null;
+    name: string;
 }
 
 export interface PubMediumPreviewDTO {
@@ -202,12 +145,17 @@ export interface LocationDTO extends Auditable {
     description: string;
 }
 
+export interface LocationPreviewDTO {
+    id: number;
+    name: string;
+}
+
 export interface PubMediumDTO extends Auditable {
     title: string;
     subtitle: string | null;
-    publicationPlaces: PlaceDTO[] | [];
-    publisher: PublisherDTO | null;
-    pubRhythms: PubRhythmDTO[] | [];
+    publicationPlaces: PlacePreviewDTO[] | [];
+    publisher: PublisherPreviewDTO | null;
+    pubRhythms: PubRhythmPreviewDTO[] | [];
     editorialOffice: string | null;
     startYear: string | null;
     endYear: string | null;
@@ -217,32 +165,34 @@ export interface PubMediumDTO extends Auditable {
     notes: string | null;
 }
 
-export interface Publisher extends Auditable {
+export interface PublisherDTO extends Auditable {
     name: string | null;
     description: string | null;
 }
 
-export interface PublisherDTO {
+export interface PublisherPreviewDTO {
     id: number;
     name: string | null;
 }
 
-export interface PubRhythm extends Auditable {
+
+export interface PubRhythmDTO extends Auditable {
     value: string | null;
     description: string | null;
 }
 
-export interface PubRhythmDTO {
-    id: number;
+export interface PubRhythmPreviewDTO {
+    id: number
     value: string | null;
 }
 
-export interface Keyword extends Auditable {
+
+
+export interface KeywordDTO extends Auditable {
     value: string;
     gndId: string | null;
 }
-
-export interface KeywordDTO {
+export interface KeywordPreviewDTO {
     id: number;
     value: string;
 }

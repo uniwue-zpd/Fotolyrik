@@ -1,7 +1,7 @@
 export const usePublisherStore = defineStore('publisher', () => {
     // State
-    const publishers = ref<Publisher[]>([] as Publisher[]);
-    const currentPublisher = ref<Publisher | null>(null);
+    const publishers = ref<PublisherDTO[]>([] as PublisherDTO[]);
+    const currentPublisher = ref<PublisherDTO | null>(null);
 
     // Getters
     const isLoaded = computed(() => publishers.value.length > 0);
@@ -15,7 +15,7 @@ export const usePublisherStore = defineStore('publisher', () => {
                 console.error('Error fetching publishers:', error.value);
                 return;
             }
-            publishers.value = data.value as Publisher[];
+            publishers.value = data.value as PublisherDTO[];
         }
     }
 
@@ -23,7 +23,7 @@ export const usePublisherStore = defineStore('publisher', () => {
     async function refreshPublishersData() {
         try {
             const data = await $fetch('/api/publishers');
-            publishers.value = data as Publisher[];
+            publishers.value = data as PublisherDTO[];
         } catch (err) {
             console.error('Unable to refetch the data', err);
         }
@@ -37,8 +37,8 @@ export const usePublisherStore = defineStore('publisher', () => {
                 currentPublisher.value = cachedPublisher;
             } else {
                 try {
-                    const data = await $fetch<Publisher>(`/api/publishers/${id}`);
-                    currentPublisher.value = data as Publisher;
+                    const data = await $fetch<PublisherDTO>(`/api/publishers/${id}`);
+                    currentPublisher.value = data as PublisherDTO;
                 } catch (err) {
                     console.error(`Error fetching publisher with id ${id}:`, err);
                     return;
@@ -48,9 +48,9 @@ export const usePublisherStore = defineStore('publisher', () => {
     }
 
         // POST Create new publisher
-    async function createPublisher(payload: Partial<Publisher>) {
+    async function createPublisher(payload: Partial<PublisherDTO>) {
         try {
-            const newPublisher = await $fetch<Publisher>('/api/publishers', {
+            const newPublisher = await $fetch<PublisherDTO>('/api/publishers', {
                 method: 'POST',
                 body: payload
             });
@@ -63,9 +63,9 @@ export const usePublisherStore = defineStore('publisher', () => {
     }
 
         // PUT Update existing publisher
-    async function updatePublisher(payload: Partial<Publisher>, id: number) {
+    async function updatePublisher(payload: Partial<PublisherDTO>, id: number) {
         try {
-            const updatedPublisher = await $fetch<Publisher>(`/api/publishers/${id}`, {
+            const updatedPublisher = await $fetch<PublisherDTO>(`/api/publishers/${id}`, {
                 method: 'PUT',
                 body: payload
             });

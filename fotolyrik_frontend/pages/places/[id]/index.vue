@@ -2,7 +2,7 @@
 import maplibregl, { LngLat } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css"
 import { ref, onMounted } from "vue";
-import type { Place } from "~/utils/types";
+import type { PlaceDTO } from "~/utils/types";
 import PubMediumPreview from "~/components/UI/PubMediumPreview.vue";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import SkeletonPlaceholder from "~/components/UI/placeholders/SkeletonPlaceholder.vue";
@@ -15,7 +15,7 @@ const pubmedium_store = usePubMediumStore();
 
 const route = useRoute();
 const place_id = Number(route.params.id);
-const place_item = ref<Place | null>(null);
+const place_item = ref<PlaceDTO | null>(null);
 const place_pub_media = ref<PubMediumDTO[] | []>([]);
 
 const has_coords = computed(() => {

@@ -4,7 +4,7 @@ import PlaceForm from "~/components/forms/PlaceForm.vue";
 const route = useRoute();
 const place_id = Number(route.params.id);
 const placeStore = usePlaceStore();
-const place_item = ref<Place | null>(null);
+const place_item = ref<PlaceDTO | null>(null);
 const loading = ref(true);
 
 onMounted(async () => {

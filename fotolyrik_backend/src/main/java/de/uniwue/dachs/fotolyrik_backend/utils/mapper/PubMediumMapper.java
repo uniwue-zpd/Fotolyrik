@@ -1,7 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import org.springframework.stereotype.Component;
@@ -44,9 +44,9 @@ public class PubMediumMapper {
         PubMedium pubMedium = new PubMedium();
         pubMedium.setTitle(pubMediumDTO.getTitle());
         pubMedium.setSubtitle(pubMediumDTO.getSubtitle());
-        pubMedium.setPublicationPlaces(placeMapper.PlaceDTOsToPlaces(pubMediumDTO.getPublicationPlaces()));
-        pubMedium.setPublisher(publisherMapper.PublisherDTOToPublisher(pubMediumDTO.getPublisher()));
-        pubMedium.setPubRhytms(publicationRhythmMapper.PublicationRhythmDTOsToPublicationRhythms(pubMediumDTO.getPubRhythms()));
+        pubMedium.setPublicationPlaces(placeMapper.PlacePreviewDTOsToPlaces(pubMediumDTO.getPublicationPlaces()));
+        pubMedium.setPublisher(publisherMapper.PublisherPreviewDTOToPublisher(pubMediumDTO.getPublisher()));
+        pubMedium.setPubRhytms(publicationRhythmMapper.PublicationRhythmPreviewDTOsToPublicationRhythms(pubMediumDTO.getPubRhythms()));
         pubMedium.setEditorialOffice(pubMediumDTO.getEditorialOffice());
         pubMedium.setStartYear(pubMediumDTO.getStartYear());
         pubMedium.setEndYear(pubMediumDTO.getEndYear());
@@ -66,9 +66,9 @@ public class PubMediumMapper {
         pubMediumDTO.setLastModifiedBy(pubMedium.getLastModifiedBy());
         pubMediumDTO.setTitle(pubMedium.getTitle());
         pubMediumDTO.setSubtitle(pubMedium.getSubtitle());
-        pubMediumDTO.setPublicationPlaces(placeMapper.PlacesToPlaceDTOs(pubMedium.getPublicationPlaces()));
-        pubMediumDTO.setPublisher(publisherMapper.PublisherToPublisherDTO(pubMedium.getPublisher()));
-        pubMediumDTO.setPubRhythms(publicationRhythmMapper.PublicationRhythmsToPublicationRhythmDTOs(pubMedium.getPubRhytms()));
+        pubMediumDTO.setPublicationPlaces(placeMapper.PlacesToPlacePreviewDTOs(pubMedium.getPublicationPlaces()));
+        pubMediumDTO.setPublisher(publisherMapper.PublisherToPublisherPreviewDTO(pubMedium.getPublisher()));
+        pubMediumDTO.setPubRhythms(publicationRhythmMapper.PublicationRhythmsToPublicationRhythmPreviewDTOs(pubMedium.getPubRhytms()));
         pubMediumDTO.setEditorialOffice(pubMedium.getEditorialOffice());
         pubMediumDTO.setStartYear(pubMedium.getStartYear());
         pubMediumDTO.setEndYear(pubMedium.getEndYear());
