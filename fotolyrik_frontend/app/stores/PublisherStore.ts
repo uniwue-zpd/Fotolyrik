@@ -10,7 +10,9 @@ export const usePublisherStore = defineStore('publisher', () => {
     // GET Fetch all publishers
     async function fetchPublishers() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/publishers');
+            const { data, error } = await useFetch('/api/publishers', {
+                deep: true
+            });
             if (error.value) {
                 console.error('Error fetching publishers:', error.value);
                 return;

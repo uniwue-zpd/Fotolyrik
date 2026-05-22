@@ -10,7 +10,9 @@ export const usePubRhythmStore = defineStore('publication_rhythm', () => {
     // GET Fetch all publication_rhythms
     async function fetchPubRhythms() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/publication_rhythms');
+            const { data, error } = await useFetch('/api/publication_rhythms', {
+                deep: true
+            });
             if (error.value) {
                 console.error('Error fetching publication_rhythms:', error.value);
                 return;
@@ -36,7 +38,9 @@ export const usePubRhythmStore = defineStore('publication_rhythm', () => {
             if (cachedPubRhythm) {
                 currentPubRhythm.value = cachedPubRhythm;
             } else {
-                const { data, error } = await useFetch(`/api/publication_rhythms/${id}`);
+                const { data, error } = await useFetch(`/api/publication_rhythms/${id}`, {
+                    deep: true
+                });
                 if (error.value) {
                     console.error(`Error fetching publication rhythm with id ${id}:`, error.value);
                     return;

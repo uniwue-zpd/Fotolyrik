@@ -10,7 +10,9 @@ export const useFullTextStore = defineStore('fullText', () => {
         // GET Fetch all full texts
     async function fetchFullTexts() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/fulltexts');
+            const { data, error } = await useFetch('/api/fulltexts', {
+                deep: true
+            });
             if (error.value) {
                 console.error('Error fetching full texts:', error.value);
                 return;
@@ -36,7 +38,9 @@ export const useFullTextStore = defineStore('fullText', () => {
             if (cachedFullText) {
                 currentFullText.value = cachedFullText;
             } else {
-                const { data, error } = await useFetch(`/api/fulltexts/${id}`);
+                const { data, error } = await useFetch(`/api/fulltexts/${id}`, {
+                    deep: true
+                });
                 if (error.value) {
                     console.error(`Error fetching full text with id ${id}:`, error.value);
                     return;

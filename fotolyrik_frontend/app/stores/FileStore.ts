@@ -19,7 +19,9 @@ export const useFileStore = defineStore("files", () => {
         loadingDown.value = true;
         errorDown.value = null;
 
-        const { data, error } = await useFetch("/api/files/all");
+        const { data, error } = await useFetch("/api/files/all", {
+            deep: true
+        });
         if (error.value) {
             console.error("Unable to fetch files: ", error.value);
             errorDown.value = error.value.message || "Failed to fetch files";

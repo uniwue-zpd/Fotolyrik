@@ -10,7 +10,7 @@ const toggle = (event: any) => op.value.toggle(event)
   <header class="bg-primary">
     <div class="flex flex-row justify-between items-center max-w-[1140px] mx-auto p-3">
       <NuxtLink to="/">
-        <img class="h-[40px] w-auto" src="../public/fl_wortmarke-blaugrau.svg" alt="logo">
+        <img class="h-[40px] w-auto" src="/fl_wortmarke-blaugrau.svg" alt="logo">
       </NuxtLink>
       <div class="flex flex-row items-center space-x-2">
         <GeneralSearch />

@@ -15,7 +15,9 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         // Fetch all photopoems
     async function fetchPhotopoems() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/photopoems');
+            const { data, error } = await useFetch('/api/photopoems', {
+                deep: true
+            });
             if (error.value) {
                 console.error('An error occured while fetching photopoems:', error.value);
                 return;
@@ -41,7 +43,9 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
             if (cachedPhotopoem) {
                 currentPhotopoem.value = cachedPhotopoem;
             } else {
-                const { data, error } = await useFetch(`/api/photopoems/${id}`);
+                const { data, error } = await useFetch(`/api/photopoems/${id}`, {
+                    deep: true
+                });
                 if (error.value) {
                     console.error(`Error fetching photopoem with id ${id}`);
                     return;
@@ -53,7 +57,9 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
 
     async function fetchPhotopoemHighlight() {
         if (currentHighlight.value) return;
-        const { data, error } = await useFetch('/api/photopoems/highlight');
+        const { data, error } = await useFetch('/api/photopoems/highlight', {
+            deep: true
+        });
         if (error.value) {
             console.error('Error fetching photopoem highlight:', error.value);
             return;

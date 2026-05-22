@@ -13,7 +13,9 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         // GET all  publication media
     async function fetchPubMedia() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/publication_media');
+            const { data, error } = await useFetch('/api/publication_media', {
+                deep: true
+            });
             if (error.value) {
                 console.error('Error fetching publication media:', error.value);
                 return;
@@ -39,7 +41,9 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
             if (cachedPubMedium) {
                 current_pub_medium.value = cachedPubMedium;
             } else {
-                const { data, error } = await useFetch(`/api/publication_media/${id}`);
+                const { data, error } = await useFetch(`/api/publication_media/${id}`, {
+                    deep: true
+                });
                 if (error.value) {
                     console.error(`Error fetching publication medium with id ${id}:`, error.value);
                     return;
