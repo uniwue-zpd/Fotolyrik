@@ -7,6 +7,8 @@ const props = defineProps<{
   height?: number;
 }>();
 
+type TreemapNode<T> = d3.HierarchyRectangularNode<T>;
+
 const svgRef = ref<SVGSVGElement | null>(null);
 
 const width = props.width ?? 800;
@@ -17,9 +19,9 @@ function render() {
 
   d3.select(svgRef.value).selectAll("*").remove();
 
-  const root = d3.hierarchy({
+  const root = d3.hierarchy<KeywordCountDTO>({
     children: props.data
-  } as any).sum((d: any) => d.count);
+  } as any).sum(d => d.count) as TreemapNode<KeywordCountDTO>;
 
   d3.treemap<any>()
       .size([width, height])
