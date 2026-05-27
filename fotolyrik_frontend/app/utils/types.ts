@@ -208,3 +208,9 @@ export enum AccessLevel {
     INTERNAL = "INTERNAL",
     RESTRICTED = "RESTRICTED"
 }
+
+export interface KeywordCountDTO {
+    keyword: string;
+    id: number;
+    count: number;
+}
