@@ -74,9 +74,16 @@ function render() {
 
   nodes.append("text")
       .attr("x", 8)
+      .attr("y", 30)
+      .text(d => d.data.gndId)
+      .style("font-size", "6px")
+      .style("pointer-events", "none");
+
+  nodes.append("text")
+      .attr("x", 8)
       .attr("y", 40)
       .text(d => d.data.count)
-      .style("font-size", "8px")
+      .style("font-size", "6px")
       .style("pointer-events", "none");
 }
 

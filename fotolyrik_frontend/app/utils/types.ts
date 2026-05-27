@@ -211,6 +211,7 @@ export enum AccessLevel {
 
 export interface KeywordCountDTO {
     keyword: string;
+    gndId: string;
     id: number;
     count: number;
 }

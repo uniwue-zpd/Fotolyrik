@@ -13,6 +13,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("""
     SELECT
         k.value AS keyword,
+        k.gndId AS gndId,
         k.id AS id,
         COUNT(DISTINCT p.id) AS count
     FROM Contribution c
@@ -28,6 +29,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("""
     SELECT
         k.value AS keyword,
+        k.gndId AS gndId,
         k.id AS id,
         COUNT(DISTINCT p.id) AS count
     FROM Contribution c
