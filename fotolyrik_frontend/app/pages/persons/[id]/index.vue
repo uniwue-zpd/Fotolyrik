@@ -29,6 +29,18 @@ onMounted(async () => {
   depicted_person_photopoems.value = await photopoem_store.filterPhotopoems({ 'depicted-person-id': person_id });
   contributor_photopoems.value = await photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id });
 });
+
+useHead(() => {
+  return {
+    title: person_item.value?.fullName || `Person ${ person_id }`,
+    meta: [
+      {
+        name: 'description',
+        content: `Fotolyrik. Details zur Person ${ person_item.value?.fullName || person_id }`
+      }
+    ]
+  }
+});
 </script>
 
 <template>
