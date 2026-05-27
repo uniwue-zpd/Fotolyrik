@@ -19,7 +19,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     FROM Contribution c
     JOIN c.workContributedTo p
     JOIN p.themes k
-    WHERE c.contributor.id = :personId
+    WHERE c.contributor.id = :personId AND c.role = 'AUTHOR'
     GROUP BY k.id, k.value
     ORDER BY COUNT(DISTINCT p.id) DESC
     LIMIT :limit
@@ -35,7 +35,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     FROM Contribution c
     JOIN c.workContributedTo p
     JOIN p.imageMotifs k
-    WHERE c.contributor.id = :personId
+    WHERE c.contributor.id = :personId AND c.role = 'AUTHOR'
     GROUP BY k.id, k.value
     ORDER BY COUNT(DISTINCT p.id) DESC
     LIMIT :limit
