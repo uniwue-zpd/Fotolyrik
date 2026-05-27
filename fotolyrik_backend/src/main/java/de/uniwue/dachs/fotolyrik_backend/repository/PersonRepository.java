@@ -12,8 +12,8 @@ import java.util.List;
 public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("""
     SELECT
-        k.value as keyword,
-        k.id as id,
+        k.value AS keyword,
+        k.id AS id,
         COUNT(DISTINCT p.id) AS count
     FROM Contribution c
     JOIN c.workContributedTo p
@@ -27,8 +27,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Query("""
     SELECT
-        k.value as keyword,
-        k.id as id,
+        k.value AS keyword,
+        k.id AS id,
         COUNT(DISTINCT p.id) AS count
     FROM Contribution c
     JOIN c.workContributedTo p
