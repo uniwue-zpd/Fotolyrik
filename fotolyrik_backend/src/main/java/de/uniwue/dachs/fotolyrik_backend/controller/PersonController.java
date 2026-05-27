@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +53,15 @@ public class PersonController {
             personService.deletePerson(id);
             return ResponseEntity.status(204).build();
         } catch (Exception e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
+    @GetMapping("/{id}/stats/contribution_places")
+    public ResponseEntity<List<PlaceDTO>> getContributionPlacesByPersonId(@PathVariable Long id) {
+        try {
+            var contributionPlaces = personService.getContributionPlaces(id);
+            return ResponseEntity.status(201).body(contributionPlaces);
+        } catch (Exception e){
             return ResponseEntity.status(404).build();
         }
     }
