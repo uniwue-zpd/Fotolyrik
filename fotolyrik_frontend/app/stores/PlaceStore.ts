@@ -54,6 +54,15 @@ export const usePlaceStore = defineStore('place', () => {
         }
     }
 
+    // GET contribution places
+    async function getContributionPlaces(personId: number): Promise<PlaceDTO[]> {
+        try {
+            return await $fetch<PlaceDTO[]>(`/api/persons/${personId}/stats/contribution_places`);
+        } catch (error) {
+            console.error('Getting contribution places:', error);
+            return [];
+        }
+    }
         // POST Create new place
     async function createPlace(payload: Partial<PlaceDTO>) {
         const { data, error } = await useFetch('/api/places', {
@@ -128,6 +137,7 @@ export const usePlaceStore = defineStore('place', () => {
         fetchPlaces,
         refreshPlacesData,
         fetchPlaceById,
+        getContributionPlaces,
         createPlace,
         updatePlace,
         deletePlace,

@@ -3,11 +3,13 @@ import { ref, onMounted } from "vue";
 import type { PersonDTO } from "~/utils/types";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
+import MultiPlaceMap from "~/components/UI/MultiPlaceMap.vue";
 
 const router = useRoute();
 const person_id = Number(router.params.id);
 const person_store = usePersonStore();
 const photopoem_store = usePhotopoemStore();
+const place_store = usePlaceStore();
 const person_item = ref<PersonDTO | null>(null);
 const previous_person = ref<PersonDTO | null>(null);
 const next_person = ref<PersonDTO | null>(null);
@@ -15,6 +17,8 @@ const author_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const photographer_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const depicted_person_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const contributor_photopoems = ref<PhotoPoemDTO[] | []>([]);
+
+const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
 
 onMounted(async () => {
   await person_store.fetchPersonById(person_id);
@@ -25,6 +29,7 @@ onMounted(async () => {
   photographer_photopoems.value = await photopoem_store.filterPhotopoems({ 'photographer-id': person_id });
   depicted_person_photopoems.value = await photopoem_store.filterPhotopoems({ 'depicted-person-id': person_id });
   contributor_photopoems.value = await photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id });
+  await map_ref.value?.populatePlaces(await place_store.getContributionPlaces(person_id));
 });
 </script>
 
@@ -81,6 +86,9 @@ onMounted(async () => {
           </tr>
           </tbody>
         </table>
+        <Divider/>
+        <h2 class="text-xl font-bold text-primary outfit-headline">Veröffentlichungsorte</h2>
+        <MultiPlaceMap ref="map_ref"></MultiPlaceMap>
         <Divider/>
         <div class="flex flex-col gap-2">
           <div v-if="author_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">

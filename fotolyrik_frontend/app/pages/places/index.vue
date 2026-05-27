@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import maplibregl, { LngLat } from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
 import { ref, onMounted } from  'vue';
 import { FilterMatchMode } from "@primevue/core";
+import MultiPlaceMap from "~/components/UI/MultiPlaceMap.vue";
 
 const place_store = usePlaceStore();
 const places = computed(() => place_store.places);
+const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -14,61 +14,14 @@ const filters = ref({
 });
 
 onMounted(async () => {
-  if (!document.getElementById('map')) {
-    return;
-  }
-  const map = new maplibregl.Map({
-    container: 'map',
-    style: {
-      version: 8,
-      sources: {
-        osm: {
-          type: "raster",
-          tiles: ["https://tile.openstreetmap.de/{z}/{x}/{y}.png"],
-          tileSize: 256,
-          attribution: "&copy; OpenStreetMap Contributors"
-        }
-      },
-      layers: [
-        {
-          id: "osm-layer",
-          type: "raster",
-          source: "osm"
-        }
-      ]
-    },
-    center: [10.447683, 51.163361],
-    zoom: 5,
-    maplibreLogo: true
-  });
-  map.addControl(new maplibregl.NavigationControl({
-    showCompass: true,
-    showZoom: true,
-    visualizePitch: true,
-    visualizeRoll: true
-  }));
-  map.on('load', () => {
-    if (!places.value) {
-      return;
-    }
-    places.value.forEach(place => {
-      if (place.latitude !== null && place.longitude !== null) {
-        const popup = new maplibregl.Popup()
-            .setHTML(`<a href="places/${place.id}" class="roboto-plain font-semibold cursor-pointer popup-link">${ place.name }</a>`);
-        new maplibregl.Marker()
-            .setLngLat(new LngLat(place.longitude, place.latitude))
-            .setPopup(popup)
-            .addTo(map);
-      }
-    });
-  })
+  await map_ref.value?.populatePlaces(places.value);
 });
 </script>
 
 <template>
   <div class="flex flex-col gap-2">
     <h1 class="text-3xl font-bold outfit-headline text-primary">Orte</h1>
-    <div class="h-[500px] w-full mx-auto rounded-md" id="map"/>
+    <MultiPlaceMap ref="map_ref"></MultiPlaceMap>
     <DataTable
       :value="places"
       v-model:filters="filters"
