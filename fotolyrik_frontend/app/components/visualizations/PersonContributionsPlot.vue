@@ -72,10 +72,8 @@ function render() {
         const year = getYear(d.publicationDate);
         return year ? x(year) : -10;
       })
-      .attr("cy", (d, i) => {
-        return y((i % 5) * 0.05); // Distance between points
-      })
-      .attr("r", 5)
+      .attr("cy", (d, i) => y((i % 5) * 0.05))
+      .attr("r", 0)
       .attr("fill", d => colors[d.role])
       .style("cursor", "pointer")
       .on("mouseover", function () {
@@ -96,6 +94,13 @@ function render() {
       })
       .append("title")
       .text(d => `${d.title ?? d.altTitle ?? 'Kein Titel'}`);
+
+  svg.selectAll("circle")
+      .transition()
+      .duration(1500)
+      .delay((_, i) => i * 200) // 👈 stagger
+      .attr("r", 5)
+      .ease(d3.easeCubicOut);
 
   const legend = svg.append("g")
       .attr("transform", "translate(60, 10)");
