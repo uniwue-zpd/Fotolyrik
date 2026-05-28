@@ -102,8 +102,26 @@ useHead(() => {
           </tr>
           </tbody>
         </table>
-        <Divider/>
         <div class="flex flex-col gap-4">
+          <div v-if="contributionsSummary && contributionsSummary.length > 0" class="flex flex-col gap-2">
+            <Divider/>
+            <h2 class="text-xl font-bold text-primary outfit-headline">Beiträge nach Veröffentlichungsdatum</h2>
+            <PersonContributionsPlot :data="contributionsSummary"/>
+          </div>
+          <div v-if="authorThemes && authorThemes.length > 0 || authorImageMotifs && authorImageMotifs.length > 0" class="flex flex-col gap-2">
+            <Divider/>
+            <h2 class="text-xl font-bold text-primary outfit-headline">Themen und Motive</h2>
+            <div class="flex flex-col md:flex-row gap-2">
+              <div class="flex flex-col gap-1 w-full" v-if="authorThemes && authorThemes.length > 0">
+                <h3 class="text-lg font-bold text-primary outfit-headline">Themen</h3>
+                <AuthorKeywordsTreemap :data="authorThemes" :width="400" :height="400"/>
+              </div>
+              <div class="flex flex-col gap-1 w-full" v-if="authorImageMotifs && authorImageMotifs.length > 0">
+                <h3 class="text-lg font-bold text-primary outfit-headline">Bildmotive</h3>
+                <AuthorKeywordsTreemap :data="authorImageMotifs" :width="400" :height="400"/>
+              </div>
+            </div>
+          </div>
           <div v-if="authorOf && authorOf.length > 0" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Autor:in von</h2>
             <div class="overflow-y-auto pb-2">
@@ -141,25 +159,6 @@ useHead(() => {
                 <div v-for="photopoem in contributorOf" :key="photopoem.id">
                   <PhotopoemPreview :photopoem="photopoem"/>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div v-if="contributionsSummary && contributionsSummary.length > 0" class="flex flex-col gap-2">
-            <Divider/>
-            <h2 class="text-xl font-bold text-primary outfit-headline">Beiträge nach Veröffentlichungsdatum</h2>
-            <PersonContributionsPlot :data="contributionsSummary"/>
-          </div>
-          <div v-if="authorThemes && authorThemes.length > 0 || authorImageMotifs && authorImageMotifs.length > 0" class="flex flex-col gap-2">
-            <Divider/>
-            <h2 class="text-xl font-bold text-primary outfit-headline">Themen und Motive</h2>
-            <div class="flex flex-col md:flex-row gap-2">
-              <div class="flex flex-col gap-1 w-full" v-if="authorThemes && authorThemes.length > 0">
-                <h3 class="text-lg font-bold text-primary outfit-headline">Themen</h3>
-                <AuthorKeywordsTreemap :data="authorThemes" :width="400" :height="400"/>
-              </div>
-              <div class="flex flex-col gap-1 w-full" v-if="authorImageMotifs && authorImageMotifs.length > 0">
-                <h3 class="text-lg font-bold text-primary outfit-headline">Bildmotive</h3>
-                <AuthorKeywordsTreemap :data="authorImageMotifs" :width="400" :height="400"/>
               </div>
             </div>
           </div>
