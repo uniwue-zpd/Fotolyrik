@@ -138,7 +138,8 @@ useHead(() => {
               </div>
             </div>
           </div>
-          <div v-if="authorThemes || authorImageMotifs" class="flex flex-col gap-2">
+          <div v-if="authorThemes && authorThemes.length > 0 || authorImageMotifs && authorImageMotifs.length > 0" class="flex flex-col gap-2">
+            <Divider/>
             <h2 class="text-xl font-bold text-primary outfit-headline">Themen und Motive</h2>
             <div class="flex flex-col md:flex-row gap-2">
               <div class="flex flex-col gap-1 w-full" v-if="authorThemes && authorThemes.length > 0">
