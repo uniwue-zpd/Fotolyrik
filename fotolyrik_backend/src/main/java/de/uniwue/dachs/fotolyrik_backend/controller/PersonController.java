@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +55,21 @@ public class PersonController {
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
+    }
+
+    @GetMapping("/{id}/stats/themes")
+    public ResponseEntity<List<KeywordCountDTO>> getThemesByAuthor(
+            @PathVariable Long id,
+            @RequestParam(required = false, defaultValue = "10") Long limit) {
+        List<KeywordCountDTO> themes = personService.findTopThemesByAuthor(id, limit);
+        return ResponseEntity.ok(themes);
+    }
+
+    @GetMapping("/{id}/stats/image-motifs")
+    public ResponseEntity<List<KeywordCountDTO>> getImageMotifsByAuthor(
+            @PathVariable Long id,
+            @RequestParam(required = false, defaultValue = "10") Long limit) {
+        List<KeywordCountDTO> imageMotifs = personService.findTopImageMotifsByAuthor(id, limit);
+        return ResponseEntity.ok(imageMotifs);
     }
 }
