@@ -14,11 +14,11 @@ const width = props.width ?? 700;
 const height = props.height ?? 200;
 
 const legend = {
-  photopoems: { label: "Fotogedichte" },
-  authorsWorkedWith: { label: "Gearbeitet mit Autor:innen" },
-  photographersWorkedWith: { label: "Gearbeitet mit Fotograf:innen" },
-  keywords: { label: "Schlagworte" },
-  pubMedia: { label: "Publikationsmedien" }
+  photopoems: "Fotogedichte",
+  authorsWorkedWith: "Gearbeitet mit Autor:innen",
+  photographersWorkedWith: "Gearbeitet mit Fotograf:innen",
+  keywords: "Schlagworte",
+  pubMedia: "Publikationsmedien"
 };
 
 const keys = Object.keys(legend) as (keyof typeof legend)[];
@@ -87,7 +87,7 @@ function render() {
       .style("font-size", "12px")
       .attr("class", "roboto-plain")
       .style("fill", "#333")
-      .text(d => legend[d].label);
+      .text(d => legend[d]);
 
   svg.selectAll("text.value")
       .data(keys)
