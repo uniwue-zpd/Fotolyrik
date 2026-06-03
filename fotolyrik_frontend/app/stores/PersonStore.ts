@@ -135,6 +135,10 @@ export const usePersonStore = defineStore('person', () => {
         return await $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats/image-motifs`, {query: {limit}});
     }
 
+    async function fetchPersonMetrics(id: number): Promise<PersonMetricsDTO> {
+        return await $fetch<PersonMetricsDTO>(`/api/persons/${id}/stats/metrics`);
+    }
+
         // Clear current person
     function clearPerson() {
         currentPerson.value = null;
@@ -155,7 +159,8 @@ export const usePersonStore = defineStore('person', () => {
         nextPerson,
         clearPerson,
         fetchAuthorThemes,
-        fetchAuthorImageMotifs
+        fetchAuthorImageMotifs,
+        fetchPersonMetrics
     }
 });
 

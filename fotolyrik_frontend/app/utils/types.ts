@@ -215,3 +215,11 @@ export interface KeywordCountDTO {
     id: number;
     count: number;
 }
+
+export interface PersonMetricsDTO {
+    photopoems: number;
+    pubMedia: number;
+    keywords: number;
+    authorsWorkedWith: number;
+    photographersWorkedWith: number;
+}
