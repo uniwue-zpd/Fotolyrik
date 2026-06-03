@@ -4,6 +4,7 @@ import type { PersonDTO } from "~/utils/types";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 import AuthorKeywordsTreemap from "~/components/visualizations/AuthorKeywordsTreemap.vue";
+import PersonMetrics from "~/components/visualizations/PersonMetrics.vue";
 
 const router = useRoute();
 const person_id = Number(router.params.id);
@@ -18,6 +19,7 @@ const depicted_person_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const contributor_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_store.fetchAuthorThemes(person_id));
 const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_store.fetchAuthorImageMotifs(person_id));
+const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_store.fetchPersonMetrics(person_id));
 
 onMounted(async () => {
   await person_store.fetchPersonById(person_id);
@@ -58,18 +60,12 @@ useHead(() => {
         </div>
       </template>
       <template #content>
-        <div v-if="person_item" class="flex flex-row space-x-5 justify-between p-4">
-          <div class="p-3 bg-gray-accent">
-            <div v-if="person_item.image">
-              <img :src="`/api/uploads/${person_item.image.filename}`" alt="image"/>
-            </div>
-            <div v-else>
-              <Avatar icon="pi pi-user" size="xlarge"/>
-            </div>
+        <div v-if="person_item" class="flex flex-col md:flex-row gap-2 justify-between p-4">
+          <div class="p-3 bg-gray-accent w-1/2">
+            <img v-if="person_item.image" :src="`/api/uploads/${person_item.image.filename}`" alt="image"/>
+            <Avatar v-else icon="pi pi-user" size="xlarge"/>
           </div>
-          <div class="p-3 bg-gray-accent">
-            <i class="pi pi-chart-line"/>
-          </div>
+          <PersonMetrics v-if="personMetrics" :data="personMetrics"/>
         </div>
         <table class="min-w-full divide-y divide-gray-200 roboto-plain">
           <tbody v-if="person_item" class=" divide-y divide-gray-200">
