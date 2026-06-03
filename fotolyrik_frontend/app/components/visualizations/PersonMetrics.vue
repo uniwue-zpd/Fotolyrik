@@ -15,10 +15,10 @@ const height = props.height ?? 200;
 
 const legend = {
   photopoems: "Fotogedichte",
+  pubMedia: "Publikationsmedien",
   authorsWorkedWith: "Gearbeitet mit Autor:innen",
   photographersWorkedWith: "Gearbeitet mit Fotograf:innen",
-  keywords: "Schlagworte",
-  pubMedia: "Publikationsmedien"
+  keywords: "Schlagworte"
 };
 
 const keys = Object.keys(legend) as (keyof typeof legend)[];
