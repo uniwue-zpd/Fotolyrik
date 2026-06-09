@@ -2,9 +2,28 @@
 import { ContributionRole } from "~/utils/types";
 import type {AutoCompleteCompleteEvent} from "primevue";
 
+const props = defineProps({
+  contributions: Array
+});
+
+const personStore = usePersonStore();
+
 const getContributions = () => {
   return contributions.value.map(({ renderId, ...rest }) => rest);
 };
+
+const loading = ref(false);
+const personSuggestions = ref<PersonPreviewDTO[]>([]);
+
+const debouncedSearch = debounce(async (query: string) => {
+  loading.value = true;
+  personSuggestions.value = await personStore.searchPeople(query);
+  loading.value = false;
+}, 300);
+
+const onPersonComplete = (event: any) => {
+  debouncedSearch(event.query);
+}
 
 const checkRefetch = () => {
   const refetch = (id: number) => {
@@ -39,10 +58,6 @@ const isValid = () => {
 };
 
 defineExpose({ getContributions, isValid, checkRefetch })
-const props = defineProps({
-  persons: Array,
-  contributions: Array
-});
 
 const roleOptions = [
   { label: 'Autor:in', value: ContributionRole.AUTHOR },
@@ -57,7 +72,7 @@ interface Contribution {
     contributor?: PersonPreviewDTO;
     pseudonym: string;
     role?: ContributionRole;
-    suggestions?: string[];
+    pseudonymSuggestions?: string[];
 }
 
 const createEmptyContribution = (): Contribution => ({
@@ -70,7 +85,7 @@ const searchPseudonyms = (event : AutoCompleteCompleteEvent, contribution: Contr
   const pseudonyms  = contribution.contributor?.pseudonyms;
 
   if (pseudonyms) {
-    contribution.suggestions = pseudonyms.filter(pseudonym => {
+    contribution.pseudonymSuggestions = pseudonyms.filter(pseudonym => {
       return pseudonym.toLowerCase().includes(query);
     });
   }
@@ -89,23 +104,22 @@ const contributions = ref<Contribution[]>(
   >
     <div>
       <div class="flex flex-row space-x-2 p-2 bg-surface-50 rounded-md shadow-sm">
-        <Select
+        <AutoComplete
             class="flex-1 min-w-0"
             inputId="contributors"
             placeholder="Mitwirkende Person auswählen"
-            :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-            :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-            :options="persons"
-            :virtual-scroller-options="{ itemSize: 50 }"
             v-model="contribution.contributor"
-            filter fluid
+            :suggestions="personSuggestions"
+            @complete="onPersonComplete"
+            :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
+            showClear fluid
         />
         <AutoComplete
             class="flex-2 min-w-0"
             inputId="pseudonym"
             placeholder="Pseudonym"
             v-model="contribution.pseudonym"
-            :suggestions="contribution.suggestions"
+            :suggestions="contribution.pseudonymSuggestions"
             @complete="searchPseudonyms($event, contribution)"
             dropdown
         />
