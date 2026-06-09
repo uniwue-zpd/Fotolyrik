@@ -4,6 +4,7 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -41,4 +42,16 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     LIMIT :limit
     """)
     List<KeywordCountDTO> findTopImageMotifsByPerson(Long personId, Long limit);
+
+    @Query("""
+    SELECT DISTINCT p FROM Person p
+        LEFT JOIN p.pseudonyms pseudonym
+        WHERE
+        LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+        ORDER BY p.lastName ASC
+    """)
+    List<Person> searchPeople(@Param("query") String query);
 }

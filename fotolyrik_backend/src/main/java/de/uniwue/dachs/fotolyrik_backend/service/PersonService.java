@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
@@ -131,5 +132,10 @@ public class PersonService {
      */
     public List<KeywordCountDTO> findTopImageMotifsByAuthor(Long authorId, Long limit) {
         return personRepository.findTopImageMotifsByPerson(authorId, limit);
+    }
+
+    public List<PersonPreviewDTO> searchPeople(String query) {
+        List<Person> result = personRepository.searchPeople(query);
+        return personMapper.PersonsToPreviewDTOs(result);
     }
 }
