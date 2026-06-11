@@ -52,10 +52,6 @@ function render() {
       .domain([startYear, endYear])
       .range([60, width - 30]);
 
-  const y = d3.scaleLinear()
-      .domain([0, 1])
-      .range([height - 50, 40]);
-
   svg.append("g")
       .attr("transform", `translate(0, ${height - 20})`)
       .call(
@@ -64,15 +60,45 @@ function render() {
               .ticks(8)
       );
 
-  svg.selectAll("circle")
-      .data(props.data)
+  const nodes = props.data.map(d => ({
+    ...d,
+    fx: (() => {
+      const year = getYear(d.publicationDate);
+      return year ? x(year) : -10;
+    })(),
+    x: (() => {
+      const year = getYear(d.publicationDate);
+      return year ? x(year) : -10;
+    })(),
+    y: height / 2
+  }));
+
+  const simulation = d3.forceSimulation(nodes as any)
+      .force(
+          "x",
+          d3.forceX((d: any) => d.fx).strength(1)
+      )
+      .force(
+          "y",
+          d3.forceY(height / 2).strength(0.05)
+      )
+      .force(
+          "collide",
+          d3.forceCollide(7)
+      )
+      .stop();
+
+  for (let i = 0; i < 300; i++) {
+    simulation.tick();
+  }
+
+  svg.selectAll("circle.point")
+      .data(nodes)
       .enter()
       .append("circle")
-      .attr("cx", d => {
-        const year = getYear(d.publicationDate);
-        return year ? x(year) : -10;
-      })
-      .attr("cy", (d, i) => y((i % 5) * 0.05))
+      .attr("class", "point")
+      .attr("cx", (d: any) => d.x)
+      .attr("cy", (d: any) => d.y)
       .attr("r", 0)
       .attr("fill", d => colors[d.role])
       .style("cursor", "pointer")
@@ -95,13 +121,14 @@ function render() {
       .append("title")
       .text(d => `${d.title ?? d.altTitle ?? 'Kein Titel'}`);
 
-  svg.selectAll("circle")
+  svg.selectAll("circle.point")
       .transition()
       .duration(1500)
-      .delay((_, i) => i * 200) // 👈 stagger
+      .delay((_, i) => i * 100)
       .attr("r", 5)
       .ease(d3.easeCubicOut);
 
+  // LEGEND
   const legend = svg.append("g")
       .attr("transform", "translate(60, 10)");
 
