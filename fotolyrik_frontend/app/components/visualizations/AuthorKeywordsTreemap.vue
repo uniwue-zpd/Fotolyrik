@@ -24,7 +24,7 @@ function render() {
   } as any).sum(d => d.count) as TreemapNode<KeywordCountDTO>;
 
   d3.treemap<any>()
-      .size([width, height])
+      .size([width - 30, height - 30])
       .padding(4)(root);
 
   const color = d3.scaleOrdinal<string>()
@@ -38,7 +38,7 @@ function render() {
       .data(root.leaves())
       .enter()
       .append("g")
-      .attr("transform", d => `translate(${d.x0},${d.y0})`)
+      .attr("transform", d => `translate(${d.x0 + 15},${d.y0 + 15})`)
       .style("cursor", "pointer")
       .attr("opacity", 0)
       .attr("transform", d => `translate(${d.x0},${d.y0}) scale(0.95)`)
