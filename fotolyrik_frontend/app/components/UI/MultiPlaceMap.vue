@@ -54,8 +54,12 @@ async function populatePlaces (places: PlaceDTO[]) {
     let hasValidPoints = false;
     places.forEach(place => {
       if (place.latitude !== null && place.longitude !== null&& place.latitude !==0 && place.longitude !== 0) {
+        const link = document.createElement('a');
+        link.href = `/places/${place.id}`;
+        link.className = 'roboto-plain font-semibold cursor-pointer popup-link';
+        link.textContent = place.name;
         const popup = new maplibregl.Popup()
-            .setHTML(`<a href="places/${place.id}" class="roboto-plain font-semibold cursor-pointer popup-link">${ place.name }</a>`);
+            .setDOMContent(link);
         const coords = new LngLat(place.longitude, place.latitude);
         new maplibregl.Marker()
             .setLngLat(coords)
