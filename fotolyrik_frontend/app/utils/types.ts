@@ -221,6 +221,14 @@ export interface KeywordCountDTO {
     count: number;
 }
 
+export interface PersonMetricsDTO {
+    photopoems: number;
+    pubMedia: number;
+    keywords: number;
+    authorsWorkedWith: number;
+    photographersWorkedWith: number;
+}
+
 /**
  * Describes contribution roles of persons in relation to a photopoem.
  */
