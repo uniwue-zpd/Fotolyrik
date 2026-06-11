@@ -2,6 +2,7 @@
 
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
+import PubMediumMetrics from "~/components/visualizations/PubMediumMetrics.vue";
 
 const router = useRoute();
 const pubmedium_store = usePubMediumStore();
@@ -12,6 +13,7 @@ const pub_medium_item = ref<PubMediumDTO | null>(null);
 const previous_pub_medium = ref<PubMediumDTO | null>(null);
 const next_pub_medium = ref<PubMediumDTO | null>(null);
 const pub_medium_photopoems = ref<PhotoPoemDTO[] | []>([]);
+const pub_medium_metrics = ref<PubMediumMetricsDTO | null>(null);
 
 onMounted(async () => {
   await pubmedium_store.fetchPubMediumById(pub_medium_id);
@@ -19,6 +21,7 @@ onMounted(async () => {
   previous_pub_medium.value = pubmedium_store.previousPubMedium();
   next_pub_medium.value = pubmedium_store.nextPubMedium();
   pub_medium_photopoems.value = await photopoem_store.filterPhotopoems({'pubmedium-id': pub_medium_id});
+  pub_medium_metrics.value = await pubmedium_store.fetchPubMediumMetrics(pub_medium_id);
 });
 </script>
 
@@ -90,6 +93,8 @@ onMounted(async () => {
           </tr>
           </tbody>
         </table>
+
+        <PubMediumMetrics v-if="pub_medium_metrics" :data="pub_medium_metrics"></PubMediumMetrics>
       </template>
       <template #footer>
         <div v-if="pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
