@@ -40,7 +40,8 @@ onMounted(async () => {
         </div>
       </template>
       <template #content>
-        <table class="min-w-full divide-y divide-gray-200 roboto-plain">
+        <div class="flex">
+        <table class="min-w-half divide-y divide-gray-200 roboto-plain">
           <tbody v-if="pub_medium_item" class=" divide-y divide-gray-200">
           <tr v-if="pub_medium_item.subtitle">
             <td class="px-6 py-4 whitespace-nowrap font-semibold">Titel-Zusatz</td>
@@ -95,8 +96,7 @@ onMounted(async () => {
         </table>
 
         <PubMediumMetrics v-if="pub_medium_metrics" :data="pub_medium_metrics"></PubMediumMetrics>
-      </template>
-      <template #footer>
+        </div>
         <div v-if="pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
           <h2 class="text-xl font-bold text-primary outfit-headline">Fotogedichte in "{{ pub_medium_item?.title }}"</h2>
           <div class="overflow-y-auto pb-2">
