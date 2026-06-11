@@ -5,5 +5,5 @@ public interface PubMediumMetricsDTO {
     Long getKeywords();
     Long getPhotographersWorkedWith();
     Long getAuthorsWorkedWith();
-    Long getDepictedPersons();
+    Long getDepictedPeople();
 }

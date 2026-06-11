@@ -202,7 +202,7 @@ public class PubMediumService {
      * @param pubMediumId ID of the person
      * @return a {@link PubMediumMetricsDTO} with the metrics of the person
      */
-    public PubMediumMetricsDTO getPersonMetrics(Long pubMediumId) {
+    public PubMediumMetricsDTO getPubMediumMetrics(Long pubMediumId) {
         return pubMediumRepository.getMetricsByPubMedium(pubMediumId);
     }
 }
