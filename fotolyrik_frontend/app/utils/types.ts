@@ -209,9 +209,19 @@ export enum AccessLevel {
     RESTRICTED = "RESTRICTED"
 }
 
+// Visualizations area
+
+/**
+ * Describes a single datapoint used for visualizations, containing a keyword, its GND ID, and the count of occurrences.
+ */
 export interface KeywordCountDTO {
     keyword: string;
     gndId: string;
     id: number;
     count: number;
 }
+
+/**
+ * Describes contribution roles of persons in relation to a photopoem.
+ */
+export type ContributorRole = 'author' | 'photographer' | 'contributor' | 'depicted';
