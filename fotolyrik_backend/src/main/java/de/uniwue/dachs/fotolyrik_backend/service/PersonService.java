@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
@@ -9,6 +10,7 @@ import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PersonMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,13 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final FileRepository fileRepository;
     private final PersonMapper personMapper;
+    private final PlaceMapper placeMapper;
 
-    public PersonService(PersonRepository personRepository, FileRepository fileRepository, PersonMapper personMapper) {
+    public PersonService(PersonRepository personRepository, FileRepository fileRepository, PersonMapper personMapper, PlaceMapper placeMapper) {
         this.personRepository = personRepository;
         this.fileRepository = fileRepository;
         this.personMapper = personMapper;
+        this.placeMapper = placeMapper;
     }
 
     /**
@@ -99,6 +103,14 @@ public class PersonService {
             throw new EntityNotFoundException("Person with id '" + id + "' does not exist");
         }
         personRepository.deleteById(id);
+    }
+    /**
+     * GET places the person contributed in by following
+     * person->contribution->photopoem->pub_medium->place
+     * @return {@link List} of {@link PlaceDTO}
+     */
+    public List<PlaceDTO> getContributionPlaces(Long personId){
+        return placeMapper.PlacesToPlaceDTOs(personRepository.findContributionPlacesByPersonId(personId));
     }
 
     /**

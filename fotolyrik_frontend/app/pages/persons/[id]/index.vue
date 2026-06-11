@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import type { PersonDTO, ContributorRole } from "~/utils/types";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
+import MultiPlaceMap from "~/components/UI/MultiPlaceMap.vue";
 import AuthorKeywordsTreemap from "~/components/visualizations/AuthorKeywordsTreemap.vue";
 import PersonMetrics from "~/components/visualizations/PersonMetrics.vue";
 import PersonContributionsPlot from "~/components/visualizations/PersonContributionsPlot.vue";
@@ -11,6 +12,7 @@ const router = useRoute();
 const person_id = Number(router.params.id);
 const person_store = usePersonStore();
 const photopoem_store = usePhotopoemStore();
+const place_store = usePlaceStore();
 const person_item = ref<PersonDTO | null>(null);
 const previous_person = ref<PersonDTO | null>(null);
 const next_person = ref<PersonDTO | null>(null);
@@ -31,11 +33,14 @@ const contributionsSummary = computed(() => {
   ];
 });
 
+const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
+
 onMounted(async () => {
   await person_store.fetchPersonById(person_id);
   person_item.value = person_store.currentPerson;
   previous_person.value = person_store.previousPerson();
   next_person.value = person_store.nextPerson();
+  await map_ref.value?.populatePlaces(await place_store.getContributionPlaces(person_id));
 });
 
 useHead(() => {
@@ -98,6 +103,10 @@ useHead(() => {
           </tr>
           </tbody>
         </table>
+        <Divider/>
+        <h2 class="text-xl font-bold text-primary outfit-headline">Veröffentlichungsorte</h2>
+        <MultiPlaceMap ref="map_ref"></MultiPlaceMap>
+        <Divider/>
         <div class="flex flex-col gap-4">
           <div v-if="contributionsSummary && contributionsSummary.length > 0" class="flex flex-col gap-2">
             <Divider/>

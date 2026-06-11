@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
@@ -54,6 +55,16 @@ public class PersonController {
         try {
             personService.deletePerson(id);
             return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
+
+    @GetMapping("/{id}/stats/contribution_places")
+    public ResponseEntity<List<PlaceDTO>> getContributionPlacesByPersonId(@PathVariable Long id) {
+        try {
+            var contributionPlaces = personService.getContributionPlaces(id);
+            return ResponseEntity.ok(contributionPlaces);
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
