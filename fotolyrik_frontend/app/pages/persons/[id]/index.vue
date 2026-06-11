@@ -72,9 +72,8 @@ useHead(() => {
       </template>
       <template #content>
         <div v-if="person_item" class="flex flex-col md:flex-row gap-2 justify-between p-4">
-          <div class="p-3 bg-gray-accent w-1/2">
-            <img v-if="person_item.image" :src="`/api/uploads/${person_item.image.filename}`" alt="image"/>
-            <Avatar v-else icon="pi pi-user" size="xlarge"/>
+          <div v-if="person_item.image"  class="p-3 bg-gray-accent w-1/2">
+            <img :src="`/api/uploads/${ person_item.image.filename }`" alt="image"/>
           </div>
           <PersonMetrics v-if="personMetrics" :data="personMetrics"/>
         </div>
