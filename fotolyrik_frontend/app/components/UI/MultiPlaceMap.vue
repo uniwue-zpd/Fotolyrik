@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import maplibregl, { LngLat } from 'maplibre-gl';
+import maplibregl, {LngLat, LngLatBounds} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { ref, onMounted } from  'vue';
 import { FilterMatchMode } from "@primevue/core";
@@ -50,16 +50,28 @@ async function populatePlaces (places: PlaceDTO[]) {
     if (!places) {
       return;
     }
+    const bounds = new LngLatBounds();
+    let hasValidPoints = false;
     places.forEach(place => {
-      if (place.latitude !== null && place.longitude !== null) {
+      if (place.latitude !== null && place.longitude !== null&& place.latitude !==0 && place.longitude !== 0) {
         const popup = new maplibregl.Popup()
             .setHTML(`<a href="places/${place.id}" class="roboto-plain font-semibold cursor-pointer popup-link">${ place.name }</a>`);
+        const coords = new LngLat(place.longitude, place.latitude);
         new maplibregl.Marker()
-            .setLngLat(new LngLat(place.longitude, place.latitude))
+            .setLngLat(coords)
             .setPopup(popup)
             .addTo(map);
+        bounds.extend(coords);
+        hasValidPoints = true;
       }
     });
+    if (hasValidPoints) {
+      map.fitBounds(bounds, {
+        padding: 50,
+        maxZoom: 15,
+        duration: 1000
+      });
+    }
   })
 }
 </script>
