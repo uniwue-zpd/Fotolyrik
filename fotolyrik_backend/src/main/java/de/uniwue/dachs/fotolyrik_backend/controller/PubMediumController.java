@@ -1,6 +1,8 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PubMediumService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -90,5 +92,11 @@ public class PubMediumController {
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
+    }
+
+    @GetMapping("/{id}/stats/metrics")
+    public ResponseEntity<PubMediumMetricsDTO> getPubMediumMetrics(@PathVariable Long id) {
+        PubMediumMetricsDTO metrics = pubMediumService.getPubMediumMetrics(id);
+        return ResponseEntity.ok(metrics);
     }
 }
