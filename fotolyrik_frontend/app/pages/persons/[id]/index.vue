@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import type { PersonDTO, ContributorRole } from "~/utils/types";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
-import MultiPlaceMap from "~/components/UI/MultiPlaceMap.vue";
+import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
 import AuthorKeywordsTreemap from "~/components/visualizations/AuthorKeywordsTreemap.vue";
 import PersonMetrics from "~/components/visualizations/PersonMetrics.vue";
 import PersonContributionsPlot from "~/components/visualizations/PersonContributionsPlot.vue";

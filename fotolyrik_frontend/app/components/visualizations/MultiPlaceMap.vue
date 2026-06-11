@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import maplibregl, {LngLat, LngLatBounds} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { ref, onMounted } from  'vue';
-import { FilterMatchMode } from "@primevue/core";
 
-defineExpose({populatePlaces});
-
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-  description: { value: null, matchMode: FilterMatchMode.CONTAINS }
-});
+defineExpose({ populatePlaces});
 
 async function populatePlaces (places: PlaceDTO[]) {
   if (!document.getElementById('map')) {
@@ -54,10 +46,12 @@ async function populatePlaces (places: PlaceDTO[]) {
     let hasValidPoints = false;
     places.forEach(place => {
       if (place.latitude !== null && place.longitude !== null&& place.latitude !==0 && place.longitude !== 0) {
-        const link = document.createElement('a');
-        link.href = `/places/${place.id}`;
-        link.className = 'roboto-plain font-semibold cursor-pointer popup-link';
-        link.textContent = place.name;
+        const link = document.createElement('button');
+        link.addEventListener('click', () => {
+          navigateTo(`/places/${ place.id }`);
+        });
+        link.innerHTML = place.name;
+        link.setAttribute('class', 'cursor-pointer roboto-plain font-bold');
         const popup = new maplibregl.Popup()
             .setDOMContent(link);
         const coords = new LngLat(place.longitude, place.latitude);
@@ -81,6 +75,6 @@ async function populatePlaces (places: PlaceDTO[]) {
 </script>
 
 <template>
-  <div class="h-[500px] w-full mx-auto rounded-md" id="map"/>
+  <div class="h-[500px] w-full mx-auto rounded-md shadow-md border border-gray-200" id="map"/>
 </template>
 

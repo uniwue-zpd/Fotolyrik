@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from  'vue';
 import { FilterMatchMode } from "@primevue/core";
-import MultiPlaceMap from "~/components/UI/MultiPlaceMap.vue";
+import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
 
 const place_store = usePlaceStore();
 const places = computed(() => place_store.places);
@@ -50,7 +50,7 @@ onMounted(async () => {
           </IconField>
         </div>
       </template>
-      <Column field="name" header="Name" class="roboto-plain w-1/3" sortable>
+      <Column field="name" header="Name" class="roboto-plain w-1/3" :sortable="true">
         <template #body="slotProps">
           <NuxtLink
               :to="`/places/${ slotProps.data.id }`"
