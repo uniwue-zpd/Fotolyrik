@@ -58,14 +58,16 @@ public class PersonController {
             return ResponseEntity.status(404).build();
         }
     }
+
     @GetMapping("/{id}/stats/contribution_places")
     public ResponseEntity<List<PlaceDTO>> getContributionPlacesByPersonId(@PathVariable Long id) {
         try {
             var contributionPlaces = personService.getContributionPlaces(id);
             return ResponseEntity.status(201).body(contributionPlaces);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
+    }
 
     @GetMapping("/{id}/stats/themes")
     public ResponseEntity<List<KeywordCountDTO>> getThemesByAuthor(
