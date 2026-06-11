@@ -2,6 +2,8 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
@@ -122,5 +124,30 @@ public class PersonService {
         return fileRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Image with id '" + id + "' does not exist")
         );
+    }
+
+    /**
+     * GET top x themes by author with given Id and limit
+     * @param authorId ID of the author
+     * @param limit limit of themes to return
+     * @return {@link List} of {@link KeywordCountDTO} with the top themes and their count
+     */
+    public List<KeywordCountDTO> findTopThemesByAuthor(Long authorId, Long limit) {
+        return personRepository.findTopThemesByPerson(authorId, limit);
+    }
+
+    /**
+     * GET top x image motifs by author with given Id and limit
+     * @param authorId ID of the author
+     * @param limit limit of image motifs to return
+     * @return {@link List} of {@link KeywordCountDTO} with the top image motifs and their count
+     */
+    public List<KeywordCountDTO> findTopImageMotifsByAuthor(Long authorId, Long limit) {
+        return personRepository.findTopImageMotifsByPerson(authorId, limit);
+    }
+
+    public List<PersonPreviewDTO> searchPeople(String query) {
+        List<Person> result = personRepository.searchPeople(query);
+        return personMapper.PersonsToPreviewDTOs(result);
     }
 }

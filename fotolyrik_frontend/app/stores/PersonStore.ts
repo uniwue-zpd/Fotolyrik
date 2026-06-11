@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import type { PersonDTO } from "~/utils/types";
+import {defineStore} from 'pinia';
+import {ref} from 'vue';
+import type {KeywordCountDTO, PersonDTO} from "~/utils/types";
 
 export const usePersonStore = defineStore('person', () => {
     // State
@@ -127,9 +127,21 @@ export const usePersonStore = defineStore('person', () => {
         }
     }
 
+    async function fetchAuthorThemes(id: number, limit?: number): Promise<KeywordCountDTO[]> {
+        return await $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats/themes`, {query: {limit}});
+    }
+
+    async function fetchAuthorImageMotifs(id: number, limit?: number): Promise<KeywordCountDTO[]> {
+        return await $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats/image-motifs`, {query: {limit}});
+    }
+
         // Clear current person
     function clearPerson() {
         currentPerson.value = null;
+    }
+
+    async function searchPeople(query: string): Promise<PersonPreviewDTO[]> {
+        return await $fetch<PersonPreviewDTO[]>(`/api/persons/search`, { query: { query } });
     }
 
     return {
@@ -145,7 +157,10 @@ export const usePersonStore = defineStore('person', () => {
         deletePerson,
         previousPerson,
         nextPerson,
-        clearPerson
+        clearPerson,
+        fetchAuthorThemes,
+        fetchAuthorImageMotifs,
+        searchPeople
     }
 });
 

@@ -16,6 +16,19 @@ const copyrightStatusStore = useCopyrightStatusStore();
 const keywordStore = useKeywordStore();
 const locationStore = useLocationStore();
 
+const personLoading = ref(false);
+const personSuggestions = ref<PersonPreviewDTO[]>([]);
+
+const debouncedSearch = debounce(async (query: string) => {
+  personLoading.value = true;
+  personSuggestions.value = await personStore.searchPeople(query);
+  personLoading.value = false;
+}, 300);
+
+const onPersonComplete = (event: any) => {
+  debouncedSearch(event.query);
+}
+
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
 const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
@@ -321,17 +334,15 @@ const onFormSubmit = async (e: any) => {
         </FormField>
         <FormField v-slot="$field" name="depictedPeople" class="flex flex-col gap-1 w-full">
           <label for="depictedPeople" class="font-bold">Abgebildete Personen</label>
-          <MultiSelect
+          <AutoComplete
+              class="flex-1 min-w-0"
               inputId="depictedPeople"
               placeholder="Abgebildete Personen auswählen"
-              selectedItemsLabel="{0} Personen ausgewählt"
-              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-              :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-              :maxSelectedLabels="2"
-              :options="persons"
-              :key="persons.length"
-              :virtual-scroller-options="{ itemSize: 50 }"
-              filter fluid
+              :suggestions="personSuggestions"
+              @complete="onPersonComplete"
+              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
+              showClear fluid multiple
+              :loading="personLoading"
           />
           <Message v-if="$form.depictedPeople?.invalid" severity="error" size="small" variant="simple">
             {{ $form.depictedPeople.error.message }}
@@ -405,7 +416,6 @@ const onFormSubmit = async (e: any) => {
           <b class="px-2">Mitwirkende</b>
         </Divider>
         <ContributionForm
-            :persons="persons"
             :contributions="props.photopoem?.contributions"
             ref="contributionsForm">
         </ContributionForm>
