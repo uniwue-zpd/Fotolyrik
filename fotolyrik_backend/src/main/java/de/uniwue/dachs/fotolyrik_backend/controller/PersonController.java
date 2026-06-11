@@ -63,7 +63,7 @@ public class PersonController {
     public ResponseEntity<List<PlaceDTO>> getContributionPlacesByPersonId(@PathVariable Long id) {
         try {
             var contributionPlaces = personService.getContributionPlaces(id);
-            return ResponseEntity.status(201).body(contributionPlaces);
+            return ResponseEntity.ok(contributionPlaces);
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
