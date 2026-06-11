@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import type { PersonDTO } from "~/utils/types";
+import type { PersonDTO, ContributorRole } from "~/utils/types";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 import AuthorKeywordsTreemap from "~/components/visualizations/AuthorKeywordsTreemap.vue";
+import PersonContributionsPlot from "~/components/visualizations/PersonContributionsPlot.vue";
 
 const router = useRoute();
 const person_id = Number(router.params.id);
@@ -12,22 +13,27 @@ const photopoem_store = usePhotopoemStore();
 const person_item = ref<PersonDTO | null>(null);
 const previous_person = ref<PersonDTO | null>(null);
 const next_person = ref<PersonDTO | null>(null);
-const author_photopoems = ref<PhotoPoemDTO[] | []>([]);
-const photographer_photopoems = ref<PhotoPoemDTO[] | []>([]);
-const depicted_person_photopoems = ref<PhotoPoemDTO[] | []>([]);
-const contributor_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_store.fetchAuthorThemes(person_id));
 const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_store.fetchAuthorImageMotifs(person_id));
+const { data: authorOf } = await useAsyncData(`author-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'author-id': person_id }));
+const { data: photographerOf } = await useAsyncData(`photographer-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'photographer-id': person_id }));
+const { data: contributorOf } = await useAsyncData(`contributor-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id }));
+const { data: depictedOn } = await useAsyncData(`depicted-${ person_id }-on`, () => photopoem_store.filterPhotopoems({ 'depicted-person-id': person_id }));
+
+const contributionsSummary = computed(() => {
+  return [
+    ...(authorOf.value ?? []).map(d => ({ ...d, role: 'author' as ContributorRole })),
+    ...(photographerOf.value ?? []).map(d => ({ ...d, role: 'photographer' as ContributorRole })),
+    ...(contributorOf.value ?? []).map(d => ({ ...d, role: 'contributor' as ContributorRole })),
+    ...(depictedOn.value ?? []).map(d => ({ ...d, role: 'depicted' as ContributorRole }))
+  ];
+});
 
 onMounted(async () => {
   await person_store.fetchPersonById(person_id);
   person_item.value = person_store.currentPerson;
   previous_person.value = person_store.previousPerson();
   next_person.value = person_store.nextPerson();
-  author_photopoems.value = await photopoem_store.filterPhotopoems({ 'author-id': person_id });
-  photographer_photopoems.value = await photopoem_store.filterPhotopoems({ 'photographer-id': person_id });
-  depicted_person_photopoems.value = await photopoem_store.filterPhotopoems({ 'depicted-person-id': person_id });
-  contributor_photopoems.value = await photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id });
 });
 
 useHead(() => {
@@ -96,47 +102,11 @@ useHead(() => {
           </tr>
           </tbody>
         </table>
-        <Divider/>
         <div class="flex flex-col gap-4">
-          <div v-if="author_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-            <h2 class="text-xl font-bold text-primary outfit-headline">Autor:in von</h2>
-            <div class="overflow-y-auto pb-2">
-              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
-                <div v-for="photopoem in author_photopoems" :key="photopoem.id">
-                  <PhotopoemPreview :photopoem="photopoem"/>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-if="photographer_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-            <h2 class="text-xl font-bold text-primary outfit-headline">Fotograf:in von</h2>
-            <div class="overflow-y-auto pb-2">
-              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
-                <div v-for="photopoem in photographer_photopoems" :key="photopoem.id">
-                  <PhotopoemPreview :photopoem="photopoem"/>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-if="depicted_person_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-            <h2 class="text-xl font-bold text-primary outfit-headline">Abgebildet in</h2>
-            <div class="overflow-y-auto pb-2">
-              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
-                <div v-for="photopoem in depicted_person_photopoems" :key="photopoem.id">
-                  <PhotopoemPreview :photopoem="photopoem"/>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-if="contributor_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
-            <h2 class="text-xl font-bold text-primary outfit-headline">Mitgewirkt an</h2>
-            <div class="overflow-y-auto pb-2">
-              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
-                <div v-for="photopoem in contributor_photopoems" :key="photopoem.id">
-                  <PhotopoemPreview :photopoem="photopoem"/>
-                </div>
-              </div>
-            </div>
+          <div v-if="contributionsSummary && contributionsSummary.length > 0" class="flex flex-col gap-2">
+            <Divider/>
+            <h2 class="text-xl font-bold text-primary outfit-headline">Beiträge nach Veröffentlichungsdatum</h2>
+            <PersonContributionsPlot :data="contributionsSummary"/>
           </div>
           <div v-if="authorThemes && authorThemes.length > 0 || authorImageMotifs && authorImageMotifs.length > 0" class="flex flex-col gap-2">
             <Divider/>
@@ -149,6 +119,46 @@ useHead(() => {
               <div class="flex flex-col gap-1 w-full" v-if="authorImageMotifs && authorImageMotifs.length > 0">
                 <h3 class="text-lg font-bold text-primary outfit-headline">Bildmotive</h3>
                 <AuthorKeywordsTreemap :data="authorImageMotifs" :width="400" :height="400"/>
+              </div>
+            </div>
+          </div>
+          <div v-if="authorOf && authorOf.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-primary outfit-headline">Autor:in von</h2>
+            <div class="overflow-y-auto pb-2">
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
+                <div v-for="photopoem in authorOf" :key="photopoem.id">
+                  <PhotopoemPreview :photopoem="photopoem"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="photographerOf && photographerOf.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-primary outfit-headline">Fotograf:in von</h2>
+            <div class="overflow-y-auto pb-2">
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
+                <div v-for="photopoem in photographerOf" :key="photopoem.id">
+                  <PhotopoemPreview :photopoem="photopoem"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="depictedOn && depictedOn.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-primary outfit-headline">Abgebildet in</h2>
+            <div class="overflow-y-auto pb-2">
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
+                <div v-for="photopoem in depictedOn" :key="photopoem.id">
+                  <PhotopoemPreview :photopoem="photopoem"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="contributorOf && contributorOf.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-primary outfit-headline">Mitgewirkt an</h2>
+            <div class="overflow-y-auto pb-2">
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
+                <div v-for="photopoem in contributorOf" :key="photopoem.id">
+                  <PhotopoemPreview :photopoem="photopoem"/>
+                </div>
               </div>
             </div>
           </div>
