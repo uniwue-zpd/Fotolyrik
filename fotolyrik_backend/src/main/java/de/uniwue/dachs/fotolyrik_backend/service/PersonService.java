@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
@@ -141,5 +142,9 @@ public class PersonService {
      */
     public PersonMetricsDTO getPersonMetrics(Long personId) {
         return personRepository.getMetricsByPerson(personId);
+
+    public List<PersonPreviewDTO> searchPeople(String query) {
+        List<Person> result = personRepository.searchPeople(query);
+        return personMapper.PersonsToPreviewDTOs(result);
     }
 }

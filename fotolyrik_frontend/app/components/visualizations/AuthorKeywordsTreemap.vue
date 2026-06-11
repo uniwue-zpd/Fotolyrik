@@ -24,12 +24,12 @@ function render() {
   } as any).sum(d => d.count) as TreemapNode<KeywordCountDTO>;
 
   d3.treemap<any>()
-      .size([width, height])
+      .size([width - 30, height - 30])
       .padding(4)(root);
 
   const color = d3.scaleOrdinal<string>()
       .domain(props.data.map(d => d.keyword))
-      .range(['#c9d6df', '#f0f0f0', '#dbe7e4', '#f7d9c4', '#d6ccc2']);
+      .range(d3.schemeTableau10);
 
   const svg = d3.select(svgRef.value);
 
@@ -38,7 +38,10 @@ function render() {
       .data(root.leaves())
       .enter()
       .append("g")
-      .attr("transform", d => `translate(${d.x0},${d.y0})`)
+      .attr("transform", d => `translate(${d.x0 + 15},${d.y0 + 15})`)
+      .style("cursor", "pointer")
+      .attr("opacity", 0)
+      .attr("transform", d => `translate(${d.x0},${d.y0}) scale(0.95)`)
       .style("cursor", "pointer")
       .on("click", (_, d: any) => {
         navigateTo(`/keywords/${d.data.id}`);
@@ -58,6 +61,14 @@ function render() {
             .duration(150)
             .attr("transform", "scale(1)");
       });
+
+  nodes
+      .transition()
+      .duration(1500)
+      .delay((_, i) => i * 200)
+      .ease(d3.easeCubicOut)
+      .attr("opacity", 1)
+      .attr("transform", d => `translate(${d.x0},${d.y0}) scale(1)`);
 
   nodes.append("rect")
       .attr("width", d => d.x1 - d.x0)

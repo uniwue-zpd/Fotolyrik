@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
@@ -78,5 +79,12 @@ public class PersonController {
     public ResponseEntity<PersonMetricsDTO> getPersonMetrics(@PathVariable Long id) {
         PersonMetricsDTO metrics = personService.getPersonMetrics(id);
         return ResponseEntity.ok(metrics);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PersonPreviewDTO>> searchPeople(@RequestParam String query) {
+        if (query == null || query.trim().length() < 2) return ResponseEntity.ok(List.of());
+        List<PersonPreviewDTO> persons = personService.searchPeople(query);
+        return ResponseEntity.ok(persons);
     }
 }

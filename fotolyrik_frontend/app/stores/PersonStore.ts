@@ -144,6 +144,10 @@ export const usePersonStore = defineStore('person', () => {
         currentPerson.value = null;
     }
 
+    async function searchPeople(query: string): Promise<PersonPreviewDTO[]> {
+        return await $fetch<PersonPreviewDTO[]>(`/api/persons/search`, { query: { query } });
+    }
+
     return {
         persons,
         currentPerson,
@@ -161,6 +165,7 @@ export const usePersonStore = defineStore('person', () => {
         fetchAuthorThemes,
         fetchAuthorImageMotifs,
         fetchPersonMetrics
+        searchPeople
     }
 });
 
