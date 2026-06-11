@@ -15,6 +15,7 @@ public class PhotopoemDTO extends BaseEntity {
     private String title;
     private String subtitle;
     private String altTitle;
+    private String series;
     private Long volume;
     private Long issue;
     private String pageNumber;

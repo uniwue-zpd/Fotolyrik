@@ -24,6 +24,11 @@ public class PhotopoemSpecification {
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("altTitle")), "%" + altTitle.toLowerCase() + "%");
     }
 
+    public static Specification<Photopoem> hasSeries(String series) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("series")), "%" + series.toLowerCase() + "%");
+    }
+
     public static Specification<Photopoem> hasVolume(Long volume) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("volume"), volume);

@@ -36,6 +36,7 @@ public class PhotopoemMapper {
         photopoemToUpdate.setTitle(photopoemDTO.getTitle());
         photopoemToUpdate.setSubtitle(photopoemDTO.getSubtitle());
         photopoemToUpdate.setAltTitle(photopoemDTO.getAltTitle());
+        photopoemToUpdate.setSeries(photopoemDTO.getSeries());
         photopoemToUpdate.setVolume(photopoemDTO.getVolume());
         photopoemToUpdate.setIssue(photopoemDTO.getIssue());
         photopoemToUpdate.setPageNumber(photopoemDTO.getPageNumber());
@@ -76,6 +77,7 @@ public class PhotopoemMapper {
         photopoemDTO.setTitle(photopoem.getTitle());
         photopoemDTO.setSubtitle(photopoem.getSubtitle());
         photopoemDTO.setAltTitle(photopoem.getAltTitle());
+        photopoemDTO.setSeries(photopoem.getSeries());
         photopoemDTO.setVolume(photopoem.getVolume());
         photopoemDTO.setIssue(photopoem.getIssue());
         photopoemDTO.setPageNumber(photopoem.getPageNumber());

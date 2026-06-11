@@ -18,6 +18,8 @@ public class Photopoem extends BaseEntity {
 
     private String altTitle;
 
+    private String series;
+
     private Long volume;
 
     private Long issue;

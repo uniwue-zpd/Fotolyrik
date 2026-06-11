@@ -48,6 +48,7 @@ public class PhotopoemController {
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String subtitle,
             @RequestParam(required = false, value = "alt-title") String altTitle,
+            @RequestParam(required = false) String series,
             @RequestParam(required = false) Long volume,
             @RequestParam(required = false) Long issue,
             @RequestParam(required = false, value = "publication-date") String publicationDate,
@@ -74,7 +75,7 @@ public class PhotopoemController {
             @RequestParam(required = false) String language
     ) {
         List<Object> paramsCount = Stream.<Object>of(
-                title, subtitle, altTitle, volume, issue, publicationDate,
+                title, subtitle, altTitle, series, volume, issue, publicationDate,
                 pubMediumId, pubMedium, locationId, authorId, author, photographerId,
                 photographer,depictedPersonId, depictedPerson, otherContributorId,
                 otherContributor, themeId, theme, imageMotifId, imageMotif,
@@ -86,7 +87,7 @@ public class PhotopoemController {
         if (paramsCount.isEmpty()) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(
                 photopoemService.filterPhotopoems(
-                        title, subtitle, altTitle, volume, issue, publicationDate,
+                        title, subtitle, altTitle, series, volume, issue, publicationDate,
                         pubMediumId, pubMedium, locationId, authorId, author, photographerId,
                         photographer,depictedPersonId, depictedPerson, otherContributorId,
                         otherContributor, themeId, theme, imageMotifId, imageMotif,
