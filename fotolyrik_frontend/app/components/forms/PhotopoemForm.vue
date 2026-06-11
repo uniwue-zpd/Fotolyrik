@@ -51,6 +51,7 @@ const resolver = ref(
       title: z.any(),
       subtitle: z.any(),
       altTitle: z.any(),
+      series: z.any(),
       volume: z.any(),
       issue: z.any(),
       pageNumber: z.any(),
@@ -166,6 +167,17 @@ const onFormSubmit = async (e: any) => {
             <InputIcon class="pi pi-pen-to-square" />
             <InputText
                 id="altTitle"
+                v-on:keydown.enter.prevent
+                fluid
+            />
+          </IconField>
+        </FormField>
+        <FormField v-slot="$field" name="series" class="flex flex-col gap-1 flex-auto">
+          <label for="series" class="font-bold">Reihe</label>
+          <IconField>
+            <InputIcon class="pi pi-pen-to-square" />
+            <InputText
+                id="series"
                 v-on:keydown.enter.prevent
                 fluid
             />

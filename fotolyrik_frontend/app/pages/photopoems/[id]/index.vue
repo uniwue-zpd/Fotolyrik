@@ -129,6 +129,10 @@ const roleText = {
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Alternativer Titel</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.altTitle }}</td>
                     </tr>
+                    <tr v-if="photopoem_item.series">
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Reihe</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.series }}</td>
+                    </tr>
                     <tr v-if="photopoem_item.volume">
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Jahrgang</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.volume }}</td>

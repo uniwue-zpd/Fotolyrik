@@ -90,6 +90,7 @@ public class PhotopoemService {
      * @param title refers to the title of the photopoem
      * @param subtitle refers to the subtitle of the photopoem
      * @param altTitle refers to the alternative title of the photopoem
+     * @param series refers to the series of the photopoem
      * @param volume refers to the volume number
      * @param issue refers to the issue number
      * @param publicationDate refers to the publication date
@@ -119,6 +120,7 @@ public class PhotopoemService {
             String title,
             String subtitle,
             String altTitle,
+            String series,
             Long volume,
             Long issue,
             String publicationDate,
@@ -154,6 +156,9 @@ public class PhotopoemService {
         }
         if (altTitle != null && !altTitle.isEmpty()) {
             spec = spec.and(PhotopoemSpecification.hasAltTitle(altTitle));
+        }
+        if (series != null && !series.isEmpty()) {
+            spec = spec.and(PhotopoemSpecification.hasSeries(series));
         }
         if (volume != null) {
             spec = spec.and(PhotopoemSpecification.hasVolume(volume));

@@ -92,6 +92,7 @@ export interface PhotoPoemDTO extends Auditable {
     title: string | null;
     subtitle: string | null;
     altTitle: string | null;
+    series: string | null;
     volume: number | null;
     issue: number | null;
     pageNumber: string | null;
