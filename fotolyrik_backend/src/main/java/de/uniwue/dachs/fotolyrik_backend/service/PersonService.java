@@ -142,6 +142,7 @@ public class PersonService {
      */
     public PersonMetricsDTO getPersonMetrics(Long personId) {
         return personRepository.getMetricsByPerson(personId);
+    }
 
     public List<PersonPreviewDTO> searchPeople(String query) {
         List<Person> result = personRepository.searchPeople(query);

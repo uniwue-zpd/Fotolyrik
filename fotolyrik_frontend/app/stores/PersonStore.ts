@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
-import {ref} from 'vue';
-import type {KeywordCountDTO, PersonDTO} from "~/utils/types";
+import { ref } from 'vue';
+import type { KeywordCountDTO, PersonDTO, PersonMetricsDTO } from "~/utils/types";
 
 export const usePersonStore = defineStore('person', () => {
     // State
@@ -164,7 +164,7 @@ export const usePersonStore = defineStore('person', () => {
         clearPerson,
         fetchAuthorThemes,
         fetchAuthorImageMotifs,
-        fetchPersonMetrics
+        fetchPersonMetrics,
         searchPeople
     }
 });
