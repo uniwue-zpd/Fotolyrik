@@ -67,7 +67,7 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.5.5
-    command: start
+    command: start --import-realm
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USERNAME:-admin}
       - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-admin}
@@ -80,6 +80,8 @@ services:
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME_STRICT=false
       - KC_HTTP_RELATIVE_PATH=/auth
+    volumes:
+      - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
     depends_on:
       keycloak-db:
         condition: service_healthy
@@ -94,7 +96,7 @@ services:
     volumes:
       - ${WORKSPACE:?error}/keycloak_db:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "keycloak" ]
+      test: [ "CMD", "pg_isready", "-U", "${KEYCLOAK_DB_USER}", "-d", "keycloak" ]
       interval: 10s
       retries: 10
       start_period: 10s
