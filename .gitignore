@@ -23,6 +23,7 @@ fotolyrik_frontend/.cache/
 # Environment variables
 env-dev
 nginx/.htpasswd
+keycloak/realm.json
 
 # OS
 .DS_Store
