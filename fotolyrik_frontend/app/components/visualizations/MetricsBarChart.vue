@@ -6,7 +6,7 @@ const props = defineProps<{
   data: Object;
   width?: number;
   height?: number;
-  legend: Object;
+  legend: Record<string,string>;
 }>();
 
 
@@ -83,7 +83,7 @@ function render() {
       .style("font-size", "12px")
       .attr("class", "roboto-plain")
       .style("fill", "#333")
-      .text(d => legend[d]);
+      .text(d => legend[d] ?? "");
 
   svg.selectAll("text.value")
       .data(keys)
