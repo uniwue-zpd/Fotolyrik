@@ -26,8 +26,7 @@ const rolesMap: Record<ContributorRole, string> = {
   depicted: 'Abgebildet auf'
 };
 
-// Callback to determine circle fill color based on item role
-const getCircleColor = (node: PersonContributions) => colors[node.role] || '#333';
+const getCircleColor = (node: PersonContributions) => colors[node.role] || '#333333';
 </script>
 
 <template>

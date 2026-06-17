@@ -34,17 +34,12 @@ function render() {
 
   const svg = d3.select(svgRef.value);
 
-  // Conditionally append container if zoom is enabled (or always use it to match structural parity)
-  const container = props.enableZoom
-      ? svg.append("g").attr("class", "zoom-container")
-      : svg;
-
   const x = d3.scaleLinear()
       .domain([startYear, endYear])
       .range([60, props.width - 30]);
 
   // Render Axis
-  container.append("g")
+  svg.append("g")
       .attr("transform", `translate(0, ${props.height - 20})`)
       .call(
           d3.axisBottom(x)
@@ -76,7 +71,7 @@ function render() {
   }
 
   // Draw Circles
-  const circles = container.selectAll("circle.point")
+  const circles = svg.selectAll("circle.point")
       .data(nodes)
       .enter()
       .append("circle")
@@ -99,7 +94,7 @@ function render() {
   circles.append("title")
       .text((d: any) => `${d.title ?? d.altTitle ?? 'Kein Titel'}`);
 
-  container.selectAll("circle.point")
+  svg.selectAll("circle.point")
       .transition()
       .duration(1500)
       .delay((_, i) => i * 100)
@@ -109,7 +104,7 @@ function render() {
   // Zoom management
   if (props.enableZoom) {
     const zoomBehavior = d3.zoom<SVGSVGElement, unknown>()
-        .scaleExtent([0.3, 1.5])
+        .scaleExtent([0.2, 1.8])
         .on("zoom", (event) => {
           const { k, y } = event.transform;
           circles.attr("cy", (d: any) => d.y * k + y);
