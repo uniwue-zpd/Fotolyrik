@@ -1,32 +1,29 @@
 <script setup lang="ts">
-import type { ContributorRole } from "~/utils/types";
 import TimelinePlot from "./TimelinePlot.vue";
+import type {PhotoPoemPublicationDateDTO} from "~/utils/types";
 
-interface PersonContributions extends PhotoPoemDTO {
-  role: ContributorRole;
-}
 
 defineProps<{
   width?: number;
   height?: number;
-  data: PersonContributions[];
+  data: PhotoPoemPublicationDateDTO[];
 }>();
 
-const colors: Record<ContributorRole, string> = {
-  author: '#2563eb',
-  photographer: '#dc2626',
-  contributor: '#16a34a',
-  depicted: '#9333ea'
+const colors: Record<PersonRole, string> = {
+  AUTHOR: '#2563eb',
+  PHOTOGRAPHER: '#dc2626',
+  OTHER: '#16a34a',
+  DEPICTED: '#9333ea'
 };
 
-const rolesMap: Record<ContributorRole, string> = {
-  author: 'Autor:in',
-  photographer: 'Fotograf:in',
-  contributor: 'Mitgewirkt an',
-  depicted: 'Abgebildet auf'
+const rolesMap: Record<PersonRole, string> = {
+  AUTHOR: 'Autor:in',
+  PHOTOGRAPHER: 'Fotograf:in',
+  OTHER: 'Mitgewirkt an',
+  DEPICTED: 'Abgebildet auf'
 };
 
-const getCircleColor = (node: PersonContributions) => colors[node.role] || '#333333';
+const getCircleColor = (node: PhotoPoemPublicationDateDTO) => (node.role && colors[node.role]) || '#333333';
 </script>
 
 <template>
@@ -38,7 +35,7 @@ const getCircleColor = (node: PersonContributions) => colors[node.role] || '#333
           style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #333;"
       >
         <span :style="{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', backgroundColor: color }"></span>
-        {{ rolesMap[role as ContributorRole] }}
+        {{ rolesMap[role as PersonRole] }}
       </div>
     </div>
 

@@ -124,6 +124,16 @@ export interface PhotoPoemPreviewDTO {
     title: string | null;
     altTitle: string | null;
 }
+enum DepictedRole {
+    DEPICTED = "DEPICTED"
+}
+export type PersonRole  = ContributionRole |DepictedRole;
+export interface PhotoPoemPublicationDateDTO{
+    id: number;
+    title: string | null;
+    publicationDate: string | null;
+    role?: PersonRole;
+}
 
 export interface PlaceDTO extends Auditable {
     name: string;

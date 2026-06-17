@@ -1,12 +1,13 @@
-<script setup lang="ts" generic="T extends PhotoPoemDTO">
+<script setup lang="ts">
 import * as d3 from "d3";
 import { ref, onMounted, watch } from "vue";
+import type {PhotoPoemPublicationDateDTO} from "~/utils/types";
 
 const props = withDefaults(defineProps<{
   width?: number;
   height?: number;
-  data: T[];
-  fillColor?: string | ((d: T) => string);
+  data: PhotoPoemPublicationDateDTO[];
+  fillColor?: string | ((d: PhotoPoemPublicationDateDTO) => string);
   enableZoom?: boolean;
 }>(), {
   width: 1000,
