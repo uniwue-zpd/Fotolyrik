@@ -127,6 +127,9 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         }
     }
 
+    async function fetchPubMediumMetrics(id: number): Promise<PubMediumMetricsDTO> {
+        return await $fetch<PubMediumMetricsDTO>(`/api/publication_media/${id}/stats/metrics`);
+    }
         // Clear current publication medium
     function clearPubMedium() {
         current_pub_medium.value = null;
@@ -144,6 +147,7 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         deletePubMedium,
         previousPubMedium,
         nextPubMedium,
+        fetchPubMediumMetrics,
         clearPubMedium,
    }
 });

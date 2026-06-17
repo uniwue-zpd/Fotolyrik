@@ -1,6 +1,8 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import de.uniwue.dachs.fotolyrik_backend.specification.PubMediumSpecification;
@@ -193,5 +195,14 @@ public class PubMediumService {
         else {
             pubMediumRepository.deleteById(id);
         }
+    }
+
+    /**
+     * GET metrics of a pub_medium with given ID
+     * @param pubMediumId ID of the person
+     * @return a {@link PubMediumMetricsDTO} with the metrics of the person
+     */
+    public PubMediumMetricsDTO getPubMediumMetrics(Long pubMediumId) {
+        return pubMediumRepository.getMetricsByPubMedium(pubMediumId);
     }
 }

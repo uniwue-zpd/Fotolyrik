@@ -44,7 +44,7 @@ const highlight = computed(() => photopoem_store.currentHighlight);
                       class="truncate"
                   >
                     <NuxtLink
-                        :to="`/person/${ person.id }`"
+                        :to="`/persons/${ person.id }`"
                         class="text-primary font-medium"
                     >
                     {{ person.fullName }}
