@@ -110,7 +110,7 @@ onMounted(async () => {
               </div>
             </div>
           </div>
-          <div v-if="pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+          <div v-if="pub_medium_photopoems.some(poem => poem.publicationDate)" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Veröffentlichungen nach Datum</h2>
             <PhotopoemDatePlot :data="pub_medium_photopoems ?? []"/>
           </div>
