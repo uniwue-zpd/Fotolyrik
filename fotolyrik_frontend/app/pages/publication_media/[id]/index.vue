@@ -2,6 +2,9 @@
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 import PubMediumMetrics from "~/components/visualizations/PubMediumMetrics.vue";
+import PersonContributionsPlot from "~/components/visualizations/PersonContributionsPlot.vue";
+import type {ContributorRole} from "~/utils/types";
+import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue";
 
 const router = useRoute();
 const pubmedium_store = usePubMediumStore();
@@ -22,6 +25,7 @@ onMounted(async () => {
   pub_medium_photopoems.value = await photopoem_store.filterPhotopoems({'pubmedium-id': pub_medium_id});
   pub_medium_metrics.value = await pubmedium_store.fetchPubMediumMetrics(pub_medium_id);
 });
+
 </script>
 
 <template>
@@ -105,6 +109,10 @@ onMounted(async () => {
                 </div>
               </div>
             </div>
+          </div>
+          <div v-if="pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-primary outfit-headline">Veröffentlichungen nach Datum</h2>
+            <PhotopoemDatePlot :data="pub_medium_photopoems ?? []"/>
           </div>
         </div>
       </template>
