@@ -94,6 +94,7 @@ function render() {
       .attr("y", d => (y(d)! + y.bandwidth() / 2))
       .attr("dy", "0.35em")
       .style("font-size", "12px")
+
       .style("fill", "#444")
       .style("opacity", 0)
       .text(d => (props.data as any)[d]);

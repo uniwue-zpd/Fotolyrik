@@ -233,8 +233,8 @@ export interface PersonMetricsDTO {
 export interface PubMediumMetricsDTO {
     photopoems: number;
     keywords: number;
-    authorsWorkedWith: number;
-    photographersWorkedWith: number;
+    authors: number;
+    photographers: number;
     depictedPeople: number;
 }
 

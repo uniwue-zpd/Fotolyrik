@@ -11,9 +11,9 @@ const props = defineProps<{
 
 const legend = {
   photopoems: "Fotogedichte",
-  authorsWorkedWith: "Gearbeitet mit Autor:innen",
-  photographersWorkedWith: "Gearbeitet mit Fotograf:innen",
-  depictedPeople: "Abgebildete Personen",
+  authors: "Autor:innen",
+  photographers: "Fotograf:innen",
+  depictedPeople: "Abgebildete Persönlichkeitenn",
   keywords: "Schlagworte"
 };
 const width = props.width ?? 350;

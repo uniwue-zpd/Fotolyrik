@@ -17,8 +17,8 @@ public interface PubMediumRepository extends JpaRepository<PubMedium, Long>, Jpa
     SELECT
     COUNT(DISTINCT p.id) AS photopoems,
     COUNT(DISTINCT k.keyword_id) AS keywords,
-    COUNT(DISTINCT phtr.contributor_id) AS photographersWorkedWith,
-    COUNT(DISTINCT authr.contributor_id) AS authorsWorkedWith,
+    COUNT(DISTINCT phtr.contributor_id) AS photographers,
+    COUNT(DISTINCT authr.contributor_id) AS authors,
     COUNT(DISTINCT dp.person_id) AS depictedPeople
     FROM pub_medium pm
     JOIN photopoem p ON p.pub_medium_id = pm.id
