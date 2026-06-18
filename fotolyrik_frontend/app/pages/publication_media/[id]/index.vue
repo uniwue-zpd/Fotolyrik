@@ -2,8 +2,6 @@
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 import PubMediumMetrics from "~/components/visualizations/PubMediumMetrics.vue";
-import PersonContributionsPlot from "~/components/visualizations/PersonContributionsPlot.vue";
-import type {ContributorRole} from "~/utils/types";
 import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue";
 
 const router = useRoute();
@@ -16,6 +14,9 @@ const previous_pub_medium = ref<PubMediumDTO | null>(null);
 const next_pub_medium = ref<PubMediumDTO | null>(null);
 const pub_medium_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const pub_medium_metrics = ref<PubMediumMetricsDTO | null>(null);
+const photopoemsHavePubDates = computed(() => {
+  return pub_medium_photopoems.value.some(poem => poem.publicationDate);
+});
 
 onMounted(async () => {
   await pubmedium_store.fetchPubMediumById(pub_medium_id);
@@ -110,7 +111,7 @@ onMounted(async () => {
               </div>
             </div>
           </div>
-          <div v-if="pub_medium_photopoems.some(poem => poem.publicationDate)" class="max-h-[30vh] flex flex-col gap-2">
+          <div v-if="photopoemsHavePubDates" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Veröffentlichungen nach Datum</h2>
             <PhotopoemDatePlot :data="pub_medium_photopoems ?? []"/>
           </div>
