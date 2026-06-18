@@ -5,6 +5,12 @@ spring:
   application:
     name: fotolyrik_backend
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/fotolyrik
+
   servlet:
     multipart:
       max-file-size: 20MB  # Maximum size allowed per individual file
