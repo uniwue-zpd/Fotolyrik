@@ -24,15 +24,17 @@ const { data: photographerOf } = await useAsyncData(`photographer-${ person_id }
 const { data: contributorOf } = await useAsyncData(`contributor-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id }));
 const { data: depictedOn } = await useAsyncData(`depicted-${ person_id }-on`, () => photopoem_store.filterPhotopoems({ 'depicted-person-id': person_id }));
 
-const contributionsSummary = computed(() => {
+const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
+  const normalize = (list: any[] | undefined, role: PersonRole) =>
+      (list ?? []).map(({id, title, publicationDate}) => ({id, title, publicationDate, role}));
+
   return [
-    ...(authorOf.value ?? []).map(d => ({ ...d, role: 'author' as ContributorRole })),
-    ...(photographerOf.value ?? []).map(d => ({ ...d, role: 'photographer' as ContributorRole })),
-    ...(contributorOf.value ?? []).map(d => ({ ...d, role: 'contributor' as ContributorRole })),
-    ...(depictedOn.value ?? []).map(d => ({ ...d, role: 'depicted' as ContributorRole }))
+    ...normalize(authorOf.value, 'AUTHOR' as PersonRole),
+    ...normalize(photographerOf.value, 'PHOTOGRAPHER' as PersonRole),
+    ...normalize(contributorOf.value, 'OTHER' as PersonRole),
+    ...normalize(depictedOn.value, 'DEPICTED' as PersonRole)
   ];
 });
-
 const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
 
 onMounted(async () => {
