@@ -37,6 +37,14 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   runtimeConfig: {
+    oauth: {
+      serverUrl: '',
+      serverUrlInternal: '',
+      realm: '',
+      clientId: '',
+      clientSecret: '',
+      redirectUrl: ''
+    },
     apiBaseUrl: 'http://localhost:8080'
   },
   routeRules: {
@@ -45,12 +53,13 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-      '@pinia/nuxt',
-      '@primevue/nuxt-module',
-      '@formkit/nuxt',
-      '@nuxt/icon',
-      '@nuxtjs/color-mode',
-      '@vueuse/nuxt',
+    '@pinia/nuxt',
+    '@primevue/nuxt-module',
+    '@formkit/nuxt',
+    '@nuxt/icon',
+    '@nuxtjs/color-mode',
+    '@vueuse/nuxt',
+    'nuxt-auth-utils'
   ],
   primevue: {
     options: {
