@@ -1,6 +1,5 @@
 export default defineOAuthKeycloakEventHandler({
     async onSuccess(event, { user, tokens }) {
-        console.log(tokens)
         await setUserSession(event, {
             user: {
                 id: user.id,
