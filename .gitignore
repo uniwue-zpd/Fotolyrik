@@ -19,6 +19,7 @@ fotolyrik_frontend/dist/
 fotolyrik_frontend/.nuxt/
 fotolyrik_frontend/.output/
 fotolyrik_frontend/.cache/
+fotolyrik_frontend/.env
 
 # Environment variables
 env-dev

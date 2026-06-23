@@ -2,6 +2,7 @@
 import Aura from '@primeuix/themes/aura';
 import tailwindcss from "@tailwindcss/vite";
 import { definePreset } from "@primeuix/themes";
+import { defineNuxtConfig } from 'nuxt/config';
 
 const UniwuePreset = definePreset(Aura, {
     semantic: {
@@ -34,18 +35,20 @@ const UniwuePreset = definePreset(Aura, {
 })
 
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
-  devtools: { enabled: true },
-  runtimeConfig: {
-    oauth: {
-      serverUrl: '',
-      serverUrlInternal: '',
-      realm: '',
-      clientId: '',
-      clientSecret: '',
-      redirectUrl: ''
-    },
-    apiBaseUrl: 'http://localhost:8080'
+    compatibilityDate: '2024-11-01',
+    devtools: { enabled: true },
+    runtimeConfig: {
+        apiBaseUrl: 'http://localhost:8080',
+        oauth: {
+            keycloak: {
+                serverUrl: '',
+                serverUrlInternal: '',
+                realm: '',
+                clientId: '',
+                clientSecret: '',
+                redirectURL: '',
+            }
+        }
   },
   routeRules: {
     '/photopoems/**': {
