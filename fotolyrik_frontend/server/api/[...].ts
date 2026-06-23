@@ -1,5 +1,4 @@
 import { joinURL } from "ufo";
-import {getUserSession} from "#imports";
 
 export default defineEventHandler(async (event) => {
     const proxyUrl = useRuntimeConfig().apiBaseUrl;
