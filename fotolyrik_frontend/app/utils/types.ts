@@ -248,6 +248,14 @@ export interface PubMediumMetricsDTO {
     depictedPeople: number;
 }
 
+export interface PlaceMetricsDTO {
+    photopoems: number;
+    keywords: number;
+    authors: number;
+    photographers: number;
+    depictedPeople: number;
+}
+
 /**
  * Describes contribution roles of persons in relation to a photopoem.
  */

@@ -2,11 +2,12 @@
 import maplibregl, { LngLat } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css"
 import { ref, onMounted } from "vue";
-import type { PlaceDTO } from "~/utils/types";
+import type {PlaceDTO, PlaceMetricsDTO} from "~/utils/types";
 import PubMediumPreview from "~/components/UI/PubMediumPreview.vue";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import SkeletonPlaceholder from "~/components/UI/placeholders/SkeletonPlaceholder.vue";
 import NotFoundPlaceholder from "~/components/UI/placeholders/NotFoundPlaceholder.vue";
+import PlaceMetrics from "~/components/visualizations/PlaceMetrics.vue";
 
 const loading = ref(true);
 
@@ -17,6 +18,7 @@ const route = useRoute();
 const place_id = Number(route.params.id);
 const place_item = ref<PlaceDTO | null>(null);
 const place_pub_media = ref<PubMediumDTO[] | []>([]);
+const place_metrics = ref<PlaceMetricsDTO | null>(null);
 
 const has_coords = computed(() => {
   return place_item.value && place_item.value.latitude && place_item.value.longitude;
@@ -41,6 +43,7 @@ onMounted(async () => {
     loading.value = false;
   }
   place_pub_media.value = await pubmedium_store.filterPubMedia({ 'pubplace-id': place_id });
+  // place_metrics.value = TODO populate from backend here
   if (!document.getElementById("map")) {
     return;
   }
@@ -105,7 +108,10 @@ onMounted(async () => {
           <p class="roboto-plain text-center">Für diesen Ort sind bisher keine Koordinaten hinterlegt</p>
         </div>
       </div>
-      <div class="bg-primary rounded-md"/>
+      <div class="rounded-md flex items-center">
+        <PlaceMetrics v-if="place_metrics" :data="place_metrics"></PlaceMetrics>
+      </div>
+
     </div>
     <div class="text-md roboto-plain">{{ place_item?.description }}</div>
     <h2 class="text-xl font-bold text-primary outfit-headline">Häufigkeitsverteilung</h2>
