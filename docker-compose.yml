@@ -76,7 +76,7 @@ services:
     restart: always
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.5.5
+    image: quay.io/keycloak/keycloak:26.6.3
     command: start --import-realm
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USERNAME:-admin}
@@ -85,11 +85,11 @@ services:
       - KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
       - KC_DB_USERNAME=${KEYCLOAK_DB_USER}
       - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
-      - KC_PROXY=edge
       - KC_PROXY_HEADERS=xforwarded
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME_STRICT=false
       - KC_HTTP_RELATIVE_PATH=/auth
+      - KC_LOG_LEVEL=DEBUG
     volumes:
       - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
     depends_on:
