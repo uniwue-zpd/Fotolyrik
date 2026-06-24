@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PlaceMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import de.uniwue.dachs.fotolyrik_backend.repository.PlaceRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
@@ -59,5 +60,13 @@ public class PlaceService {
         } else {
             placeRepository.deleteById(id);
         }
+    }
+    /**
+     * GET metrics of a place with given ID
+     * @param placeId ID of the place
+     * @return a {@link PlaceMetricsDTO} with the metrics of the place
+     */
+    public PlaceMetricsDTO getPlaceMetrics(Long placeId) {
+        return placeRepository.getMetricsByPlace(placeId);
     }
 }

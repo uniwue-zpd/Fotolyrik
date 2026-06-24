@@ -43,7 +43,7 @@ onMounted(async () => {
     loading.value = false;
   }
   place_pub_media.value = await pubmedium_store.filterPubMedia({ 'pubplace-id': place_id });
-  // place_metrics.value = TODO populate from backend here
+  place_metrics.value = await place_store.fetchPlaceMetrics(place_id)
   if (!document.getElementById("map")) {
     return;
   }

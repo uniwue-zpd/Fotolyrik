@@ -126,6 +126,9 @@ export const usePlaceStore = defineStore('place', () => {
         }
     }
 
+    async function fetchPlaceMetrics(id: number): Promise<PlaceMetricsDTO> {
+        return await $fetch<PlaceMetricsDTO>(`/api/places/${id}/stats/metrics`);
+    }
         // Clear current place
     function clearPlace() {
         current_place.value = null;
@@ -143,6 +146,7 @@ export const usePlaceStore = defineStore('place', () => {
         deletePlace,
         previousPlace,
         nextPlace,
+        fetchPlaceMetrics,
         clearPlace
     }
 })

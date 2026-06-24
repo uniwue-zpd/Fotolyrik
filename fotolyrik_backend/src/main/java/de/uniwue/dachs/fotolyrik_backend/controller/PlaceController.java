@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PlaceMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import de.uniwue.dachs.fotolyrik_backend.service.PlaceService;
 import jakarta.persistence.EntityNotFoundException;
@@ -55,5 +56,10 @@ public class PlaceController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
         }
+    }
+    @GetMapping("/{id}/stats/metrics")
+    public ResponseEntity<PlaceMetricsDTO> getPlaceMetrics(@PathVariable Long id) {
+        PlaceMetricsDTO metrics = placeService.getPlaceMetrics(id);
+        return ResponseEntity.ok(metrics);
     }
 }
