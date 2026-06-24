@@ -8,17 +8,20 @@ import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import SkeletonPlaceholder from "~/components/UI/placeholders/SkeletonPlaceholder.vue";
 import NotFoundPlaceholder from "~/components/UI/placeholders/NotFoundPlaceholder.vue";
 import PlaceMetrics from "~/components/visualizations/PlaceMetrics.vue";
+import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue";
 
 const loading = ref(true);
 
 const place_store = usePlaceStore();
 const pubmedium_store = usePubMediumStore();
+const photopoem_store = usePhotopoemStore();
 
 const route = useRoute();
 const place_id = Number(route.params.id);
 const place_item = ref<PlaceDTO | null>(null);
 const place_pub_media = ref<PubMediumDTO[] | []>([]);
 const place_metrics = ref<PlaceMetricsDTO | null>(null);
+const place_photopoems = ref<PhotoPoemDTO[] | []>([]);
 
 const has_coords = computed(() => {
   return place_item.value && place_item.value.latitude && place_item.value.longitude;
@@ -43,6 +46,7 @@ onMounted(async () => {
     loading.value = false;
   }
   place_pub_media.value = await pubmedium_store.filterPubMedia({ 'pubplace-id': place_id });
+  place_photopoems.value = await photopoem_store.filterPhotopoems({ 'pubplace-id': place_id });
   place_metrics.value = await place_store.fetchPlaceMetrics(place_id)
   if (!document.getElementById("map")) {
     return;
@@ -114,9 +118,9 @@ onMounted(async () => {
 
     </div>
     <div class="text-md roboto-plain">{{ place_item?.description }}</div>
-    <h2 class="text-xl font-bold text-primary outfit-headline">Häufigkeitsverteilung</h2>
-    <div class="h-[250px]  rounded-md">
-
+    <h2 class="text-xl font-bold text-primary outfit-headline" v-if="place_photopoems.length > 0">Häufigkeitsverteilung</h2>
+    <div class="h-[250px]  rounded-md" v-if="place_photopoems.length > 0">
+      <PhotopoemDatePlot :data="place_photopoems ?? []" />
     </div>
     <h2 class="text-xl font-bold text-primary outfit-headline">Netzwerke</h2>
     <div class="flex flex-col gap-2 md:grid md:grid-cols-2">
