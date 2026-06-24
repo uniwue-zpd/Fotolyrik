@@ -4,12 +4,13 @@ import type {PersonMetricsDTO, PubMediumMetricsDTO} from "~/utils/types";
 import MetricsBarChart from "~/components/visualizations/MetricsBarChart.vue";
 
 const props = defineProps<{
-  data: PubMediumMetricsDTO;
+  data: PlaceMetricsDTO;
   width?: number;
   height?: number;
 }>();
 
 const legend = {
+  pubMedia: "Publikationsmedien",
   photopoems: "Fotogedichte",
   authors: "Autor:innen",
   photographers: "Fotograf:innen",

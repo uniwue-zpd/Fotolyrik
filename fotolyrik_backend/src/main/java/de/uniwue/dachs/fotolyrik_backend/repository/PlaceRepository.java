@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface PlaceRepository extends JpaRepository<Place, Long> {
     @Query(value = """
     SELECT
+        COUNT(DISTINCT pm.id) AS pubMedia,
         COUNT(DISTINCT p.id) AS photopoems,
         COUNT(DISTINCT k.keyword_id) AS keywords,
         COUNT(DISTINCT phtr.contributor_id) AS photographers,
@@ -19,7 +20,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
         COUNT(DISTINCT dp.person_id) AS depictedPeople
     FROM pub_medium_place pmp
     JOIN pub_medium pm ON pm.id = pmp.pub_medium_id
-    JOIN photopoem p ON p.pub_medium_id = pm.id
+    LEFT JOIN photopoem p ON p.pub_medium_id = pm.id
     LEFT JOIN (
         SELECT pt.photopoem_id AS photopoem_id, pt.keyword_id AS keyword_id
         FROM photopoem_themes pt

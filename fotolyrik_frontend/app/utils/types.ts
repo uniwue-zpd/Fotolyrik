@@ -249,6 +249,7 @@ export interface PubMediumMetricsDTO {
 }
 
 export interface PlaceMetricsDTO {
+    pubMedia: number;
     photopoems: number;
     keywords: number;
     authors: number;
