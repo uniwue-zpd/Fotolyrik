@@ -54,6 +54,18 @@ public class PhotopoemSpecification {
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("publicationMedium").get("title")), "%" + pubMedium.toLowerCase() + "%");
     }
 
+    public static Specification<Photopoem> hasPubPlaceId(Long pubPlaceId) {
+        return (root, query, criteriaBuilder) -> {
+            if (pubPlaceId == null) {
+                return null;
+            }
+
+            Join<Photopoem, PubMedium> pubMediumJoin = root.join("publicationMedium");
+            Join<PubMedium, Place> placeJoin = pubMediumJoin.join("publicationPlaces");
+            return criteriaBuilder.equal(placeJoin.get("id"), pubPlaceId);
+        };
+    }
+
     public static Specification<Photopoem> hasLocationId(Long locationId) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("foundIn").get("id"), locationId);

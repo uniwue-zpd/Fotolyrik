@@ -115,7 +115,9 @@ onMounted(async () => {
     </div>
     <div class="text-md roboto-plain">{{ place_item?.description }}</div>
     <h2 class="text-xl font-bold text-primary outfit-headline">Häufigkeitsverteilung</h2>
-    <div class="h-[250px] bg-primary rounded-md"/>
+    <div class="h-[250px]  rounded-md">
+
+    </div>
     <h2 class="text-xl font-bold text-primary outfit-headline">Netzwerke</h2>
     <div class="flex flex-col gap-2 md:grid md:grid-cols-2">
       <div class="h-[250px] bg-primary rounded-md"/>

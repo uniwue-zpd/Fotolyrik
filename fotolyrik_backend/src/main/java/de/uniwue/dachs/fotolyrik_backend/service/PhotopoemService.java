@@ -126,6 +126,7 @@ public class PhotopoemService {
             String publicationDate,
             Long pubMediumId,
             String pubMedium,
+            Long pubPlaceId,
             Long locationId,
             Long authorId,
             String author,
@@ -174,6 +175,9 @@ public class PhotopoemService {
         }
         if (pubMedium != null && !pubMedium.isEmpty()) {
             spec = spec.and(PhotopoemSpecification.hasPubMedium(pubMedium));
+        }
+        if (pubPlaceId != null) {
+            spec = spec.and(PhotopoemSpecification.hasPubPlaceId(pubPlaceId));
         }
         if (locationId != null){
             spec = spec.and(PhotopoemSpecification.hasLocationId(locationId));
