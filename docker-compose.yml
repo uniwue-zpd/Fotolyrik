@@ -25,7 +25,8 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       # Decide whether to use the issuer URI from the environment variable or from application.yml.
       # The environment variable will override the application.yml setting if both are set.
-      # - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${KEYCLOAK_ISSUER_URI:-http://keycloak:8080/realms/fotolyrik}
+      # - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=
+      # - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=
     volumes:
       - ${WORKSPACE:?error}/uploads:/uploads
     depends_on:
@@ -89,6 +90,8 @@ services:
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME_STRICT=false
       - KC_HTTP_RELATIVE_PATH=/auth
+      - KC_HOSTNAME=${KEYCLOAK_HOSTNAME:-localhost}
+      - KC_HOSTNAME_PORT=${PORT_NGINX:-80}
       - KC_LOG_LEVEL=DEBUG
     volumes:
       - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
