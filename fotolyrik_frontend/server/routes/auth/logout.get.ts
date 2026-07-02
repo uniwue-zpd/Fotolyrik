@@ -1,4 +1,3 @@
-//logout.get.ts
 export default defineEventHandler(async (event) => {
     const session = await getUserSession(event);
     const refreshToken = session.secure?.refreshToken;
@@ -20,8 +19,7 @@ export default defineEventHandler(async (event) => {
             }
             body.append('refresh_token', refreshToken);
 
-            const internalBase = (config.oauth.keycloak.serverUrlInternal || serverUrl).replace(/\/$/, "");
-            await $fetch(`${internalBase}/realms/${realm}/protocol/openid-connect/logout`, {
+            await $fetch(logoutUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body

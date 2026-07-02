@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import GeneralSearch from "~/components/UI/GeneralSearch.vue";
 const op = ref();
 const toggle = (event: any) => op.value.toggle(event)
-const userSession = useUserSession();
+const {loggedIn, user} = useUserSession();
 </script>
 
 <template>
@@ -22,10 +22,10 @@ const userSession = useUserSession();
           <Button type="button" icon="pi pi-user" rounded-sm aria-label="User" variant="link" class="text-white" @click="toggle"/>
           <Popover ref="op">
             <div class="card flex justify-center">
-              <div v-if="userSession.user.value" >Hallo {{userSession.user.value.name}}
+              <div v-if="user" >Hallo {{user.name}}
                 <NuxtLink to="/auth/logout" external><Button>Logout </Button></NuxtLink>
               </div>
-              <NuxtLink v-if="!userSession.loggedIn.value" to="/auth/keycloak" external><Button>Login </Button></NuxtLink>
+              <NuxtLink v-if="!loggedIn" to="/auth/keycloak" external><Button>Login </Button></NuxtLink>
             </div>
           </Popover>
         </div>
