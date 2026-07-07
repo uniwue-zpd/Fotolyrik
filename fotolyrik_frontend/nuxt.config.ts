@@ -42,7 +42,6 @@ export default defineNuxtConfig({
         oauth: {
             keycloak: {
                 serverUrl: '',
-                serverUrlInternal: '',
                 realm: '',
                 clientId: '',
                 clientSecret: '',
