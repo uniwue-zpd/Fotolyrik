@@ -209,13 +209,6 @@ export enum AccessLevel {
     INTERNAL = "INTERNAL",
     RESTRICTED = "RESTRICTED"
 }
-declare module '#auth-utils' {
-    interface User {
-        name: string
-        id:string
-        email?: string
-    }
-}
 
 // Visualizations area
 

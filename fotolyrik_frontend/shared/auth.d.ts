@@ -4,6 +4,12 @@ declare module '#auth-utils' {
         refreshToken: string;
         accessTokenExpires: number;
     }
+
+    interface User {
+        name: string
+        id:string
+        email?: string
+    }
 }
 
 export {};
