@@ -25,7 +25,7 @@ const {loggedIn, user} = useUserSession();
               <div v-if="user" >Hallo {{user.name}}
                 <NuxtLink to="/auth/logout" external><Button>Logout </Button></NuxtLink>
               </div>
-              <NuxtLink v-if="!loggedIn" to="/auth/keycloak" external><Button>Login </Button></NuxtLink>
+              <NuxtLink v-if="!loggedIn" to="/auth/login" external><Button>Login </Button></NuxtLink>
             </div>
           </Popover>
         </div>
