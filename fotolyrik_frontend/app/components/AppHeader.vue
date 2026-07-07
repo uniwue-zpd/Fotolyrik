@@ -2,9 +2,10 @@
 import 'primeicons/primeicons.css';
 import { ref } from 'vue';
 import GeneralSearch from "~/components/UI/GeneralSearch.vue";
+import AuthorizationCard from "~/components/UI/AuthorizationCard.vue";
+
 const op = ref();
-const toggle = (event: any) => op.value.toggle(event)
-const {loggedIn, user} = useUserSession();
+const toggle = (event: any) => op.value.toggle(event);
 </script>
 
 <template>
@@ -21,12 +22,7 @@ const {loggedIn, user} = useUserSession();
         <div class="card flex justify-center align-middle text-white">
           <Button type="button" icon="pi pi-user" rounded-sm aria-label="User" variant="link" class="text-white" @click="toggle"/>
           <Popover ref="op">
-            <div class="card flex justify-center">
-              <div v-if="user" >Hallo {{user.name}}
-                <NuxtLink to="/auth/logout" external><Button>Logout </Button></NuxtLink>
-              </div>
-              <NuxtLink v-if="!loggedIn" to="/auth/login" external><Button>Login </Button></NuxtLink>
-            </div>
+            <AuthorizationCard/>
           </Popover>
         </div>
         <UIButtonsDarkThemeToggle></UIButtonsDarkThemeToggle>
