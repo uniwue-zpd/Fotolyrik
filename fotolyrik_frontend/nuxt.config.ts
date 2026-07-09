@@ -90,6 +90,8 @@ export default defineNuxtConfig({
         '@formkit/addons',
         '@formkit/core',
         '@vue/devtools-core',
+        'tify',
+        '@primevue/core',
         '@vue/devtools-kit',
         'axios',
       ]
