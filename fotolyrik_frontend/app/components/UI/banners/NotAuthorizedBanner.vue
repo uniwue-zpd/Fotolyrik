@@ -9,7 +9,7 @@
         <div class="flex h-28 w-28 items-center justify-center rounded-full ring-4 ring-primary">
           <Icon name="material-symbols:encrypted-outline-rounded" class="text-7xl text-primary"/>
         </div>
-        <h1 class="outfit-headline text-4xl font-bold text-primary">
+        <h1 class="outfit-headline text-3xl font-bold text-primary text-center">
           Geschützter Bereich
         </h1>
         <p class="max-w-xl text-center text-lg text-gray-600 roboto-plain">
