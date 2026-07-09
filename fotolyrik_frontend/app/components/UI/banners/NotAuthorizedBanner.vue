@@ -4,7 +4,7 @@
 
 <template>
   <div class="mx-auto mt-16 max-w-3xl">
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-gray-accent shadow-xl">
       <div class="flex flex-col items-center gap-6 p-10">
         <div class="flex h-28 w-28 items-center justify-center rounded-full ring-4 ring-primary">
           <Icon name="material-symbols:encrypted-outline-rounded" class="text-7xl text-primary"/>
@@ -12,7 +12,7 @@
         <h1 class="outfit-headline text-3xl font-bold text-primary text-center">
           Geschützter Bereich
         </h1>
-        <p class="max-w-xl text-center text-lg text-gray-600 roboto-plain">
+        <p class="max-w-xl text-center text-lg roboto-plain">
           Dieser Bereich ist ausschließlich für angemeldete Benutzer zugänglich.
         </p>
         <div class="w-full max-w-xl rounded-2xl border border-gray-200 bg-gray-50 p-5 text-center">
