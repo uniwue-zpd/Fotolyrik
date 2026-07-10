@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import {zodResolver} from "@primevue/forms/resolvers/zod";
 import {z} from "zod";
+import NotAuthorizedBanner from "~/components/UI/banners/NotAuthorizedBanner.vue";
+
+const { loggedIn } = useUserSession();
 
 const publisherStore = usePublisherStore();
 const toast = useToast();
@@ -41,61 +44,64 @@ const onFormSubmit = async (e: any) => {
 </script>
 
 <template>
-  <div class="flex flex-col mx-auto w-[70%] gap-4">
-    <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
-    <p class="roboto-plain">
-      Füllen Sie bitte die untenstehenden Felder aus, um einen Verlag zu erstellen oder anzupassen.
-    </p>
-    <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
-      <Form
-          v-slot="$form"
-          class="flex flex-col gap-4"
-          :resolver
-          :initialValues="props.publisher ? props.publisher : {}"
-          :key="props.publisher ? props.publisher.id : 'new'"
-          @submit="onFormSubmit"
-      >
-        <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-1">
-          <label for="name" class="font-bold">Name</label>
-          <IconField>
-            <InputIcon class="pi pi-user-edit" />
-            <InputText
-                id="name"
-                placeholder="Girardet"
-                v-on:keydown.enter.prevent
-                fluid
-            />
-          </IconField>
-          <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.name.error.message }}
-          </Message>
-        </FormField>
-        <FormField v-slot="$field" name="description" class="flex flex-col gap-1 flex-1">
-          <label for="description" class="font-bold">Beschreibung</label>
-          <IconField>
-            <InputIcon class="pi pi-user-edit" />
-            <InputText
-                id="description"
-                placeholder="Verlag für ..."
-                v-on:keydown.enter.prevent
-                fluid
-            />
-          </IconField>
-          <Message v-if="$form.description?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.description.error.message }}
-          </Message>
-        </FormField>
-        <Button type="submit" severity="primary">
-          {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
-        </Button>
-        <!--
-        <Fieldset legend="Form States" class="h-80 overflow-auto">
-          <pre class="whitespace-pre-wrap">{{ $form }}</pre>
-        </Fieldset>
-        -->
-      </Form>
+  <AuthState v-slot="{ loggedIn }">
+    <div v-if="loggedIn" class="flex flex-col mx-auto w-[70%] gap-4">
+      <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
+      <p class="roboto-plain">
+        Füllen Sie bitte die untenstehenden Felder aus, um einen Verlag zu erstellen oder anzupassen.
+      </p>
+      <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
+        <Form
+            v-slot="$form"
+            class="flex flex-col gap-4"
+            :resolver
+            :initialValues="props.publisher ? props.publisher : {}"
+            :key="props.publisher ? props.publisher.id : 'new'"
+            @submit="onFormSubmit"
+        >
+          <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-1">
+            <label for="name" class="font-bold">Name</label>
+            <IconField>
+              <InputIcon class="pi pi-user-edit" />
+              <InputText
+                  id="name"
+                  placeholder="Girardet"
+                  v-on:keydown.enter.prevent
+                  fluid
+              />
+            </IconField>
+            <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.name.error.message }}
+            </Message>
+          </FormField>
+          <FormField v-slot="$field" name="description" class="flex flex-col gap-1 flex-1">
+            <label for="description" class="font-bold">Beschreibung</label>
+            <IconField>
+              <InputIcon class="pi pi-user-edit" />
+              <InputText
+                  id="description"
+                  placeholder="Verlag für ..."
+                  v-on:keydown.enter.prevent
+                  fluid
+              />
+            </IconField>
+            <Message v-if="$form.description?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.description.error.message }}
+            </Message>
+          </FormField>
+          <Button type="submit" severity="primary">
+            {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
+          </Button>
+          <!--
+          <Fieldset legend="Form States" class="h-80 overflow-auto">
+            <pre class="whitespace-pre-wrap">{{ $form }}</pre>
+          </Fieldset>
+          -->
+        </Form>
+      </div>
     </div>
-  </div>
+    <NotAuthorizedBanner v-else/>
+  </AuthState>
 </template>
 
 <style scoped>
