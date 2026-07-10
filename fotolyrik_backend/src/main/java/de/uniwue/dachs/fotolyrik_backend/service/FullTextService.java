@@ -54,7 +54,9 @@ public class FullTextService {
      * @return a {@link FullTextDTO} object
      */
     public Optional<FullTextDTO> getFullTextByPhotopoemId(Long photopoem_id) {
-        return fullTextRepository.findById(photopoem_id).map(fullTextMapper::FulltextToFullTextDTO);
+        return fullTextRepository
+                .findByPhotopoemId(photopoem_id)
+                .map(fullTextMapper::FulltextToFullTextDTO);
     }
 
     /**
