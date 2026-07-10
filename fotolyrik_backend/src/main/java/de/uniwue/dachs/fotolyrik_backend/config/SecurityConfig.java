@@ -25,6 +25,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Fulltext handling
+                        .requestMatchers(HttpMethod.GET, "/fulltexts/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/fulltexts/*").hasAnyRole("editor", "admin")
+                        .requestMatchers(HttpMethod.GET, "/photopoems/*/fulltext").hasAnyRole("editor", "admin")
+                        // General rules
                         .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/**").hasAnyRole("editor", "admin")
                         .requestMatchers(HttpMethod.PUT, "/**").hasAnyRole("editor", "admin")
