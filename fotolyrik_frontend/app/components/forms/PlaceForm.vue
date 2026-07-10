@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import NotAuthorizedBanner from "~/components/UI/banners/NotAuthorizedBanner.vue";
+
+const { loggedIn } = useUserSession();
 
 const props = defineProps<{
   action: 'create' | 'edit';
@@ -53,6 +56,7 @@ const onCoordinatesUpdate = () => {
 };
 
 onMounted(async () => {
+  if (!loggedIn.value) return; // Prevents map initializing on empty HTML-container
   if (props.place?.latitude && props.place?.longitude) {
     lat.value = props.place.latitude;
     lng.value = props.place.longitude;
@@ -116,102 +120,105 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col mx-auto w-[70%] gap-4">
-    <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
-    <Fieldset legend="Anleitung" class="border-2 border-solid rounded-md overflow-auto">
-      <div class="flex flex-col gap-1 p-2 rounded-md roboto-plain text-black">
-        <p>Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen oder anzupassen.</p>
-        <p>Sie können die Koordinaten entweder manuell einfügen oder einen Marker <i class="pi pi-map-marker text-primary"/> auf der Karte setzen.</p>
-        <p>Falls Sie den Marker löschen wollen, drücken Sie bitte die rechte Maustaste.</p>
-      </div>
-    </Fieldset>
-    <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
-      <Form
-          ref="formRef"
-          v-slot="$form"
-          @submit="onFormSubmit"
-          class="flex flex-col gap-4"
-          :initial-values="props.place ? props.place : {} as PlaceDTO"
-      >
-        <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-auto">
-          <label for="name" class="font-bold">Ortsname*</label>
-          <IconField>
-            <InputIcon class="pi pi-map-marker" />
-            <InputText
-                id="name"
-                placeholder="Berlin"
-                v-on:keydown.enter.prevent
+  <AuthState v-slot="{ loggedIn }">
+    <div v-if="loggedIn" class="flex flex-col mx-auto w-[70%] gap-4">
+      <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
+      <Fieldset legend="Anleitung" class="border-2 border-solid rounded-md overflow-auto">
+        <div class="flex flex-col gap-1 p-2 rounded-md roboto-plain text-black">
+          <p>Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen oder anzupassen.</p>
+          <p>Sie können die Koordinaten entweder manuell einfügen oder einen Marker <i class="pi pi-map-marker text-primary"/> auf der Karte setzen.</p>
+          <p>Falls Sie den Marker löschen wollen, drücken Sie bitte die rechte Maustaste.</p>
+        </div>
+      </Fieldset>
+      <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
+        <Form
+            ref="formRef"
+            v-slot="$form"
+            @submit="onFormSubmit"
+            class="flex flex-col gap-4"
+            :initial-values="props.place ? props.place : {} as PlaceDTO"
+        >
+          <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-auto">
+            <label for="name" class="font-bold">Ortsname*</label>
+            <IconField>
+              <InputIcon class="pi pi-map-marker" />
+              <InputText
+                  id="name"
+                  placeholder="Berlin"
+                  v-on:keydown.enter.prevent
+                  fluid
+              />
+            </IconField>
+            <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.name.error.message }}
+            </Message>
+          </FormField>
+          <FormField v-slot="$field" name="description" class="flex flex-col gap-1 flex-auto">
+            <label for="description" class="font-bold">Beschreibung</label>
+            <Textarea
+                id="description"
+                placeholder="Hauptstadt Deutschlands"
+                rows="2"
+                autoResize
                 fluid
             />
-          </IconField>
-          <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.name.error.message }}
-          </Message>
-        </FormField>
-        <FormField v-slot="$field" name="description" class="flex flex-col gap-1 flex-auto">
-          <label for="description" class="font-bold">Beschreibung</label>
-          <Textarea
-              id="description"
-              placeholder="Hauptstadt Deutschlands"
-              rows="2"
-              autoResize
-              fluid
-          />
-          <Message v-if="$form.description?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.description.error.message }}
-          </Message>
-        </FormField>
-        <div class="flex flex-col gap-1 flex-auto">
-          <label for="map" class="font-bold">Karte</label>
-          <div id="map" class="h-[600px] w-full rounded-md"/>
-        </div>
-        <div class="flex flex-row space-x-3">
-          <FormField v-slot="$field" name="latitude" class="flex flex-col gap-1 flex-1">
-            <label for="latitude" class="font-bold">Breitengrad</label>
-            <IconField>
-              <InputIcon class="pi pi-map" />
-              <InputNumber
-                  id="latitude"
-                  v-model="lat"
-                  placeholder="52.5162"
-                  :min="-90"
-                  :max="90"
-                  :useGrouping="false"
-                  :minFractionDigits="0"
-                  :maxFractionDigits="6"
-                  v-on:keydown.enter.prevent
-                  @update:modelValue="onCoordinatesUpdate"
-                  fluid
-              />
-            </IconField>
+            <Message v-if="$form.description?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.description.error.message }}
+            </Message>
           </FormField>
-          <FormField v-slot="$field" name="longitude" class="flex flex-col gap-1 flex-1">
-            <label for="longitude" class="font-bold">Längengrad</label>
-            <IconField>
-              <InputIcon class="pi pi-map" />
-              <InputNumber
-                  id="longitude"
-                  v-model="lng"
-                  placeholder="13.3777"
-                  :min="-180"
-                  :max="180"
-                  :useGrouping="false"
-                  :minFractionDigits="0"
-                  :maxFractionDigits="6"
-                  v-on:keydown.enter.prevent
-                  @update:modelValue="onCoordinatesUpdate"
-                  fluid
-              />
-            </IconField>
-          </FormField>
-        </div>
-        <!--
-        <Fieldset legend="Form States" class="h-80 overflow-auto">
-          <pre class="whitespace-pre-wrap">{{ $form }}</pre>
-        </Fieldset>
-        -->
-        <Button type="submit" severity="primary" :label="props.action === 'create' ? 'Erstellen' : 'Ändern'"/>
-      </Form>
+          <div class="flex flex-col gap-1 flex-auto">
+            <label for="map" class="font-bold">Karte</label>
+            <div id="map" class="h-[600px] w-full rounded-md"/>
+          </div>
+          <div class="flex flex-row space-x-3">
+            <FormField v-slot="$field" name="latitude" class="flex flex-col gap-1 flex-1">
+              <label for="latitude" class="font-bold">Breitengrad</label>
+              <IconField>
+                <InputIcon class="pi pi-map" />
+                <InputNumber
+                    id="latitude"
+                    v-model="lat"
+                    placeholder="52.5162"
+                    :min="-90"
+                    :max="90"
+                    :useGrouping="false"
+                    :minFractionDigits="0"
+                    :maxFractionDigits="6"
+                    v-on:keydown.enter.prevent
+                    @update:modelValue="onCoordinatesUpdate"
+                    fluid
+                />
+              </IconField>
+            </FormField>
+            <FormField v-slot="$field" name="longitude" class="flex flex-col gap-1 flex-1">
+              <label for="longitude" class="font-bold">Längengrad</label>
+              <IconField>
+                <InputIcon class="pi pi-map" />
+                <InputNumber
+                    id="longitude"
+                    v-model="lng"
+                    placeholder="13.3777"
+                    :min="-180"
+                    :max="180"
+                    :useGrouping="false"
+                    :minFractionDigits="0"
+                    :maxFractionDigits="6"
+                    v-on:keydown.enter.prevent
+                    @update:modelValue="onCoordinatesUpdate"
+                    fluid
+                />
+              </IconField>
+            </FormField>
+          </div>
+          <!--
+          <Fieldset legend="Form States" class="h-80 overflow-auto">
+            <pre class="whitespace-pre-wrap">{{ $form }}</pre>
+          </Fieldset>
+          -->
+          <Button type="submit" severity="primary" :label="props.action === 'create' ? 'Erstellen' : 'Ändern'"/>
+        </Form>
+      </div>
     </div>
-  </div>
+    <NotAuthorizedBanner v-else/>
+  </AuthState>
 </template>
