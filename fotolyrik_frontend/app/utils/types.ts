@@ -234,3 +234,11 @@ export interface PersonMetricsDTO {
  * Describes contribution roles of persons in relation to a photopoem.
  */
 export type ContributorRole = 'author' | 'photographer' | 'contributor' | 'depicted';
+
+/**
+ * An array of protected `GET` routes
+ */
+export const PROTECTED_GET_ROUTES: RegExp[] = [
+    /^\/fulltexts\/[^/]+$/,
+    /^\/photopoems\/[^/]+\/fulltext$/
+];
