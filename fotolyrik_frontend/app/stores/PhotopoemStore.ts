@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import type { PhotoPoemDTO } from "~/utils/types";
+import {defineStore} from 'pinia';
+import {ref} from 'vue';
+import type {PhotoPoemDTO} from "~/utils/types";
 
 export const usePhotopoemStore = defineStore('photopoem', () => {
     // State
@@ -12,10 +12,19 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
     const isLoaded = computed(() => photopoems.value.length > 0);
 
     // Actions
+
+        // Fetch photopoems using pagination
+    async function fetchPhotopoemsPaginated(params: Pageable) {
+        try {
+            return await $fetch<Page<PhotoPoemDTO>>('/api/photopoems', { query: params });
+        } catch (error) {
+            console.error(error);
+        }
+    }
         // Fetch all photopoems
     async function fetchPhotopoems() {
         if (!isLoaded.value) {
-            const { data, error } = await useFetch('/api/photopoems', {
+            const { data, error } = await useFetch('/api/photopoems/all', {
                 deep: true
             });
             if (error.value) {
@@ -160,6 +169,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
         currentHighlight,
         isLoaded,
         fetchPhotopoems,
+        fetchPhotopoemsPaginated,
         refreshPhotopoemsData,
         fetchPhtotopoemById,
         fetchPhotopoemHighlight,
