@@ -8,6 +8,8 @@ import de.uniwue.dachs.fotolyrik_backend.specification.PhotopoemSpecification;
 import de.uniwue.dachs.fotolyrik_backend.utils.helper.PhotopoemHighlightPicker;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.*;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,38 +22,32 @@ public class PhotopoemService {
     private final PhotopoemRepository photopoemRepository;
     private final FullTextService fullTextService;
     private final PhotopoemMapper photopoemMapper;
-    private final PubMediumMapper pubMediumMapper;
-    private final PersonMapper personMapper;
-    private final KeywordMapper keywordMapper;
-    private final FileMapper fileMapper;
-    private final CopyrightStatusMapper copyrightStatusMapper;
-    private final LanguageMapper languageMapper;
     private final PhotopoemHighlightPicker photopoemHighlightPicker;
-    private final LocationMapper locationMapper;
     private final ContributionMapper contributionMapper;
     private final PersonRepository personRepository;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             FullTextService fullTextService,
                             PhotopoemMapper photopoemMapper,
-                            PubMediumMapper pubMediumMapper,
-                            PersonMapper personMapper,
-                            KeywordMapper keywordMapper,
-                            FileMapper fileMapper, CopyrightStatusMapper copyrightStatusMapper, LanguageMapper languageMapper,
-                            PhotopoemHighlightPicker photopoemHighlightPicker, LocationMapper locationMapper, PersonRepository personRepository, ContributionMapper contributionMapper) {
+                            PhotopoemHighlightPicker photopoemHighlightPicker,
+                            PersonRepository personRepository,
+                            ContributionMapper contributionMapper) {
         this.photopoemRepository = photopoemRepository;
         this.fullTextService = fullTextService;
         this.photopoemMapper = photopoemMapper;
-        this.pubMediumMapper = pubMediumMapper;
-        this.personMapper = personMapper;
-        this.keywordMapper = keywordMapper;
-        this.fileMapper = fileMapper;
-        this.copyrightStatusMapper = copyrightStatusMapper;
-        this.languageMapper = languageMapper;
         this.photopoemHighlightPicker = photopoemHighlightPicker;
         this.contributionMapper = contributionMapper;
         this.personRepository = personRepository;
-        this.locationMapper = locationMapper;
+    }
+
+    /**
+     * Returns a page object containing photopoems
+     * @param pageable pagination parameters to be used
+     * @return A {@link Page} of {@link PhotopoemDTO} objects
+     */
+    public Page<PhotopoemDTO> getPaginatedPhotopoems(Pageable pageable) {
+        Page<Photopoem> photopoemPage = photopoemRepository.findAll(pageable);
+        return photopoemPage.map(photopoemMapper::PhotopoemToPhotopoemDTO);
     }
 
     /**

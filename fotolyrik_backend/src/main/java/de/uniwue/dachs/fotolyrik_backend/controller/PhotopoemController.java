@@ -5,6 +5,8 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PhotopoemDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.FullText;
 import de.uniwue.dachs.fotolyrik_backend.service.FullTextService;
 import de.uniwue.dachs.fotolyrik_backend.service.PhotopoemService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,13 @@ public class PhotopoemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PhotopoemDTO>> getPhotopoems() {
+    public ResponseEntity<Page<PhotopoemDTO>> getPaginatedPhotopoems(Pageable pageable) {
+        Page<PhotopoemDTO> photopoems = photopoemService.getPaginatedPhotopoems(pageable);
+        return ResponseEntity.ok(photopoems);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PhotopoemDTO>> getAllPhotopoems() {
         List<PhotopoemDTO> photopoems = photopoemService.getAllPhotopoems();
         return ResponseEntity.ok(photopoems);
     }
