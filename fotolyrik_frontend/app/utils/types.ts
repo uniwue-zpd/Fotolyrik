@@ -261,3 +261,50 @@ export interface PlaceMetricsDTO {
  * Describes contribution roles of persons in relation to a photopoem.
  */
 export type ContributorRole = 'author' | 'photographer' | 'contributor' | 'depicted';
+
+/**
+ * Describes a `Page` object returned after calling an endpoint with `Pageable` parameters
+ */
+export interface Page<T> {
+    content: T[];
+    pageable: {
+        pageNumber: number;
+        pageSize: number;
+        sort: {
+            empty: boolean;
+            unsorted: boolean;
+            sorted: boolean;
+        };
+        offset: number;
+        unpaged: boolean;
+        pages: boolean;
+    };
+    last: boolean;
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number;
+    sort: {
+        empty: boolean;
+        unsorted: boolean;
+        sorted: boolean;
+    };
+    numberOfElements: number;
+    first: boolean;
+    empty: boolean;
+}
+
+/**
+ * Describes pagination and sorting parameters used for paged API requests.
+ * Compatible with Spring Data Pageable query parameters:
+ * - `page`: Zero-based page index to retrieve.
+ * - `size`: Maximum number of elements per page.
+ * - `sort`: Sorting criteria in the format `property,direction`
+ *   (e.g. `title,asc` or `publicationDate,desc`). Multiple sort criteria
+ *   can be provided as an array.
+ */
+export interface Pageable {
+    page?: number;
+    size?: number;
+    sort?: string | string[];
+}
