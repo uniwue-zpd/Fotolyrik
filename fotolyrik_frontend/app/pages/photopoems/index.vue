@@ -1,14 +1,39 @@
 <script setup lang="ts">
 const photopoemStore = usePhotopoemStore();
 
-const page = ref(0);
-const size = ref(15);
-const sort = ref('title,asc');
+const filters = reactive<PhotopoemPageable>({
+  page: 0,
+  size: 15,
+  sort: 'title,asc',
+  title: undefined,
+  subtitle: undefined,
+  'alt-title': undefined,
+  series: undefined,
+  volume: undefined,
+  issue: undefined,
+  'publication-date': undefined,
+  'pub-medium-id': undefined,
+  'pub-place-id': undefined,
+  'location-id': undefined,
+  'author-id': undefined,
+  'photographer-id': undefined,
+  'depicted-person-id': undefined,
+  'contributor-id': undefined,
+  'theme-id': undefined,
+  'image-motif-id': undefined,
+  'copyright-image-id': undefined,
+  'copyright-text-id': undefined,
+  'language-id': undefined
+});
+
+const initialFilters: PhotopoemPageable = {
+  page: 0,
+  size: 15,
+  sort: 'title,asc'
+};
 
 const resetFilters = () => {
-  page.value = 0;
-  size.value = 15;
-  sort.value = 'title,asc';
+  Object.assign(filters, initialFilters);
 };
 
 const sortOptions = ref([
@@ -23,17 +48,22 @@ const pageOptions = computed(() =>
     }))
 );
 
-const { data: photopoems, pending: isLoading, error: hasError, refresh } = useAsyncData<Page<PhotoPoemDTO>>(`photopoems-paginated`, () => photopoemStore.fetchPhotopoemsPaginated({
-  page: page.value,
-  size: size.value,
-  sort: sort.value,
-}));
+const { data: photopoems, pending: isLoading, error: hasError, refresh } = useAsyncData<Page<PhotoPoemDTO>>(
+    'photopoems-paginated',
+    () => photopoemStore.fetchPhotopoemsPaginated(filters)
+);
 
 const debouncedRefresh = debounce(() => {
   refresh();
 }, 300);
 
-watch([page, size, sort], debouncedRefresh);
+watch(
+    filters,
+    () => {
+      debouncedRefresh();
+    },
+    { deep: true }
+);
 
 useHead(() => ({
   title: 'Fotogedichte - Sammlung'
@@ -46,7 +76,7 @@ useHead(() => ({
     <div class="flex flex-row justify-end">
       <Select
           :options="sortOptions"
-          v-model="sort"
+          v-model="filters.sort"
           optionLabel="label"
           optionValue="value"
           class="h-9 items-center"
@@ -104,14 +134,14 @@ useHead(() => ({
               <button
                   type="button"
                   class="px-2 h-9 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
-                  :disabled="page === 0"
+                  :disabled="filters.page === 0"
                   aria-label="Vorherige Seite"
-                  @click="page--"
+                  @click="filters.page!--"
               >
                 <i class="pi pi-chevron-left"/>
               </button>
               <Select
-                  v-model="page"
+                  v-model="filters.page"
                   :options="pageOptions"
                   optionLabel="label"
                   optionValue="value"
@@ -121,9 +151,9 @@ useHead(() => ({
               <button
                   type="button"
                   class="px-2 h-9 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
-                  :disabled="page >= (photopoems?.totalPages ?? 1) - 1"
+                  :disabled="filters.page! >= (photopoems?.totalPages ?? 1) - 1"
                   aria-label="Nächste Seite"
-                  @click="page++"
+                  @click="filters.page!++"
               >
                 <i class="pi pi-chevron-right"/>
               </button>
