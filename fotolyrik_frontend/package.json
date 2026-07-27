@@ -40,5 +40,9 @@
     "vue": "latest",
     "vue-router": "latest",
     "zod": "^4.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vue-tsc": "^2.1.10"
   }
 }
