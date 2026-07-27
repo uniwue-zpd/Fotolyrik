@@ -21,6 +21,7 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
             console.error(error);
         }
     }
+
         // Fetch all photopoems
     async function fetchPhotopoems() {
         if (!isLoaded.value) {
