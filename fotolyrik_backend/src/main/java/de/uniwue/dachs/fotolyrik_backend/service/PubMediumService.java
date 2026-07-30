@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
@@ -204,5 +205,20 @@ public class PubMediumService {
      */
     public PubMediumMetricsDTO getPubMediumMetrics(Long pubMediumId) {
         return pubMediumRepository.getMetricsByPubMedium(pubMediumId);
+    }
+
+    /**
+     * Searches publication media whose title or subtitle matches the given search query.
+     * <p>The search is performed case-insensitively using a partial match. The returned
+     * list contains lightweight preview DTOs intended for search suggestions or
+     * autocomplete components.</p>
+     * @param query the search term to match against publication media titles and subtitles
+     * @return a list of matching {@link PubMediumPreviewDTO} objects, or an empty list if no matches are found
+     */
+    public List<PubMediumPreviewDTO> searchPubMedia(String query) {
+        return pubMediumRepository.searchPubMedia(query).stream()
+                .map(pubMediumMapper::PubMediumToPubMediumPreviewDTO)
+                .filter(Objects::nonNull)
+                .toList();
     }
 }

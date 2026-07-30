@@ -1,6 +1,7 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PubMediumService;
@@ -98,5 +99,10 @@ public class PubMediumController {
     public ResponseEntity<PubMediumMetricsDTO> getPubMediumMetrics(@PathVariable Long id) {
         PubMediumMetricsDTO metrics = pubMediumService.getPubMediumMetrics(id);
         return ResponseEntity.ok(metrics);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PubMediumPreviewDTO>> searchPubMedia(@RequestParam String query) {
+        return ResponseEntity.ok(pubMediumService.searchPubMedia(query));
     }
 }
