@@ -41,6 +41,7 @@ const sortOptions = ref([
   { label: 'Absteigend (Z-A)', value: 'title,desc' }
 ]);
 
+
 const pageOptions = computed(() =>
     Array.from({ length: photopoems.value?.totalPages ?? 0 }, (_, index) => ({
       label: `${ index + 1 }`,
@@ -72,6 +73,20 @@ watch(
 useHead(() => ({
   title: 'Fotogedichte - Sammlung'
 }));
+
+const personStore = usePersonStore();
+const pubMediumStore = usePubMediumStore();
+const languageStore = useLanguageStore();
+const copyrightStatusStore = useCopyrightStatusStore();
+const keywordStore = useKeywordStore();
+const locationStore = useLocationStore();
+
+const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
+const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
+const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
+const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
+const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
+const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
 </script>
 
 <template>
@@ -96,14 +111,190 @@ useHead(() => ({
             <i class="pi pi-refresh mr-2"/>
             Alle Eingaben zurücksetzen
           </button>
-          <p class="text-primary font-semibold">Titel</p>
-          <AutoComplete
-              class="flex-1 min-w-0"
-              inputId="title"
+          <h3 class="text-lg font-semibold border-b border-gray-200">
+            Filtern nach:
+          </h3>
+          <InputText
+              id="title"
               placeholder="Titel"
-              :suggestions="titleSuggestions"
               v-model="filters.title"
-              showClear fluid
+              fluid
+          />
+
+          <InputText
+              id="subtitle"
+              placeholder="Untertitel"
+              v-model="filters.subtitle"
+              fluid
+          />
+
+          <InputText
+              id="alt-title"
+              placeholder="Alternativer Titel"
+              v-model="filters['alt-title']"
+              fluid
+          />
+
+          <InputText
+              id="series"
+              placeholder="Reihe"
+              v-model="filters.series"
+              fluid
+          />
+
+          <InputNumber
+              id="volume"
+              placeholder="Jahrgang"
+              v-model="filters.volume"
+              :min="0"
+              :useGrouping="false"
+              fluid
+          />
+
+          <InputNumber
+              id="issue"
+              placeholder="Ausgabe"
+              v-model="filters.issue"
+              :min="0"
+              :useGrouping="false"
+              fluid
+          />
+
+          <InputText
+              id="publication-date"
+              placeholder="Publikationsdatum"
+              v-model="filters['publication-date']"
+              fluid
+          />
+
+          <Select
+              id="pub-medium-id"
+              placeholder="Publikationsmedium"
+              v-model="filters['pub-medium-id']"
+              optionLabel="title"
+              optionValue="id"
+              :options="publicationMedia"
+              filter
+              showClear
+              fluid
+          />
+
+          <Select
+              id="location-id"
+              placeholder="Fundort auswählen"
+              v-model="filters['location-id']"
+              optionLabel="name"
+              optionValue="id"
+              :options="locations"
+              filter
+              showClear
+              fluid
+          />
+
+          <Select
+              id="author-id"
+              placeholder="Autor:in auswählen"
+              v-model="filters['author-id']"
+              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+              optionValue="id"
+              :options="persons"
+              @click="()=>console.log(filters['author-id'])"
+              filter
+              showClear
+              fluid
+          />
+
+          <Select
+              id="photographer-id"
+              placeholder="Fotograf:in auswählen"
+              v-model="filters['photographer-id']"
+              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+              optionValue="id"
+              :options="persons"
+              filter
+              showClear
+              fluid
+          />
+
+          <Select
+              inputId="depicted-person-id"
+              placeholder="Abgebildete Person auswählen"
+              v-model="filters['depicted-person-id']"
+              :suggestions="persons"
+              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
+              optionValue="id"
+              showClear
+              fluid
+          />
+
+          <Select
+              id="contributor-id"
+              placeholder="Sonstige Mitwirkende auswählen"
+              v-model="filters['contributor-id']"
+              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+              optionValue="id"
+              :options="persons"
+              filter
+              showClear
+              fluid
+          />
+
+          <Select
+              id="theme-id"
+              placeholder="Thematik auswählen"
+              v-model="filters['theme-id']"
+              optionLabel="value"
+              optionValue="id"
+              :options="keywords"
+              filter
+              showClear
+              fluid
+          />
+
+          <Select
+              id="image-motif-id"
+              placeholder="Bildmotiv auswählen"
+              v-model="filters['image-motif-id']"
+              optionLabel="value"
+              optionValue="id"
+              :options="keywords"
+              filter
+              showClear
+              fluid
+          />
+
+          <Select
+              id="copyright-image-id"
+              placeholder="Bild Copyright-Status auswählen"
+              v-model="filters['copyright-image-id']"
+              optionLabel="value"
+              optionValue="id"
+              :options="copyrightStatuses"
+              showClear
+              fluid
+          />
+
+          <Select
+              id="copyright-text-id"
+              placeholder="Text Copyright-Status auswählen"
+              v-model="filters['copyright-text-id']"
+              optionLabel="value"
+              optionValue="id"
+              :options="copyrightStatuses"
+              showClear
+              fluid
+          />
+
+          <Select
+              id="language-id"
+              placeholder="Sprache auswählen"
+              v-model="filters['language-id']"
+              optionLabel="name"
+              optionValue="id"
+              :options="languages"
+              filter
+              showClear
+              fluid
           />
         </div>
       </div>
