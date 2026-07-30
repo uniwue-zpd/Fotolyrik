@@ -1,11 +1,13 @@
 n d<script setup lang="ts">
 const photopoemStore = usePhotopoemStore();
-const pageParameter = reactive<PhotopoemPageable> ({
+
+const initialPageParameter: PhotopoemPageable = {
   page: 0,
   size: 15,
-  sort: 'title,asc',
-});
-const filters = reactive<PhotopoemPageable>({
+  sort: 'title,asc'
+};
+
+const initialFilters: PhotopoemPageable ={
   title: undefined,
   subtitle: undefined,
   'alt-title': undefined,
@@ -25,23 +27,19 @@ const filters = reactive<PhotopoemPageable>({
   'copyright-image-id': undefined,
   'copyright-text-id': undefined,
   'language-id': undefined
-});
-
-const initialPageParameter: PhotopoemPageable = {
-  page: 0,
-  size: 15,
-  sort: 'title,asc'
 };
 
-const resetPageParameters = () => {
+const pageParameter = reactive<PhotopoemPageable> ({...initialPageParameter});
+const filters = reactive<PhotopoemPageable>({...initialFilters});
+const resetFilter = () => {
   Object.assign(pageParameter, initialPageParameter);
+  Object.assign(filters, initialFilters);
 };
 
 const sortOptions = ref([
   { label: 'Aufsteigend (A-Z)', value: 'title,asc' },
   { label: 'Absteigend (Z-A)', value: 'title,desc' }
 ]);
-
 
 const pageOptions = computed(() =>
     Array.from({ length: photopoems.value?.totalPages ?? 0 }, (_, index) => ({
@@ -119,7 +117,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           <button
               type="button"
               class="h-9 rounded-md border px-3 py-2 text-sm text-primary cursor-pointer shadow-sm hover:shadow-md"
-              @click="resetPageParameters"
+              @click="resetFilter"
           >
             <i class="pi pi-refresh mr-2"/>
             Alle Eingaben zurücksetzen
