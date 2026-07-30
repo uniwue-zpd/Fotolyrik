@@ -1,4 +1,4 @@
-<script setup lang="ts">
+n d<script setup lang="ts">
 const photopoemStore = usePhotopoemStore();
 
 const filters = reactive<PhotopoemPageable>({
@@ -52,6 +52,10 @@ const { data: photopoems, pending: isLoading, error: hasError, refresh } = useAs
     'photopoems-paginated',
     () => photopoemStore.fetchPhotopoemsPaginated(filters)
 );
+const titleSuggestions = computed<string[]>(() => {
+  const items = photopoems.value?.content ?? []
+  return items.map(item => item.title || '')
+})
 
 const debouncedRefresh = debounce(() => {
   refresh();
@@ -81,8 +85,7 @@ useHead(() => ({
           optionValue="value"
           class="h-9 items-center"
       />
-    </div>
-    <div class="flex flex-col gap-5 md:flex-row justify-between">
+    </div> <div class="flex flex-col gap-5 md:flex-row justify-between">
       <div class="md:w-1/5">
         <div class="flex flex-col gap-2">
           <button
@@ -93,6 +96,15 @@ useHead(() => ({
             <i class="pi pi-refresh mr-2"/>
             Alle Eingaben zurücksetzen
           </button>
+          <p class="text-primary font-semibold">Titel</p>
+          <AutoComplete
+              class="flex-1 min-w-0"
+              inputId="title"
+              placeholder="Titel"
+              :suggestions="titleSuggestions"
+              v-model="filters.title"
+              showClear fluid
+          />
         </div>
       </div>
       <div class="md:w-3/4">
