@@ -1,10 +1,11 @@
 n d<script setup lang="ts">
 const photopoemStore = usePhotopoemStore();
-
-const filters = reactive<PhotopoemPageable>({
+const pageParameter = reactive<PhotopoemPageable> ({
   page: 0,
   size: 15,
   sort: 'title,asc',
+});
+const filters = reactive<PhotopoemPageable>({
   title: undefined,
   subtitle: undefined,
   'alt-title': undefined,
@@ -26,14 +27,14 @@ const filters = reactive<PhotopoemPageable>({
   'language-id': undefined
 });
 
-const initialFilters: PhotopoemPageable = {
+const initialPageParameter: PhotopoemPageable = {
   page: 0,
   size: 15,
   sort: 'title,asc'
 };
 
-const resetFilters = () => {
-  Object.assign(filters, initialFilters);
+const resetPageParameters = () => {
+  Object.assign(pageParameter, initialPageParameter);
 };
 
 const sortOptions = ref([
@@ -51,7 +52,7 @@ const pageOptions = computed(() =>
 
 const { data: photopoems, pending: isLoading, error: hasError, refresh } = useAsyncData<Page<PhotoPoemDTO>>(
     'photopoems-paginated',
-    () => photopoemStore.fetchPhotopoemsPaginated(filters)
+    () => photopoemStore.fetchPhotopoemsPaginated({...pageParameter, ...filters})
 );
 const titleSuggestions = computed<string[]>(() => {
   const items = photopoems.value?.content ?? []
@@ -59,13 +60,25 @@ const titleSuggestions = computed<string[]>(() => {
 })
 
 const debouncedRefresh = debounce(() => {
-  refresh();
+  if (pageParameter.page == 0){
+    refresh();
+  }else{
+    pageParameter.page = 0; // this will trigger refresh on the other watcher
+  }
 }, 300);
 
 watch(
     filters,
     () => {
       debouncedRefresh();
+    },
+    { deep: true }
+);
+
+watch(
+    pageParameter,
+    () => {
+      refresh();
     },
     { deep: true }
 );
@@ -95,7 +108,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
     <div class="flex flex-row justify-end">
       <Select
           :options="sortOptions"
-          v-model="filters.sort"
+          v-model="pageParameter.sort"
           optionLabel="label"
           optionValue="value"
           class="h-9 items-center"
@@ -106,7 +119,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           <button
               type="button"
               class="h-9 rounded-md border px-3 py-2 text-sm text-primary cursor-pointer shadow-sm hover:shadow-md"
-              @click="resetFilters"
+              @click="resetPageParameters"
           >
             <i class="pi pi-refresh mr-2"/>
             Alle Eingaben zurücksetzen
@@ -224,6 +237,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
               :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
               optionValue="id"
               showClear
+              filter
               fluid
           />
 
@@ -337,14 +351,14 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
               <button
                   type="button"
                   class="px-2 h-9 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
-                  :disabled="filters.page === 0"
+                  :disabled="pageParameter.page === 0"
                   aria-label="Vorherige Seite"
-                  @click="filters.page!--"
+                  @click="pageParameter.page!--"
               >
                 <i class="pi pi-chevron-left"/>
               </button>
               <Select
-                  v-model="filters.page"
+                  v-model="pageParameter.page"
                   :options="pageOptions"
                   optionLabel="label"
                   optionValue="value"
@@ -354,9 +368,9 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
               <button
                   type="button"
                   class="px-2 h-9 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
-                  :disabled="filters.page! >= (photopoems?.totalPages ?? 1) - 1"
+                  :disabled="pageParameter.page! >= (photopoems?.totalPages ?? 1) - 1"
                   aria-label="Nächste Seite"
-                  @click="filters.page!++"
+                  @click="pageParameter.page!++"
               >
                 <i class="pi pi-chevron-right"/>
               </button>
