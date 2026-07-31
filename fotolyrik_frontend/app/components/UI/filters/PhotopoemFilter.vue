@@ -44,7 +44,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
       <AccordionContent class="flex flex-col gap-2" >
         <div class="flex flex-col gap-3">
           <div class="flex flex-col gap-1">
-            <label for="title" class="text-xs font-bold text-slate-700">Titel</label>
+            <label for="title" class="text-xs font-bold ">Titel</label>
             <InputText
                 id="title"
                 placeholder="z. B. Telephon-Tragödie"
@@ -54,7 +54,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="subtitle" class="text-xs font-bold text-slate-700">Untertitel</label>
+            <label for="subtitle" class="text-xs font-bold ">Untertitel</label>
             <InputText
                 id="subtitle"
                 placeholder="z. B. Aschermittwoch"
@@ -64,7 +64,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="alt-title" class="text-xs font-bold text-slate-700">Alternativer Titel</label>
+            <label for="alt-title" class="text-xs font-bold ">Alternativer Titel</label>
             <InputText
                 id="alt-title"
                 placeholder="z. B. Frohsinn und Freude"
@@ -74,7 +74,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="series" class="text-xs font-bold text-slate-700">Reihe</label>
+            <label for="series" class="text-xs font-bold ">Reihe</label>
             <InputText
                 id="series"
                 v-model="filters.series"
@@ -84,7 +84,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
 
           <div class="grid grid-cols-2 gap-3">
             <div class="flex flex-col gap-1">
-              <label for="volume" class="text-xs font-bold text-slate-700">Jahrgang</label>
+              <label for="volume" class="text-xs font-bold ">Jahrgang</label>
               <InputNumber
                   id="volume"
                   placeholder="z. B. 12"
@@ -96,7 +96,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
             </div>
 
             <div class="flex flex-col gap-1">
-              <label for="issue" class="text-xs font-bold text-slate-700">Ausgabe</label>
+              <label for="issue" class="text-xs font-bold ">Ausgabe</label>
               <InputNumber
                   id="issue"
                   placeholder="z. B. 3"
@@ -109,7 +109,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="publication-date" class="text-xs font-bold text-slate-700">Publikationsdatum</label>
+            <label for="publication-date" class="text-xs font-bold ">Publikationsdatum</label>
             <InputText
                 id="publication-date"
                 placeholder="z. B. 01.08.1936"
@@ -119,7 +119,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="pub-medium-id" class="text-xs font-bold text-slate-700">Publikationsmedium</label>
+            <label for="pub-medium-id" class="text-xs font-bold ">Publikationsmedium</label>
             <Select
                 id="pub-medium-id"
                 placeholder="Medium wählen"
@@ -134,7 +134,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="location-id" class="text-xs font-bold text-slate-700">Fundort</label>
+            <label for="location-id" class="text-xs font-bold ">Fundort</label>
             <Select
                 id="location-id"
                 placeholder="Ort wählen"
@@ -149,7 +149,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="author-id" class="text-xs font-bold text-slate-700">Autor:in</label>
+            <label for="author-id" class="text-xs font-bold ">Autor:in</label>
             <Select
                 id="author-id"
                 placeholder="Suchen / wählen"
@@ -165,7 +165,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="photographer-id" class="text-xs font-bold text-slate-700">Fotograf:in</label>
+            <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
             <Select
                 id="photographer-id"
                 placeholder="Suchen / wählen"
@@ -180,7 +180,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="depicted-person-id" class="text-xs font-bold text-slate-700">Abgebildete Person</label>
+            <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
             <Select
                 id="depicted-person-id"
                 placeholder="Person wählen"
@@ -195,7 +195,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="contributor-id" class="text-xs font-bold text-slate-700">Sonstige Mitwirkende</label>
+            <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
             <Select
                 id="contributor-id"
                 placeholder="Person wählen"
@@ -210,7 +210,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="theme-id" class="text-xs font-bold text-slate-700">Thematik</label>
+            <label for="theme-id" class="text-xs font-bold ">Thematik</label>
             <Select
                 id="theme-id"
                 placeholder="Thema wählen"
@@ -225,7 +225,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="image-motif-id" class="text-xs font-bold text-slate-700">Bildmotiv</label>
+            <label for="image-motif-id" class="text-xs font-bold ">Bildmotiv</label>
             <Select
                 id="image-motif-id"
                 placeholder="Motiv wählen"
@@ -241,7 +241,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
 
           <div class="grid grid-cols-2 gap-3">
             <div class="flex flex-col gap-1">
-              <label for="copyright-image-id" class="text-xs font-bold text-slate-700">Copyright Bild</label>
+              <label for="copyright-image-id" class="text-xs font-bold ">Copyright Bild</label>
               <Select
                   id="copyright-image-id"
                   placeholder="Status"
@@ -255,7 +255,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
             </div>
 
             <div class="flex flex-col gap-1">
-              <label for="copyright-text-id" class="text-xs font-bold text-slate-700">Copyright Text</label>
+              <label for="copyright-text-id" class="text-xs font-bold ">Copyright Text</label>
               <Select
                   id="copyright-text-id"
                   placeholder="Status"
@@ -270,7 +270,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="language-id" class="text-xs font-bold text-slate-700">Sprache</label>
+            <label for="language-id" class="text-xs font-bold ">Sprache</label>
             <Select
                 id="language-id"
                 placeholder="Sprache wählen"
@@ -286,7 +286,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           <button
               type="button"
               class="flex items-center justify-center w-full min-h-9 rounded-md border px-3 py-2 text-sm text-primary cursor-pointer shadow-sm hover:shadow-md"
-              @click="emit('resetFilters')"
+              @click="emit('reset-filters')"
           >
             <i class="pi pi-refresh mr-2" />
             <span class="text-center">Alle Eingaben zurücksetzen</span>
