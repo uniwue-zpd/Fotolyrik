@@ -3,7 +3,7 @@
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
-const isMobile = breakpoints.smaller('md')
+const isMobile = breakpoints.smaller('lg')
 const activeTab = ref<string|null>(null)
 watchEffect(() => {
   activeTab.value = isMobile.value ? null : "0"
@@ -152,7 +152,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
             <label for="author-id" class="text-xs font-bold ">Autor:in</label>
             <Select
                 id="author-id"
-                placeholder="Suchen / wählen"
+                placeholder="Autor:in suchen / wählen"
                 v-model="filters['author-id']"
                 :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
                 optionValue="id"
@@ -168,7 +168,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
             <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
             <Select
                 id="photographer-id"
-                placeholder="Suchen / wählen"
+                placeholder="Fotograf:in suchen / wählen"
                 v-model="filters['photographer-id']"
                 :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
                 optionValue="id"
@@ -183,7 +183,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
             <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
             <Select
                 id="depicted-person-id"
-                placeholder="Person wählen"
+                placeholder="Abgebildete Person wählen"
                 v-model="filters['depicted-person-id']"
                 :options="persons"
                 :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
@@ -198,7 +198,7 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
             <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
             <Select
                 id="contributor-id"
-                placeholder="Person wählen"
+                placeholder="Mitwirkende Person wählen"
                 v-model="filters['contributor-id']"
                 :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
                 optionValue="id"

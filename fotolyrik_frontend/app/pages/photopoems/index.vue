@@ -96,11 +96,11 @@ useHead(() => ({
           optionValue="value"
           class="h-9 items-center"
       />
-    </div> <div class="flex flex-col gap-5 md:flex-row justify-between">
-      <div class="md:w-1/5">
+    </div> <div class="flex flex-col gap-5 lg:flex-row justify-between">
+      <div class="lg:w-1/4">
         <PhotopoemFilter :filters="filters" @reset-filters="resetFilter" ></PhotopoemFilter>
       </div>
-      <div class="md:w-3/4">
+      <div class="lg:w-3/4">
         <div class="flex flex-col gap-2">
           <div v-if="isLoading" class="flex flex-col gap-2 items-center">
             <ProgressSpinner/>
