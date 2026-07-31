@@ -125,189 +125,248 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
           <h3 class="text-lg font-semibold border-b border-gray-200">
             Filtern nach:
           </h3>
-          <InputText
-              id="title"
-              placeholder="Titel"
-              v-model="filters.title"
-              fluid
-          />
+          <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+              <label for="title" class="text-xs font-bold text-slate-700">Titel</label>
+              <InputText
+                  id="title"
+                  placeholder="z. B. Telephon-Tragödie"
+                  v-model="filters.title"
+                  fluid
+              />
+            </div>
 
-          <InputText
-              id="subtitle"
-              placeholder="Untertitel"
-              v-model="filters.subtitle"
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="subtitle" class="text-xs font-bold text-slate-700">Untertitel</label>
+              <InputText
+                  id="subtitle"
+                  placeholder="z. B. Aschermittwoch"
+                  v-model="filters.subtitle"
+                  fluid
+              />
+            </div>
 
-          <InputText
-              id="alt-title"
-              placeholder="Alternativer Titel"
-              v-model="filters['alt-title']"
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="alt-title" class="text-xs font-bold text-slate-700">Alternativer Titel</label>
+              <InputText
+                  id="alt-title"
+                  placeholder="z. B. Frohsinn und Freude"
+                  v-model="filters['alt-title']"
+                  fluid
+              />
+            </div>
 
-          <InputText
-              id="series"
-              placeholder="Reihe"
-              v-model="filters.series"
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="series" class="text-xs font-bold text-slate-700">Reihe</label>
+              <InputText
+                  id="series"
+                  v-model="filters.series"
+                  fluid
+              />
+            </div>
 
-          <InputNumber
-              id="volume"
-              placeholder="Jahrgang"
-              v-model="filters.volume"
-              :min="0"
-              :useGrouping="false"
-              fluid
-          />
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1">
+                <label for="volume" class="text-xs font-bold text-slate-700">Jahrgang</label>
+                <InputNumber
+                    id="volume"
+                    placeholder="z. B. 12"
+                    v-model="filters.volume"
+                    :min="0"
+                    :useGrouping="false"
+                    fluid
+                />
+              </div>
 
-          <InputNumber
-              id="issue"
-              placeholder="Ausgabe"
-              v-model="filters.issue"
-              :min="0"
-              :useGrouping="false"
-              fluid
-          />
+              <div class="flex flex-col gap-1">
+                <label for="issue" class="text-xs font-bold text-slate-700">Ausgabe</label>
+                <InputNumber
+                    id="issue"
+                    placeholder="z. B. 3"
+                    v-model="filters.issue"
+                    :min="0"
+                    :useGrouping="false"
+                    fluid
+                />
+              </div>
+            </div>
 
-          <InputText
-              id="publication-date"
-              placeholder="Publikationsdatum"
-              v-model="filters['publication-date']"
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="publication-date" class="text-xs font-bold text-slate-700">Publikationsdatum</label>
+              <InputText
+                  id="publication-date"
+                  placeholder="z. B. 01.08.1936"
+                  v-model="filters['publication-date']"
+                  fluid
+              />
+            </div>
 
-          <Select
-              id="pub-medium-id"
-              placeholder="Publikationsmedium"
-              v-model="filters['pub-medium-id']"
-              optionLabel="title"
-              optionValue="id"
-              :options="publicationMedia"
-              filter
-              showClear
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="pub-medium-id" class="text-xs font-bold text-slate-700">Publikationsmedium</label>
+              <Select
+                  id="pub-medium-id"
+                  placeholder="Medium wählen"
+                  v-model="filters['pub-medium-id']"
+                  optionLabel="title"
+                  optionValue="id"
+                  :options="publicationMedia"
+                  filter
+                  showClear
+                  fluid
+              />
+            </div>
 
-          <Select
-              id="location-id"
-              placeholder="Fundort auswählen"
-              v-model="filters['location-id']"
-              optionLabel="name"
-              optionValue="id"
-              :options="locations"
-              filter
-              showClear
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="location-id" class="text-xs font-bold text-slate-700">Fundort</label>
+              <Select
+                  id="location-id"
+                  placeholder="Ort wählen"
+                  v-model="filters['location-id']"
+                  optionLabel="name"
+                  optionValue="id"
+                  :options="locations"
+                  filter
+                  showClear
+                  fluid
+              />
+            </div>
 
-          <Select
-              id="author-id"
-              placeholder="Autor:in auswählen"
-              v-model="filters['author-id']"
-              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-              optionValue="id"
-              :options="persons"
-              @click="()=>console.log(filters['author-id'])"
-              filter
-              showClear
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="author-id" class="text-xs font-bold text-slate-700">Autor:in</label>
+              <Select
+                  id="author-id"
+                  placeholder="Suchen / wählen"
+                  v-model="filters['author-id']"
+                  :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                  optionValue="id"
+                  :options="persons"
+                  @click="()=>console.log(filters['author-id'])"
+                  filter
+                  showClear
+                  fluid
+              />
+            </div>
 
-          <Select
-              id="photographer-id"
-              placeholder="Fotograf:in auswählen"
-              v-model="filters['photographer-id']"
-              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-              optionValue="id"
-              :options="persons"
-              filter
-              showClear
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="photographer-id" class="text-xs font-bold text-slate-700">Fotograf:in</label>
+              <Select
+                  id="photographer-id"
+                  placeholder="Suchen / wählen"
+                  v-model="filters['photographer-id']"
+                  :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                  optionValue="id"
+                  :options="persons"
+                  filter
+                  showClear
+                  fluid
+              />
+            </div>
 
-          <Select
-              inputId="depicted-person-id"
-              placeholder="Abgebildete Person auswählen"
-              v-model="filters['depicted-person-id']"
-              :suggestions="persons"
-              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
-              optionValue="id"
-              showClear
-              filter
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="depicted-person-id" class="text-xs font-bold text-slate-700">Abgebildete Person</label>
+              <Select
+                  id="depicted-person-id"
+                  placeholder="Person wählen"
+                  v-model="filters['depicted-person-id']"
+                  :options="persons"
+                  :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
+                  optionValue="id"
+                  showClear
+                  filter
+                  fluid
+              />
+            </div>
 
-          <Select
-              id="contributor-id"
-              placeholder="Sonstige Mitwirkende auswählen"
-              v-model="filters['contributor-id']"
-              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-              optionValue="id"
-              :options="persons"
-              filter
-              showClear
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="contributor-id" class="text-xs font-bold text-slate-700">Sonstige Mitwirkende</label>
+              <Select
+                  id="contributor-id"
+                  placeholder="Person wählen"
+                  v-model="filters['contributor-id']"
+                  :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                  optionValue="id"
+                  :options="persons"
+                  filter
+                  showClear
+                  fluid
+              />
+            </div>
 
-          <Select
-              id="theme-id"
-              placeholder="Thematik auswählen"
-              v-model="filters['theme-id']"
-              optionLabel="value"
-              optionValue="id"
-              :options="keywords"
-              filter
-              showClear
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="theme-id" class="text-xs font-bold text-slate-700">Thematik</label>
+              <Select
+                  id="theme-id"
+                  placeholder="Thema wählen"
+                  v-model="filters['theme-id']"
+                  optionLabel="value"
+                  optionValue="id"
+                  :options="keywords"
+                  filter
+                  showClear
+                  fluid
+              />
+            </div>
 
-          <Select
-              id="image-motif-id"
-              placeholder="Bildmotiv auswählen"
-              v-model="filters['image-motif-id']"
-              optionLabel="value"
-              optionValue="id"
-              :options="keywords"
-              filter
-              showClear
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="image-motif-id" class="text-xs font-bold text-slate-700">Bildmotiv</label>
+              <Select
+                  id="image-motif-id"
+                  placeholder="Motiv wählen"
+                  v-model="filters['image-motif-id']"
+                  optionLabel="value"
+                  optionValue="id"
+                  :options="keywords"
+                  filter
+                  showClear
+                  fluid
+              />
+            </div>
 
-          <Select
-              id="copyright-image-id"
-              placeholder="Bild Copyright-Status auswählen"
-              v-model="filters['copyright-image-id']"
-              optionLabel="value"
-              optionValue="id"
-              :options="copyrightStatuses"
-              showClear
-              fluid
-          />
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1">
+                <label for="copyright-image-id" class="text-xs font-bold text-slate-700">Copyright Bild</label>
+                <Select
+                    id="copyright-image-id"
+                    placeholder="Status"
+                    v-model="filters['copyright-image-id']"
+                    optionLabel="value"
+                    optionValue="id"
+                    :options="copyrightStatuses"
+                    showClear
+                    fluid
+                />
+              </div>
 
-          <Select
-              id="copyright-text-id"
-              placeholder="Text Copyright-Status auswählen"
-              v-model="filters['copyright-text-id']"
-              optionLabel="value"
-              optionValue="id"
-              :options="copyrightStatuses"
-              showClear
-              fluid
-          />
+              <div class="flex flex-col gap-1">
+                <label for="copyright-text-id" class="text-xs font-bold text-slate-700">Copyright Text</label>
+                <Select
+                    id="copyright-text-id"
+                    placeholder="Status"
+                    v-model="filters['copyright-text-id']"
+                    optionLabel="value"
+                    optionValue="id"
+                    :options="copyrightStatuses"
+                    showClear
+                    fluid
+                />
+              </div>
+            </div>
 
-          <Select
-              id="language-id"
-              placeholder="Sprache auswählen"
-              v-model="filters['language-id']"
-              optionLabel="name"
-              optionValue="id"
-              :options="languages"
-              filter
-              showClear
-              fluid
-          />
+            <div class="flex flex-col gap-1">
+              <label for="language-id" class="text-xs font-bold text-slate-700">Sprache</label>
+              <Select
+                  id="language-id"
+                  placeholder="Sprache wählen"
+                  v-model="filters['language-id']"
+                  optionLabel="name"
+                  optionValue="id"
+                  :options="languages"
+                  filter
+                  showClear
+                  fluid
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div class="md:w-3/4">
