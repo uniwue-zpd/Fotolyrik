@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import type { PersonDTO, ContributorRole } from "~/utils/types";
+import type { PersonDTO } from "~/utils/types";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
@@ -21,6 +21,7 @@ const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-im
 const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_store.fetchPersonMetrics(person_id));
 const { data: authorOf } = await useAsyncData(`author-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'author-id': person_id }));
 const { data: photographerOf } = await useAsyncData(`photographer-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'photographer-id': person_id }));
+const { data: participatedOn } = await useAsyncData(`participant-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'participant-id': person_id }));
 const { data: contributorOf } = await useAsyncData(`contributor-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id }));
 const { data: depictedOn } = await useAsyncData(`depicted-${ person_id }-on`, () => photopoem_store.filterPhotopoems({ 'depicted-person-id': person_id }));
 
@@ -31,6 +32,7 @@ const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
   return [
     ...normalize(authorOf.value, 'AUTHOR' as PersonRole),
     ...normalize(photographerOf.value, 'PHOTOGRAPHER' as PersonRole),
+    ...normalize(participatedOn.value, 'PARTICIPANT' as PersonRole),
     ...normalize(contributorOf.value, 'OTHER' as PersonRole),
     ...normalize(depictedOn.value, 'DEPICTED' as PersonRole)
   ];
@@ -162,6 +164,16 @@ useHead(() => {
             <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
                 <div v-for="photopoem in contributorOf" :key="photopoem.id">
+                  <PhotopoemPreview :photopoem="photopoem"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="participatedOn && participatedOn.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+            <h2 class="text-xl font-bold text-primary outfit-headline">Beteligt an</h2>
+            <div class="overflow-y-auto pb-2">
+              <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
+                <div v-for="photopoem in participatedOn" :key="photopoem.id">
                   <PhotopoemPreview :photopoem="photopoem"/>
                 </div>
               </div>
