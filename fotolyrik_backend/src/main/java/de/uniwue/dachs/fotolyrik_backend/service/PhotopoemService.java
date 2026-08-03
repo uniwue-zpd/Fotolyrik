@@ -20,38 +20,22 @@ public class PhotopoemService {
     private final PhotopoemRepository photopoemRepository;
     private final FullTextService fullTextService;
     private final PhotopoemMapper photopoemMapper;
-    private final PubMediumMapper pubMediumMapper;
-    private final PersonMapper personMapper;
-    private final KeywordMapper keywordMapper;
-    private final FileMapper fileMapper;
-    private final CopyrightStatusMapper copyrightStatusMapper;
-    private final LanguageMapper languageMapper;
     private final PhotopoemHighlightPicker photopoemHighlightPicker;
-    private final LocationMapper locationMapper;
     private final ContributionMapper contributionMapper;
     private final PersonRepository personRepository;
 
     public PhotopoemService(PhotopoemRepository photopoemRepository,
                             FullTextService fullTextService,
                             PhotopoemMapper photopoemMapper,
-                            PubMediumMapper pubMediumMapper,
-                            PersonMapper personMapper,
-                            KeywordMapper keywordMapper,
-                            FileMapper fileMapper, CopyrightStatusMapper copyrightStatusMapper, LanguageMapper languageMapper,
-                            PhotopoemHighlightPicker photopoemHighlightPicker, LocationMapper locationMapper, PersonRepository personRepository, ContributionMapper contributionMapper) {
+                            PhotopoemHighlightPicker photopoemHighlightPicker,
+                            PersonRepository personRepository,
+                            ContributionMapper contributionMapper) {
         this.photopoemRepository = photopoemRepository;
         this.fullTextService = fullTextService;
         this.photopoemMapper = photopoemMapper;
-        this.pubMediumMapper = pubMediumMapper;
-        this.personMapper = personMapper;
-        this.keywordMapper = keywordMapper;
-        this.fileMapper = fileMapper;
-        this.copyrightStatusMapper = copyrightStatusMapper;
-        this.languageMapper = languageMapper;
         this.photopoemHighlightPicker = photopoemHighlightPicker;
         this.contributionMapper = contributionMapper;
         this.personRepository = personRepository;
-        this.locationMapper = locationMapper;
     }
 
     /**
@@ -102,6 +86,8 @@ public class PhotopoemService {
      * @param photographer refers to the name of the photographer
      * @param depictedPersonId refers to the ID of the person depicted
      * @param depictedPerson refers to the name of the person depicted
+     * @param participantId refers to the ID of the participant
+     * @param participant refers to the name of the participant
      * @param contributorId refers to the ID of other contributors
      * @param otherContributor refers to the name of other contributors
      * @param themeId refers to the ID of the theme
@@ -134,6 +120,8 @@ public class PhotopoemService {
             String photographer,
             Long depictedPersonId,
             String depictedPerson,
+            Long participantId,
+            String participant,
             Long contributorId,
             String otherContributor,
             Long themeId,
@@ -199,6 +187,12 @@ public class PhotopoemService {
         }
         if (depictedPerson != null && !depictedPerson.isEmpty()) {
             spec = spec.and(PhotopoemSpecification.hasDepictedPerson(depictedPerson));
+        }
+        if (participantId != null) {
+            spec = spec.and(PhotopoemSpecification.hasParticipantId(participantId));
+        }
+        if (participant != null && !participant.isEmpty()) {
+            spec = spec.and(PhotopoemSpecification.hasParticipant(participant));
         }
         if (contributorId != null) {
             spec = spec.and(PhotopoemSpecification.hasOtherContributorId(contributorId));

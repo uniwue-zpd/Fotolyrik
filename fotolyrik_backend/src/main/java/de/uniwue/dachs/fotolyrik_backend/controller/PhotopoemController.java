@@ -62,6 +62,8 @@ public class PhotopoemController {
             @RequestParam(required = false) String photographer,
             @RequestParam(required = false, value = "depicted-person-id") Long depictedPersonId,
             @RequestParam(required = false, value= "depicted-person") String depictedPerson,
+            @RequestParam(required = false, value = "participant-id") Long participantId,
+            @RequestParam(required = false, value = "participant") String participant,
             @RequestParam(required = false, value = "other-contributor-id") Long otherContributorId,
             @RequestParam(required = false, value = "other-contributor") String otherContributor,
             @RequestParam(required = false, value = "theme-id") Long themeId,
@@ -78,7 +80,7 @@ public class PhotopoemController {
         List<Object> paramsCount = Stream.<Object>of(
                 title, subtitle, altTitle, series, volume, issue, publicationDate,
                 pubMediumId, pubMedium, pubPlaceId, locationId, authorId, author, photographerId,
-                photographer,depictedPersonId, depictedPerson, otherContributorId,
+                photographer,depictedPersonId, depictedPerson, participantId, participant, otherContributorId,
                 otherContributor, themeId, theme, imageMotifId, imageMotif,
                 copyrightStatusImageId, copyrightStatusImage, copyrightStatusTextId,
                 copyrightStatusText, languageId, language
@@ -90,7 +92,7 @@ public class PhotopoemController {
                 photopoemService.filterPhotopoems(
                         title, subtitle, altTitle, series, volume, issue, publicationDate,
                         pubMediumId, pubMedium, pubPlaceId, locationId, authorId, author, photographerId,
-                        photographer,depictedPersonId, depictedPerson, otherContributorId,
+                        photographer,depictedPersonId, depictedPerson, participantId, participant, otherContributorId,
                         otherContributor, themeId, theme, imageMotifId, imageMotif,
                         copyrightStatusImageId, copyrightStatusImage, copyrightStatusTextId,
                         copyrightStatusText, languageId, language
