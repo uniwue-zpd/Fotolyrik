@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Repository
@@ -81,14 +82,13 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     PersonMetricsDTO getMetricsByPerson(Long personId);
 
     @Query("""
-    SELECT DISTINCT p FROM Person p
-        LEFT JOIN p.pseudonyms pseudonym
-        WHERE
-        LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        ORDER BY p.lastName ASC
+        SELECT DISTINCT p FROM Person p
+            LEFT JOIN p.pseudonyms pseudonym
+            WHERE
+            LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+            OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+            OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+            OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
     """)
-    List<Person> searchPeople(@Param("query") String query);
+    Page<Person> searchPeople(@Param("query") String query, Pageable pageable);
 }

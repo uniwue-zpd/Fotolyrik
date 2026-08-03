@@ -148,6 +148,10 @@ export const usePersonStore = defineStore('person', () => {
         return await $fetch<PersonPreviewDTO[]>(`/api/persons/search`, { query: { query } });
     }
 
+    async function searchPeoplePaginated(query: string, pageable:Pageable): Promise<Page<PersonPreviewDTO>> {
+        return await $fetch<Page<PersonPreviewDTO>>(`/api/persons/search_paginated`, { query: { query, ...pageable } });
+    }
+
     return {
         persons,
         currentPerson,
@@ -165,7 +169,8 @@ export const usePersonStore = defineStore('person', () => {
         fetchAuthorThemes,
         fetchAuthorImageMotifs,
         fetchPersonMetrics,
-        searchPeople
+        searchPeople,
+        searchPeoplePaginated
     }
 });
 

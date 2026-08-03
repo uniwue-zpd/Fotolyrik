@@ -101,4 +101,5 @@ public class PersonMapper {
     public List<Person> PreviewDTOsToPersons(List<PersonPreviewDTO> personPreviewDTOS) {
         return MapperUtils.mapList(personPreviewDTOS, this::PreviewDTOToPerson);
     }
+
 }

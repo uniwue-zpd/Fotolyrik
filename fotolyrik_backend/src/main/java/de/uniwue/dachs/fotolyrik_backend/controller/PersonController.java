@@ -10,6 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @RestController
@@ -96,6 +98,11 @@ public class PersonController {
     public ResponseEntity<List<PersonPreviewDTO>> searchPeople(@RequestParam String query) {
         if (query == null || query.trim().length() < 2) return ResponseEntity.ok(List.of());
         List<PersonPreviewDTO> persons = personService.searchPeople(query);
+        return ResponseEntity.ok(persons);
+    }
+    @GetMapping("/search_paginated")
+    public ResponseEntity<Page<PersonPreviewDTO>> searchPeoplePaginated(Pageable pageable, @RequestParam String query) {
+        Page<PersonPreviewDTO> persons = personService.searchPeoplePaginated(pageable, query);
         return ResponseEntity.ok(persons);
     }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
+import PaginatedSelect from "~/components/UI/filters/PaginatedSelect.vue";
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('lg')
@@ -26,12 +27,16 @@ const copyrightStatusStore = useCopyrightStatusStore();
 const keywordStore = useKeywordStore();
 const locationStore = useLocationStore();
 
-const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
 const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
+
+function getPersonOptionLabel(opt: PersonPreviewDTO) {
+  if (!opt) return '';
+  return opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ');
+}
 
 </script>
 
@@ -150,15 +155,13 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
 
           <div class="flex flex-col gap-1">
             <label for="author-id" class="text-xs font-bold ">Autor:in</label>
-            <Select
+            <PaginatedSelect
+                :fetch-function="personStore.searchPeoplePaginated"
                 id="author-id"
                 placeholder="Autor:in suchen / wählen"
                 v-model="filters['author-id']"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                :optionLabel="getPersonOptionLabel"
                 optionValue="id"
-                :options="persons"
-                @click="()=>console.log(filters['author-id'])"
-                filter
                 showClear
                 fluid
             />
@@ -166,14 +169,13 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
 
           <div class="flex flex-col gap-1">
             <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
-            <Select
+            <PaginatedSelect
+                :fetch-function="personStore.searchPeoplePaginated"
                 id="photographer-id"
                 placeholder="Fotograf:in suchen / wählen"
                 v-model="filters['photographer-id']"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                :optionLabel="getPersonOptionLabel"
                 optionValue="id"
-                :options="persons"
-                filter
                 showClear
                 fluid
             />
@@ -181,29 +183,27 @@ const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.
 
           <div class="flex flex-col gap-1">
             <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
-            <Select
+            <PaginatedSelect
+                :fetch-function="personStore.searchPeoplePaginated"
                 id="depicted-person-id"
                 placeholder="Abgebildete Person wählen"
                 v-model="filters['depicted-person-id']"
-                :options="persons"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
+                :optionLabel="getPersonOptionLabel"
                 optionValue="id"
                 showClear
-                filter
                 fluid
             />
           </div>
 
           <div class="flex flex-col gap-1">
             <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
-            <Select
+            <PaginatedSelect
+                :fetch-function="personStore.searchPeoplePaginated"
                 id="contributor-id"
                 placeholder="Mitwirkende Person wählen"
                 v-model="filters['contributor-id']"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
+                :optionLabel="getPersonOptionLabel"
                 optionValue="id"
-                :options="persons"
-                filter
                 showClear
                 fluid
             />
