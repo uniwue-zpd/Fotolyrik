@@ -4,10 +4,12 @@ import Select, { type SelectProps } from 'primevue/select';
 interface Props extends /* @vue-ignore */ SelectProps {
   fetchFunction: (query: string, pageable: Pageable) => Promise<Page<TItem>>;
   pageSize?: number;
+  sort: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   pageSize: 10,
+  sort: ''
 });
 
 const options = ref<TItem[]>([]) as Ref<TItem[]>;
@@ -29,7 +31,7 @@ const loadData = async (query: string, reset = true) => {
     const response = await props.fetchFunction(query, {
       page: currentPage.value,
       size: props.pageSize,
-      sort: 'firstName,asc',
+      sort: props.sort,
     });
 
     const newItems = response.content || [];

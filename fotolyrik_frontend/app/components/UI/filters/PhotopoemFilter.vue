@@ -125,14 +125,14 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
 
           <div class="flex flex-col gap-1">
             <label for="pub-medium-id" class="text-xs font-bold ">Publikationsmedium</label>
-            <Select
+            <PaginatedSelect
+                :fetch-function="pubMediumStore.searchPubMediaPaginated"
+                sort="title,asc"
                 id="pub-medium-id"
                 placeholder="Medium wählen"
                 v-model="filters['pub-medium-id']"
                 optionLabel="title"
                 optionValue="id"
-                :options="publicationMedia"
-                filter
                 showClear
                 fluid
             />
@@ -157,6 +157,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="author-id" class="text-xs font-bold ">Autor:in</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
+                sort="firstName,asc"
                 id="author-id"
                 placeholder="Autor:in suchen / wählen"
                 v-model="filters['author-id']"
@@ -171,6 +172,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
+                sort="firstName,asc"
                 id="photographer-id"
                 placeholder="Fotograf:in suchen / wählen"
                 v-model="filters['photographer-id']"
@@ -185,6 +187,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
+                sort="firstName,asc"
                 id="depicted-person-id"
                 placeholder="Abgebildete Person wählen"
                 v-model="filters['depicted-person-id']"
@@ -199,6 +202,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
+                sort="firstName,asc"
                 id="contributor-id"
                 placeholder="Mitwirkende Person wählen"
                 v-model="filters['contributor-id']"
