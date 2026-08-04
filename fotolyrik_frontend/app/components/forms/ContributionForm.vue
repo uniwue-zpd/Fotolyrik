@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ContributionRole } from "~/utils/types";
+import {ContributionRole} from "~/utils/types";
 import type {AutoCompleteCompleteEvent} from "primevue";
 
 const props = defineProps({
@@ -9,7 +9,7 @@ const props = defineProps({
 const personStore = usePersonStore();
 
 const getContributions = () => {
-  return contributions.value.map(({ renderId, ...rest }) => rest);
+  return contributions.value.map(({ renderId, errorMessage, pseudonymSuggestions, ...rest }) => rest);
 };
 
 const loading = ref(false);
@@ -62,6 +62,7 @@ defineExpose({ getContributions, isValid, checkRefetch })
 const roleOptions = [
   { label: 'Autor:in', value: ContributionRole.AUTHOR },
   { label: 'Fotograf:in', value: ContributionRole.PHOTOGRAPHER },
+  { label: 'Beteiligt', value: ContributionRole.PARTICIPANT },
   { label: 'Sonstige', value: ContributionRole.OTHER }
 ];
 

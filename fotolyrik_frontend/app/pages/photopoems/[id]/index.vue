@@ -18,6 +18,9 @@ const authors = computed(() => photopoem_item.value?.contributions
 const photographers = computed(() => photopoem_item.value?.contributions
     .filter(contribution => contribution.role === ContributionRole.PHOTOGRAPHER)
     .map(contribution => ({...contribution.contributor, pseudonym: contribution.pseudonym || null })) || []);
+const participants = computed(() => photopoem_item.value?.contributions
+    .filter(contribution => contribution.role === ContributionRole.PARTICIPANT)
+    .map(contribution => ({...contribution.contributor, pseudonym: contribution.pseudonym || null })) || []);
 const otherContributors = computed(() => photopoem_item.value?.contributions
     .filter(contribution => contribution.role === ContributionRole.OTHER)
     .map(contribution => ({...contribution.contributor, pseudonym: contribution.pseudonym || null })) || []);
@@ -224,6 +227,24 @@ const roleText = {
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-3.5">
                             <span v-for="person in otherContributors" :key="person.id">
+                              <NuxtLink
+                                  :to="`/persons/${person.id}`"
+                                  class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
+                              >
+                                <span class="font-medium">
+                                  {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                </span>
+                                <span v-if="person.pseudonym" class="font-light italic">als {{  person.pseudonym }}</span>
+                              </NuxtLink>
+                            </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="participants.length > 0">
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Beteiligte</td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex flex-wrap gap-3.5">
+                            <span v-for="person in participants" :key="person.id">
                               <NuxtLink
                                   :to="`/persons/${person.id}`"
                                   class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
