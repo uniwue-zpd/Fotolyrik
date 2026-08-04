@@ -27,9 +27,7 @@ const copyrightStatusStore = useCopyrightStatusStore();
 const keywordStore = useKeywordStore();
 const locationStore = useLocationStore();
 
-const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
 const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
-const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
 
@@ -215,14 +213,14 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
 
           <div class="flex flex-col gap-1">
             <label for="theme-id" class="text-xs font-bold ">Thematik</label>
-            <Select
+            <PaginatedSelect
+                :fetch-function="keywordStore.searchKeywordPaginated"
+                sort="value,asc"
                 id="theme-id"
                 placeholder="Thema wählen"
                 v-model="filters['theme-id']"
                 optionLabel="value"
                 optionValue="id"
-                :options="keywords"
-                filter
                 showClear
                 fluid
             />
@@ -230,14 +228,14 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
 
           <div class="flex flex-col gap-1">
             <label for="image-motif-id" class="text-xs font-bold ">Bildmotiv</label>
-            <Select
+            <PaginatedSelect
+                :fetch-function="keywordStore.searchKeywordPaginated"
+                sort="value,asc"
                 id="image-motif-id"
                 placeholder="Motiv wählen"
                 v-model="filters['image-motif-id']"
                 optionLabel="value"
                 optionValue="id"
-                :options="keywords"
-                filter
                 showClear
                 fluid
             />
