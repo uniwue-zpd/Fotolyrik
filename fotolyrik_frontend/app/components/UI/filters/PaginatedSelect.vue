@@ -1,18 +1,20 @@
-<script setup lang="ts" generic="TItem, TValue">
+<script setup lang="ts" generic="TItem">
 import Select, { type SelectProps } from 'primevue/select';
 
 interface Props extends /* @vue-ignore */ SelectProps {
   fetchFunction: (query: string, pageable: Pageable) => Promise<Page<TItem>>;
+  cullFunction: (item: TItem ) =>Partial<TItem>;
   pageSize?: number;
   sort: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  cullFunction: (item: TItem)=>item,
   pageSize: 10,
   sort: ''
 });
 
-const options = ref<TItem[]>([]) as Ref<TItem[]>;
+const options = ref<Partial<TItem> []>([]) as Ref<Partial<TItem>[]>;
 const loading = ref(false);
 const currentPage = ref(0);
 const hasMore = ref(true);
@@ -25,7 +27,7 @@ const loadData = async (query: string, reset = true) => {
   try {
     if (reset) {
       currentPage.value = 0;
-      options.value = [];
+      options.value = [] as Partial<TItem>[];
     }
 
     const response = await props.fetchFunction(query, {
@@ -35,11 +37,11 @@ const loadData = async (query: string, reset = true) => {
     });
 
     const newItems = response.content || [];
-
+    const itemsCulled: Partial<TItem>[] = newItems.map(props.cullFunction)
     if (reset) {
-      options.value = newItems;
+      options.value = itemsCulled;
     } else {
-      options.value = [...options.value, ...newItems];
+      options.value = [...options.value, ...itemsCulled];
     }
 
     hasMore.value = currentPage.value + 1 < response.totalPages;

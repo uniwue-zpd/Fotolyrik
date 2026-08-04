@@ -125,6 +125,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="pub-medium-id" class="text-xs font-bold ">Publikationsmedium</label>
             <PaginatedSelect
                 :fetch-function="pubMediumStore.searchPubMediaPaginated"
+                :cull-function="pm => ({ id: pm.id, title: pm.title })"
                 sort="title,asc"
                 id="pub-medium-id"
                 placeholder="Medium wählen"
@@ -155,6 +156,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="author-id" class="text-xs font-bold ">Autor:in</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
+                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
                 sort="firstName,asc"
                 id="author-id"
                 placeholder="Autor:in suchen / wählen"
@@ -170,6 +172,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
+                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
                 sort="firstName,asc"
                 id="photographer-id"
                 placeholder="Fotograf:in suchen / wählen"
@@ -185,6 +188,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
+                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
                 sort="firstName,asc"
                 id="depicted-person-id"
                 placeholder="Abgebildete Person wählen"
@@ -200,6 +204,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
+                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
                 sort="firstName,asc"
                 id="contributor-id"
                 placeholder="Mitwirkende Person wählen"
@@ -215,6 +220,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="theme-id" class="text-xs font-bold ">Thematik</label>
             <PaginatedSelect
                 :fetch-function="keywordStore.searchKeywordPaginated"
+                :cull-function="k => ({ id: k.id, value: k.value })"
                 sort="value,asc"
                 id="theme-id"
                 placeholder="Thema wählen"
@@ -230,6 +236,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="image-motif-id" class="text-xs font-bold ">Bildmotiv</label>
             <PaginatedSelect
                 :fetch-function="keywordStore.searchKeywordPaginated"
+                :cull-function="(k) => ({ id: k.id, value: k.value })"
                 sort="value,asc"
                 id="image-motif-id"
                 placeholder="Motiv wählen"
