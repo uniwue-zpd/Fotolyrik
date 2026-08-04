@@ -3,6 +3,8 @@ package de.uniwue.dachs.fotolyrik_backend.repository;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -15,12 +17,11 @@ import java.util.List;
 public interface PubMediumRepository extends JpaRepository<PubMedium, Long>, JpaSpecificationExecutor<PubMedium> {
 
     @Query("""
-        SELECT pm FROM PubMedium pm
-        WHERE LOWER(pm.title) LIKE LOWER(CONCAT('%', :query, '%'))
-        OR LOWER(pm.subtitle) LIKE LOWER(CONCAT('%', :query, '%'))
-        ORDER BY COALESCE(pm.title, pm.subtitle) ASC
+    SELECT pm FROM PubMedium pm
+    WHERE LOWER(pm.title) LIKE LOWER(CONCAT('%', :query, '%'))
+    OR LOWER(pm.subtitle) LIKE LOWER(CONCAT('%', :query, '%'))
     """)
-    List<PubMedium> searchPubMedia(@Param("query") String query);
+    Page<PubMedium> searchPubMedia(@Param("query") String query, Pageable pageable);
 
     @Query(value = """
     SELECT

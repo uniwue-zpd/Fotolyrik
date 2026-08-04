@@ -4,6 +4,7 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import de.uniwue.dachs.fotolyrik_backend.specification.PubMediumSpecification;
@@ -12,6 +13,8 @@ import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PubMediumMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublicationRhythmMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -216,9 +219,30 @@ public class PubMediumService {
      * @return a list of matching {@link PubMediumPreviewDTO} objects, or an empty list if no matches are found
      */
     public List<PubMediumPreviewDTO> searchPubMedia(String query) {
-        return pubMediumRepository.searchPubMedia(query).stream()
+        return pubMediumRepository.searchPubMedia(
+                query,
+                Pageable.unpaged(Sort.by("title").ascending())
+                ).stream()
                 .map(pubMediumMapper::PubMediumToPubMediumPreviewDTO)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+    /**
+     * Searches publication media whose title or subtitle matches the given search query.
+     * <p>The search is performed case-insensitively using a partial match. The returned
+     * list contains lightweight preview DTOs intended for search suggestions or
+     * autocomplete components.</p>
+     * @param query the search term to match against publication media titles and subtitles
+     * @param pageable defining the search slice returned
+     * @return a page of matching {@link PubMediumPreviewDTO} objects, or an empty list if no matches are found
+     */
+    public Page<PubMediumPreviewDTO> searchPubMediaPaginated(Pageable pageable, String query) {
+        Page<PubMedium> result;
+        if (query  == null||  query.trim().length()<2){
+            result =  pubMediumRepository.findAll(pageable);
+        } else {
+            result = pubMediumRepository.searchPubMedia(query, pageable);
+        }
+        return result.map(pubMediumMapper::PubMediumToPubMediumPreviewDTO);
     }
 }
