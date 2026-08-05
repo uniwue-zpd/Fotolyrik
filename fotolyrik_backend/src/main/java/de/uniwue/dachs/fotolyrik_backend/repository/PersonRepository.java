@@ -90,7 +90,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
         OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
         OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
         OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        ORDER BY p.lastName ASC
+        ORDER BY p.lastName ASC NULLS LAST
     """)
     List<Person> searchPeople(@Param("query") String query);
 }
