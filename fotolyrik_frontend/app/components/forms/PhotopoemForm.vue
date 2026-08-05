@@ -548,7 +548,7 @@ const onFormSubmit = async (e: any) => {
                 optionLabel="originalFilename"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 :key="files.length"
-                :maxSelectedLabels="3"
+                :maxSelectedLabels="2"
                 fluid filter showClear
             >
               <template #option="slotProps">
