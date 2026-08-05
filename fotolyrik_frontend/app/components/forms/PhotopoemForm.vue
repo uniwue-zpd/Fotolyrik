@@ -32,7 +32,7 @@ const onPersonComplete = (event: any) => {
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
 const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
-const files = computed(() => fileStore.files.map((f: FileDTO) => ({ id: f.id, filename: f.filename, originalFilename: f.originalFilename })));
+const files = computed(() => fileStore.files);
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
@@ -548,8 +548,8 @@ const onFormSubmit = async (e: any) => {
                 optionLabel="originalFilename"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 :key="files.length"
-                :maxSelectedLabels="2"
-                fluid filter
+                :maxSelectedLabels="3"
+                fluid filter showClear
             >
               <template #option="slotProps">
                 <div class="flex flex-row space-x-2">
