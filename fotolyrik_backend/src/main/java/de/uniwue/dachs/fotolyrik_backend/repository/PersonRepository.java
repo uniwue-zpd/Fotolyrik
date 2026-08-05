@@ -84,7 +84,9 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     SELECT DISTINCT p FROM Person p
         LEFT JOIN p.pseudonyms pseudonym
         WHERE
-        LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+        LOWER(CONCAT(COALESCE(p.firstName, ''), ' ', COALESCE(p.lastName, '')))
+            LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
         OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
         OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
         OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
