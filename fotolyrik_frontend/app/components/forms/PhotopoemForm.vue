@@ -640,7 +640,7 @@ const onFormSubmit = async (e: any) => {
             />
           </IconField>
           <Message v-if="$form.internalNotes?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.title.error.message }}
+            {{ $form.internalNotes.error.message }}
           </Message>
         </FormField>
         <FormField v-slot="$field" name="generalNotes" class="flex flex-col gap-1 flex-auto">
@@ -656,7 +656,7 @@ const onFormSubmit = async (e: any) => {
             />
           </IconField>
           <Message v-if="$form.generalNotes?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.title.error.message }}
+            {{ $form.generalNotes.error.message }}
           </Message>
         </FormField>
         <Button type="submit" severity="primary">
