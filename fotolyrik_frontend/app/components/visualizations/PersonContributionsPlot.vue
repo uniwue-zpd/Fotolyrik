@@ -12,6 +12,7 @@ defineProps<{
 const colors: Record<PersonRole, string> = {
   AUTHOR: '#2563eb',
   PHOTOGRAPHER: '#dc2626',
+  PARTICIPANT: '#e3769e',
   OTHER: '#16a34a',
   DEPICTED: '#9333ea'
 };
@@ -19,6 +20,7 @@ const colors: Record<PersonRole, string> = {
 const rolesMap: Record<PersonRole, string> = {
   AUTHOR: 'Autor:in',
   PHOTOGRAPHER: 'Fotograf:in',
+  PARTICIPANT: 'Beteiligt',
   OTHER: 'Mitgewirkt an',
   DEPICTED: 'Abgebildet auf'
 };
