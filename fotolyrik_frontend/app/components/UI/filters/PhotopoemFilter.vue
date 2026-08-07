@@ -10,7 +10,7 @@ watchEffect(() => {
   activeTab.value = isMobile.value ? null : "0"
 })
 
-defineProps<{
+const props = defineProps<{
   filters: PhotopoemPageable
 }>()
 
@@ -31,13 +31,16 @@ const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => 
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
 
+
 function getPersonOptionLabel(opt: PersonPreviewDTO) {
   if (!opt) return '';
   return opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ');
 }
 
-</script>
 
+const truncate = (str:string, maxLen =21) =>
+    str.length > maxLen ? `${str.slice(0, maxLen).trimEnd()}...` : str;
+</script>
 <template>
   <Accordion  :value="activeTab">
     <AccordionPanel value="0">
@@ -129,12 +132,20 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="title,asc"
                 id="pub-medium-id"
                 placeholder="Medium wählen"
-                v-model="filters['pub-medium-id']"
-                optionLabel="title"
-                optionValue="id"
+                @change="filters['pub-medium-id'] = $event.value?.id"
+                :optionLabel="(p)=> p.title"
                 showClear
                 fluid
-            />
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value">
+                  {{ truncate(slotProps.value.title) }}
+                </div>
+                <span v-else>
+                {{ slotProps.placeholder }}
+                </span>
+              </template>
+            </PaginatedSelect>
           </div>
 
           <div class="flex flex-col gap-1">
@@ -160,12 +171,20 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="firstName,asc"
                 id="author-id"
                 placeholder="Autor:in suchen / wählen"
-                v-model="filters['author-id']"
+                @change="filters['author-id'] = $event.value?.id"
                 :optionLabel="getPersonOptionLabel"
-                optionValue="id"
                 showClear
                 fluid
-            />
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value">
+                  {{ truncate(getPersonOptionLabel(slotProps.value)) }}
+                </div>
+                <span v-else>
+                {{ slotProps.placeholder }}
+                </span>
+              </template>
+            </PaginatedSelect>
           </div>
 
           <div class="flex flex-col gap-1">
@@ -176,12 +195,20 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="firstName,asc"
                 id="photographer-id"
                 placeholder="Fotograf:in suchen / wählen"
-                v-model="filters['photographer-id']"
+                @change="filters['photographer-id'] = $event.value?.id"
                 :optionLabel="getPersonOptionLabel"
-                optionValue="id"
                 showClear
                 fluid
-            />
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value">
+                  {{ truncate(getPersonOptionLabel(slotProps.value)) }}
+                </div>
+                <span v-else>
+                {{ slotProps.placeholder }}
+                </span>
+              </template>
+            </PaginatedSelect>
           </div>
 
           <div class="flex flex-col gap-1">
@@ -192,12 +219,20 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="firstName,asc"
                 id="depicted-person-id"
                 placeholder="Abgebildete Person wählen"
-                v-model="filters['depicted-person-id']"
+                @change="filters['depicted-person-id'] = $event.value?.id"
                 :optionLabel="getPersonOptionLabel"
-                optionValue="id"
                 showClear
                 fluid
-            />
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value">
+                  {{ truncate(getPersonOptionLabel(slotProps.value)) }}
+                </div>
+                <span v-else>
+                {{ slotProps.placeholder }}
+                </span>
+              </template>
+            </PaginatedSelect>
           </div>
 
           <div class="flex flex-col gap-1">
@@ -208,12 +243,20 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="firstName,asc"
                 id="contributor-id"
                 placeholder="Mitwirkende Person wählen"
-                v-model="filters['contributor-id']"
+                @change="filters['contributor-id'] = $event.value?.id"
                 :optionLabel="getPersonOptionLabel"
-                optionValue="id"
                 showClear
                 fluid
-            />
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value">
+                  {{ truncate(getPersonOptionLabel(slotProps.value)) }}
+                </div>
+                <span v-else>
+                {{ slotProps.placeholder }}
+                </span>
+              </template>
+            </PaginatedSelect>
           </div>
 
           <div class="flex flex-col gap-1">
