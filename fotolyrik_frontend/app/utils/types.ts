@@ -4,6 +4,8 @@ export interface Auditable {
     createdBy: string;
     lastModifiedDate: string;
     lastModifiedBy: string;
+    internalNotes: string | null;
+    generalNotes: string | null;
 }
 
 export interface ContactForm {
@@ -76,9 +78,10 @@ export interface PersonPreviewDTO {
     studioName: string | null;
     pseudonyms: [string] | [];
 }
-export enum ContributionRole{
+export enum ContributionRole {
     AUTHOR = "AUTHOR",
     PHOTOGRAPHER = "PHOTOGRAPHER",
+    PARTICIPANT = "PARTICIPANT",
     OTHER = "OTHER",
 }
 export interface ContributionDTO {
@@ -127,7 +130,8 @@ export interface PhotoPoemPreviewDTO {
 enum DepictedRole {
     DEPICTED = "DEPICTED"
 }
-export type PersonRole  = ContributionRole |DepictedRole;
+export type PersonRole  = ContributionRole | DepictedRole;
+
 export interface PhotoPoemPublicationDateDTO{
     id: number;
     title: string | null;
@@ -186,7 +190,6 @@ export interface PublisherPreviewDTO {
     name: string | null;
 }
 
-
 export interface PubRhythmDTO extends Auditable {
     value: string | null;
     description: string | null;
@@ -196,8 +199,6 @@ export interface PubRhythmPreviewDTO {
     id: number
     value: string | null;
 }
-
-
 
 export interface KeywordDTO extends Auditable {
     value: string;
@@ -256,11 +257,6 @@ export interface PlaceMetricsDTO {
     photographers: number;
     depictedPeople: number;
 }
-
-/**
- * Describes contribution roles of persons in relation to a photopoem.
- */
-export type ContributorRole = 'author' | 'photographer' | 'contributor' | 'depicted';
 
 /**
  * Describes a `Page` object returned after calling an endpoint with `Pageable` parameters

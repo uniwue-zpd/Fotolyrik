@@ -98,6 +98,8 @@ public class PhotopoemService {
      * @param photographer refers to the name of the photographer
      * @param depictedPersonId refers to the ID of the person depicted
      * @param depictedPerson refers to the name of the person depicted
+     * @param participantId refers to the ID of the participant
+     * @param participant refers to the name of the participant
      * @param contributorId refers to the ID of other contributors
      * @param otherContributor refers to the name of other contributors
      * @param themeId refers to the ID of the theme
@@ -130,6 +132,8 @@ public class PhotopoemService {
             String photographer,
             Long depictedPersonId,
             String depictedPerson,
+            Long participantId,
+            String participant,
             Long contributorId,
             String otherContributor,
             Long themeId,
@@ -195,6 +199,12 @@ public class PhotopoemService {
         }
         if (depictedPerson != null && !depictedPerson.isEmpty()) {
             spec = spec.and(PhotopoemSpecification.hasDepictedPerson(depictedPerson));
+        }
+        if (participantId != null) {
+            spec = spec.and(PhotopoemSpecification.hasParticipantId(participantId));
+        }
+        if (participant != null && !participant.isEmpty()) {
+            spec = spec.and(PhotopoemSpecification.hasParticipant(participant));
         }
         if (contributorId != null) {
             spec = spec.and(PhotopoemSpecification.hasOtherContributorId(contributorId));
