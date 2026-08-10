@@ -2,7 +2,6 @@
 
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import PaginatedSelect from "~/components/UI/filters/PaginatedSelect.vue";
-import TruncatedSelect from "~/components/UI/filters/TruncatedSelect.vue";
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('lg')
@@ -48,7 +47,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
       </AccordionHeader>
       <AccordionContent class="flex flex-col gap-2" >
         <div class="flex flex-col gap-3">
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="title" class="text-xs font-bold ">Titel</label>
             <InputText
                 id="title"
@@ -58,7 +57,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="subtitle" class="text-xs font-bold ">Untertitel</label>
             <InputText
                 id="subtitle"
@@ -68,7 +67,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="alt-title" class="text-xs font-bold ">Alternativer Titel</label>
             <InputText
                 id="alt-title"
@@ -78,7 +77,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="series" class="text-xs font-bold ">Reihe</label>
             <InputText
                 id="series"
@@ -113,7 +112,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             </div>
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="publication-date" class="text-xs font-bold ">Publikationsdatum</label>
             <InputText
                 id="publication-date"
@@ -123,7 +122,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="pub-medium-id" class="text-xs font-bold ">Publikationsmedium</label>
             <PaginatedSelect
                 :fetch-function="pubMediumStore.searchPubMediaPaginated"
@@ -131,30 +130,31 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="title,asc"
                 id="pub-medium-id"
                 placeholder="Medium wählen"
-                @change="filters['pub-medium-id'] = $event.value?.id"
+                v-model="filters['pub-medium-id']"
+                option-value="id"
                 :optionLabel="(p)=> p.title"
                 showClear
                 fluid
-                :transformBeforeTrimming="(value:PubMediumPreviewDTO)=>value.title"
                 />
           </div>
 
-          <div class="flex flex-col gap-1">
+
+          <div class="grid grid-cols-1">
             <label for="location-id" class="text-xs font-bold ">Fundort</label>
-            <TruncatedSelect
+            <Select
                 id="location-id"
                 placeholder="Ort wählen"
-                @change="filters['location-id'] = $event.value?.id"
+                v-model="filters['location-id']"
+                option-value="id"
                 optionLabel="name"
                 :options="locations"
                 filter
                 showClear
                 fluid
-                :transformBeforeTrimming="(value)=>value.name"
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="author-id" class="text-xs font-bold ">Autor:in</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
@@ -162,15 +162,15 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="firstName,asc"
                 id="author-id"
                 placeholder="Autor:in suchen / wählen"
-                @change="filters['author-id'] = $event.value?.id"
+                v-model="filters['author-id']"
+                option-value="id"
                 :optionLabel="getPersonOptionLabel"
                 showClear
                 fluid
-                :transformBeforeTrimming="getPersonOptionLabel"
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
@@ -178,15 +178,15 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="firstName,asc"
                 id="photographer-id"
                 placeholder="Fotograf:in suchen / wählen"
-                @change="filters['photographer-id'] = $event.value?.id"
+                v-model="filters['photographer-id']"
+                option-value="id"
                 :optionLabel="getPersonOptionLabel"
                 showClear
                 fluid
-                :transformBeforeTrimming="getPersonOptionLabel"
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
@@ -194,15 +194,15 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="firstName,asc"
                 id="depicted-person-id"
                 placeholder="Abgebildete Person wählen"
-                @change="filters['depicted-person-id'] = $event.value?.id"
+                v-model="filters['depicted-person-id']"
+                option-value="id"
                 :optionLabel="getPersonOptionLabel"
                 showClear
                 fluid
-                :transformBeforeTrimming="getPersonOptionLabel"
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
             <PaginatedSelect
                 :fetch-function="personStore.searchPeoplePaginated"
@@ -210,15 +210,15 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="firstName,asc"
                 id="contributor-id"
                 placeholder="Mitwirkende Person wählen"
-                @change="filters['contributor-id'] = $event.value?.id"
+                v-model="filters['contributor-id']"
+                option-value="id"
                 :optionLabel="getPersonOptionLabel"
                 showClear
                 fluid
-                :transformBeforeTrimming="getPersonOptionLabel"
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="theme-id" class="text-xs font-bold ">Thematik</label>
             <PaginatedSelect
                 :fetch-function="keywordStore.searchKeywordPaginated"
@@ -226,27 +226,27 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="value,asc"
                 id="theme-id"
                 placeholder="Thema wählen"
-                @change="filters['theme-id'] = $event.value?.id"
+                v-model="filters['theme-id']"
+                option-value="id"
                 optionLabel="value"
                 showClear
                 fluid
-                :transformBeforeTrimming="(value: KeywordDTO)=>value.value"
             />
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="image-motif-id" class="text-xs font-bold ">Bildmotiv</label>
             <PaginatedSelect
                 :fetch-function="keywordStore.searchKeywordPaginated"
                 :cull-function="(k) => ({ id: k.id, value: k.value })"
                 sort="value,asc"
                 id="image-motif-id"
-                @change="filters['image-motif-id'] = $event.value?.id"
+                v-model="filters['image-motif-id']"
+                option-value="id"
                 placeholder="Motiv wählen"
                 optionLabel="value"
                 showClear
                 fluid
-                :transformBeforeTrimming="(value: KeywordDTO)=>value.value"
             />
           </div>
 
@@ -280,7 +280,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             </div>
           </div>
 
-          <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1">
             <label for="language-id" class="text-xs font-bold ">Sprache</label>
             <Select
                 id="language-id"
