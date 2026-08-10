@@ -82,13 +82,16 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     PersonMetricsDTO getMetricsByPerson(Long personId);
 
     @Query("""
-        SELECT DISTINCT p FROM Person p
-            LEFT JOIN p.pseudonyms pseudonym
-            WHERE
-            LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+    SELECT DISTINCT p FROM Person p
+        LEFT JOIN p.pseudonyms pseudonym
+        WHERE
+        LOWER(CONCAT(COALESCE(p.firstName, ''), ' ', COALESCE(p.lastName, '')))
+            LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+        ORDER BY p.lastName ASC NULLS LAST
     """)
     Page<Person> searchPeople(@Param("query") String query, Pageable pageable);
 }

@@ -62,8 +62,9 @@ public class PhotopoemMapper {
         photopoemToUpdate.setCopyrightStatusImage(
                 copyrightStatusMapper.CopyrightStatusPreviewDTOToCopyrightStatus(photopoemDTO.getCopyrightStatusImage()));
         photopoemToUpdate.setLanguages(languageMapper.LanguagePreviewDTOsToLanguages(photopoemDTO.getLanguages()));
+        photopoemToUpdate.setBaseEntityFields(photopoemDTO);
     }
-    
+
     public Photopoem PhotopoemDTOToPhotopoem(PhotopoemDTO photopoemDTO) {
         Photopoem photopoem = new Photopoem();
         photopoem.setContributions(contributionMapper.DTOsToContributions(photopoemDTO.getContributions(), photopoem));

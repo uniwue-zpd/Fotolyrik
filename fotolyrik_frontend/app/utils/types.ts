@@ -4,6 +4,8 @@ export interface Auditable {
     createdBy: string;
     lastModifiedDate: string;
     lastModifiedBy: string;
+    internalNotes: string | null;
+    generalNotes: string | null;
 }
 
 export interface ContactForm {
@@ -255,7 +257,6 @@ export interface PlaceMetricsDTO {
     photographers: number;
     depictedPeople: number;
 }
-
 
 /**
  * Describes a `Page` object returned after calling an endpoint with `Pageable` parameters

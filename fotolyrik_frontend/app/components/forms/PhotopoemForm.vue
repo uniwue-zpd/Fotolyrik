@@ -31,8 +31,8 @@ const onPersonComplete = (event: any) => {
 
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
-const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
-const files = computed(() => fileStore.files.map((f: FileDTO) => ({ id: f.id, filename: f.filename, originalFilename: f.originalFilename })));
+const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
+const files = computed(() => fileStore.files);
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
@@ -75,6 +75,8 @@ const resolver = ref(
       copyrightStatusImage: z.any(),
       copyrightStatusText: z.any(),
       languages: z.any(),
+      internalNotes: z.string().optional(),
+      generalNotes: z.string().optional()
     })
   )
 );
@@ -284,7 +286,7 @@ const onFormSubmit = async (e: any) => {
           <FormField v-slot="$field" name="languages" class="flex flex-col gap-1 w-full">
             <label for="languages" class="font-bold">Sprache(n)</label>
             <MultiSelect
-                inputId="authors"
+                inputId="languages"
                 placeholder="Sprachen auswählen"
                 selectedItemsLabel="{0} Sprachen ausgewählt"
                 optionLabel="name"
@@ -549,7 +551,7 @@ const onFormSubmit = async (e: any) => {
                 :virtual-scroller-options="{ itemSize: 50 }"
                 :key="files.length"
                 :maxSelectedLabels="2"
-                fluid filter
+                fluid filter showClear
             >
               <template #option="slotProps">
                 <div class="flex flex-row space-x-2">
@@ -625,6 +627,38 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
+        <FormField v-slot="$field" name="internalNotes" class="flex flex-col gap-1 flex-auto">
+          <label for="internalNotes" class="font-bold">Notizen intern</label>
+          <IconField>
+            <InputIcon class="pi pi-pen-to-square" />
+            <Textarea
+                id="internalNotes"
+                placeholder="Metadaten überprüfen"
+                v-on:keydown.enter.prevent
+                fluid
+                rows="5"
+            />
+          </IconField>
+          <Message v-if="$form.internalNotes?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.internalNotes.error.message }}
+          </Message>
+        </FormField>
+        <FormField v-slot="$field" name="generalNotes" class="flex flex-col gap-1 flex-auto">
+          <label for="internalNotes" class="font-bold">Notizen allgemein</label>
+          <IconField>
+            <InputIcon class="pi pi-pen-to-square" />
+            <Textarea
+                id="generalNotes"
+                placeholder="Das Fotogedicht ist ein Unikat"
+                v-on:keydown.enter.prevent
+                fluid
+                rows="5"
+            />
+          </IconField>
+          <Message v-if="$form.generalNotes?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.generalNotes.error.message }}
+          </Message>
+        </FormField>
         <Button type="submit" severity="primary">
           {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
         </Button>
