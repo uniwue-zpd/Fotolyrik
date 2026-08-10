@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="TItem">
 import Select, { type SelectProps } from 'primevue/select';
+import TruncatedSelect from "~/components/UI/filters/TruncatedSelect.vue";
 
 interface Props extends /* @vue-ignore */ SelectProps {
   fetchFunction: (query: string, pageable: Pageable) => Promise<Page<TItem>>;
@@ -80,7 +81,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Select
+  <TruncatedSelect
       :options="options"
       :loading="loading"
       filter
@@ -95,5 +96,5 @@ onMounted(() => {
     <template v-for="(_, name) in $slots" #[name]="slotProps">
       <slot :name="name" v-bind="slotProps || {}" />
     </template>
-  </Select>
+  </TruncatedSelect>
 </template>

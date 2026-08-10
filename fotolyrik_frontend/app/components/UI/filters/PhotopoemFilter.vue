@@ -2,6 +2,7 @@
 
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import PaginatedSelect from "~/components/UI/filters/PaginatedSelect.vue";
+import TruncatedSelect from "~/components/UI/filters/TruncatedSelect.vue";
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('lg')
@@ -38,8 +39,6 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
 }
 
 
-const truncate = (str:string, maxLen =21) =>
-    str.length > maxLen ? `${str.slice(0, maxLen).trimEnd()}...` : str;
 </script>
 <template>
   <Accordion  :value="activeTab">
@@ -136,30 +135,22 @@ const truncate = (str:string, maxLen =21) =>
                 :optionLabel="(p)=> p.title"
                 showClear
                 fluid
-            >
-              <template #value="slotProps">
-                <div v-if="slotProps.value">
-                  {{ truncate(slotProps.value.title) }}
-                </div>
-                <span v-else>
-                {{ slotProps.placeholder }}
-                </span>
-              </template>
-            </PaginatedSelect>
+                :transformBeforeTrimming="(value:PubMediumPreviewDTO)=>value.title"
+                />
           </div>
 
           <div class="flex flex-col gap-1">
             <label for="location-id" class="text-xs font-bold ">Fundort</label>
-            <Select
+            <TruncatedSelect
                 id="location-id"
                 placeholder="Ort wählen"
-                v-model="filters['location-id']"
+                @change="filters['location-id'] = $event.value?.id"
                 optionLabel="name"
-                optionValue="id"
                 :options="locations"
                 filter
                 showClear
                 fluid
+                :transformBeforeTrimming="(value)=>value.name"
             />
           </div>
 
@@ -175,16 +166,8 @@ const truncate = (str:string, maxLen =21) =>
                 :optionLabel="getPersonOptionLabel"
                 showClear
                 fluid
-            >
-              <template #value="slotProps">
-                <div v-if="slotProps.value">
-                  {{ truncate(getPersonOptionLabel(slotProps.value)) }}
-                </div>
-                <span v-else>
-                {{ slotProps.placeholder }}
-                </span>
-              </template>
-            </PaginatedSelect>
+                :transformBeforeTrimming="getPersonOptionLabel"
+            />
           </div>
 
           <div class="flex flex-col gap-1">
@@ -199,16 +182,8 @@ const truncate = (str:string, maxLen =21) =>
                 :optionLabel="getPersonOptionLabel"
                 showClear
                 fluid
-            >
-              <template #value="slotProps">
-                <div v-if="slotProps.value">
-                  {{ truncate(getPersonOptionLabel(slotProps.value)) }}
-                </div>
-                <span v-else>
-                {{ slotProps.placeholder }}
-                </span>
-              </template>
-            </PaginatedSelect>
+                :transformBeforeTrimming="getPersonOptionLabel"
+            />
           </div>
 
           <div class="flex flex-col gap-1">
@@ -223,16 +198,8 @@ const truncate = (str:string, maxLen =21) =>
                 :optionLabel="getPersonOptionLabel"
                 showClear
                 fluid
-            >
-              <template #value="slotProps">
-                <div v-if="slotProps.value">
-                  {{ truncate(getPersonOptionLabel(slotProps.value)) }}
-                </div>
-                <span v-else>
-                {{ slotProps.placeholder }}
-                </span>
-              </template>
-            </PaginatedSelect>
+                :transformBeforeTrimming="getPersonOptionLabel"
+            />
           </div>
 
           <div class="flex flex-col gap-1">
@@ -247,16 +214,8 @@ const truncate = (str:string, maxLen =21) =>
                 :optionLabel="getPersonOptionLabel"
                 showClear
                 fluid
-            >
-              <template #value="slotProps">
-                <div v-if="slotProps.value">
-                  {{ truncate(getPersonOptionLabel(slotProps.value)) }}
-                </div>
-                <span v-else>
-                {{ slotProps.placeholder }}
-                </span>
-              </template>
-            </PaginatedSelect>
+                :transformBeforeTrimming="getPersonOptionLabel"
+            />
           </div>
 
           <div class="flex flex-col gap-1">
@@ -267,11 +226,11 @@ const truncate = (str:string, maxLen =21) =>
                 sort="value,asc"
                 id="theme-id"
                 placeholder="Thema wählen"
-                v-model="filters['theme-id']"
+                @change="filters['theme-id'] = $event.value?.id"
                 optionLabel="value"
-                optionValue="id"
                 showClear
                 fluid
+                :transformBeforeTrimming="(value: KeywordDTO)=>value.value"
             />
           </div>
 
@@ -282,12 +241,12 @@ const truncate = (str:string, maxLen =21) =>
                 :cull-function="(k) => ({ id: k.id, value: k.value })"
                 sort="value,asc"
                 id="image-motif-id"
+                @change="filters['image-motif-id'] = $event.value?.id"
                 placeholder="Motiv wählen"
-                v-model="filters['image-motif-id']"
                 optionLabel="value"
-                optionValue="id"
                 showClear
                 fluid
+                :transformBeforeTrimming="(value: KeywordDTO)=>value.value"
             />
           </div>
 
