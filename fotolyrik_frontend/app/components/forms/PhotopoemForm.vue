@@ -75,8 +75,8 @@ const resolver = ref(
       copyrightStatusImage: z.any(),
       copyrightStatusText: z.any(),
       languages: z.any(),
-      internalNotes: z.string().optional(),
-      generalNotes: z.string().optional()
+      internalNotes: z.any(),
+      generalNotes: z.any()
     })
   )
 );
