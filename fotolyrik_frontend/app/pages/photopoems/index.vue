@@ -100,13 +100,13 @@ useHead(() => ({
       <div class="lg:w-1/4">
         <PhotopoemFilter :filters="filters" @reset-filters="resetFilter" ></PhotopoemFilter>
       </div>
-      <div class="lg:w-3/4">
-        <div class="flex flex-col gap-2">
+      <div class="lg:w-3/4 ">
+        <div class="flex flex-col gap-2 h-full">
           <div v-if="isLoading" class="flex flex-col gap-2 items-center">
             <ProgressSpinner/>
             <div class="roboto-plain text-primary font-semibold text-lg">Inhalte werden geladen</div>
           </div>
-          <div v-else-if="photopoems" class="flex flex-col gap-2 justify-between min-h-[70vh]">
+          <div v-else-if="photopoems" class="flex flex-col gap-2 justify-between min-h-full">
             <div class="flex flex-col gap-2">
               <div v-for="photopoem in photopoems.content" :key="photopoem.id" class="border-2 border-primary rounded-md p-2 shadow-md">
                 <div class="flex flex-col gap-1">
@@ -135,7 +135,7 @@ useHead(() => ({
                 </div>
               </div>
             </div>
-            <div class="flex items-center justify-center gap-3">
+            <div class="flex items-center justify-center align-bottom gap-3">
               <button
                   type="button"
                   class="px-2 h-9 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
