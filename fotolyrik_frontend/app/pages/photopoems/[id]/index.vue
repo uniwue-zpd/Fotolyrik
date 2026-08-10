@@ -335,6 +335,10 @@ const roleText = {
                       <td class="px-6 py-4 whitespace-nowrap font-semibold">Urheberrecht Bild</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.copyrightStatusImage.value }}</td>
                     </tr>
+                    <tr v-if="photopoem_item.generalNotes">
+                      <td class="px-6 py-4 whitespace-nowrap font-semibold">Anmerkungen</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ photopoem_item.generalNotes }}</td>
+                    </tr>
                     </tbody>
                   </table>
                   <Divider/>

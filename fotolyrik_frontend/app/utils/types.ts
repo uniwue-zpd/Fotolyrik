@@ -4,6 +4,8 @@ export interface Auditable {
     createdBy: string;
     lastModifiedDate: string;
     lastModifiedBy: string;
+    internalNotes: string | null;
+    generalNotes: string | null;
 }
 
 export interface ContactForm {

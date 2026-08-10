@@ -75,6 +75,8 @@ const resolver = ref(
       copyrightStatusImage: z.any(),
       copyrightStatusText: z.any(),
       languages: z.any(),
+      internalNotes: z.string().optional(),
+      generalNotes: z.string().optional()
     })
   )
 );
@@ -625,6 +627,38 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
+        <FormField v-slot="$field" name="internalNotes" class="flex flex-col gap-1 flex-auto">
+          <label for="internalNotes" class="font-bold">Notizen intern</label>
+          <IconField>
+            <InputIcon class="pi pi-pen-to-square" />
+            <Textarea
+                id="internalNotes"
+                placeholder="Metadaten überprüfen"
+                v-on:keydown.enter.prevent
+                fluid
+                rows="5"
+            />
+          </IconField>
+          <Message v-if="$form.internalNotes?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.internalNotes.error.message }}
+          </Message>
+        </FormField>
+        <FormField v-slot="$field" name="generalNotes" class="flex flex-col gap-1 flex-auto">
+          <label for="internalNotes" class="font-bold">Notizen allgemein</label>
+          <IconField>
+            <InputIcon class="pi pi-pen-to-square" />
+            <Textarea
+                id="generalNotes"
+                placeholder="Das Fotogedicht ist ein Unikat"
+                v-on:keydown.enter.prevent
+                fluid
+                rows="5"
+            />
+          </IconField>
+          <Message v-if="$form.generalNotes?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.generalNotes.error.message }}
+          </Message>
+        </FormField>
         <Button type="submit" severity="primary">
           {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
         </Button>
