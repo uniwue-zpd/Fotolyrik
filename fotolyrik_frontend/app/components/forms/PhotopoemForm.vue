@@ -28,12 +28,22 @@ const debouncedSearch = debounce(async (query: string) => {
 const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
+const pubMediaLoading = ref(false);
+const pubMediaSuggestions = ref<PubMediumDTO[]>([]);
+const debouncedPubMediaSearch = debounce(async (query: string) => {
+  pubMediaLoading.value = true;
+  pubMediaSuggestions.value = await pubMediumStore.filterPubMedia({'title': query});
+  pubMediaLoading.value = false;
+}, 300);
+
+const onPubMediaComplete = (event: any) => {
+  debouncedPubMediaSearch(event.query);
+};
 
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
 const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 const files = computed(() => fileStore.files);
-const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
 
@@ -44,6 +54,11 @@ const props = defineProps<{
   header: string;
   photopoem?: PhotoPoemDTO;
 }>();
+
+const selectedPubMedium = ref<PubMediumPreviewDTO | null>(null);
+watch(() => props.photopoem?.publicationMedium, (newVal) => {
+  selectedPubMedium.value = newVal || null;
+});
 
 const resolver = ref(
   zodResolver(
@@ -59,7 +74,7 @@ const resolver = ref(
       pageCount: z.any(),
       pictureCount: z.any(),
       publicationDate: z.any(),
-      publicationMedium: z.any(),
+      publicationMedium: z.any().optional().nullable(),
       foundIn: z.any(),
       authors: z.any(),
       photographers: z.any(),
@@ -97,6 +112,7 @@ const contributionsForm: Ref<InstanceType<typeof ContributionForm> | null> = ref
 const onFormSubmit = async (e: any) => {
   if (e.valid && contributionsForm.value?.isValid()) {
     e.values.contributions = contributionsForm.value?.getContributions();
+    e.values.publicationMedium = selectedPubMedium.value;
     try {
       if (props.action === "create") {
         await photopoemStore.createPhotopoem(e.values);
@@ -301,21 +317,23 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-        <FormField v-slot="$field" name="publicationMedium" class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1">
           <label for="publicationMedium" class="font-bold">Publikationsmedium</label>
           <div class="flex flex-row gap-4 flex-nowrap">
-            <IconField class="flex-1 min-w-0">
-              <InputIcon class="pi pi-book"/>
-              <Select
-                labelId="publicationMedium"
-                placeholder="Publikationsmedium auswählen"
-                class="pl-7"
+            <AutoComplete
+                id="publicationMedium"
+                v-model="selectedPubMedium"
+                class="flex-1 min-w-0"
+                placeholder="Publikationsmedium suchen..."
+                :suggestions="pubMediaSuggestions"
+                :loading="pubMediaLoading"
+                @complete="onPubMediaComplete"
                 optionLabel="title"
-                :options="publicationMedia"
-                :key="publicationMedia.length"
+                force-selection
+                dropdown
+                showClear
                 fluid
-              />
-            </IconField>
+            />
             <NuxtLink to="/publication_media/create" target="_blank">
               <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
             </NuxtLink>
@@ -323,7 +341,7 @@ const onFormSubmit = async (e: any) => {
           <Message v-if="$form.publicationMedium?.invalid" severity="error" size="small" variant="simple">
             {{ $form.publicationMedium.error.message }}
           </Message>
-        </FormField>
+        </div>
         <FormField v-slot="$field" name="foundIn" class="flex flex-col gap-1">
           <label for="foundIn" class="font-bold">Fundort</label>
           <div class="flex flex-row gap-4 flex-nowrap">
