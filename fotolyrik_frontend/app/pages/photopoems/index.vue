@@ -2,9 +2,10 @@
 import { ref, watch, onBeforeUnmount } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 import { usePhotopoemStore } from "~/stores/PhotopoemStore";
+import {useFiles} from "~/composables/useFiles";
 
 const store = usePhotopoemStore();
-const file_store = useFileStore();
+const use_files = useFiles();
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -24,7 +25,7 @@ watch(
           if (!previewURLs.value[img.id]) {
             tasks.push((async () => {
               try {
-                const url = await file_store.getImageContent(img.id);
+                const url = await use_files.getImageContent(img.id);
                 if (url) previewURLs.value[img.id] = url;
               } catch (err) {
                 console.error('Failed to preload image', img.id, err);

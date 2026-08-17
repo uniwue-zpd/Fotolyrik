@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { useFileStore } from '~/stores/FileStore';
 import { FilterMatchMode } from "@primevue/core";
+import {useFiles} from "~/composables/useFiles";
 
 const toast = useToast();
-const fileStore = useFileStore();
+const use_files = useFiles();
 
 const imageErrors = ref<Record<string, boolean>>({});
 const previewURLs = ref<Record<number, string>>({});
@@ -18,16 +18,16 @@ const options: Intl.DateTimeFormatOptions = {
 };
 
 onMounted(() => {
-  fileStore.fetchFiles();
+  use_files.fetchFiles();
 });
 
 watch(
-    () => fileStore.files,
+    () => use_files.files,
     async (files) => {
       await Promise.all(
-          files.map(async (file: FileDTO) => {
+          files.value.map(async (file: FileDTO) => {
             if (!previewURLs.value[file.id]) {
-              const url = await fileStore.getImageContent(file.id);
+              const url = await use_files.getImageContent(file.id);
               if (url) previewURLs.value[file.id] = url;
             }
           })
@@ -39,7 +39,7 @@ watch(
 const onFileSelect = async (e: any) => {
   try {
     if (e.files && e.files.length > 0) {
-      await fileStore.uploadFiles(e.files);
+      await use_files.uploadFiles(e.files);
       toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich hinzugefügt", life: 3000});
     }
   } catch (error) {
@@ -64,13 +64,13 @@ const handleImageError = (path: string) => {
     </template>
     <template #content>
       <DataTable
-        :value="fileStore.files"
+        :value="use_files.files.value"
         v-model:filters="filter"
         removableSort
         paginator
         :rows="10"
         :rowsPerPageOptions="[5, 10, 20, 50]"
-        :loading="fileStore.loadingDown"
+        :loading="use_files.loadingDown.value"
         :totalRecords="25"
       >
         <template #header>
@@ -151,7 +151,7 @@ const handleImageError = (path: string) => {
         </Column>
         <Column class="w-24 text-end!">
           <template #body="{ data }">
-            <Button icon="pi pi-trash" rounded-sm severity="danger" variant="text" @click="fileStore.removeFile(data)"/>
+            <Button icon="pi pi-trash" rounded-sm severity="danger" variant="text" @click="use_files.removeFile(data)"/>
           </template>
         </Column>
       </DataTable>

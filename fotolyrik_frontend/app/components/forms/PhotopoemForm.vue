@@ -5,12 +5,13 @@ import { z } from "zod";
 import { Form } from '@primevue/forms';
 import { FormField } from '@primevue/forms';
 import ContributionForm from "~/components/forms/ContributionForm.vue";
+import {useFiles} from "~/composables/useFiles";
 
 const toast = useToast();
 const personStore = usePersonStore();
 const photopoemStore = usePhotopoemStore();
 const pubMediumStore = usePubMediumStore();
-const fileStore = useFileStore();
+const use_files = useFiles();
 const languageStore = useLanguageStore();
 const copyrightStatusStore = useCopyrightStatusStore();
 const keywordStore = useKeywordStore();
@@ -32,7 +33,7 @@ const onPersonComplete = (event: any) => {
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
 const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
-const files = computed(() => fileStore.files);
+const files = computed(() => use_files.files.value);
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
@@ -556,7 +557,7 @@ const onFormSubmit = async (e: any) => {
               <template #option="slotProps">
                 <div class="flex flex-row space-x-2">
                   <Avatar
-                      :image="fileStore.getImagePreview(`/api/uploads/${slotProps.option.filename}`)"
+                      :image="use_files.getImagePreview(`/api/uploads/${slotProps.option.filename}`)"
                       shape="square"
                       oncontextmenu="return false;"
                   />

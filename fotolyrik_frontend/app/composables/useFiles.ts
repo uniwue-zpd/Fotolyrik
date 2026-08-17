@@ -1,52 +1,26 @@
-import { defineStore } from "pinia";
 import { ref } from 'vue';
 import apiClient from "~/service/api";
-import type { FileDTO } from "~/utils/types"
+import type { FileDTO } from "~/utils/types";
 
-export const useFileStore = defineStore("files", () => {
-    const files = ref<FileDTO[]>([])
+const fileContents = ref<Map<number, string>>(new Map());
 
-    const loadingDown = ref(false)
-    const errorDown = ref<string | null>(null)
+const progressUp = ref(0);
+const loadingUp = ref(false);
+const errorUp = ref<string | null>(null);
 
-    const progressUp = ref(0)
-    const loadingUp = ref(false)
-    const errorUp = ref<string | null>(null)
-
-    const fileContents = ref<Map<number, string>>(new Map());
-
-    async function fetchFiles() {
-        loadingDown.value = true;
-        errorDown.value = null;
-
-        const { data, error } = await useFetch("/api/files/all", {
-            deep: true
-        });
-        if (error.value) {
-            console.error("Unable to fetch files: ", error.value);
-            errorDown.value = error.value.message || "Failed to fetch files";
-            return;
-        }
-        files.value = data.value as FileDTO[];
-        loadingDown.value = false;
-    }
-
-    async function refreshFilesData() {
-        try {
-            const data = await $fetch('/api/files/all');
-            files.value = data as FileDTO[];
-        } catch (err) {
-            console.error('Unable to refetch the data', err);
-        }
-    }
+export function useFiles() {
+    const { data: files, pending: loadingDown, error: errorDown, refresh: refreshFilesData } = useFetch<FileDTO[]>("/api/files/all", {
+        deep: true
+    });
 
     async function removeFile(file: FileDTO) {
         try {
-            await $fetch(`/api/files/${ file.id }`, { method: 'DELETE' });
-            files.value = files.value.filter(f => f.id !== file.id);
+            await $fetch(`/api/files/${file.id}`, { method: 'DELETE' });
+            if (files.value) {
+                files.value = files.value.filter(f => f.id !== file.id);
+            }
         } catch (err: any) {
             console.error('Failed to delete file: ', err);
-            errorDown.value = err?.message || 'Failed to delete file';
         }
     }
 
@@ -63,7 +37,10 @@ export const useFileStore = defineStore("files", () => {
                 method: 'POST',
                 body: formData
             });
-            files.value.push(...response);
+
+            if (files.value) {
+                files.value.push(...response);
+            }
             progressUp.value = 100;
         } catch (err: any) {
             errorUp.value = err?.message || 'Failed to upload files';
@@ -96,17 +73,17 @@ export const useFileStore = defineStore("files", () => {
     }
 
     return {
-        files,
+        files: files as Ref<FileDTO[]>,
         loadingDown,
         errorDown,
         progressUp,
         loadingUp,
         errorUp,
-        fetchFiles,
+        fetchFiles: refreshFilesData,
         refreshFilesData,
         removeFile,
         uploadFiles,
         getImagePreview,
         getImageContent
-    }
-})
+    };
+}

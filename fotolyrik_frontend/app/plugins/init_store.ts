@@ -1,10 +1,11 @@
+import {useFiles} from "~/composables/useFiles";
 export default defineNuxtPlugin(async (nuxtApp) => {
     const keyword_store = useKeywordStore();
     const person_store = usePersonStore();
     const photopoem_store = usePhotopoemStore();
     const place_store = usePlaceStore();
     const pub_media_store = usePubMediumStore();
-    const file_store = useFileStore();
+    const use_files = useFiles();
     const language_store = useLanguageStore();
     const copyright_status_store = useCopyrightStatusStore();
     const publisher_store = usePublisherStore();
@@ -17,7 +18,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     await photopoem_store.fetchPhotopoemHighlight();
     await place_store.fetchPlaces();
     await pub_media_store.fetchPubMedia();
-    await file_store.fetchFiles();
+    await use_files.fetchFiles();
     await language_store.fetchLanguages();
     await copyright_status_store.fetchCopyrightStatuses();
     await publisher_store.fetchPublishers();

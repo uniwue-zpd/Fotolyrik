@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, watch} from 'vue';
-
-const file_store = useFileStore();
+import {useFiles} from "~/composables/useFiles";
+const use_files = useFiles();
 
 const props = defineProps<{
   photopoem: PhotoPoemDTO
@@ -15,7 +15,7 @@ async function loadFirstImage() {
   try {
     if (photopoem && photopoem.images.length > 0 && photopoem.images[0] !== undefined &&
         photopoem.imagesVisible === AccessLevel.PUBLIC) {
-      image_path.value = await file_store.getImageContent(photopoem.images[0].id);
+      image_path.value = await use_files.getImageContent(photopoem.images[0].id);
       return;
     }
   } catch (e) {
