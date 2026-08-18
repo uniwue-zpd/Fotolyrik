@@ -19,9 +19,10 @@ const { data: keyword_item, status } = await useAsyncData(
 onMounted(async () => {
   is_theme.value = await photopoem_store.filterPhotopoems({ 'theme-id': keyword_id });
   is_image_motif.value = await photopoem_store.filterPhotopoems({ 'image-motif-id': keyword_id });
-  useHead({
-    title: keyword_item.value ? `${keyword_item.value.value} - Schlagwortverzeichnis` : 'Nicht gefunden - Schlagwortverzeichnis',
-  });
+});
+
+useHead({
+  title: () => keyword_item.value ? `${keyword_item.value.value} - Schlagwortverzeichnis` : 'Nicht gefunden - Schlagwortverzeichnis',
 });
 </script>
 

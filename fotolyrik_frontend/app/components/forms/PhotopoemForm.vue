@@ -15,7 +15,7 @@ const fileApi = useFiles();
 const languageApi = useLanguage();
 const copyrightStatusApi = useCopyrightStatus();
 const keywordApi = useKeyword();
-const locationStore = useLocationStore();
+const locationApi = useLocation();
 
 const personLoading = ref(false);
 const personSuggestions = ref<PersonPreviewDTO[]>([]);
@@ -39,9 +39,11 @@ const { data: cachedLanguages } = await useAsyncData('languages-list', () => lan
 const languages = computed(() => cachedLanguages.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 
 const { data: files } = await useAsyncData('files-list', () => fileApi.fetchFiles());
+
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 
-const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
+const { data: cachedLocations } = await useAsyncData('location-list', () => locationApi.fetchLocations());
+const locations = computed(()=> cachedLocations.value?.map(l=>({id: l.id, name: l.name}) ));
 
 const { data: cachedCopyrightStatuses } = await useAsyncData('copyright-status-list', () => copyrightStatusApi.fetchCopyrightStatuses());
 const copyrightStatuses = computed(()=> cachedCopyrightStatuses.value?.map(cs => ({ id: cs.id, value: cs.value })));
@@ -342,7 +344,7 @@ const onFormSubmit = async (e: any) => {
                 selectedItemsLabel="{0} Fundorte ausgewählt"
                 optionLabel="name"
                 :options="locations"
-                :key="locations.length"
+                :key="locations?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 :maxSelectedLabels="3"
                 filter fluid

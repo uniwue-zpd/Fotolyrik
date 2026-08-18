@@ -2,29 +2,26 @@
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 
-const location_store = useLocationStore();
+const locationApi = useLocation();
 const photopoem_store = usePhotopoemStore();
 
 const router = useRoute();
 const location_id = Number(router.params.id);
-const location_item = ref<LocationDTO | null>(null);
-
-const loading = ref(true);
 
 const is_location = ref<PhotoPoemDTO[] | []>([]);
 
-onMounted(async () => {
-  try {
-    await location_store.fetchLocationById(location_id);
-    location_item.value = location_store.current_location ?? null;
-    is_location.value = await photopoem_store.filterPhotopoems({ 'location-id': location_id });
 
-    useHead({
-      title: location_item.value ? `${location_item.value.name} - Fundortsverzeichnis` : 'Nicht gefunden - Fundortsverzeichnis',
-    });
-  } finally {
-    loading.value = false;
-  }
+const { data: location_item, status } = await useAsyncData(
+    `location-${location_id}`,
+    () => locationApi.fetchLocationById(location_id)
+);
+onMounted(async () => {
+  is_location.value = await phoztopoem_store.filterPhotopoems({ 'location-id': location_id });
+});
+useHead({
+  title: () => location_item.value
+      ? `${location_item.value.name} - Fundortsverzeichnis`
+      : 'Nicht gefunden - Fundortsverzeichnis',
 });
 </script>
 
