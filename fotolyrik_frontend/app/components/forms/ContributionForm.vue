@@ -6,7 +6,7 @@ const props = defineProps({
   contributions: Array
 });
 
-const personStore = usePersonStore();
+const personApi = usePerson();
 
 const getContributions = () => {
   return contributions.value.map(({ renderId, errorMessage, pseudonymSuggestions, ...rest }) => rest);
@@ -17,7 +17,7 @@ const personSuggestions = ref<PersonPreviewDTO[]>([]);
 
 const debouncedSearch = debounce(async (query: string) => {
   loading.value = true;
-  personSuggestions.value = await personStore.searchPeople(query);
+  personSuggestions.value = await personApi.searchPeople(query);
   loading.value = false;
 }, 300);
 
@@ -26,8 +26,8 @@ const onPersonComplete = (event: any) => {
 }
 
 const checkRefetch = () => {
-  const refetch = (id: number) => {
-    usePersonStore().refreshPersonsDataById(id);
+  const refetch = async (id: number) => {
+    await refreshNuxtData(`location-${id}`)
   };
   for (const contribution of contributions.value) {
     if (contribution.contributor ===  undefined) {

@@ -4,7 +4,7 @@ import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 
 const toast = useToast();
-const personStore = usePersonStore();
+const personApi = usePerson();
 
 const props = defineProps<{
   action: "create" | "edit";
@@ -43,11 +43,14 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await personStore.createPerson(e.values);
+        await personApi.createPerson(e.values);
+        await refreshNuxtData('person-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         e.reset();
       } else if (props.action === "edit" && props.person?.id) {
-        await personStore.updatePerson(e.values, props.person.id);
+        await personApi.updatePerson( props.person.id , e.values);
+        await refreshNuxtData('person-list');
+        await refreshNuxtData(`person-${props.person.id}`)
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/persons/${props.person?.id}`);
       }

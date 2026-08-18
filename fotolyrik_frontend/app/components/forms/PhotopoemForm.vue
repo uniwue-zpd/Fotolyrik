@@ -8,7 +8,7 @@ import ContributionForm from "~/components/forms/ContributionForm.vue";
 import {useFiles} from "~/composables/useFiles";
 
 const toast = useToast();
-const personStore = usePersonStore();
+const personApi = usePerson();
 const photopoemStore = usePhotopoemStore();
 const pubMediumStore = usePubMediumStore();
 const fileApi = useFiles();
@@ -22,7 +22,7 @@ const personSuggestions = ref<PersonPreviewDTO[]>([]);
 
 const debouncedSearch = debounce(async (query: string) => {
   personLoading.value = true;
-  personSuggestions.value = await personStore.searchPeople(query);
+  personSuggestions.value = await personApi.searchPeople(query);
   personLoading.value = false;
 }, 300);
 
@@ -30,7 +30,8 @@ const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
 
-const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
+const { data: cachedPersons } = await useAsyncData( 'person-list', () => personApi.fetchPersons());
+const persons = computed(() => cachedPersons.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 
 const { data: cachedKeywords } = await useAsyncData('keyword-list', () => keywordApi.fetchKeywords());
 const keywords = computed( () => cachedKeywords.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
@@ -392,7 +393,7 @@ const onFormSubmit = async (e: any) => {
                 :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
                 :maxSelectedLabels="2"
                 :options="persons"
-                :key="persons.length"
+                :key="persons?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 filter fluid disabled
             />
@@ -410,7 +411,7 @@ const onFormSubmit = async (e: any) => {
                 :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
                 :maxSelectedLabels="2"
                 :options="persons"
-                :key="persons.length"
+                :key="persons?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 filter fluid disabled
             />
@@ -428,7 +429,7 @@ const onFormSubmit = async (e: any) => {
                 :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
                 :maxSelectedLabels="2"
                 :options="persons"
-                :key="persons.length"
+                :key="persons?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 filter fluid disabled
             />

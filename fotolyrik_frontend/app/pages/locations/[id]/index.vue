@@ -16,7 +16,7 @@ const { data: location_item, status } = await useAsyncData(
     () => locationApi.fetchLocationById(location_id)
 );
 onMounted(async () => {
-  is_location.value = await phoztopoem_store.filterPhotopoems({ 'location-id': location_id });
+  is_location.value = await photopoem_store.filterPhotopoems({ 'location-id': location_id });
 });
 useHead({
   title: () => location_item.value

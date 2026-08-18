@@ -3,9 +3,10 @@ import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 import { usePersonStore } from "~/stores/PersonStore";
 
-const store = usePersonStore();
+const person_api = usePerson();
+const { data: cachedPersons } = await useAsyncData( 'person-list', () => person_api.fetchPersons());
 const persons = computed(() => {
-  return store.persons.map(person => ({
+  return cachedPersons.value?.map(person => ({
     ...person,
     pseudonyms: person.pseudonyms.sort().join(', ')
   }));

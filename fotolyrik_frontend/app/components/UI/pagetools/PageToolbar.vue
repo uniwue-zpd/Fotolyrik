@@ -8,7 +8,7 @@ const props = defineProps<{
   page_url: string;
 }>();
 
-const person_store = usePersonStore();
+const person_api = usePerson();
 const photopoem_store = usePhotopoemStore();
 const pub_medium_store = usePubMediumStore();
 const keyword_api = useKeyword();
@@ -38,7 +38,8 @@ const items = ref([
         accept: async () => {
           try {
             if (props.entity_type === 'person') {
-              await person_store.deletePerson(props.id);
+              await person_api.deletePerson(props.id);
+              await refreshNuxtData('person-list');
             } else if (props.entity_type === 'place') {
               await place_store.deletePlace(props.id);
             } else if (props.entity_type === 'photopoem') {

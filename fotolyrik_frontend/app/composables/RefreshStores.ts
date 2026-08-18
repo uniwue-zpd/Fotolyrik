@@ -1,6 +1,5 @@
 import {useFiles} from "~/composables/useFiles";
 export async function useRefreshStoreData() {
-    const person_store = usePersonStore();
     const photopoem_store = usePhotopoemStore();
     const place_store = usePlaceStore();
     const pubmedium_store = usePubMediumStore();
@@ -9,7 +8,6 @@ export async function useRefreshStoreData() {
 
     try {
         await Promise.all([
-            person_store.refreshPersonsData(),
             photopoem_store.refreshPhotopoemsData(),
             place_store.refreshPlacesData(),
             pubmedium_store.refreshPubMediaData(),

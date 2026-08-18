@@ -5,13 +5,11 @@ import PersonForm from "~/components/forms/PersonForm.vue";
 
 const route = useRoute();
 const person_id = Number(route.params.id);
-const store = usePersonStore();
-const person_item = ref<PersonDTO |null>(null);
-
-onMounted(async () => {
-  await store.fetchPersonById(person_id);
-  person_item.value = store.currentPerson;
-});
+const person_api = usePerson();
+const { data: person_item, status } = await useAsyncData(
+    `person-${person_id}`,
+    () => person_api.fetchPersonById(person_id)
+);
 </script>
 
 <template>
