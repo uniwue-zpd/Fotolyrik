@@ -1,89 +1,55 @@
-import { ref } from 'vue';
-import apiClient from "~/service/api";
-import type { FileDTO } from "~/utils/types";
+import type { FileDTO } from "~/utils/types"
 
-const fileContents = ref<Map<number, string>>(new Map());
+export const useFiles = ()=> {
 
-const progressUp = ref(0);
-const loadingUp = ref(false);
-const errorUp = ref<string | null>(null);
-
-export function useFiles() {
-    const { data: files, pending: loadingDown, error: errorDown, refresh: refreshFilesData } = useFetch<FileDTO[]>("/api/files/all", {
-        deep: true
-    });
-
-    async function removeFile(file: FileDTO) {
-        try {
-            await $fetch(`/api/files/${file.id}`, { method: 'DELETE' });
-            if (files.value) {
-                files.value = files.value.filter(f => f.id !== file.id);
-            }
-        } catch (err: any) {
-            console.error('Failed to delete file: ', err);
-        }
+    async function fetchFiles(): Promise<FileDTO[]> {
+        return await $fetch<FileDTO[]>("/api/files/all");
     }
 
-    async function uploadFiles(fileList: FileList) {
-        progressUp.value = 0;
-        loadingUp.value = true;
-        errorUp.value = null;
+    async function removeFile(id: number):Promise<void> {
+        return $fetch(`/api/files/${id}`, {method: 'DELETE'});
+    }
+
+    async function uploadFiles(fileList: FileList | File[]): Promise<FileDTO[]>{
         const formData = new FormData();
-        Array.from(fileList).forEach(file => {
-            formData.append('file', file);
+        Array.from(fileList).forEach((file) => {
+            formData.append("file", file);
         });
-        try {
-            const response = await $fetch<FileDTO[]>('/api/files', {
-                method: 'POST',
-                body: formData
-            });
 
-            if (files.value) {
-                files.value.push(...response);
-            }
-            progressUp.value = 100;
-        } catch (err: any) {
-            errorUp.value = err?.message || 'Failed to upload files';
-            console.error('Error uploading files:', err);
-        } finally {
-            loadingUp.value = false;
-        }
+        return $fetch<FileDTO[]>("/api/files", {
+            method: "POST",
+            body: formData
+        });
     }
 
-    function getImagePreview(path: string) {
+    function getImagePreview(path: string): string {
         if (!path) return '';
+        const config = useRuntimeConfig();
         const filename = path.split(/[\\/]/).pop() || '';
-        return `${apiClient.defaults.baseURL || ''}/uploads/${encodeURIComponent(filename)}`;
+        const baseURL = config.public.apiBase || '';
+        return `${baseURL}/uploads/${encodeURIComponent(filename)}`;
     }
 
     async function getImageContent(id: number): Promise<string | null> {
-        if (fileContents.value.has(id)) return fileContents.value.get(id)!;
+        if (!import.meta.client) return null;
         try {
             const response = await $fetch(`/api/files/${id}/content`, {
                 method: 'GET',
                 responseType: 'blob'
             });
-            const url = URL.createObjectURL(response as Blob);
-            fileContents.value.set(id, url);
-            return url;
+
+            return URL.createObjectURL(response as Blob);
         } catch (err) {
-            console.error('Failed to fetch image content: ', err);
+            console.error(`Failed to fetch image content for ID ${id}:`, err);
             return null;
         }
     }
 
     return {
-        files: files as Ref<FileDTO[]>,
-        loadingDown,
-        errorDown,
-        progressUp,
-        loadingUp,
-        errorUp,
-        fetchFiles: refreshFilesData,
-        refreshFilesData,
+        fetchFiles,
         removeFile,
         uploadFiles,
         getImagePreview,
         getImageContent
-    };
+    }
 }

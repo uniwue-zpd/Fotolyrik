@@ -5,7 +5,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const photopoem_store = usePhotopoemStore();
     const place_store = usePlaceStore();
     const pub_media_store = usePubMediumStore();
-    const use_files = useFiles();
+    const file_store = useFiles();
     const language_store = useLanguageStore();
     const copyright_status_store = useCopyrightStatusStore();
     const publisher_store = usePublisherStore();
@@ -18,7 +18,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     await photopoem_store.fetchPhotopoemHighlight();
     await place_store.fetchPlaces();
     await pub_media_store.fetchPubMedia();
-    await use_files.fetchFiles();
+    await file_store.fetchFiles();
     await language_store.fetchLanguages();
     await copyright_status_store.fetchCopyrightStatuses();
     await publisher_store.fetchPublishers();

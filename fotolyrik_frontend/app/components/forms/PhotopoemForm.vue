@@ -11,7 +11,7 @@ const toast = useToast();
 const personStore = usePersonStore();
 const photopoemStore = usePhotopoemStore();
 const pubMediumStore = usePubMediumStore();
-const use_files = useFiles();
+const fileApi = useFiles();
 const languageStore = useLanguageStore();
 const copyrightStatusStore = useCopyrightStatusStore();
 const keywordStore = useKeywordStore();
@@ -33,7 +33,7 @@ const onPersonComplete = (event: any) => {
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
 const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
-const files = computed(() => use_files.files.value);
+const { data: files } = await useAsyncData('files-list', () => fileApi.fetchFiles());
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
@@ -550,14 +550,14 @@ const onFormSubmit = async (e: any) => {
                 :options="files"
                 optionLabel="originalFilename"
                 :virtual-scroller-options="{ itemSize: 50 }"
-                :key="files.length"
+                :key="files?.length"
                 :maxSelectedLabels="2"
                 fluid filter showClear
             >
               <template #option="slotProps">
                 <div class="flex flex-row space-x-2">
                   <Avatar
-                      :image="use_files.getImagePreview(`/api/uploads/${slotProps.option.filename}`)"
+                      :image="fileApi.getImagePreview(`/api/uploads/${slotProps.option.filename}`)"
                       shape="square"
                       oncontextmenu="return false;"
                   />

@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue';
 import { FilterMatchMode } from "@primevue/core";
 import {useFiles} from "~/composables/useFiles";
 
 const toast = useToast();
-const use_files = useFiles();
+const fileApi = useFiles();
 
 const imageErrors = ref<Record<string, boolean>>({});
 const previewURLs = ref<Record<number, string>>({});
@@ -17,17 +16,20 @@ const options: Intl.DateTimeFormatOptions = {
   day: "2-digit"
 };
 
-onMounted(() => {
-  use_files.fetchFiles();
-});
+const { data: files, status, refresh, error } = await useAsyncData(
+    'files-list',
+    () => fileApi.fetchFiles(),
+    {default: ()=>[]}
+);
 
 watch(
-    () => use_files.files,
-    async (files) => {
+    files,
+    async (fileList) => {
+      if (!fileList) return;
       await Promise.all(
-          files.value.map(async (file: FileDTO) => {
+          fileList.map(async (file: FileDTO) => {
             if (!previewURLs.value[file.id]) {
-              const url = await use_files.getImageContent(file.id);
+              const url = await fileApi.getImageContent(file.id);
               if (url) previewURLs.value[file.id] = url;
             }
           })
@@ -39,7 +41,8 @@ watch(
 const onFileSelect = async (e: any) => {
   try {
     if (e.files && e.files.length > 0) {
-      await use_files.uploadFiles(e.files);
+      await fileApi.uploadFiles(e.files);
+      await refresh();
       toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich hinzugefügt", life: 3000});
     }
   } catch (error) {
@@ -55,6 +58,11 @@ const timestampToDate = (timestamp: string) => {
 const handleImageError = (path: string) => {
   imageErrors.value[path] = true;
 };
+
+const deleteFile = async (id:number) =>{
+  await fileApi.removeFile(id);
+  await refresh();
+}
 </script>
 
 <template>
@@ -64,13 +72,13 @@ const handleImageError = (path: string) => {
     </template>
     <template #content>
       <DataTable
-        :value="use_files.files.value"
+        :value="files"
         v-model:filters="filter"
         removableSort
         paginator
         :rows="10"
         :rowsPerPageOptions="[5, 10, 20, 50]"
-        :loading="use_files.loadingDown.value"
+        :loading="status==='pending'"
         :totalRecords="25"
       >
         <template #header>
@@ -151,7 +159,7 @@ const handleImageError = (path: string) => {
         </Column>
         <Column class="w-24 text-end!">
           <template #body="{ data }">
-            <Button icon="pi pi-trash" rounded-sm severity="danger" variant="text" @click="use_files.removeFile(data)"/>
+            <Button icon="pi pi-trash" rounded-sm severity="danger" variant="text" @click="deleteFile(data.id)"/>
           </template>
         </Column>
       </DataTable>
