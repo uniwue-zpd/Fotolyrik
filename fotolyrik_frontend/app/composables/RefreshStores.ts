@@ -1,6 +1,5 @@
 import {useFiles} from "~/composables/useFiles";
 export async function useRefreshStoreData() {
-    const copyright_status_store = useCopyrightStatusStore();
     const keyword_store = useKeywordStore();
     const language_store = useLanguageStore();
     const person_store = usePersonStore();
@@ -12,7 +11,6 @@ export async function useRefreshStoreData() {
 
     try {
         await Promise.all([
-            copyright_status_store.refreshCopyrighStatusesData(),
             keyword_store.refreshKeywordsData(),
             language_store.refreshLanguagesData(),
             person_store.refreshPersonsData(),

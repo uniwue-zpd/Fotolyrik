@@ -13,7 +13,7 @@ const photopoemStore = usePhotopoemStore();
 const pubMediumStore = usePubMediumStore();
 const fileApi = useFiles();
 const languageStore = useLanguageStore();
-const copyrightStatusStore = useCopyrightStatusStore();
+const copyrightStatusApi = useCopyrightStatus();
 const keywordStore = useKeywordStore();
 const locationStore = useLocationStore();
 
@@ -36,7 +36,14 @@ const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => 
 const { data: files } = await useAsyncData('files-list', () => fileApi.fetchFiles());
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
-const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
+const { data: copyrightStatuses } = await useAsyncData(
+    'copyright-status-list',
+    () => copyrightStatusApi.fetchCopyrightStatuses(),
+    {
+      transform: (data) => data.map(cs => ({ id: cs.id, value: cs.value })),
+      default: () => []
+    }
+);
 
 const data_refreshing = ref(false);
 
