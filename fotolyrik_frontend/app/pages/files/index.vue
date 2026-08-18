@@ -37,6 +37,16 @@ watch(
     },
     { immediate: true, deep: true }
 );
+watch(error, (newError) => {
+  if (newError) {
+    toast.add({
+      severity: "error",
+      summary: "Fehler beim Laden",
+      detail: "Die Dateien konnten nicht geladen werden.",
+      life: 3000
+    });
+  }
+});
 
 const onFileSelect = async (e: any) => {
   try {
