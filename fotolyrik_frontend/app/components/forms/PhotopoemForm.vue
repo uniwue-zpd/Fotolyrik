@@ -12,7 +12,7 @@ const personStore = usePersonStore();
 const photopoemStore = usePhotopoemStore();
 const pubMediumStore = usePubMediumStore();
 const fileApi = useFiles();
-const languageStore = useLanguageStore();
+const languageApi = useLanguage();
 const copyrightStatusApi = useCopyrightStatus();
 const keywordApi = useKeyword();
 const locationStore = useLocationStore();
@@ -31,12 +31,18 @@ const onPersonComplete = (event: any) => {
 }
 
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
+
 const { data: cachedKeywords } = await useAsyncData('keyword-list', () => keywordApi.fetchKeywords());
 const keywords = computed( () => cachedKeywords.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
-const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
+
+const { data: cachedLanguages } = await useAsyncData('languages-list', () => languageApi.fetchLanguages());
+const languages = computed(() => cachedLanguages.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
+
 const { data: files } = await useAsyncData('files-list', () => fileApi.fetchFiles());
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
+
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
+
 const { data: cachedCopyrightStatuses } = await useAsyncData('copyright-status-list', () => copyrightStatusApi.fetchCopyrightStatuses());
 const copyrightStatuses = computed(()=> cachedCopyrightStatuses.value?.map(cs => ({ id: cs.id, value: cs.value })));
 
@@ -295,7 +301,7 @@ const onFormSubmit = async (e: any) => {
                 optionLabel="name"
                 :maxSelectedLabels="3"
                 :options="languages"
-                :key="languages.length"
+                :key="languages?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 filter fluid showClear
             />

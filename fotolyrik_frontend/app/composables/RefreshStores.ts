@@ -1,6 +1,5 @@
 import {useFiles} from "~/composables/useFiles";
 export async function useRefreshStoreData() {
-    const language_store = useLanguageStore();
     const person_store = usePersonStore();
     const photopoem_store = usePhotopoemStore();
     const place_store = usePlaceStore();
@@ -10,7 +9,6 @@ export async function useRefreshStoreData() {
 
     try {
         await Promise.all([
-            language_store.refreshLanguagesData(),
             person_store.refreshPersonsData(),
             photopoem_store.refreshPhotopoemsData(),
             place_store.refreshPlacesData(),
