@@ -3,10 +3,11 @@ import type { FullTextDTO } from "~/utils/types";
 import { useToast } from "primevue/usetoast";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
+import {useFullText} from "~/composables/useFullText";
 
 const toast = useToast();
 const photopoemStore = usePhotopoemStore();
-const fullTextStore = useFullTextStore();
+const fullTextApi = useFullText();
 const photopoems = computed(() => photopoemStore.photopoems.map(p => ({ id: p.id, title: p.title, altTitle: p.altTitle })));
 
 const photopoemLoading = ref(false);
@@ -42,11 +43,11 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await fullTextStore.createFullText(e.values);
+        await fullTextApi.createFullText(e.values);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         e.reset();
       } else if (props.action === "edit" && props.fulltext?.id) {
-        await fullTextStore.updateFullText(props.fulltext.id, e.values);
+        await fullTextApi.updateFullText(props.fulltext.id, e.values);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich upgedated", life: 3000});
       }
     } catch (error) {
