@@ -11,7 +11,7 @@ const props = defineProps<{
 const person_store = usePersonStore();
 const photopoem_store = usePhotopoemStore();
 const pub_medium_store = usePubMediumStore();
-const keyword_store = useKeywordStore();
+const keyword_api = useKeyword();
 const place_store = usePlaceStore();
 
 const confirm = useConfirm();
@@ -46,7 +46,8 @@ const items = ref([
             } else if (props.entity_type === 'pub_medium') {
               await pub_medium_store.deletePubMedium(props.id);
             } else if (props.entity_type === 'keyword') {
-              await keyword_store.deleteKeyword(props.id);
+              await keyword_api.deleteKeyword(props.id);
+              await refreshNuxtData('keyword-list');
             }
             toast.add({ severity: 'success', summary: 'Gelöscht', detail: 'Eintrag erfolgreich gelöscht', life: 3000 });
             router.push(props.page_url.substring(0, props.page_url.lastIndexOf('/')));

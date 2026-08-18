@@ -14,7 +14,7 @@ const pubMediumStore = usePubMediumStore();
 const fileApi = useFiles();
 const languageStore = useLanguageStore();
 const copyrightStatusApi = useCopyrightStatus();
-const keywordStore = useKeywordStore();
+const keywordApi = useKeyword();
 const locationStore = useLocationStore();
 
 const personLoading = ref(false);
@@ -31,19 +31,14 @@ const onPersonComplete = (event: any) => {
 }
 
 const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
-const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
+const { data: cachedKeywords } = await useAsyncData('keyword-list', () => keywordApi.fetchKeywords());
+const keywords = computed( () => cachedKeywords.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
 const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 const { data: files } = await useAsyncData('files-list', () => fileApi.fetchFiles());
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
-const { data: copyrightStatuses } = await useAsyncData(
-    'copyright-status-list',
-    () => copyrightStatusApi.fetchCopyrightStatuses(),
-    {
-      transform: (data) => data.map(cs => ({ id: cs.id, value: cs.value })),
-      default: () => []
-    }
-);
+const { data: cachedCopyrightStatuses } = await useAsyncData('copyright-status-list', () => copyrightStatusApi.fetchCopyrightStatuses());
+const copyrightStatuses = computed(()=> cachedCopyrightStatuses.value?.map(cs => ({ id: cs.id, value: cs.value })));
 
 const data_refreshing = ref(false);
 
@@ -453,7 +448,7 @@ const onFormSubmit = async (e: any) => {
                 selectedItemsLabel="{0} Thematiken ausgewählt"
                 optionLabel="value"
                 :options="keywords"
-                :key="keywords.length"
+                :key="keywords?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 :maxSelectedLabels="3"
                 filter fluid
@@ -470,7 +465,7 @@ const onFormSubmit = async (e: any) => {
                 selectedItemsLabel="{0} Bildmotive ausgewählt"
                 optionLabel="value"
                 :options="keywords"
-                :key="keywords.length"
+                :key="keywords?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 :maxSelectedLabels="3"
                 filter fluid

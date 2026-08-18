@@ -2,35 +2,31 @@
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 
-const keyword_store = useKeywordStore();
+const keyword_api = useKeyword();
 const photopoem_store = usePhotopoemStore();
 
 const router = useRoute();
 const keyword_id = Number(router.params.id);
-const keyword_item = ref<KeywordDTO | null>(null);
 
-const loading = ref(true);
 
 const is_theme = ref<PhotoPoemDTO[] | []>([]);
 const is_image_motif = ref<PhotoPoemDTO[] | []>([]);
 
+const { data: keyword_item, status } = await useAsyncData(
+    `keyword-${keyword_id}`,
+    () => keyword_api.fetchKeywordById(keyword_id)
+);
 onMounted(async () => {
-  try {
-    await keyword_store.fetchKeywordById(keyword_id);
-    keyword_item.value = keyword_store.currentKeyword ?? null;
-    is_theme.value = await photopoem_store.filterPhotopoems({ 'theme-id': keyword_id });
-    is_image_motif.value = await photopoem_store.filterPhotopoems({ 'image-motif-id': keyword_id });
-    useHead({
-      title: keyword_item.value ? `${keyword_item.value.value} - Schlagwortverzeichnis` : 'Nicht gefunden - Schlagwortverzeichnis',
-    });
-  } finally {
-    loading.value = false;
-  }
+  is_theme.value = await photopoem_store.filterPhotopoems({ 'theme-id': keyword_id });
+  is_image_motif.value = await photopoem_store.filterPhotopoems({ 'image-motif-id': keyword_id });
+  useHead({
+    title: keyword_item.value ? `${keyword_item.value.value} - Schlagwortverzeichnis` : 'Nicht gefunden - Schlagwortverzeichnis',
+  });
 });
 </script>
 
 <template>
-  <Card v-if="keyword_item">
+  <Card v-if="status !== 'pending' && keyword_item">
     <template #title>
       <div class="flex flex-col">
         <div class="flex flex-row justify-between">
