@@ -11,16 +11,17 @@ import PersonContributionsPlot from "~/components/visualizations/PersonContribut
 const router = useRoute();
 const person_id = Number(router.params.id);
 const person_api = usePerson();
-const photopoem_store = usePhotopoemStore();
+const photopoem_api = usePhotopoem();
 const place_store = usePlaceStore();
+// TODO all into composables
 const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemes(person_id));
 const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifs(person_id));
 const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchPersonMetrics(person_id));
-const { data: authorOf } = await useAsyncData(`author-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'author-id': person_id }));
-const { data: photographerOf } = await useAsyncData(`photographer-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'photographer-id': person_id }));
-const { data: participatedOn } = await useAsyncData(`participant-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'participant-id': person_id }));
-const { data: contributorOf } = await useAsyncData(`contributor-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id }));
-const { data: depictedOn } = await useAsyncData(`depicted-${ person_id }-on`, () => photopoem_store.filterPhotopoems({ 'depicted-person-id': person_id }));
+const { data: authorOf } = await useAsyncData(`author-${ person_id }-of`, () => photopoem_api.filterPhotopoems({ 'author-id': person_id }));
+const { data: photographerOf } = await useAsyncData(`photographer-${ person_id }-of`, () => photopoem_api.filterPhotopoems({ 'photographer-id': person_id }));
+const { data: participatedOn } = await useAsyncData(`participant-${ person_id }-of`, () => photopoem_api.filterPhotopoems({ 'participant-id': person_id }));
+const { data: contributorOf } = await useAsyncData(`contributor-${ person_id }-of`, () => photopoem_api.filterPhotopoems({ 'other-contributor-id': person_id }));
+const { data: depictedOn } = await useAsyncData(`depicted-${ person_id }-on`, () => photopoem_api.filterPhotopoems({ 'depicted-person-id': person_id }));
 
 const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
   const normalize = (list: any[] | undefined, role: PersonRole) =>

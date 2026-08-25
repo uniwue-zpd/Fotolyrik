@@ -14,7 +14,7 @@ const loading = ref(true);
 
 const place_store = usePlaceStore();
 const pubmedium_store = usePubMediumStore();
-const photopoem_store = usePhotopoemStore();
+const photopoem_api = usePhotopoem();
 
 const route = useRoute();
 const place_id = Number(route.params.id);
@@ -22,7 +22,6 @@ const place_item = ref<PlaceDTO | null>(null);
 const place_pub_media = ref<PubMediumDTO[] | []>([]);
 const place_metrics = ref<PlaceMetricsDTO | null>(null);
 const place_photopoems = ref<PhotoPoemDTO[] | []>([]);
-
 const has_coords = computed(() => {
   return place_item.value && place_item.value.latitude && place_item.value.longitude;
 });
@@ -46,7 +45,6 @@ onMounted(async () => {
     loading.value = false;
   }
   place_pub_media.value = await pubmedium_store.filterPubMedia({ 'pubplace-id': place_id });
-  place_photopoems.value = await photopoem_store.filterPhotopoems({ 'pubplace-id': place_id });
   place_metrics.value = await place_store.fetchPlaceMetrics(place_id)
   if (!document.getElementById("map")) {
     return;

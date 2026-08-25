@@ -1,6 +1,5 @@
 <script setup lang="ts">
-const photopoem_store = usePhotopoemStore();
-const highlight = computed(() => photopoem_store.currentHighlight);
+const {data: highlight} = usePhotopoem().usePhotopoemHightlight();
 </script>
 
 <template>

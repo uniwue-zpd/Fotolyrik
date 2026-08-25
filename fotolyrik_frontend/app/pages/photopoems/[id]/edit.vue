@@ -3,13 +3,7 @@ import PhotopoemForm from "~/components/forms/PhotopoemForm.vue";
 
 const route = useRoute();
 const photopoem_id = Number(route.params.id);
-const store = usePhotopoemStore();
-const photopoem_item = ref<PhotoPoemDTO | null>(null);
-
-onMounted(async () => {
-  await store.fetchPhtotopoemById(photopoem_id);
-  photopoem_item.value = store.currentPhotopoem;
-});
+const {data: photopoem_item} =  usePhotopoem().usePhotopoemId(photopoem_id);
 </script>
 
 <template>

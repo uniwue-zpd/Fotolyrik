@@ -6,11 +6,11 @@ import { z } from "zod";
 import {useFullText} from "~/composables/useFullText";
 
 const toast = useToast();
-const photopoemStore = usePhotopoemStore();
+const photopoemApi = usePhotopoem();
 const fullTextApi = useFullText();
-const photopoems = computed(() => photopoemStore.photopoems.map(p => ({ id: p.id, title: p.title, altTitle: p.altTitle })));
-
-const photopoemLoading = ref(false);
+const photopoem_handle = photopoemApi.usePhotopoemList();
+const photopoems = computed(() => photopoem_handle.data.value?.map(p => ({ id: p.id, title: p.title, altTitle: p.altTitle })));
+const photopoemLoading = computed(()=> photopoem_handle.status.value === 'pending');
 
 const props = defineProps<{
   action: "create" | "edit" | "edit-by-photopoem";
@@ -32,11 +32,7 @@ const resolver = ref(
 );
 
 const onPhotopoemReload = async () => {
-  if (!photopoemLoading.value) {
-    photopoemLoading.value = true;
-    await photopoemStore.refreshPhotopoemsData();
-    photopoemLoading.value = false;
-  }
+  photopoem_handle.refresh()
 };
 
 const onFormSubmit = async (e: any) => {
@@ -85,7 +81,7 @@ const onFormSubmit = async (e: any) => {
                 class="pl-7"
                 :optionLabel="(opt) => opt.title ? opt.title : opt.altTitle"
                 :options="photopoems"
-                :key="photopoems.length"
+                :key="photopoems?.length"
                 fluid
               />
             </IconField>

@@ -3,18 +3,13 @@ import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 
 const locationApi = useLocation();
-const photopoem_store = usePhotopoemStore();
+const photopoem_api = usePhotopoem();
 
 const router = useRoute();
 const location_id = Number(router.params.id);
 
-const is_location = ref<PhotoPoemDTO[] | []>([]);
-
-
 const { data: location_item, status } =locationApi.useLocationId(location_id)
-onMounted(async () => {
-  is_location.value = await photopoem_store.filterPhotopoems({ 'location-id': location_id });
-});
+const {data: is_location} = await useAsyncData(`photopoem-location-${location_id}`, ()=> photopoem_api.filterPhotopoems({ 'location-id': location_id }) )
 useHead({
   title: () => location_item.value
       ? `${location_item.value.name} - Fundortsverzeichnis`
@@ -47,7 +42,7 @@ useHead({
       </div>
       <Divider/>
       <div class="flex flex-col gap-2">
-        <div v-if="is_location.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+        <div v-if="is_location && is_location.length > 0" class="max-h-[30vh] flex flex-col gap-2">
           <h2 class="text-xl font-bold text-primary outfit-headline">Fotogedichte an diesem Fundort</h2>
           <div class="overflow-y-auto pb-2">
             <div class="flex flex-col gap-3 md:grid md:grid-cols-5">

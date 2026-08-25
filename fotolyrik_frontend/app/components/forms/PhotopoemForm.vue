@@ -9,7 +9,7 @@ import {useFiles} from "~/composables/useFiles";
 
 const toast = useToast();
 const personApi = usePerson();
-const photopoemStore = usePhotopoemStore();
+const photopoemApi = usePhotopoem();
 const pubMediumStore = usePubMediumStore();
 const fileApi = useFiles();
 const languageApi = useLanguage();
@@ -29,11 +29,9 @@ const debouncedSearch = debounce(async (query: string) => {
 const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
-
+// TODO move store fetch function out  and move all await use Async data into composables
 const persons = computed(() => personApi.usePersonList().data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
-
 const keywords = computed( () => keywordApi.useKeywordList().data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
-
 const languages = computed(() => languageApi.useLanguageList().data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 
 const { data: files } = fileApi.useFileList();
@@ -106,11 +104,14 @@ const onFormSubmit = async (e: any) => {
     e.values.contributions = contributionsForm.value?.getContributions();
     try {
       if (props.action === "create") {
-        await photopoemStore.createPhotopoem(e.values);
+        await photopoemApi.createPhotopoem(e.values);
+        await refreshNuxtData('photopoem-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         navigateTo("/photopoems")
       } else if (props.action === "edit" && props.photopoem?.id) {
-        await photopoemStore.updatePhotopoem(e.values, props.photopoem.id);
+        await photopoemApi.updatePhotopoem(props.photopoem.id, e.values);
+        await refreshNuxtData('photopoem-list');
+        await refreshNuxtData(`photopoem-${props.photopoem.id}`);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/photopoems/${props.photopoem?.id}`);
       }

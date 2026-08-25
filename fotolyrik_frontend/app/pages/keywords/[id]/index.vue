@@ -3,20 +3,16 @@ import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 
 const keyword_api = useKeyword();
-const photopoem_store = usePhotopoemStore();
+const photopoem_api = usePhotopoem();
 
 const router = useRoute();
 const keyword_id = Number(router.params.id);
 
-
-const is_theme = ref<PhotoPoemDTO[] | []>([]);
-const is_image_motif = ref<PhotoPoemDTO[] | []>([]);
-
 const { data: keyword_item, status } = keyword_api.useKeywordId(keyword_id);
-onMounted(async () => {
-  is_theme.value = await photopoem_store.filterPhotopoems({ 'theme-id': keyword_id });
-  is_image_motif.value = await photopoem_store.filterPhotopoems({ 'image-motif-id': keyword_id });
-});
+
+const {data: is_theme} = await useAsyncData(`photopoem-theme-${keyword_id}`, ()=> photopoem_api.filterPhotopoems({ 'theme-id': keyword_id }));
+const {data: is_image_motif} = await useAsyncData(`photopoem-image-motiv-${keyword_id}`, ()=> photopoem_api.filterPhotopoems({ 'image-motif-id': keyword_id }))
+
 
 useHead({
   title: () => keyword_item.value ? `${keyword_item.value.value} - Schlagwortverzeichnis` : 'Nicht gefunden - Schlagwortverzeichnis',
@@ -55,7 +51,7 @@ useHead({
       </div>
       <Divider/>
       <div class="flex flex-col gap-2">
-        <div v-if="is_theme.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+        <div v-if="is_theme&& is_theme.length > 0" class="max-h-[30vh] flex flex-col gap-2">
           <h2 class="text-xl font-bold text-primary outfit-headline">Thematik von</h2>
           <div class="overflow-y-auto pb-2">
             <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
@@ -66,7 +62,7 @@ useHead({
           </div>
         </div>
         <Divider/>
-        <div v-if="is_image_motif.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+        <div v-if="is_image_motif&& is_image_motif.length > 0" class="max-h-[30vh] flex flex-col gap-2">
           <h2 class="text-xl font-bold text-primary outfit-headline">Bildmotiv von</h2>
           <div class="overflow-y-auto pb-2">
             <div class="flex flex-col gap-3 md:grid md:grid-cols-5">

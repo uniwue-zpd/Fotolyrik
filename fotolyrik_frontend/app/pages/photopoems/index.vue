@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeUnmount } from "vue";
 import { FilterMatchMode } from "@primevue/core";
-import { usePhotopoemStore } from "~/stores/PhotopoemStore";
 import {useFiles} from "~/composables/useFiles";
 
-const store = usePhotopoemStore();
+const photopoemApi = usePhotopoem();
 const fileApi = useFiles();
+const {data: photopoemList} = photopoemApi.usePhotopoemList();
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -15,7 +15,7 @@ const filters = ref({
 // Preload image object URLs
 const previewURLs = ref<Record<number, string>>({});
 watch(
-  () => store.photopoems,
+  () => photopoemList.value,
   async (photopoems) => {
     if (!photopoems || photopoems.length === 0) return;
     const tasks: Promise<void>[] = [];
@@ -67,7 +67,7 @@ useHead(() => ({
           v-model:filters="filters"
           filter-display="row"
           :global-filter-fields="['title', 'altTitle', 'volume', 'issue', 'pageNumber', 'publicationDate', 'publicationMedium.title', 'contributions.contributor.fullName']"
-          :value="store.photopoems"
+          :value="photopoemList"
           stripedRows paginator :rows="10"
       >
         <template #header>

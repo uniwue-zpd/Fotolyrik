@@ -7,8 +7,7 @@ import {ContributionRole} from "~/utils/types";
 import {useFiles} from "~/composables/useFiles";
 const router = useRoute();
 const photopoem_id = Number(router.params.id);
-const store = usePhotopoemStore();
-const photopoem_item = computed(() => store.currentPhotopoem);
+const {data: photopoem_item} = usePhotopoem().usePhotopoemId(photopoem_id);
 const file_store = useFiles();
 
 declare const Tify: any; // stops type errors, Tify comes from plain JS library
@@ -46,7 +45,6 @@ useHead(() => ({
 }));
 
 onMounted(async () => {
-  await store.fetchPhtotopoemById(photopoem_id);
   if (show_scans.value) {
     scans.value = (await Promise.all(scan_ids.value.map((id) => file_store.getImageContent(id)))
     ).filter((url) => url !== null) as string[];

@@ -6,16 +6,16 @@ import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue
 
 const router = useRoute();
 const pubmedium_store = usePubMediumStore();
-const photopoem_store = usePhotopoemStore();
+const photopoem_api = usePhotopoem();
 
 const pub_medium_id = Number(router.params.id);
 const pub_medium_item = ref<PubMediumDTO | null>(null);
 const previous_pub_medium = ref<PubMediumDTO | null>(null);
 const next_pub_medium = ref<PubMediumDTO | null>(null);
-const pub_medium_photopoems = ref<PhotoPoemDTO[] | []>([]);
+const {data: pub_medium_photopoems} = await useAsyncData(`photopoem-pubmedium-${pub_medium_id}`, ()=> photopoem_api.filterPhotopoems({'pubmedium-id': pub_medium_id}))
 const pub_medium_metrics = ref<PubMediumMetricsDTO | null>(null);
 const photopoemsHavePubDates = computed(() => {
-  return pub_medium_photopoems.value.some(poem => poem.publicationDate);
+  return pub_medium_photopoems.value?.some(poem => poem.publicationDate);
 });
 
 onMounted(async () => {
@@ -23,7 +23,6 @@ onMounted(async () => {
   pub_medium_item.value = pubmedium_store.current_pub_medium;
   previous_pub_medium.value = pubmedium_store.previousPubMedium();
   next_pub_medium.value = pubmedium_store.nextPubMedium();
-  pub_medium_photopoems.value = await photopoem_store.filterPhotopoems({'pubmedium-id': pub_medium_id});
   pub_medium_metrics.value = await pubmedium_store.fetchPubMediumMetrics(pub_medium_id);
 });
 
@@ -101,7 +100,7 @@ onMounted(async () => {
             </table>
             <PubMediumMetrics v-if="pub_medium_metrics" :data="pub_medium_metrics"/>
           </div>
-          <div v-if="pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+          <div v-if=" pub_medium_photopoems && pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Fotogedichte in "{{ pub_medium_item?.title }}"</h2>
             <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">

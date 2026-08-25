@@ -36,6 +36,15 @@ export const usePhotopoem = () => {
             method: 'DELETE'
         });
     }
+    function usePhotopoemList(){
+        return useAsyncData('photopoem-list', fetchPhotopoems);
+    }
+    function usePhotopoemId(id: number){
+        return useAsyncData( `photopoem-${id}`, () => fetchPhotopoemById(id) );
+    }
+    function usePhotopoemHightlight(){
+        return useAsyncData('photopoem-highlight', fetchPhotopoemHighlight)
+    }
 
     return {
         fetchPhotopoems,
@@ -44,6 +53,9 @@ export const usePhotopoem = () => {
         filterPhotopoems,
         createPhotopoem,
         updatePhotopoem,
-        deletePhotopoem
+        deletePhotopoem,
+        usePhotopoemList,
+        usePhotopoemId,
+        usePhotopoemHightlight,
     };
 };

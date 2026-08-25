@@ -9,7 +9,7 @@ const props = defineProps<{
 }>();
 
 const person_api = usePerson();
-const photopoem_store = usePhotopoemStore();
+const photopoem_api = usePhotopoem();
 const pub_medium_store = usePubMediumStore();
 const keyword_api = useKeyword();
 const place_store = usePlaceStore();
@@ -43,7 +43,8 @@ const items = ref([
             } else if (props.entity_type === 'place') {
               await place_store.deletePlace(props.id);
             } else if (props.entity_type === 'photopoem') {
-              await photopoem_store.deletePhotopoem(props.id);
+              await photopoem_api.deletePhotopoem(props.id);
+              await refreshNuxtData('photopoem-list');
             } else if (props.entity_type === 'pub_medium') {
               await pub_medium_store.deletePubMedium(props.id);
             } else if (props.entity_type === 'keyword') {
