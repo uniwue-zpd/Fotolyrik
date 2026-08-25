@@ -38,14 +38,8 @@ const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
 const show_map = ref<boolean>(true);
 
 
-const { data: person_item } = await useAsyncData(
-    `person-${person_id}`,
-    () => person_api.fetchPersonById(person_id)
-);
-const { data: person_neighbors } = await useAsyncData(
-    `person-${person_id}-neighbor`,
-    () => person_api.fetchPersonNeighborsById(person_id)
-);
+const { data: person_item } = person_api.usePersonId(person_id);
+const { data: person_neighbors } = person_api.usePersonIdNeighbors(person_id);
 
 
 onMounted(async () => {

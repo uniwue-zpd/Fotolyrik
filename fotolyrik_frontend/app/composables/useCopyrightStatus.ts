@@ -22,11 +22,16 @@ export const useCopyrightStatus = ()=>{
     function deleteCopyrightStatus(id: number) {
         return $fetch<void>(`/api/copyright_statuses/${id}`, { method: 'DELETE' })
     }
+    function useCopyrightStatusList(){
+        return useAsyncData('copyright-status-list', fetchCopyrightStatuses);
+    }
+
     return {
         fetchCopyrightStatuses,
         fetchCopyrightStatusById,
         createCopyrightStatus,
         updateCopyrightStatus,
         deleteCopyrightStatus,
+        useCopyrightStatusList,
     }
 }

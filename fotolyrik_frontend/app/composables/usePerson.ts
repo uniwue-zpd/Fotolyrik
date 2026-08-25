@@ -52,6 +52,15 @@ export const usePerson = () => {
             query: { query }
         });
     }
+    function usePersonList(){
+        return useAsyncData('person-list', fetchPersons);
+    }
+    function usePersonId(id: number){
+        return useAsyncData( `person-${id}`, () => fetchPersonById(id) );
+    }
+    function usePersonIdNeighbors(id: number){
+        return useAsyncData(`person-${id}-neighbor`,() =>  fetchPersonNeighborsById(id))
+    }
 
     return {
         fetchPersons,
@@ -63,6 +72,9 @@ export const usePerson = () => {
         fetchAuthorThemes,
         fetchAuthorImageMotifs,
         fetchPersonMetrics,
-        searchPeople
+        searchPeople,
+        usePersonList,
+        usePersonId,
+        usePersonIdNeighbors,
     };
 };

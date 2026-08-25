@@ -33,12 +33,21 @@ export const useLocation = () => {
         });
     }
 
+    function useLocationList(){
+        return useAsyncData('location-list', fetchLocations);
+    }
+    function useLocationId(id: number){
+        return useAsyncData( `location-${id}`, () => fetchLocationById(id) );
+    }
+
     return {
         fetchLocations,
         fetchLocationById,
         filterLocations,
         createLocation,
         updateLocation,
-        deleteLocation
+        deleteLocation,
+        useLocationList,
+        useLocationId,
     };
 };

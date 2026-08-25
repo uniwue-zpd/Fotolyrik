@@ -5,10 +5,7 @@ const route = useRoute();
 const location_id = Number(route.params.id);
 const locationApi = useLocation();
 
-const { data: location_item, status } = await useAsyncData(
-    `location-${location_id}`,
-    () => locationApi.fetchLocationById(location_id)
-);
+const { data: location_item, status } = locationApi.useLocationId(location_id);
 </script>
 
 <template>

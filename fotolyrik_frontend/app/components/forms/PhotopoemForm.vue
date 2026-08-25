@@ -30,23 +30,19 @@ const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
 
-const { data: cachedPersons } = await useAsyncData( 'person-list', () => personApi.fetchPersons());
-const persons = computed(() => cachedPersons.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
+const persons = computed(() => personApi.usePersonList().data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 
 const keywords = computed( () => keywordApi.useKeywordList().data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
 
-const { data: cachedLanguages } = await useAsyncData('languages-list', () => languageApi.fetchLanguages());
-const languages = computed(() => cachedLanguages.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
+const languages = computed(() => languageApi.useLanguageList().data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 
-const { data: files } = await useAsyncData('files-list', () => fileApi.fetchFiles());
+const { data: files } = fileApi.useFileList();
 
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 
-const { data: cachedLocations } = await useAsyncData('location-list', () => locationApi.fetchLocations());
-const locations = computed(()=> cachedLocations.value?.map(l=>({id: l.id, name: l.name}) ));
+const locations = computed(()=> locationApi.useLocationList().data.value?.map(l=>({id: l.id, name: l.name}) ));
 
-const { data: cachedCopyrightStatuses } = await useAsyncData('copyright-status-list', () => copyrightStatusApi.fetchCopyrightStatuses());
-const copyrightStatuses = computed(()=> cachedCopyrightStatuses.value?.map(cs => ({ id: cs.id, value: cs.value })));
+const copyrightStatuses = computed(()=> copyrightStatusApi.useCopyrightStatusList().data.value?.map(cs => ({ id: cs.id, value: cs.value })));
 
 const data_refreshing = ref(false);
 

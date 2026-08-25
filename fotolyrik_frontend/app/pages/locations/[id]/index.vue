@@ -11,10 +11,7 @@ const location_id = Number(router.params.id);
 const is_location = ref<PhotoPoemDTO[] | []>([]);
 
 
-const { data: location_item, status } = await useAsyncData(
-    `location-${location_id}`,
-    () => locationApi.fetchLocationById(location_id)
-);
+const { data: location_item, status } =locationApi.useLocationId(location_id)
 onMounted(async () => {
   is_location.value = await photopoem_store.filterPhotopoems({ 'location-id': location_id });
 });

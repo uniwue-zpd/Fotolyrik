@@ -3,8 +3,7 @@ import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 
 const locationApi = useLocation();
-const { data: cachedLocations } = await useAsyncData('location-list', () => locationApi.fetchLocations());
-const locations = computed(() => cachedLocations.value?.map(l => ({
+const locations = computed(() => locationApi.useLocationList().data.value?.map(l => ({
   id: l.id,
   name: l.name,
   description: l.description

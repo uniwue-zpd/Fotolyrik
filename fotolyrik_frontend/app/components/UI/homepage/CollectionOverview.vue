@@ -14,9 +14,7 @@ const pubmediaCount = computed(() => pubmedia_store.pub_media.length);
 const placeCount = computed(() => place_store.places.length);
 
 const keywordCount = computed(()=> keyword_api.useKeywordList().data.value?.length);
-
-const { data: cachedPersons } = await useAsyncData( 'person-list', () => person_api.fetchPersons());
-const personCount = computed(()=> cachedPersons.value?.length);
+const personCount = computed(()=> person_api.usePersonList().data.value?.length);
 
 const setChartData = () => {
   return {

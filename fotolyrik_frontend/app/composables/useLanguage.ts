@@ -26,12 +26,16 @@ export const useLanguage = () => {
             method: 'DELETE'
         });
     }
+    function useLanguageList(){
+        return useAsyncData('language-list', fetchLanguages);
+    }
 
     return {
         fetchLanguages,
         fetchLanguageById,
         createLanguage,
         updateLanguage,
-        deleteLanguage
+        deleteLanguage,
+        useLanguageList
     };
 };

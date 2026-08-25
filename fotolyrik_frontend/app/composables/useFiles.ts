@@ -45,11 +45,16 @@ export const useFiles = ()=> {
         }
     }
 
+    function useFileList(){
+        return useAsyncData('file-list', fetchFiles);
+    }
+
     return {
         fetchFiles,
         removeFile,
         uploadFiles,
         getImagePreview,
-        getImageContent
+        getImageContent,
+        useFileList
     }
 }
