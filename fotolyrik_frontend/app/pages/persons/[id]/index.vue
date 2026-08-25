@@ -10,15 +10,12 @@ import PersonContributionsPlot from "~/components/visualizations/PersonContribut
 
 const router = useRoute();
 const person_id = Number(router.params.id);
-const person_store = usePersonStore();
+const person_api = usePerson();
 const photopoem_store = usePhotopoemStore();
 const place_store = usePlaceStore();
-const person_item = ref<PersonDTO | null>(null);
-const previous_person = ref<PersonDTO | null>(null);
-const next_person = ref<PersonDTO | null>(null);
-const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_store.fetchAuthorThemes(person_id));
-const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_store.fetchAuthorImageMotifs(person_id));
-const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_store.fetchPersonMetrics(person_id));
+const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemes(person_id));
+const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifs(person_id));
+const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchPersonMetrics(person_id));
 const { data: authorOf } = await useAsyncData(`author-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'author-id': person_id }));
 const { data: photographerOf } = await useAsyncData(`photographer-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'photographer-id': person_id }));
 const { data: participatedOn } = await useAsyncData(`participant-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'participant-id': person_id }));
@@ -40,11 +37,18 @@ const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
 const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
 const show_map = ref<boolean>(true);
 
+
+const { data: person_item } = await useAsyncData(
+    `person-${person_id}`,
+    () => person_api.fetchPersonById(person_id)
+);
+const { data: person_neighbors } = await useAsyncData(
+    `person-${person_id}-neighbor`,
+    () => person_api.fetchPersonNeighborsById(person_id)
+);
+
+
 onMounted(async () => {
-  await person_store.fetchPersonById(person_id);
-  person_item.value = person_store.currentPerson;
-  previous_person.value = person_store.previousPerson();
-  next_person.value = person_store.nextPerson();
   const places = await place_store.getContributionPlaces(person_id);
   show_map.value = places.length > 0;
   await map_ref.value?.populatePlaces(places);
@@ -203,9 +207,9 @@ useHead(() => {
     </Card>
     <div class="flex flex-row justify-between">
       <div class="previus">
-        <div v-if="previous_person" class="p-2 border border-solid rounded-md hover:shadow-md">
+        <div v-if="person_neighbors?.previous" class="p-2 border border-solid rounded-md hover:shadow-md">
           <NuxtLink
-              :to="`/persons/${previous_person.id}`"
+              :to="`/persons/${person_neighbors.previous}`"
               class="flex flex-row items-center space-x-2"
           >
             <i class="pi pi-arrow-left"/>
@@ -214,9 +218,9 @@ useHead(() => {
         </div>
       </div>
       <div class="next">
-        <div v-if="next_person" class="p-2 border border-solid rounded-md hover:shadow-md">
+        <div v-if="person_neighbors?.next" class="p-2 border border-solid rounded-md hover:shadow-md">
           <NuxtLink
-              :to="`/persons/${next_person.id}`"
+              :to="`/persons/${person_neighbors.next}`"
               class="flex flex-row items-center space-x-2"
           >
             <div class="roboto-plain">Nächster Eintrag</div>

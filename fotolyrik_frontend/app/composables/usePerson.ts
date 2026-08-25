@@ -7,6 +7,10 @@ export const usePerson = () => {
         return $fetch<PersonDTO>(`/api/persons/${id}`);
     }
 
+    async function fetchPersonNeighborsById(id: number) {
+        return $fetch<IDSliceDTO>(`/api/persons/${id}/neighbor`);
+    }
+
     async function createPerson(payload: Partial<PersonDTO>) {
         return $fetch<PersonDTO>('/api/persons', {
             method: 'POST',
@@ -52,6 +56,7 @@ export const usePerson = () => {
     return {
         fetchPersons,
         fetchPersonById,
+        fetchPersonNeighborsById,
         createPerson,
         updatePerson,
         deletePerson,
