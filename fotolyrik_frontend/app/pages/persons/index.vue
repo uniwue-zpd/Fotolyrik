@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
-import { usePersonStore } from "~/stores/PersonStore";
 
 const person_api = usePerson();
 const { data: cachedPersons } = await useAsyncData( 'person-list', () => person_api.fetchPersons());

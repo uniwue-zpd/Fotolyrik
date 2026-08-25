@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.IDSliceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
@@ -9,6 +10,7 @@ import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.events.Event;
 
 import java.util.List;
 
@@ -33,6 +35,14 @@ public class PersonController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
+
+    @GetMapping("/{id}/neighbor")
+    public ResponseEntity<IDSliceDTO> getPersonNeighborIDs(@PathVariable Long id) {
+        return personService.getPersonNeighborIds(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 
     @PostMapping
     public ResponseEntity<PersonDTO> createPerson(@RequestBody PersonDTO personDTO) {

@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.IDSliceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PersonDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
@@ -48,6 +49,25 @@ public class PersonService {
      */
     public Optional<PersonDTO> getPersonById(Long id) {
         return personRepository.findById(id).map(personMapper::PersonToPersonDTO);
+    }
+
+    /**
+     * GET the next and previous IDs of a person by ID sorted by full name ASC
+     * @param id of the current person
+     * @return {@link Optional} of {@link IDSliceDTO}
+     */
+    public Optional<IDSliceDTO> getPersonNeighborIds(Long id) {
+        var list = personRepository.findNeighborIdsById(id, 1);
+
+        int currentIndex = list.indexOf(id);
+        if (currentIndex == -1) return Optional.empty();
+
+        var slice = new IDSliceDTO();
+        slice.setCurrent(id);
+        slice.setPrevious(currentIndex > 0 ? list.get(currentIndex - 1) : null);
+        slice.setNext(currentIndex < list.size() - 1 ? list.get(currentIndex + 1) : null);
+
+        return Optional.of(slice);
     }
 
     /**

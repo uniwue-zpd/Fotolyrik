@@ -38,13 +38,16 @@ const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
   ];
 });
 const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
+const show_map = ref<boolean>(true);
 
 onMounted(async () => {
   await person_store.fetchPersonById(person_id);
   person_item.value = person_store.currentPerson;
   previous_person.value = person_store.previousPerson();
   next_person.value = person_store.nextPerson();
-  await map_ref.value?.populatePlaces(await place_store.getContributionPlaces(person_id));
+  const places = await place_store.getContributionPlaces(person_id);
+  show_map.value = places.length > 0;
+  await map_ref.value?.populatePlaces(places);
 });
 
 useHead(() => {
@@ -106,9 +109,12 @@ useHead(() => {
           </tr>
           </tbody>
         </table>
+        <div v-if="person_item === null"> Fehler. Person konnte nicht gefunden werden.</div>
+        <div v-if=" show_map">
         <Divider/>
         <h2 class="text-xl font-bold text-primary outfit-headline">Veröffentlichungsorte</h2>
-        <MultiPlaceMap ref="map_ref"></MultiPlaceMap>
+        <MultiPlaceMap  ref="map_ref"></MultiPlaceMap>
+        </div>
         <div class="flex flex-col gap-4">
           <div v-if="authorThemes && authorThemes.length > 0 || authorImageMotifs && authorImageMotifs.length > 0" class="flex flex-col gap-2">
             <Divider/>
