@@ -12,7 +12,7 @@ const pub_medium_id = Number(router.params.id);
 const pub_medium_item = ref<PubMediumDTO | null>(null);
 const previous_pub_medium = ref<PubMediumDTO | null>(null);
 const next_pub_medium = ref<PubMediumDTO | null>(null);
-const {data: pub_medium_photopoems} = await useAsyncData(`photopoem-pubmedium-${pub_medium_id}`, ()=> photopoem_api.filterPhotopoems({'pubmedium-id': pub_medium_id}))
+const {data: pub_medium_photopoems} = photopoem_api.useFilteredPhotopoems({'pubmedium-id': pub_medium_id})
 const pub_medium_metrics = ref<PubMediumMetricsDTO | null>(null);
 const photopoemsHavePubDates = computed(() => {
   return pub_medium_photopoems.value?.some(poem => poem.publicationDate);

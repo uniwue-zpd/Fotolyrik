@@ -45,6 +45,11 @@ export const usePhotopoem = () => {
     function usePhotopoemHightlight(){
         return useAsyncData('photopoem-highlight', fetchPhotopoemHighlight)
     }
+    function useFilteredPhotopoems(params: any){
+        if (Object.keys(params).length !== 1) console.error('provide only one filter')
+        const [key, value] = Object.entries(params)[0]!;
+        return useAsyncData(`photopoem-${key}-${value}`, ()=>filterPhotopoems(params))
+    }
 
     return {
         fetchPhotopoems,
@@ -57,5 +62,6 @@ export const usePhotopoem = () => {
         usePhotopoemList,
         usePhotopoemId,
         usePhotopoemHightlight,
+        useFilteredPhotopoems
     };
 };

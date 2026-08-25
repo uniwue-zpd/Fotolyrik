@@ -17,11 +17,11 @@ const place_store = usePlaceStore();
 const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemes(person_id));
 const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifs(person_id));
 const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchPersonMetrics(person_id));
-const { data: authorOf } = await useAsyncData(`author-${ person_id }-of`, () => photopoem_api.filterPhotopoems({ 'author-id': person_id }));
-const { data: photographerOf } = await useAsyncData(`photographer-${ person_id }-of`, () => photopoem_api.filterPhotopoems({ 'photographer-id': person_id }));
-const { data: participatedOn } = await useAsyncData(`participant-${ person_id }-of`, () => photopoem_api.filterPhotopoems({ 'participant-id': person_id }));
-const { data: contributorOf } = await useAsyncData(`contributor-${ person_id }-of`, () => photopoem_api.filterPhotopoems({ 'other-contributor-id': person_id }));
-const { data: depictedOn } = await useAsyncData(`depicted-${ person_id }-on`, () => photopoem_api.filterPhotopoems({ 'depicted-person-id': person_id }));
+const { data: authorOf } = photopoem_api.useFilteredPhotopoems({ 'author-id': person_id });
+const { data: photographerOf } = photopoem_api.useFilteredPhotopoems({ 'photographer-id': person_id });
+const { data: participatedOn } = photopoem_api.useFilteredPhotopoems({ 'participant-id': person_id });
+const { data: contributorOf } = photopoem_api.useFilteredPhotopoems({ 'other-contributor-id': person_id });
+const { data: depictedOn } = photopoem_api.useFilteredPhotopoems({ 'depicted-person-id': person_id });
 
 const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
   const normalize = (list: any[] | undefined, role: PersonRole) =>
