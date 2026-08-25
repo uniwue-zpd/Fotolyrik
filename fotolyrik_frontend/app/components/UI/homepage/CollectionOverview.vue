@@ -9,12 +9,17 @@ const person_api = usePerson();
 const keyword_api = useKeyword();
 
 const darkModeTextColor = computed(()=>{return useColorMode().value == 'dark'? 'white':'black'});
+
 const pubmediaCount = computed(() => pubmedia_store.pub_media.length);
 const placeCount = computed(() => place_store.places.length);
 
-const keywordCount = computed(()=> keyword_api.useKeywordList().data.value?.length);
-const personCount = computed(()=> person_api.usePersonList().data.value?.length);
-const photopoemCount = computed(() => photopoem_api.usePhotopoemList().data.value?.length);
+const {data: keywordList} = keyword_api.useKeywordList();
+const {data: personList} = person_api.usePersonList();
+const {data: photopoemList} = photopoem_api.usePhotopoemList();
+const keywordCount = computed(()=> keywordList.value?.length);
+const personCount = computed(()=> personList.value?.length);
+const photopoemCount = computed(() => photopoemList.value?.length);
+
 
 const setChartData = () => {
   return {

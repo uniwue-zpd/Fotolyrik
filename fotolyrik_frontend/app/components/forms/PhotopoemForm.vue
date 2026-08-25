@@ -30,18 +30,20 @@ const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
 // TODO move store fetch function out  and move all await use Async data into composables
-const persons = computed(() => personApi.usePersonList().data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
-const keywords = computed( () => keywordApi.useKeywordList().data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
-const languages = computed(() => languageApi.useLanguageList().data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
+const {data: personList} = personApi.usePersonList();
+const {data: keywordList} = keywordApi.useKeywordList();
+const {data: languageList} = languageApi.useLanguageList();
+const {data: locationList} = locationApi.useLocationList();
+const {data: copyrightStatusList} = copyrightStatusApi.useCopyrightStatusList();
+const persons = computed(() => personList.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
+const keywords = computed( () => keywordList.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
+const languages = computed(() => languageList.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
+const locations = computed(()=> locationList.value?.map(l=>({id: l.id, name: l.name}) ));
+const copyrightStatuses = computed(()=> copyrightStatusList.value?.map(cs => ({ id: cs.id, value: cs.value })));
 
 const { data: files } = fileApi.useFileList();
 
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
-
-const locations = computed(()=> locationApi.useLocationList().data.value?.map(l=>({id: l.id, name: l.name}) ));
-
-const copyrightStatuses = computed(()=> copyrightStatusApi.useCopyrightStatusList().data.value?.map(cs => ({ id: cs.id, value: cs.value })));
-
 const data_refreshing = ref(false);
 
 const props = defineProps<{

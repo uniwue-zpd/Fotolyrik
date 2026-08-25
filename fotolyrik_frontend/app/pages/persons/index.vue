@@ -3,8 +3,9 @@ import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 
 const person_api = usePerson();
+const {data: personList} = person_api.usePersonList();
 const persons = computed(() => {
-  return person_api.usePersonList().data.value?.map(person => ({
+  return personList.value?.map(person => ({
     ...person,
     pseudonyms: person.pseudonyms.sort().join(', ')
   }));
