@@ -1,53 +1,53 @@
 export const usePerson = () => {
-    async function fetchPersons() {
+    function fetchPersons() {
         return $fetch<PersonDTO[]>('/api/persons');
     }
 
-    async function fetchPersonById(id: number) {
+    function fetchPersonById(id: number) {
         return $fetch<PersonDTO>(`/api/persons/${id}`);
     }
 
-    async function fetchPersonNeighborsById(id: number) {
+    function fetchPersonNeighborsById(id: number) {
         return $fetch<IDSliceDTO>(`/api/persons/${id}/neighbor`);
     }
 
-    async function createPerson(payload: Partial<PersonDTO>) {
+    function createPerson(payload: Partial<PersonDTO>) {
         return $fetch<PersonDTO>('/api/persons', {
             method: 'POST',
             body: payload
         });
     }
 
-    async function updatePerson(id: number, payload: Partial<PersonDTO>) {
+    function updatePerson(id: number, payload: Partial<PersonDTO>) {
         return $fetch<PersonDTO>(`/api/persons/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    async function deletePerson(id: number) {
+    function deletePerson(id: number) {
         return $fetch<void>(`/api/persons/${id}`, {
             method: 'DELETE'
         });
     }
 
-    async function fetchAuthorThemes(id: number, limit?: number) {
+    function fetchAuthorThemes(id: number, limit?: number) {
         return $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats/themes`, {
             query: { limit }
         });
     }
 
-    async function fetchAuthorImageMotifs(id: number, limit?: number) {
+    function fetchAuthorImageMotifs(id: number, limit?: number) {
         return $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats/image-motifs`, {
             query: { limit }
         });
     }
 
-    async function fetchPersonMetrics(id: number) {
+    function fetchPersonMetrics(id: number) {
         return $fetch<PersonMetricsDTO>(`/api/persons/${id}/stats/metrics`);
     }
 
-    async function searchPeople(query: string) {
+    function searchPeople(query: string) {
         return $fetch<PersonPreviewDTO[]>('/api/persons/search', {
             query: { query }
         });

@@ -2,15 +2,15 @@ import type { FileDTO } from "~/utils/types"
 
 export const useFiles = ()=> {
 
-    async function fetchFiles(): Promise<FileDTO[]> {
-        return await $fetch<FileDTO[]>("/api/files/all");
+    function fetchFiles(): Promise<FileDTO[]> {
+        return $fetch<FileDTO[]>("/api/files/all");
     }
 
-    async function removeFile(id: number):Promise<void> {
+    function removeFile(id: number):Promise<void> {
         return $fetch(`/api/files/${id}`, {method: 'DELETE'});
     }
 
-    async function uploadFiles(fileList: FileList | File[]): Promise<FileDTO[]>{
+    function uploadFiles(fileList: FileList | File[]): Promise<FileDTO[]>{
         const formData = new FormData();
         Array.from(fileList).forEach((file) => {
             formData.append("file", file);

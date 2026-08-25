@@ -6,10 +6,7 @@ useHead(() => ({
 }));
 
 const keywordApi = useKeyword();
-const { data: keywords } = await useAsyncData(
-    'keyword-list',
-    () => keywordApi.fetchKeywords()
-)
+const { data: keywords } = keywordApi.useKeywordList();
 const topics = computed(() => keywords.value?.slice(0, 20));
 
 import { ref } from 'vue';

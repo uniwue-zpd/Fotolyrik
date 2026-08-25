@@ -33,8 +33,7 @@ const onPersonComplete = (event: any) => {
 const { data: cachedPersons } = await useAsyncData( 'person-list', () => personApi.fetchPersons());
 const persons = computed(() => cachedPersons.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 
-const { data: cachedKeywords } = await useAsyncData('keyword-list', () => keywordApi.fetchKeywords());
-const keywords = computed( () => cachedKeywords.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
+const keywords = computed( () => keywordApi.useKeywordList().data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
 
 const { data: cachedLanguages } = await useAsyncData('languages-list', () => languageApi.fetchLanguages());
 const languages = computed(() => cachedLanguages.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));

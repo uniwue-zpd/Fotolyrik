@@ -12,10 +12,7 @@ const keyword_id = Number(router.params.id);
 const is_theme = ref<PhotoPoemDTO[] | []>([]);
 const is_image_motif = ref<PhotoPoemDTO[] | []>([]);
 
-const { data: keyword_item, status } = await useAsyncData(
-    `keyword-${keyword_id}`,
-    () => keyword_api.fetchKeywordById(keyword_id)
-);
+const { data: keyword_item, status } = keyword_api.useKeywordId(keyword_id);
 onMounted(async () => {
   is_theme.value = await photopoem_store.filterPhotopoems({ 'theme-id': keyword_id });
   is_image_motif.value = await photopoem_store.filterPhotopoems({ 'image-motif-id': keyword_id });

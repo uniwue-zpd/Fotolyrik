@@ -16,11 +16,7 @@ const options: Intl.DateTimeFormatOptions = {
   day: "2-digit"
 };
 
-const { data: files, status, refresh, error } = await useAsyncData(
-    'files-list',
-    () => fileApi.fetchFiles(),
-    {default: ()=>[]}
-);
+const { data: files, status, refresh, error } = await useAsyncData( 'files-list', () => fileApi.fetchFiles() );
 
 watch(
     files,

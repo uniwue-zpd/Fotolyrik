@@ -13,8 +13,7 @@ const photopoemCount = computed(() => photopoem_store.photopoems.length);
 const pubmediaCount = computed(() => pubmedia_store.pub_media.length);
 const placeCount = computed(() => place_store.places.length);
 
-const { data: cachedKeywords } = await useAsyncData( 'keyword-list', () => keyword_api.fetchKeywords());
-const keywordCount = computed(()=> cachedKeywords.value?.length);
+const keywordCount = computed(()=> keyword_api.useKeywordList().data.value?.length);
 
 const { data: cachedPersons } = await useAsyncData( 'person-list', () => person_api.fetchPersons());
 const personCount = computed(()=> cachedPersons.value?.length);

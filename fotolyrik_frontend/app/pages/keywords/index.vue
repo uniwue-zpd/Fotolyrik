@@ -9,8 +9,7 @@ function getRandomRgb(): string {
   return `rgba(${r}, ${g}, ${b}, 0.4)`;
 }
 const keyword_api = useKeyword();
-const { data: cachedKeywords } = await useAsyncData( 'keyword-list', () => keyword_api.fetchKeywords());
-const keywords = computed(()=> cachedKeywords.value?.map((k:KeywordDTO) => ({id: k.id, value: k.value, gndId: k.gndId, color: getRandomRgb()})));
+const keywords = computed(()=> keyword_api.useKeywordList().data.value?.map((k:KeywordDTO) => ({id: k.id, value: k.value, gndId: k.gndId, color: getRandomRgb()})));
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
