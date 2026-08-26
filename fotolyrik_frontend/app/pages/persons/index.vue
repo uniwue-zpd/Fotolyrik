@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 
 const person_api = usePerson();
-const {data: personList} = person_api.usePersonList();
+const {data: personList} = await person_api.usePersonList();
 const persons = computed(() => {
   return personList.value?.map(person => ({
     ...person,

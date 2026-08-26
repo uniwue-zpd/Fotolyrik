@@ -6,7 +6,7 @@ import PersonForm from "~/components/forms/PersonForm.vue";
 const route = useRoute();
 const person_id = Number(route.params.id);
 const person_api = usePerson();
-const { data: person_item, status } =person_api.usePersonId(person_id);
+const { data: person_item } =await person_api.usePersonId(person_id);
 </script>
 
 <template>

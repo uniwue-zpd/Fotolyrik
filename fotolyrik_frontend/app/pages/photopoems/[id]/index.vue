@@ -7,7 +7,7 @@ import {ContributionRole} from "~/utils/types";
 import {useFiles} from "~/composables/useFiles";
 const router = useRoute();
 const photopoem_id = Number(router.params.id);
-const {data: photopoem_item} = usePhotopoem().usePhotopoemId(photopoem_id);
+const {data: photopoem_item} = await usePhotopoem().usePhotopoemId(photopoem_id);
 const file_store = useFiles();
 
 declare const Tify: any; // stops type errors, Tify comes from plain JS library

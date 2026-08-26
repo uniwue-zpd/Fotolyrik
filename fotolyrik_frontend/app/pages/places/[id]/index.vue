@@ -32,10 +32,10 @@ useHead(() => ({
   title: place_item.value?.name ? `${place_item.value?.name}` : 'Nicht gefunden',
 }));
 
-const {data: place_item, status}  = place_api.usePlaceId(place_id)
+const {data: place_item, status}  = await place_api.usePlaceId(place_id)
 const place_pub_media = ref<PubMediumDTO[] | []>([]);
-const {data:place_metrics}  = place_api.usePlaceMetricsId(place_id)
-const {data: place_photopoems}  = photopoem_api.useFilteredPhotopoems({ 'pubplace-id': place_id })
+const {data:place_metrics}  = await place_api.usePlaceMetricsId(place_id)
+const {data: place_photopoems}  = await photopoem_api.useFilteredPhotopoems({ 'pubplace-id': place_id })
 
 onMounted(async () => {
   place_pub_media.value = await pubmedium_store.filterPubMedia({ 'pubplace-id': place_id });

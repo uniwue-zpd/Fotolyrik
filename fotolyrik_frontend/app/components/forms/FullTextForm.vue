@@ -8,7 +8,7 @@ import {useFullText} from "~/composables/useFullText";
 const toast = useToast();
 const photopoemApi = usePhotopoem();
 const fullTextApi = useFullText();
-const photopoem_handle = photopoemApi.usePhotopoemList();
+const photopoem_handle = await photopoemApi.usePhotopoemList();
 const photopoems = computed(() => photopoem_handle.data.value?.map(p => ({ id: p.id, title: p.title, altTitle: p.altTitle })));
 const photopoemLoading = computed(()=> photopoem_handle.status.value === 'pending');
 

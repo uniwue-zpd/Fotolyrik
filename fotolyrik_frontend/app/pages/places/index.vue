@@ -4,7 +4,7 @@ import { FilterMatchMode } from "@primevue/core";
 import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
 
 const place_api = usePlace();
-const {data:places} = place_api.usePlaceList();
+const {data:places} = await place_api.usePlaceList();
 const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
 
 const filters = ref({

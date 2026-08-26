@@ -5,7 +5,7 @@ import {useFiles} from "~/composables/useFiles";
 
 const photopoemApi = usePhotopoem();
 const fileApi = useFiles();
-const {data: photopoemList} = photopoemApi.usePhotopoemList();
+const {data: photopoemList} = await photopoemApi.usePhotopoemList();
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },

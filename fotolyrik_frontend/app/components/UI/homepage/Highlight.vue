@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const {data: highlight} = usePhotopoem().usePhotopoemHightlight();
+const {data: highlight} = await usePhotopoem().usePhotopoemHightlight();
 </script>
 
 <template>

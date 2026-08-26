@@ -10,7 +10,7 @@ const placeApi = usePlace();
 const publisherStore = usePublisherStore();
 const pubRhythmStore = usePubRhythmStore();
 
-const {data: placeList } = placeApi.usePlaceList();
+const {data: placeList } = await placeApi.usePlaceList();
 
 const publication_places = computed(() => placeList.value?.map(p => ({id: p.id, name: p.name})));
 const publishers = computed(() => publisherStore.publishers.map(pu => ({id: pu.id, name: pu.name})));

@@ -12,10 +12,10 @@ const darkModeTextColor = computed(()=>{return useColorMode().value == 'dark'? '
 
 const pubmediaCount = computed(() => pubmedia_store.pub_media.length);
 
-const {data: keywordList} = keyword_api.useKeywordList();
-const {data: personList} = person_api.usePersonList();
-const {data: photopoemList} = photopoem_api.usePhotopoemList();
-const {data: placeList} = place_api.usePlaceList();
+const {data: keywordList} = await keyword_api.useKeywordList();
+const {data: personList} = await person_api.usePersonList();
+const {data: photopoemList} = await photopoem_api.usePhotopoemList();
+const {data: placeList} =  await place_api.usePlaceList();
 const keywordCount = computed(()=> keywordList.value?.length);
 const personCount = computed(()=> personList.value?.length);
 const photopoemCount = computed(() => photopoemList.value?.length);

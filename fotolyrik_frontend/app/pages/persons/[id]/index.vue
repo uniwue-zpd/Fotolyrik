@@ -17,11 +17,11 @@ const place_api = usePlace();
 const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemes(person_id));
 const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifs(person_id));
 const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchPersonMetrics(person_id));
-const { data: authorOf } = photopoem_api.useFilteredPhotopoems({ 'author-id': person_id });
-const { data: photographerOf } = photopoem_api.useFilteredPhotopoems({ 'photographer-id': person_id });
-const { data: participatedOn } = photopoem_api.useFilteredPhotopoems({ 'participant-id': person_id });
-const { data: contributorOf } = photopoem_api.useFilteredPhotopoems({ 'other-contributor-id': person_id });
-const { data: depictedOn } = photopoem_api.useFilteredPhotopoems({ 'depicted-person-id': person_id });
+const { data: authorOf } = await photopoem_api.useFilteredPhotopoems({ 'author-id': person_id });
+const { data: photographerOf } = await photopoem_api.useFilteredPhotopoems({ 'photographer-id': person_id });
+const { data: participatedOn } = await photopoem_api.useFilteredPhotopoems({ 'participant-id': person_id });
+const { data: contributorOf } = await photopoem_api.useFilteredPhotopoems({ 'other-contributor-id': person_id });
+const { data: depictedOn } = await photopoem_api.useFilteredPhotopoems({ 'depicted-person-id': person_id });
 
 const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
   const normalize = (list: any[] | undefined, role: PersonRole) =>
@@ -39,8 +39,8 @@ const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
 const show_map = ref<boolean>(true);
 
 
-const { data: person_item } = person_api.usePersonId(person_id);
-const { data: person_neighbors } = person_api.usePersonIdNeighbors(person_id);
+const { data: person_item } = await person_api.usePersonId(person_id);
+const { data: person_neighbors } = await person_api.usePersonIdNeighbors(person_id);
 
 onMounted(async () => {
   const places = await place_api.getContributionPlaces(person_id);

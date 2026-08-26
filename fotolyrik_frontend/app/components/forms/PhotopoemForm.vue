@@ -29,18 +29,18 @@ const debouncedSearch = debounce(async (query: string) => {
 const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
-const {data: personList} = personApi.usePersonList();
-const {data: keywordList} = keywordApi.useKeywordList();
-const {data: languageList} = languageApi.useLanguageList();
-const {data: locationList} = locationApi.useLocationList();
-const {data: copyrightStatusList} = copyrightStatusApi.useCopyrightStatusList();
+const {data: personList} = await personApi.usePersonList();
+const {data: keywordList} = await keywordApi.useKeywordList();
+const {data: languageList} = await languageApi.useLanguageList();
+const {data: locationList} = await locationApi.useLocationList();
+const {data: copyrightStatusList} = await copyrightStatusApi.useCopyrightStatusList();
 const persons = computed(() => personList.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed( () => keywordList.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
 const languages = computed(() => languageList.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 const locations = computed(()=> locationList.value?.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(()=> copyrightStatusList.value?.map(cs => ({ id: cs.id, value: cs.value })));
 
-const { data: files } = fileApi.useFileList();
+const { data: files } = await fileApi.useFileList();
 
 const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
 const data_refreshing = ref(false);

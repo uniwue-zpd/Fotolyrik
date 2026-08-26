@@ -9,7 +9,7 @@ function getRandomRgb(): string {
   return `rgba(${r}, ${g}, ${b}, 0.4)`;
 }
 const keyword_api = useKeyword();
-const {data:keyword_list} = keyword_api.useKeywordList();
+const {data:keyword_list} = await keyword_api.useKeywordList();
 const keywords = computed(()=> keyword_list.value?.map((k:KeywordDTO) => ({id: k.id, value: k.value, gndId: k.gndId, color: getRandomRgb()})));
 
 const filters = ref({
