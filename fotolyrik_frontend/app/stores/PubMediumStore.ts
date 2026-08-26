@@ -134,6 +134,13 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
     function clearPubMedium() {
         current_pub_medium.value = null;
     }
+    async function searchPubMedia(query: string): Promise<PubMediumPreviewDTO[]> {
+        return await $fetch<PubMediumPreviewDTO[]>(`/api/publication_media/search`, { query: { query } });
+    }
+
+    async function searchPubMediaPaginated(query: string, pageable: Pageable): Promise<Page<PubMediumPreviewDTO>> {
+        return await $fetch<Page<PubMediumPreviewDTO>>(`/api/publication_media/search_paginated`, { query: { query, ...pageable } });
+    }
 
     return {
         pub_media,
@@ -149,5 +156,7 @@ export const usePubMediumStore = defineStore('pubMedium', () => {
         nextPubMedium,
         fetchPubMediumMetrics,
         clearPubMedium,
+        searchPubMedia,
+        searchPubMediaPaginated
    }
 });

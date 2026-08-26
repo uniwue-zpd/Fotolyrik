@@ -14,12 +14,8 @@ export const usePhotopoemStore = defineStore('photopoem', () => {
     // Actions
 
         // Fetch photopoems using pagination
-    async function fetchPhotopoemsPaginated(params: Pageable) {
-        try {
-            return await $fetch<Page<PhotoPoemDTO>>('/api/photopoems', { query: params });
-        } catch (error) {
-            console.error(error);
-        }
+    async function fetchPhotopoemsPaginated(params: PhotopoemPageable) {
+        return await $fetch<Page<PhotoPoemDTO>>('/api/photopoems', { query: params });
     }
 
         // Fetch all photopoems

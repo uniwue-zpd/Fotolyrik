@@ -1,9 +1,10 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
-import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.service.KeywordService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,5 +56,10 @@ public class KeywordController {
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
+    }
+    @GetMapping("/search_paginated")
+    public ResponseEntity<Page<KeywordDTO>> searchKeywordPaginated(Pageable pageable, @RequestParam String query) {
+        Page<KeywordDTO> keywords = keywordService.searchKeywordsPaginated(pageable, query);
+        return ResponseEntity.ok(keywords);
     }
 }

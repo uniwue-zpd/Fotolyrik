@@ -1,9 +1,14 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
+import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.KeywordMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,5 +64,15 @@ public class KeywordService {
             throw new EntityNotFoundException("Keyword with ID '" + id + "' does not exist");
         }
         keywordRepository.deleteById(id);
+    }
+    // GET a list of keywords constrained by QUERY and PAGEABLE
+    public Page<KeywordDTO> searchKeywordsPaginated(Pageable pageable, String query) {
+        Page<Keyword> result;
+        if (query  == null||  query.trim().length()<2){
+            result =  keywordRepository.findAll(pageable);
+        } else {
+            result = keywordRepository.findByValueContainingIgnoreCase(query, pageable);
+        }
+        return result.map(keywordMapper::KeywordToKeywordDTO);
     }
 }
