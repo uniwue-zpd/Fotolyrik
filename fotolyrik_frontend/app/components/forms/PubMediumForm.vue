@@ -11,9 +11,9 @@ const publisherApi= usePublisher();
 const pubRhythmApi = usePubRhythm();
 
 const [placeHandle, publisherHandle, pubRhythmHandle] = await Promise.all([
-  placeApi.usePlaceList(),
-  publisherApi.usePublisherList(),
-  pubRhythmApi.usePubRhythmList()
+  placeApi.getAll(),
+  publisherApi.getAll(),
+  pubRhythmApi.getAll()
 ]);
 
 const publication_places = computed(() => placeHandle.data.value?.map(p => ({id: p.id, name: p.name})));
@@ -63,12 +63,12 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await pubMediumApi.createPubMedium(e.values);
+        await pubMediumApi.create(e.values);
         await refreshNuxtData('pubMedium-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         navigateTo("/publication_media")
       } else if (props.action === "edit" && props.pub_medium?.id) {
-        await pubMediumApi.updatePubMedium(props.pub_medium.id,e.values );
+        await pubMediumApi.update(props.pub_medium.id,e.values );
         await  Promise.all([refreshNuxtData('pubMedium-list'), await refreshNuxtData(`pubMedium-${props.pub_medium.id}`)])
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/publication_media/${props.pub_medium?.id}`);

@@ -43,12 +43,12 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await personApi.createPerson(e.values);
+        await personApi.create(e.values);
         await refreshNuxtData('person-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         e.reset();
       } else if (props.action === "edit" && props.person?.id) {
-        await personApi.updatePerson( props.person.id , e.values);
+        await personApi.update( props.person.id , e.values);
         await Promise.all([refreshNuxtData('person-list'), await refreshNuxtData(`person-${props.person.id}`)])
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/persons/${props.person?.id}`);

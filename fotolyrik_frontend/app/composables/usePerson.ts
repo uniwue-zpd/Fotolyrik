@@ -1,80 +1,80 @@
 export const usePerson = () => {
-    function fetchPersons() {
+    function fetchAll() {
         return $fetch<PersonDTO[]>('/api/persons');
     }
 
-    function fetchPersonById(id: number) {
+    function fetchById(id: number) {
         return $fetch<PersonDTO>(`/api/persons/${id}`);
     }
 
-    function fetchPersonNeighborsById(id: number) {
+    function fetchNeighborsById(id: number) {
         return $fetch<IDSliceDTO>(`/api/persons/${id}/neighbor`);
     }
 
-    function createPerson(payload: Partial<PersonDTO>) {
+    function create(payload: Partial<PersonDTO>) {
         return $fetch<PersonDTO>('/api/persons', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updatePerson(id: number, payload: Partial<PersonDTO>) {
+    function update(id: number, payload: Partial<PersonDTO>) {
         return $fetch<PersonDTO>(`/api/persons/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    function deletePerson(id: number) {
+    function deleteById(id: number) {
         return $fetch<void>(`/api/persons/${id}`, {
             method: 'DELETE'
         });
     }
 
-    function fetchAuthorThemes(id: number, limit?: number) {
+    function fetchAuthorThemesById(id: number, limit?: number) {
         return $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats/themes`, {
             query: { limit }
         });
     }
 
-    function fetchAuthorImageMotifs(id: number, limit?: number) {
+    function fetchAuthorImageMotifsById(id: number, limit?: number) {
         return $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats/image-motifs`, {
             query: { limit }
         });
     }
 
-    function fetchPersonMetrics(id: number) {
+    function fetchMetricsById(id: number) {
         return $fetch<PersonMetricsDTO>(`/api/persons/${id}/stats/metrics`);
     }
 
-    function searchPeople(query: string) {
+    function search(query: string) {
         return $fetch<PersonPreviewDTO[]>('/api/persons/search', {
             query: { query }
         });
     }
-    function usePersonList(){
-        return useAsyncData('person-list', fetchPersons);
+    function getAll(){
+        return useAsyncData('person-list', fetchAll);
     }
-    function usePersonId(id: number){
-        return useAsyncData( `person-${id}`, () => fetchPersonById(id) );
+    function getById(id: number){
+        return useAsyncData( `person-${id}`, () => fetchById(id) );
     }
-    function usePersonIdNeighbors(id: number){
-        return useAsyncData(`person-${id}-neighbor`,() =>  fetchPersonNeighborsById(id))
+    function getNeighborsById(id: number){
+        return useAsyncData(`person-${id}-neighbor`,() =>  fetchNeighborsById(id))
     }
 
     return {
-        fetchPersons,
-        fetchPersonById,
-        fetchPersonNeighborsById,
-        createPerson,
-        updatePerson,
-        deletePerson,
-        fetchAuthorThemes,
-        fetchAuthorImageMotifs,
-        fetchPersonMetrics,
-        searchPeople,
-        usePersonList,
-        usePersonId,
-        usePersonIdNeighbors,
+        fetchAll,
+        fetchById,
+        fetchNeighborsById,
+        create,
+        update,
+        deleteById,
+        fetchAuthorThemesById,
+        fetchAuthorImageMotifsById,
+        fetchMetricsById,
+        search,
+        getAll,
+        getById,
+        getNeighborsById,
     };
 };

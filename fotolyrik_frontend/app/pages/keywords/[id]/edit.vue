@@ -5,7 +5,7 @@ const route = useRoute();
 const keyword_id = Number(route.params.id);
 const keywordApi = useKeyword();
 
-const { data: keyword_item, status } = await keywordApi.useKeywordId(keyword_id);
+const { data: keyword_item, status } = await keywordApi.getById(keyword_id);
 </script>
 
 <template>

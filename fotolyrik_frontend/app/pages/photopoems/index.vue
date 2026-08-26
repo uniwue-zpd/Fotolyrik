@@ -5,7 +5,7 @@ import {useFiles} from "~/composables/useFiles";
 
 const photopoemApi = usePhotopoem();
 const fileApi = useFiles();
-const {data: photopoemList} = await photopoemApi.usePhotopoemList();
+const {data: photopoemList} = await photopoemApi.getAll();
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -25,7 +25,7 @@ watch(
           if (!previewURLs.value[img.id]) {
             tasks.push((async () => {
               try {
-                const url = await fileApi.getImageContent(img.id);
+                const url = await fileApi.getContent(img.id);
                 if (url) previewURLs.value[img.id] = url;
               } catch (err) {
                 console.error('Failed to preload image', img.id, err);

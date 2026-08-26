@@ -1,59 +1,59 @@
 export const usePlace = () => {
-    function fetchPlaces() {
+    function fetchAll() {
         return $fetch<PlaceDTO[]>('/api/places');
     }
 
-    function fetchPlaceById(id: number) {
+    function fetchById(id: number) {
         return $fetch<PlaceDTO>(`/api/places/${id}`);
     }
 
-    function getContributionPlaces(personId: number) {
+    function getContributionPlacesById(personId: number) {
         return $fetch<PlaceDTO[]>(`/api/persons/${personId}/stats/contribution_places`);
     }
 
-    function createPlace(payload: Partial<PlaceDTO>) {
+    function create(payload: Partial<PlaceDTO>) {
         return $fetch<PlaceDTO>('/api/places', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updatePlace(id: number, payload: Partial<PlaceDTO>) {
+    function update(id: number, payload: Partial<PlaceDTO>) {
         return $fetch<PlaceDTO>(`/api/places/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    function deletePlace(id: number) {
+    function deleteById(id: number) {
         return $fetch<void>(`/api/places/${id}`, {
             method: 'DELETE'
         });
     }
 
-    function fetchPlaceMetrics(id: number) {
+    function fetchMetricsById(id: number) {
         return $fetch<PlaceMetricsDTO>(`/api/places/${id}/stats/metrics`);
     }
-    function usePlaceList(){
-        return useAsyncData('place-list', fetchPlaces);
+    function getAll(){
+        return useAsyncData('place-list', fetchAll);
     }
-    function usePlaceId(id: number){
-        return useAsyncData( `place-${id}`, () => fetchPlaceById(id) );
+    function getById(id: number){
+        return useAsyncData( `place-${id}`, () => fetchById(id) );
     }
-    function usePlaceMetricsId(id: number){
-        return useAsyncData( `place-metrics-${id}`, () => fetchPlaceMetrics(id) );
+    function getMetricsById(id: number){
+        return useAsyncData( `place-metrics-${id}`, () => fetchMetricsById(id) );
     }
 
     return {
-        fetchPlaces,
-        fetchPlaceById,
-        getContributionPlaces,
-        createPlace,
-        updatePlace,
-        deletePlace,
-        fetchPlaceMetrics,
-        usePlaceList,
-        usePlaceId,
-        usePlaceMetricsId,
+        fetchAll,
+        fetchById,
+        getContributionPlacesById,
+        create,
+        update,
+        deleteById,
+        fetchMetricsById,
+        getAll,
+        getById,
+        getMetricsById,
     };
 };

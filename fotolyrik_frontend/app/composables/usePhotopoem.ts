@@ -1,67 +1,67 @@
 export const usePhotopoem = () => {
-    function fetchPhotopoems() {
+    function fetchAll() {
         return $fetch<PhotoPoemDTO[]>('/api/photopoems');
     }
 
-    function fetchPhotopoemById(id: number) {
+    function fetchById(id: number) {
         return $fetch<PhotoPoemDTO>(`/api/photopoems/${id}`);
     }
 
-    function fetchPhotopoemHighlight() {
+    function fetchHighlight() {
         return $fetch<PhotoPoemDTO>('/api/photopoems/highlight');
     }
 
-    function filterPhotopoems(params: Record<string, any>) {
+    function filter(params: Record<string, any>) {
         return $fetch<PhotoPoemDTO[]>('/api/photopoems/filter', {
             query: params
         });
     }
 
-    function createPhotopoem(payload: Partial<PhotoPoemDTO>) {
+    function create(payload: Partial<PhotoPoemDTO>) {
         return $fetch<PhotoPoemDTO>('/api/photopoems', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updatePhotopoem(id: number, payload: Partial<PhotoPoemDTO>) {
+    function update(id: number, payload: Partial<PhotoPoemDTO>) {
         return $fetch<PhotoPoemDTO>(`/api/photopoems/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    function deletePhotopoem(id: number) {
+    function deleteById(id: number) {
         return $fetch<void>(`/api/photopoems/${id}`, {
             method: 'DELETE'
         });
     }
-    function usePhotopoemList(){
-        return useAsyncData('photopoem-list', fetchPhotopoems);
+    function getAll(){
+        return useAsyncData('photopoem-list', fetchAll);
     }
-    function usePhotopoemId(id: number){
-        return useAsyncData( `photopoem-${id}`, () => fetchPhotopoemById(id) );
+    function getById(id: number){
+        return useAsyncData( `photopoem-${id}`, () => fetchById(id) );
     }
-    function usePhotopoemHightlight(){
-        return useAsyncData('photopoem-highlight', fetchPhotopoemHighlight)
+    function getHighlight(){
+        return useAsyncData('photopoem-highlight', fetchHighlight)
     }
-    function useFilteredPhotopoems(params: any){
+    function getAllFiltered(params: any){
         if (Object.keys(params).length !== 1) console.error('provide only one filter')
         const [key, value] = Object.entries(params)[0]!;
-        return useAsyncData(`photopoem-${key}-${value}`, ()=>filterPhotopoems(params))
+        return useAsyncData(`photopoem-${key}-${value}`, ()=>filter(params))
     }
 
     return {
-        fetchPhotopoems,
-        fetchPhotopoemById,
-        fetchPhotopoemHighlight,
-        filterPhotopoems,
-        createPhotopoem,
-        updatePhotopoem,
-        deletePhotopoem,
-        usePhotopoemList,
-        usePhotopoemId,
-        usePhotopoemHightlight,
-        useFilteredPhotopoems
+        fetchAll,
+        fetchById,
+        fetchHighlight,
+        filter,
+        create,
+        update,
+        deleteById,
+        getAll,
+        getById,
+        getHighlight,
+        getAllFiltered
     };
 };

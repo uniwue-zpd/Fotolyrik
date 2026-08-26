@@ -1,9 +1,9 @@
 export const usePubMedium = () => {
-    function fetchPubMedia() {
+    function fetchAll() {
         return $fetch<PubMediumDTO[]>('/api/publication_media');
     }
 
-    function fetchPubMediumById(id: number) {
+    function fetchById(id: number) {
         return $fetch<PubMediumDTO>(`/api/publication_media/${id}`);
     }
 
@@ -11,66 +11,66 @@ export const usePubMedium = () => {
         return $fetch<IDSliceDTO>(`/api/publication_media/${id}/neighbor`);
     }
 
-    function filterPubMedia(params: Record<string, any>) {
+    function filter(params: Record<string, any>) {
         return $fetch<PubMediumDTO[]>('/api/publication_media/filter', {
             query: params
         });
     }
 
-    function createPubMedium(payload: Partial<PubMediumDTO>) {
+    function create(payload: Partial<PubMediumDTO>) {
         return $fetch<PubMediumDTO>('/api/publication_media', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updatePubMedium(id: number, payload: Partial<PubMediumDTO>) {
+    function update(id: number, payload: Partial<PubMediumDTO>) {
         return $fetch<PubMediumDTO>(`/api/publication_media/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    function deletePubMedium(id: number) {
+    function deleteById(id: number) {
         return $fetch<void>(`/api/publication_media/${id}`, {
             method: 'DELETE'
         });
     }
 
-    function fetchPubMediumMetrics(id: number) {
+    function fetchMetricsById(id: number) {
         return $fetch<PubMediumMetricsDTO>(`/api/publication_media/${id}/stats/metrics`);
     }
 
-    function usePubMediumList(){
-        return useAsyncData('pubMedium-list', fetchPubMedia);
+    function getAll(){
+        return useAsyncData('pubMedium-list', fetchAll);
     }
-    function usePubMediumId(id: number){
-        return useAsyncData( `pubMedium-${id}`, () => fetchPubMediumById(id) );
+    function getById(id: number){
+        return useAsyncData( `pubMedium-${id}`, () => fetchById(id) );
     }
-    function useFilteredPubMedium(params: any){
+    function getAllFiltered(params: any){
         if (Object.keys(params).length !== 1) console.error('provide only one filter')
         const [key, value] = Object.entries(params)[0]!;
-        return useAsyncData(`pubMedium-${key}-${value}`, ()=>filterPubMedia(params));
+        return useAsyncData(`pubMedium-${key}-${value}`, ()=>filter(params));
     }
-    function usePubMediumNeighbors(id: number) {
+    function getNeighborsById(id: number) {
         return useAsyncData( `pubMedium-${id}-neighbor`, () => fetchPubMediumNeighborsById(id));
     }
-    function usePubMediumMetics(id:number){
-        return useAsyncData(`pubMedium-metrics-${id}`, ()=> fetchPubMediumMetrics(id));
+    function getMetricsById(id:number){
+        return useAsyncData(`pubMedium-metrics-${id}`, ()=> fetchMetricsById(id));
     }
 
     return {
-        fetchPubMedia,
-        fetchPubMediumById,
-        filterPubMedia,
-        createPubMedium,
-        updatePubMedium,
-        deletePubMedium,
-        fetchPubMediumMetrics,
-        usePubMediumList,
-        usePubMediumId,
-        useFilteredPubMedium,
-        usePubMediumNeighbors,
-        usePubMediumMetics,
+        fetchAll,
+        fetchById,
+        filter,
+        create,
+        update,
+        deleteById,
+        fetchMetricsById,
+        getAll,
+        getById,
+        getAllFiltered,
+        getNeighborsById,
+        getMetricsById,
     };
 };

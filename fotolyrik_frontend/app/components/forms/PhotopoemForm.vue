@@ -22,7 +22,7 @@ const personSuggestions = ref<PersonPreviewDTO[]>([]);
 
 const debouncedSearch = debounce(async (query: string) => {
   personLoading.value = true;
-  personSuggestions.value = await personApi.searchPeople(query);
+  personSuggestions.value = await personApi.search(query);
   personLoading.value = false;
 }, 300);
 
@@ -38,13 +38,13 @@ const [
   pubMediumHandle,
   {data: files}
 ] = await Promise.all([
-  personApi.usePersonList(),
-  keywordApi.useKeywordList(),
-  languageApi.useLanguageList(),
-  locationApi.useLocationList(),
-  copyrightStatusApi.useCopyrightStatusList(),
-  pubMediumApi.usePubMediumList(),
-  fileApi.useFileList(),
+  personApi.getAll(),
+  keywordApi.getAll(),
+  languageApi.getAll(),
+  locationApi.getAll(),
+  copyrightStatusApi.getAll(),
+  pubMediumApi.getAll(),
+  fileApi.getAll(),
 ]);
 const publicationMedia = computed(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })));
 const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
@@ -57,7 +57,7 @@ const pubMediaLoading = ref(false);
 const pubMediaSuggestions = ref<PubMediumDTO[]>([]);
 const debouncedPubMediaSearch = debounce(async (query: string) => {
   pubMediaLoading.value = true;
-  pubMediaSuggestions.value = await pubMediumApi.filterPubMedia({'title': query});
+  pubMediaSuggestions.value = await pubMediumApi.filter({'title': query});
   pubMediaLoading.value = false;
 }, 300);
 
@@ -134,12 +134,12 @@ const onFormSubmit = async (e: any) => {
     e.values.publicationMedium = selectedPubMedium.value;
     try {
       if (props.action === "create") {
-        await photopoemApi.createPhotopoem(e.values);
+        await photopoemApi.create(e.values);
         await refreshNuxtData('photopoem-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         navigateTo("/photopoems")
       } else if (props.action === "edit" && props.photopoem?.id) {
-        await photopoemApi.updatePhotopoem(props.photopoem.id, e.values);
+        await photopoemApi.update(props.photopoem.id, e.values);
         await Promise.all([refreshNuxtData('photopoem-list'), await refreshNuxtData(`photopoem-${props.photopoem.id}`)]);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/photopoems/${props.photopoem?.id}`);

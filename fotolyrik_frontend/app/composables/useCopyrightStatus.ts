@@ -1,37 +1,37 @@
 export const useCopyrightStatus = ()=>{
-    function fetchCopyrightStatuses() {
+    function fetchAll() {
         return $fetch<CopyrightStatusDTO[]>('/api/copyright_statuses');
     }
-    function fetchCopyrightStatusById(id: number) {
+    function fetchById(id: number) {
         return $fetch<CopyrightStatusDTO>(`/api/copyright_statuses/${id}`);
     }
 
-    function createCopyrightStatus(payload: Partial<CopyrightStatusDTO>){
+    function create(payload: Partial<CopyrightStatusDTO>){
         return $fetch<CopyrightStatusDTO>('/api/copyright_statuses', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updateCopyrightStatus(id:number, payload: Partial<CopyrightStatusDTO>) {
+    function update(id:number, payload: Partial<CopyrightStatusDTO>) {
         return $fetch<CopyrightStatusDTO>(`/api/copyright_statuses/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
-    function deleteCopyrightStatus(id: number) {
+    function deleteByID(id: number) {
         return $fetch<void>(`/api/copyright_statuses/${id}`, { method: 'DELETE' })
     }
-    function useCopyrightStatusList(){
-        return useAsyncData('copyright-status-list', fetchCopyrightStatuses);
+    function getAll(){
+        return useAsyncData('copyright-status-list', fetchAll);
     }
 
     return {
-        fetchCopyrightStatuses,
-        fetchCopyrightStatusById,
-        createCopyrightStatus,
-        updateCopyrightStatus,
-        deleteCopyrightStatus,
-        useCopyrightStatusList,
+        fetchAll,
+        fetchById,
+        create,
+        update,
+        deleteByID,
+        getAll,
     }
 }

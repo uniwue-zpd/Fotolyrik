@@ -24,12 +24,12 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await locationApi.createLocation(e.values);
+        await locationApi.create(e.values);
         await refreshNuxtData('location-list');
         toast.add({ severity: "success", summary: "Erfolg", detail: "Ort erfolgreich erstellt", life: 3000 });
         e.reset();
       } else if (props.action === "edit" && props.location?.id) {
-        await locationApi.updateLocation(props.location.id, e.values);
+        await locationApi.update(props.location.id, e.values);
         await Promise.all([refreshNuxtData('location-list'), refreshNuxtData(`location-${props.location.id}`)])
         toast.add({ severity: "success", summary: "Erfolg", detail: "Ort erfolgreich aktualisiert", life: 3000 });
         navigateTo(`/locations/${props.location?.id}`);

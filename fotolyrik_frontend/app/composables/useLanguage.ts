@@ -1,41 +1,41 @@
 export const useLanguage = () => {
-    function fetchLanguages() {
+    function fetchAll() {
         return $fetch<LanguageDTO[]>('/api/languages');
     }
 
-    function fetchLanguageById(id: number) {
+    function fetchById(id: number) {
         return $fetch<LanguageDTO>(`/api/languages/${id}`);
     }
 
-    function createLanguage(payload: Partial<LanguageDTO>) {
+    function create(payload: Partial<LanguageDTO>) {
         return $fetch<LanguageDTO>('/api/languages', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updateLanguage(id: number, payload: Partial<LanguageDTO>) {
+    function update(id: number, payload: Partial<LanguageDTO>) {
         return $fetch<LanguageDTO>(`/api/languages/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    function deleteLanguage(id: number) {
+    function deleteById(id: number) {
         return $fetch<void>(`/api/languages/${id}`, {
             method: 'DELETE'
         });
     }
-    function useLanguageList(){
-        return useAsyncData('language-list', fetchLanguages);
+    function getAll(){
+        return useAsyncData('language-list', fetchAll);
     }
 
     return {
-        fetchLanguages,
-        fetchLanguageById,
-        createLanguage,
-        updateLanguage,
-        deleteLanguage,
-        useLanguageList
+        fetchAll,
+        fetchById,
+        create,
+        update,
+        deleteById,
+        getAll
     };
 };

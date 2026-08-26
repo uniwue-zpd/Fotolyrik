@@ -38,10 +38,10 @@ const [
   { data: place_metrics },
   { data: place_photopoems }
 ] = await Promise.all([
-  place_api.usePlaceId(place_id),
-  pubmedium_api.useFilteredPubMedium({ 'pubplace-id': place_id }),
-  place_api.usePlaceMetricsId(place_id),
-  photopoem_api.useFilteredPhotopoems({ 'pubplace-id': place_id })
+  place_api.getById(place_id),
+  pubmedium_api.getAllFiltered({ 'pubplace-id': place_id }),
+  place_api.getMetricsById(place_id),
+  photopoem_api.getAllFiltered({ 'pubplace-id': place_id })
 ]);
 
 onMounted(async () => {

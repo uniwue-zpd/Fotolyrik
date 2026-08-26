@@ -2,15 +2,15 @@ import type { FileDTO } from "~/utils/types"
 
 export const useFiles = ()=> {
 
-    function fetchFiles(): Promise<FileDTO[]> {
+    function fetchAll(): Promise<FileDTO[]> {
         return $fetch<FileDTO[]>("/api/files/all");
     }
 
-    function removeFile(id: number) {
+    function remove(id: number) {
         return $fetch(`/api/files/${id}`, {method: 'DELETE'});
     }
 
-    function uploadFiles(fileList: FileList | File[]): Promise<FileDTO[]>{
+    function upload(fileList: FileList | File[]): Promise<FileDTO[]>{
         const formData = new FormData();
         Array.from(fileList).forEach((file) => {
             formData.append("file", file);
@@ -22,7 +22,7 @@ export const useFiles = ()=> {
         });
     }
 
-    function getImagePreview(path: string): string {
+    function getPreview(path: string): string {
         if (!path) return '';
         const config = useRuntimeConfig();
         const filename = path.split(/[\\/]/).pop() || '';
@@ -30,7 +30,7 @@ export const useFiles = ()=> {
         return `${baseURL}/uploads/${encodeURIComponent(filename)}`;
     }
 
-    async function getImageContent(id: number): Promise<string | null> {
+    async function getContent(id: number): Promise<string | null> {
         if (!import.meta.client) return null;
         try {
             const response = await $fetch(`/api/files/${id}/content`, {
@@ -45,16 +45,16 @@ export const useFiles = ()=> {
         }
     }
 
-    function useFileList(){
-        return useAsyncData('file-list', fetchFiles);
+    function getAll(){
+        return useAsyncData('file-list', fetchAll);
     }
 
     return {
-        fetchFiles,
-        removeFile,
-        uploadFiles,
-        getImagePreview,
-        getImageContent,
-        useFileList
+        fetchAll,
+        remove,
+        upload,
+        getPreview,
+        getContent,
+        getAll
     }
 }

@@ -12,8 +12,8 @@ const [
   { data: location_item },
   { data: is_location }
 ] = await Promise.all([
-  locationApi.useLocationId(location_id),
-  photopoem_api.useFilteredPhotopoems({ 'location-id': location_id })
+  locationApi.getById(location_id),
+  photopoem_api.getAllFiltered({ 'location-id': location_id })
 ]);
 useHead({
   title: () => location_item.value

@@ -13,9 +13,9 @@ const [
   { data: is_theme },
   { data: is_image_motif }
 ] = await Promise.all([
-  keyword_api.useKeywordId(keyword_id),
-  photopoem_api.useFilteredPhotopoems({ 'theme-id': keyword_id }),
-  photopoem_api.useFilteredPhotopoems({ 'image-motif-id': keyword_id })
+  keyword_api.getById(keyword_id),
+  photopoem_api.getAllFiltered({ 'theme-id': keyword_id }),
+  photopoem_api.getAllFiltered({ 'image-motif-id': keyword_id })
 ]);
 
 

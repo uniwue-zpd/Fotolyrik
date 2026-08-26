@@ -8,7 +8,7 @@ import {useFullText} from "~/composables/useFullText";
 const toast = useToast();
 const photopoemApi = usePhotopoem();
 const fullTextApi = useFullText();
-const photopoem_handle = await photopoemApi.usePhotopoemList();
+const photopoem_handle = await photopoemApi.getAll();
 const photopoems = computed(() => photopoem_handle.data.value?.map(p => ({ id: p.id, title: p.title, altTitle: p.altTitle })));
 const photopoemLoading = computed(()=> photopoem_handle.status.value === 'pending');
 
@@ -39,11 +39,11 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await fullTextApi.createFullText(e.values);
+        await fullTextApi.create(e.values);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         e.reset();
       } else if (props.action === "edit" && props.fulltext?.id) {
-        await fullTextApi.updateFullText(props.fulltext.id, e.values);
+        await fullTextApi.update(props.fulltext.id, e.values);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich upgedated", life: 3000});
       }
     } catch (error) {

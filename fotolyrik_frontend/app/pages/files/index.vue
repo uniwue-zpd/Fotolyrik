@@ -16,7 +16,7 @@ const options: Intl.DateTimeFormatOptions = {
   day: "2-digit"
 };
 
-const { data: files, status, refresh, error } = await fileApi.useFileList();
+const { data: files, status, refresh, error } = await fileApi.getAll();
 
 watch(
     files,
@@ -25,7 +25,7 @@ watch(
       await Promise.all(
           fileList.map(async (file: FileDTO) => {
             if (!previewURLs.value[file.id]) {
-              const url = await fileApi.getImageContent(file.id);
+              const url = await fileApi.getContent(file.id);
               if (url) previewURLs.value[file.id] = url;
             }
           })
@@ -47,7 +47,7 @@ watch(error, (newError) => {
 const onFileSelect = async (e: any) => {
   try {
     if (e.files && e.files.length > 0) {
-      await fileApi.uploadFiles(e.files);
+      await fileApi.upload(e.files);
       await refresh();
       toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich hinzugefügt", life: 3000});
     }
@@ -66,7 +66,7 @@ const handleImageError = (path: string) => {
 };
 
 const deleteFile = async (id:number) =>{
-  await fileApi.removeFile(id);
+  await fileApi.remove(id);
   await refresh();
 }
 </script>

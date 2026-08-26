@@ -17,7 +17,7 @@ const personSuggestions = ref<PersonPreviewDTO[]>([]);
 
 const debouncedSearch = debounce(async (query: string) => {
   loading.value = true;
-  personSuggestions.value = await personApi.searchPeople(query);
+  personSuggestions.value = await personApi.search(query);
   loading.value = false;
 }, 300);
 

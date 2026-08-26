@@ -1,46 +1,46 @@
 export const useKeyword = () => {
-    function fetchKeywords() {
+    function fetchAll() {
         return $fetch<KeywordDTO[]>('/api/keywords');
     }
 
-    function fetchKeywordById(id: number) {
+    function fetchById(id: number) {
         return $fetch<KeywordDTO>(`/api/keywords/${id}`);
     }
 
-    function createKeyword(payload: Partial<KeywordDTO>) {
+    function create(payload: Partial<KeywordDTO>) {
         return $fetch<KeywordDTO>('/api/keywords', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updateKeyword(id: number, payload: Partial<KeywordDTO>) {
+    function update(id: number, payload: Partial<KeywordDTO>) {
         return $fetch<KeywordDTO>(`/api/keywords/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    function deleteKeyword(id: number) {
+    function deleteById(id: number) {
         return $fetch<void>(`/api/keywords/${id}`, {
             method: 'DELETE'
         });
     }
 
-    function useKeywordList(){
-        return useAsyncData('keyword-list', fetchKeywords);
+    function getAll(){
+        return useAsyncData('keyword-list', fetchAll);
     }
-    function useKeywordId(id: number){
-        return useAsyncData( `keyword-${id}`, () => fetchKeywordById(id) );
+    function getById(id: number){
+        return useAsyncData( `keyword-${id}`, () => fetchById(id) );
     }
 
     return {
-        fetchKeywords,
-        fetchKeywordById,
-        createKeyword,
-        updateKeyword,
-        deleteKeyword,
-        useKeywordList,
-        useKeywordId,
+        fetchAll,
+        fetchById,
+        create,
+        update,
+        deleteById,
+        getAll,
+        getById,
     };
 };

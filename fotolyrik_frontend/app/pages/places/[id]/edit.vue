@@ -4,7 +4,7 @@ import PlaceForm from "~/components/forms/PlaceForm.vue";
 const route = useRoute();
 const place_id = Number(route.params.id);
 const placeApi = usePlace();
-const {data: place_item} = await placeApi.usePlaceId(place_id);
+const {data: place_item} = await placeApi.getById(place_id);
 </script>
 
 <template>

@@ -15,10 +15,10 @@ const [
   { data: pub_medium_photopoems },
   { data: pub_medium_metrics }
 ] = await Promise.all([
-  pub_medium_api.usePubMediumId(pub_medium_id),
-  pub_medium_api.usePubMediumNeighbors(pub_medium_id),
-  photopoem_api.useFilteredPhotopoems({ 'pubmedium-id': pub_medium_id }),
-  pub_medium_api.usePubMediumMetics(pub_medium_id)
+  pub_medium_api.getById(pub_medium_id),
+  pub_medium_api.getNeighborsById(pub_medium_id),
+  photopoem_api.getAllFiltered({ 'pubmedium-id': pub_medium_id }),
+  pub_medium_api.getMetricsById(pub_medium_id)
 ]);
 const photopoemsHavePubDates = computed(() => {
   return pub_medium_photopoems.value?.some(poem => poem.publicationDate);

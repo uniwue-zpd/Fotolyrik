@@ -23,14 +23,14 @@ const [
   { data: contributorOf },
   { data: depictedOn }
 ] = await Promise.all([
-  useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemes(person_id)),
-  useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifs(person_id)),
-  useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchPersonMetrics(person_id)),
-  photopoem_api.useFilteredPhotopoems({ 'author-id': person_id }),
-  photopoem_api.useFilteredPhotopoems({ 'photographer-id': person_id }),
-  photopoem_api.useFilteredPhotopoems({ 'participant-id': person_id }),
-  photopoem_api.useFilteredPhotopoems({ 'other-contributor-id': person_id }),
-  photopoem_api.useFilteredPhotopoems({ 'depicted-person-id': person_id })
+  useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemesById(person_id)),
+  useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifsById(person_id)),
+  useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchMetricsById(person_id)),
+  photopoem_api.getAllFiltered({ 'author-id': person_id }),
+  photopoem_api.getAllFiltered({ 'photographer-id': person_id }),
+  photopoem_api.getAllFiltered({ 'participant-id': person_id }),
+  photopoem_api.getAllFiltered({ 'other-contributor-id': person_id }),
+  photopoem_api.getAllFiltered({ 'depicted-person-id': person_id })
 ]);
 
 const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
@@ -53,12 +53,12 @@ const [
   { data: person_item },
   { data: person_neighbors }
 ] = await Promise.all([
-  person_api.usePersonId(person_id),
-  person_api.usePersonIdNeighbors(person_id)
+  person_api.getById(person_id),
+  person_api.getNeighborsById(person_id)
 ]);
 
 onMounted(async () => {
-  const places = await place_api.getContributionPlaces(person_id);
+  const places = await place_api.getContributionPlacesById(person_id);
   show_map.value = places.length > 0;
   await map_ref.value?.populatePlaces(places);
 });

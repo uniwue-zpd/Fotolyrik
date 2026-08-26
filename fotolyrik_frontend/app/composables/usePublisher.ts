@@ -1,46 +1,46 @@
 export const usePublisher = () => {
-    function fetchPublishers() {
+    function fetchAll() {
         return $fetch<PublisherDTO[]>('/api/publishers');
     }
 
-    function fetchPublisherById(id: number) {
+    function fetchById(id: number) {
         return $fetch<PublisherDTO>(`/api/publishers/${id}`);
     }
 
-    function createPublisher(payload: Partial<PublisherDTO>) {
+    function create(payload: Partial<PublisherDTO>) {
         return $fetch<PublisherDTO>('/api/publishers', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updatePublisher(id: number, payload: Partial<PublisherDTO>) {
+    function update(id: number, payload: Partial<PublisherDTO>) {
         return $fetch<PublisherDTO>(`/api/publishers/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    function deletePublisher(id: number) {
+    function deleteById(id: number) {
         return $fetch<void>(`/api/publishers/${id}`, {
             method: 'DELETE'
         });
     }
 
-    function usePublisherList(){
-        return useAsyncData('publisher-list', fetchPublishers);
+    function getAll(){
+        return useAsyncData('publisher-list', fetchAll);
     }
-    function usePublisherId(id: number){
-        return useAsyncData( `publisher-${id}`, () => fetchPublisherById(id) );
+    function getById(id: number){
+        return useAsyncData( `publisher-${id}`, () => fetchById(id) );
     }
 
     return {
-        fetchPublishers,
-        fetchPublisherById,
-        createPublisher,
-        updatePublisher,
-        deletePublisher,
-        usePublisherList,
-        usePublisherId,
+        fetchAll,
+        fetchById,
+        create,
+        update,
+        deleteById,
+        getAll,
+        getById,
     };
 };

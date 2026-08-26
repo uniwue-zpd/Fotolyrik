@@ -38,19 +38,19 @@ const items = ref([
         accept: async () => {
           try {
             if (props.entity_type === 'person') {
-              await person_api.deletePerson(props.id);
+              await person_api.deleteById(props.id);
               await refreshNuxtData('person-list');
             } else if (props.entity_type === 'place') {
-              await place_api.deletePlace(props.id);
+              await place_api.deleteById(props.id);
               await refreshNuxtData('place-list');
             } else if (props.entity_type === 'photopoem') {
-              await photopoem_api.deletePhotopoem(props.id);
+              await photopoem_api.deleteById(props.id);
               await refreshNuxtData('photopoem-list');
             } else if (props.entity_type === 'pub_medium') {
-              await pub_medium_api.deletePubMedium(props.id);
+              await pub_medium_api.deleteById(props.id);
               await refreshNuxtData('pubMedium-list');
             } else if (props.entity_type === 'keyword') {
-              await keyword_api.deleteKeyword(props.id);
+              await keyword_api.deleteById(props.id);
               await refreshNuxtData('keyword-list');
             }
             toast.add({ severity: 'success', summary: 'Gelöscht', detail: 'Eintrag erfolgreich gelöscht', life: 3000 });

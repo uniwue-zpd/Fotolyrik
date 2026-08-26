@@ -1,27 +1,27 @@
 export const useFullText = () => {
-    function fetchFullTexts() {
+    function fetchAll() {
         return $fetch<FullTextDTO[]>('/api/fulltexts');
     }
 
-    function fetchFullTextById(id: number) {
+    function fetchById(id: number) {
         return $fetch<FullTextDTO>(`/api/fulltexts/${id}`);
     }
 
-    function createFullText(payload: Partial<FullTextDTO>) {
+    function create(payload: Partial<FullTextDTO>) {
         return $fetch<FullTextDTO>('/api/fulltexts', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updateFullText(id: number, payload: Partial<FullTextDTO>) {
+    function update(id: number, payload: Partial<FullTextDTO>) {
         return $fetch<FullTextDTO>(`/api/fulltexts/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    function deleteFullText(id: number) {
+    function deleteById(id: number) {
         return $fetch<void>(`/api/fulltexts/${id}`, {
             method: 'DELETE'
         });
@@ -33,11 +33,11 @@ export const useFullText = () => {
     }
 
     return {
-        fetchFullTexts,
-        fetchFullTextById,
-        createFullText,
-        updateFullText,
-        deleteFullText,
+        fetchAll,
+        fetchById,
+        create,
+        update,
+        deleteById,
         searchFullTexts
     };
 };

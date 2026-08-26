@@ -18,11 +18,11 @@ const [
   { data: placeList },
   { data: pubMediumList }
 ] = await Promise.all([
-  keyword_api.useKeywordList(),
-  person_api.usePersonList(),
-  photopoem_api.usePhotopoemList(),
-  place_api.usePlaceList(),
-  pub_medium_api.usePubMediumList()
+  keyword_api.getAll(),
+  person_api.getAll(),
+  photopoem_api.getAll(),
+  place_api.getAll(),
+  pub_medium_api.getAll()
 ]);
 const keywordCount = computed(()=> keywordList.value?.length);
 const personCount = computed(()=> personList.value?.length);

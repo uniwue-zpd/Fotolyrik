@@ -1,42 +1,42 @@
 export const usePubRhythm = () => {
-    function fetchPubRhythms() {
+    function fetchAll() {
         return $fetch<PubRhythmDTO[]>('/api/publication_rhythms');
     }
 
-    function fetchPubRhythmById(id: number) {
+    function fetchById(id: number) {
         return $fetch<PubRhythmDTO>(`/api/publication_rhythms/${id}`);
     }
 
-    function createPubRhythm(payload: Partial<PubRhythmDTO>) {
+    function create(payload: Partial<PubRhythmDTO>) {
         return $fetch<PubRhythmDTO>('/api/publication_rhythms', {
             method: 'POST',
             body: payload
         });
     }
 
-    function updatePubRhythm(id: number, payload: Partial<PubRhythmDTO>) {
+    function update(id: number, payload: Partial<PubRhythmDTO>) {
         return $fetch<PubRhythmDTO>(`/api/publication_rhythms/${id}`, {
             method: 'PUT',
             body: payload
         });
     }
 
-    function deletePubRhythm(id: number) {
+    function deleteById(id: number) {
         return $fetch<void>(`/api/publication_rhythms/${id}`, {
             method: 'DELETE'
         });
     }
 
-    function usePubRhythmList(){
-        return useAsyncData('pubRhythm-list', fetchPubRhythms);
+    function getAll(){
+        return useAsyncData('pubRhythm-list', fetchAll);
     }
 
     return {
-        fetchPubRhythms,
-        fetchPubRhythmById,
-        createPubRhythm,
-        updatePubRhythm,
-        deletePubRhythm,
-        usePubRhythmList,
+        fetchAll,
+        fetchById,
+        create,
+        update,
+        deleteById,
+        getAll,
     };
 };

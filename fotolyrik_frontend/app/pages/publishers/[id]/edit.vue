@@ -4,7 +4,7 @@ import PublisherForm from "~/components/forms/PublisherForm.vue";
 const route = useRoute();
 const publisher_id = Number(route.params.id);
 const publisherApi = usePublisher();
-const {data: publisher_item}= await publisherApi.usePublisherId(publisher_id)
+const {data: publisher_item}= await publisherApi.getById(publisher_id)
 
 </script>
 
