@@ -8,14 +8,15 @@ const toast = useToast();
 const pubMediumApi = usePubMedium();
 const placeApi = usePlace();
 const publisherApi= usePublisher();
-const pubRhythmStore = usePubRhythmStore();
+const pubRhythmApi = usePubRhythm();
 
-const {data: placeList } = await placeApi.usePlaceList();
-const {data: publisherList} = await publisherApi.usePublisherList();
+const  placeHandle = await placeApi.usePlaceList();
+const  publisherHandle = await publisherApi.usePublisherList();
+const  pubRhythmHandle = await pubRhythmApi.usePubRhythmList()
 
-const publication_places = computed(() => placeList.value?.map(p => ({id: p.id, name: p.name})));
-const publishers = computed(() => publisherList.value?.map(pu => ({id: pu.id, name: pu.name})));
-const publication_rhythms = computed(() => pubRhythmStore.publication_rhythms.map(pr => ({id: pr.id, value: pr.value})));
+const publication_places = computed(() => placeHandle.data.value?.map(p => ({id: p.id, name: p.name})));
+const publishers = computed(() => publisherHandle.data.value?.map(pu => ({id: pu.id, name: pu.name})));
+const publication_rhythms = computed(() => pubRhythmHandle.data.value?.map(pr => ({id: pr.id, value: pr.value})));
 
 const data_refreshing = ref(false);
 
@@ -47,7 +48,7 @@ const resolver = ref(
 async function handleRefresh() {
   data_refreshing.value = true;
   try {
-    await useRefreshStoreData();
+    await Promise.all([placeHandle.refresh,publisherHandle.refresh,pubRhythmHandle.refresh])
     toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
   } catch (err) {
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});
@@ -191,7 +192,7 @@ const onFormSubmit = async (e: any) => {
                 class="flex-1 min-w-0"
                 optionLabel="value"
                 :options="publication_rhythms"
-                :key="publication_rhythms.length"
+                :key="publication_rhythms?.length"
                 :maxSelectedLabels="2"
                 filter
                 fluid

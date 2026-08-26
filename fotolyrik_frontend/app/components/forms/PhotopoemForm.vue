@@ -29,18 +29,18 @@ const debouncedSearch = debounce(async (query: string) => {
 const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
-const {data: personList} = await personApi.usePersonList();
-const {data: keywordList} = await keywordApi.useKeywordList();
-const {data: languageList} = await languageApi.useLanguageList();
-const {data: locationList} = await locationApi.useLocationList();
-const {data: copyrightStatusList} = await copyrightStatusApi.useCopyrightStatusList();
-const {data: pubMediumList} = await pubMediumApi.usePubMediumList();
-const publicationMedia = computed(() => pubMediumList.value?.map(pm => ({ id: pm.id, title: pm.title })));
-const persons = computed(() => personList.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
-const keywords = computed( () => keywordList.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
-const languages = computed(() => languageList.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
-const locations = computed(()=> locationList.value?.map(l=>({id: l.id, name: l.name}) ));
-const copyrightStatuses = computed(()=> copyrightStatusList.value?.map(cs => ({ id: cs.id, value: cs.value })));
+const  personHandle = await personApi.usePersonList();
+const  keywordHandle = await keywordApi.useKeywordList();
+const  languageHandle = await languageApi.useLanguageList();
+const  locationHandle = await locationApi.useLocationList();
+const  copyrightStatusHandle = await copyrightStatusApi.useCopyrightStatusList();
+const  pubMediumHandle = await pubMediumApi.usePubMediumList();
+const publicationMedia = computed(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })));
+const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
+const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
+const languages = computed(() => languageHandle.data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
+const locations = computed(()=> locationHandle.data.value?.map(l=>({id: l.id, name: l.name}) ));
+const copyrightStatuses = computed(()=> copyrightStatusHandle.data.value?.map(cs => ({ id: cs.id, value: cs.value })));
 
 const { data: files } = await fileApi.useFileList();
 
@@ -92,7 +92,8 @@ const resolver = ref(
 async function handleRefresh() {
   data_refreshing.value = true;
   try {
-    await useRefreshStoreData();
+
+    await Promise.all([personHandle.refresh , keywordHandle.refresh, languageHandle.refresh, locationHandle.refresh, copyrightStatusHandle.refresh, pubMediumHandle.refresh])
     toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
   } catch (err) {
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});

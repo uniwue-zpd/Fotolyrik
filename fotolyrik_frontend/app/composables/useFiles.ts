@@ -6,7 +6,7 @@ export const useFiles = ()=> {
         return $fetch<FileDTO[]>("/api/files/all");
     }
 
-    function removeFile(id: number):Promise<void> {
+    function removeFile(id: number) {
         return $fetch(`/api/files/${id}`, {method: 'DELETE'});
     }
 

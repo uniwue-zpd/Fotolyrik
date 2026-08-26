@@ -27,11 +27,16 @@ export const usePubRhythm = () => {
         });
     }
 
+    function usePubRhythmList(){
+        return useAsyncData('pubRhythm-list', fetchPubRhythms);
+    }
+
     return {
         fetchPubRhythms,
         fetchPubRhythmById,
         createPubRhythm,
         updatePubRhythm,
-        deletePubRhythm
+        deletePubRhythm,
+        usePubRhythmList,
     };
 };
