@@ -8,6 +8,8 @@ import de.uniwue.dachs.fotolyrik_backend.specification.PhotopoemSpecification;
 import de.uniwue.dachs.fotolyrik_backend.utils.helper.PhotopoemHighlightPicker;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.*;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,79 @@ public class PhotopoemService {
         this.photopoemHighlightPicker = photopoemHighlightPicker;
         this.contributionMapper = contributionMapper;
         this.personRepository = personRepository;
+    }
+
+    /**
+     * Returns a paginated list of photopoems matching the provided pagination and filter criteria.
+     * <p>The pagination and sorting behavior is controlled by the given {@link Pageable}.
+     * Additional parameters are optional and are applied as filters if provided.</p>
+     * @param pageable pagination and sorting parameters
+     * @param title filters by title
+     * @param subtitle filters by subtitle
+     * @param altTitle filters by alternative title
+     * @param series filters by series
+     * @param volume filters by publication volume
+     * @param issue filters by publication issue
+     * @param publicationDate filters by publication date
+     * @param pubMediumId filters by publication medium identifier
+     * @param pubPlaceId filters by publication place identifier
+     * @param locationId filters by location identifier
+     * @param authorId filters by author identifier
+     * @param photographerId filters by photographer identifier
+     * @param depictedPersonId filters by depicted person identifier
+     * @param contributorId filters by contributor identifier
+     * @param themeId filters by theme identifier
+     * @param imageMotifId filters by image motif identifier
+     * @param copyrightStatusImageId filters by image copyright status identifier
+     * @param copyrightStatusTextId filters by text copyright status identifier
+     * @param languageId filters by language identifier
+     * @return a {@link Page} of {@link PhotopoemDTO} objects matching the given criteria
+     */
+    public Page<PhotopoemDTO> getPaginatedPhotopoems(
+            Pageable pageable,
+            String title,
+            String subtitle,
+            String altTitle,
+            String series,
+            Long volume,
+            Long issue,
+            String publicationDate,
+            Long pubMediumId,
+            Long pubPlaceId,
+            Long locationId,
+            Long authorId,
+            Long photographerId,
+            Long depictedPersonId,
+            Long contributorId,
+            Long themeId,
+            Long imageMotifId,
+            Long copyrightStatusImageId,
+            Long copyrightStatusTextId,
+            Long languageId
+    ) {
+        Specification<Photopoem> spec = Specification.where(null);
+        if (title != null && !title.isEmpty()) spec = spec.and(PhotopoemSpecification.hasTitle(title));
+        if (subtitle != null && !subtitle.isEmpty()) spec = spec.and(PhotopoemSpecification.hasSubtitle(subtitle));
+        if (altTitle != null && !altTitle.isEmpty()) spec = spec.and(PhotopoemSpecification.hasAltTitle(altTitle));
+        if (series != null && !series.isEmpty()) spec = spec.and(PhotopoemSpecification.hasSeries(series));
+        if (volume != null) spec = spec.and(PhotopoemSpecification.hasVolume(volume));
+        if (issue != null) spec = spec.and(PhotopoemSpecification.hasIssue(issue));
+        if (publicationDate != null && !publicationDate.isEmpty()) spec = spec.and(PhotopoemSpecification.hasPublicationDate(publicationDate));
+        if (pubMediumId != null) spec = spec.and(PhotopoemSpecification.hasPubMediumId(pubMediumId));
+        if (pubPlaceId != null) spec = spec.and(PhotopoemSpecification.hasPubPlaceId(pubPlaceId));
+        if (locationId != null) spec = spec.and(PhotopoemSpecification.hasLocationId(locationId));
+        if (authorId != null) spec = spec.and(PhotopoemSpecification.hasAuthorId(authorId));
+        if (photographerId != null) spec = spec.and(PhotopoemSpecification.hasPhotographerId(photographerId));
+        if (depictedPersonId != null) spec = spec.and(PhotopoemSpecification.hasDepictedPersonId(depictedPersonId));
+        if (contributorId != null) spec = spec.and(PhotopoemSpecification.hasOtherContributorId(contributorId));
+        if (themeId != null) spec = spec.and(PhotopoemSpecification.hasThemeId(themeId));
+        if (imageMotifId != null) spec = spec.and(PhotopoemSpecification.hasImageMotifId(imageMotifId));
+        if (copyrightStatusImageId != null) spec = spec.and(PhotopoemSpecification.hasCopyrightStatusImageId(copyrightStatusImageId));
+        if (copyrightStatusTextId != null) spec = spec.and(PhotopoemSpecification.hasCopyrightStatusTextId(copyrightStatusTextId));
+        if (languageId != null) spec = spec.and(PhotopoemSpecification.hasLanguageId(languageId));
+
+        Page<Photopoem> photopoemPage = photopoemRepository.findAll(spec, pageable);
+        return photopoemPage.map(photopoemMapper::PhotopoemToPhotopoemDTO);
     }
 
     /**

@@ -101,6 +101,10 @@ export const useKeywordStore = defineStore('keyword', () => {
     function clearCurrentKeyword() {
         currentKeyword.value = null;
     }
+    async function searchKeywordPaginated(query: string, pageable:Pageable): Promise<Page<KeywordDTO>> {
+        return await $fetch<Page<KeywordDTO>>(`/api/keywords/search_paginated`, { query: { query, ...pageable } });
+    }
+
 
     return {
         keywords,
@@ -112,6 +116,7 @@ export const useKeywordStore = defineStore('keyword', () => {
         createKeyword,
         updateKeyword,
         deleteKeyword,
-        clearCurrentKeyword
+        clearCurrentKeyword,
+        searchKeywordPaginated
     }
 })

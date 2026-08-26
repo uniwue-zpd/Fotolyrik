@@ -1,9 +1,12 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PubMediumService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -98,5 +101,15 @@ public class PubMediumController {
     public ResponseEntity<PubMediumMetricsDTO> getPubMediumMetrics(@PathVariable Long id) {
         PubMediumMetricsDTO metrics = pubMediumService.getPubMediumMetrics(id);
         return ResponseEntity.ok(metrics);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PubMediumPreviewDTO>> searchPubMedia(@RequestParam String query) {
+        return ResponseEntity.ok(pubMediumService.searchPubMedia(query));
+    }
+
+    @GetMapping("/search_paginated")
+    public ResponseEntity<Page<PubMediumPreviewDTO>> searchPubMedia(Pageable pageable, @RequestParam String query) {
+        return ResponseEntity.ok(pubMediumService.searchPubMediaPaginated(pageable, query));
     }
 }
