@@ -12,7 +12,7 @@ import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue
 
 
 const place_api = usePlace();
-const pubmedium_store = usePubMediumStore();
+const pubmedium_api = usePubMedium();
 const photopoem_api = usePhotopoem();
 
 const route = useRoute();
@@ -33,12 +33,11 @@ useHead(() => ({
 }));
 
 const {data: place_item, status}  = await place_api.usePlaceId(place_id)
-const place_pub_media = ref<PubMediumDTO[] | []>([]);
+const {data: place_pub_media}  = await pubmedium_api.useFilteredPubMedium({ 'pubplace-id': place_id })
 const {data:place_metrics}  = await place_api.usePlaceMetricsId(place_id)
 const {data: place_photopoems}  = await photopoem_api.useFilteredPhotopoems({ 'pubplace-id': place_id })
 
 onMounted(async () => {
-  place_pub_media.value = await pubmedium_store.filterPubMedia({ 'pubplace-id': place_id });
   if (!document.getElementById("map")) {
     return;
   }
@@ -118,7 +117,7 @@ onMounted(async () => {
       <div class="h-[250px] bg-primary rounded-md"/>
       <div class="h-[250px] bg-primary rounded-md"/>
     </div>
-    <div v-if="place_pub_media.length > 0" class="max-h-[40vh] flex flex-col gap-4">
+    <div v-if="place_pub_media&& place_pub_media.length > 0" class="max-h-[40vh] flex flex-col gap-4">
       <h2 class="text-xl font-bold text-primary outfit-headline">Publikationsort von</h2>
       <div class="overflow-y-auto pb-2">
         <div class="flex flex-col gap-3 md:grid md:grid-cols-5">

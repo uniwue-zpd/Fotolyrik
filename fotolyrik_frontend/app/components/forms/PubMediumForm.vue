@@ -5,7 +5,7 @@ import { z } from "zod";
 import {FormField} from "@primevue/forms";
 
 const toast = useToast();
-const pubMediumStore = usePubMediumStore();
+const pubMediumApi = usePubMedium();
 const placeApi = usePlace();
 const publisherApi= usePublisher();
 const pubRhythmStore = usePubRhythmStore();
@@ -60,11 +60,14 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await pubMediumStore.createPubMedium(e.values);
+        await pubMediumApi.createPubMedium(e.values);
+        await refreshNuxtData('pubMedium-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         navigateTo("/publication_media")
       } else if (props.action === "edit" && props.pub_medium?.id) {
-        await pubMediumStore.updatePubMedium(e.values, props.pub_medium.id);
+        await pubMediumApi.updatePubMedium(props.pub_medium.id,e.values );
+        await refreshNuxtData('pubMedium-list');
+        await refreshNuxtData(`pubMedium-${props.pub_medium.id}`)
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/publication_media/${props.pub_medium?.id}`);
       }

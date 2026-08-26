@@ -2,7 +2,8 @@
 import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 
-const store = usePubMediumStore();
+const pubMediumApi = usePubMedium();
+const {data: pubMediumList} = pubMediumApi.usePubMediumList();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   title: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -20,7 +21,7 @@ const filters = ref({
           v-model:filters="filters"
           filter-display="row"
           :global-filter-fields="['title', 'subtitle', 'publisher.name', 'editorialOffice','startYear', 'endYear', 'amountVolumes', 'amountIssues']"
-          :value="store.pub_media"
+          :value="pubMediumList"
           stripedRows paginator :rows="10"
       >
         <template #header>

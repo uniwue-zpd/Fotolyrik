@@ -10,7 +10,7 @@ import {useFiles} from "~/composables/useFiles";
 const toast = useToast();
 const personApi = usePerson();
 const photopoemApi = usePhotopoem();
-const pubMediumStore = usePubMediumStore();
+const pubMediumApi = usePubMedium();
 const fileApi = useFiles();
 const languageApi = useLanguage();
 const copyrightStatusApi = useCopyrightStatus();
@@ -34,6 +34,8 @@ const {data: keywordList} = await keywordApi.useKeywordList();
 const {data: languageList} = await languageApi.useLanguageList();
 const {data: locationList} = await locationApi.useLocationList();
 const {data: copyrightStatusList} = await copyrightStatusApi.useCopyrightStatusList();
+const {data: pubMediumList} = await pubMediumApi.usePubMediumList();
+const publicationMedia = computed(() => pubMediumList.value?.map(pm => ({ id: pm.id, title: pm.title })));
 const persons = computed(() => personList.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed( () => keywordList.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
 const languages = computed(() => languageList.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
@@ -42,7 +44,7 @@ const copyrightStatuses = computed(()=> copyrightStatusList.value?.map(cs => ({ 
 
 const { data: files } = await fileApi.useFileList();
 
-const publicationMedia = computed(() => pubMediumStore.pub_media.map(pm => ({ id: pm.id, title: pm.title })));
+
 const data_refreshing = ref(false);
 
 const props = defineProps<{
@@ -321,7 +323,7 @@ const onFormSubmit = async (e: any) => {
                 class="pl-7"
                 optionLabel="title"
                 :options="publicationMedia"
-                :key="publicationMedia.length"
+                :key="publicationMedia?.length"
                 fluid
               />
             </IconField>
