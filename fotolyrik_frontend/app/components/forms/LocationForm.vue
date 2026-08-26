@@ -30,8 +30,7 @@ const onFormSubmit = async (e: any) => {
         e.reset();
       } else if (props.action === "edit" && props.location?.id) {
         await locationApi.updateLocation(props.location.id, e.values);
-        await refreshNuxtData('location-list');
-        await refreshNuxtData(`location-${props.location.id}`)
+        await Promise.all([refreshNuxtData('location-list'), refreshNuxtData(`location-${props.location.id}`)])
         toast.add({ severity: "success", summary: "Erfolg", detail: "Ort erfolgreich aktualisiert", life: 3000 });
         navigateTo(`/locations/${props.location?.id}`);
       }

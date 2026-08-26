@@ -10,9 +10,11 @@ const placeApi = usePlace();
 const publisherApi= usePublisher();
 const pubRhythmApi = usePubRhythm();
 
-const  placeHandle = await placeApi.usePlaceList();
-const  publisherHandle = await publisherApi.usePublisherList();
-const  pubRhythmHandle = await pubRhythmApi.usePubRhythmList()
+const [placeHandle, publisherHandle, pubRhythmHandle] = await Promise.all([
+  placeApi.usePlaceList(),
+  publisherApi.usePublisherList(),
+  pubRhythmApi.usePubRhythmList()
+]);
 
 const publication_places = computed(() => placeHandle.data.value?.map(p => ({id: p.id, name: p.name})));
 const publishers = computed(() => publisherHandle.data.value?.map(pu => ({id: pu.id, name: pu.name})));
@@ -67,8 +69,7 @@ const onFormSubmit = async (e: any) => {
         navigateTo("/publication_media")
       } else if (props.action === "edit" && props.pub_medium?.id) {
         await pubMediumApi.updatePubMedium(props.pub_medium.id,e.values );
-        await refreshNuxtData('pubMedium-list');
-        await refreshNuxtData(`pubMedium-${props.pub_medium.id}`)
+        await  Promise.all([refreshNuxtData('pubMedium-list'), await refreshNuxtData(`pubMedium-${props.pub_medium.id}`)])
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/publication_media/${props.pub_medium?.id}`);
       }

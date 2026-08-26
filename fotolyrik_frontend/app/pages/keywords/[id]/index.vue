@@ -8,9 +8,15 @@ const photopoem_api = usePhotopoem();
 const router = useRoute();
 const keyword_id = Number(router.params.id);
 
-const { data: keyword_item, status } = await keyword_api.useKeywordId(keyword_id);
-const {data: is_theme} = await photopoem_api.useFilteredPhotopoems({ 'theme-id': keyword_id });
-const {data: is_image_motif} = await photopoem_api.useFilteredPhotopoems({ 'image-motif-id': keyword_id })
+const [
+  { data: keyword_item, status },
+  { data: is_theme },
+  { data: is_image_motif }
+] = await Promise.all([
+  keyword_api.useKeywordId(keyword_id),
+  photopoem_api.useFilteredPhotopoems({ 'theme-id': keyword_id }),
+  photopoem_api.useFilteredPhotopoems({ 'image-motif-id': keyword_id })
+]);
 
 
 useHead({

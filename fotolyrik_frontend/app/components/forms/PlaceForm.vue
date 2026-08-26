@@ -29,8 +29,7 @@ const onFormSubmit = async (e: any) => {
         navigateTo('/places')
       } else if (props.action === 'edit' && props.place?.id) {
         await placeApi.updatePlace(props.place.id, e.values);
-        await refreshNuxtData('place-list');
-        await refreshNuxtData(`place-${props.place.id}`)
+        await Promise.all([refreshNuxtData('place-list'), await refreshNuxtData(`place-${props.place.id}`)])
         toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich aktualisiert', life: 3000});
         navigateTo(`/places/${props.place?.id}`);
       }

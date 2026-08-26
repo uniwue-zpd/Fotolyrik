@@ -29,12 +29,21 @@ const debouncedSearch = debounce(async (query: string) => {
 const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
-const  personHandle = await personApi.usePersonList();
-const  keywordHandle = await keywordApi.useKeywordList();
-const  languageHandle = await languageApi.useLanguageList();
-const  locationHandle = await locationApi.useLocationList();
-const  copyrightStatusHandle = await copyrightStatusApi.useCopyrightStatusList();
-const  pubMediumHandle = await pubMediumApi.usePubMediumList();
+const [
+  personHandle,
+  keywordHandle,
+  languageHandle,
+  locationHandle,
+  copyrightStatusHandle,
+  pubMediumHandle
+] = await Promise.all([
+  personApi.usePersonList(),
+  keywordApi.useKeywordList(),
+  languageApi.useLanguageList(),
+  locationApi.useLocationList(),
+  copyrightStatusApi.useCopyrightStatusList(),
+  pubMediumApi.usePubMediumList()
+]);
 const publicationMedia = computed(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })));
 const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
@@ -114,8 +123,7 @@ const onFormSubmit = async (e: any) => {
         navigateTo("/photopoems")
       } else if (props.action === "edit" && props.photopoem?.id) {
         await photopoemApi.updatePhotopoem(props.photopoem.id, e.values);
-        await refreshNuxtData('photopoem-list');
-        await refreshNuxtData(`photopoem-${props.photopoem.id}`);
+        await Promise.all([refreshNuxtData('photopoem-list'), await refreshNuxtData(`photopoem-${props.photopoem.id}`)]);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/photopoems/${props.photopoem?.id}`);
       }

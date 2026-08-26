@@ -49,8 +49,7 @@ const onFormSubmit = async (e: any) => {
         e.reset();
       } else if (props.action === "edit" && props.person?.id) {
         await personApi.updatePerson( props.person.id , e.values);
-        await refreshNuxtData('person-list');
-        await refreshNuxtData(`person-${props.person.id}`)
+        await Promise.all([refreshNuxtData('person-list'), await refreshNuxtData(`person-${props.person.id}`)])
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/persons/${props.person?.id}`);
       }

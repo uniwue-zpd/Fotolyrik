@@ -30,8 +30,7 @@ const onFormSubmit = async (e: any) => {
         e.reset();
       } else if (props.action === "edit" && props.keyword?.id) {
         await keywordApi.updateKeyword(props.keyword.id, e.values);
-        await refreshNuxtData('keyword-list');
-        await refreshNuxtData(`keyword-${props.keyword.id}`)
+        await Promise.all([refreshNuxtData('keyword-list'), refreshNuxtData(`keyword-${props.keyword.id}`)])
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/keywords/${props.keyword?.id}`);
       }

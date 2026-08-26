@@ -11,11 +11,19 @@ const keyword_api = useKeyword();
 const darkModeTextColor = computed(()=>{return useColorMode().value == 'dark'? 'white':'black'});
 
 
-const {data: keywordList} = await keyword_api.useKeywordList();
-const {data: personList} = await person_api.usePersonList();
-const {data: photopoemList} = await photopoem_api.usePhotopoemList();
-const {data: placeList} =  await place_api.usePlaceList();
-const {data: pubMediumList} = await pub_medium_api.usePubMediumList();
+const [
+  { data: keywordList },
+  { data: personList },
+  { data: photopoemList },
+  { data: placeList },
+  { data: pubMediumList }
+] = await Promise.all([
+  keyword_api.useKeywordList(),
+  person_api.usePersonList(),
+  photopoem_api.usePhotopoemList(),
+  place_api.usePlaceList(),
+  pub_medium_api.usePubMediumList()
+]);
 const keywordCount = computed(()=> keywordList.value?.length);
 const personCount = computed(()=> personList.value?.length);
 const photopoemCount = computed(() => photopoemList.value?.length);

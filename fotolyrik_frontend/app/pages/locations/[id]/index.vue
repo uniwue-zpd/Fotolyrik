@@ -8,8 +8,13 @@ const photopoem_api = usePhotopoem();
 const router = useRoute();
 const location_id = Number(router.params.id);
 
-const { data: location_item} = await locationApi.useLocationId(location_id)
-const {data: is_location} = await photopoem_api.useFilteredPhotopoems({'location-id': location_id});
+const [
+  { data: location_item },
+  { data: is_location }
+] = await Promise.all([
+  locationApi.useLocationId(location_id),
+  photopoem_api.useFilteredPhotopoems({ 'location-id': location_id })
+]);
 useHead({
   title: () => location_item.value
       ? `${location_item.value.name} - Fundortsverzeichnis`

@@ -9,10 +9,17 @@ const pub_medium_api = usePubMedium();
 const photopoem_api = usePhotopoem();
 
 const pub_medium_id = Number(router.params.id);
-const {data: pub_medium_item} = await pub_medium_api.usePubMediumId(pub_medium_id)
-const {data: pub_medium_neighbors} = await pub_medium_api.usePubMediumNeighbors(pub_medium_id)
-const {data: pub_medium_photopoems} = await photopoem_api.useFilteredPhotopoems({'pubmedium-id': pub_medium_id})
-const {data: pub_medium_metrics} = await pub_medium_api.usePubMediumMetics(pub_medium_id)
+const [
+  { data: pub_medium_item },
+  { data: pub_medium_neighbors },
+  { data: pub_medium_photopoems },
+  { data: pub_medium_metrics }
+] = await Promise.all([
+  pub_medium_api.usePubMediumId(pub_medium_id),
+  pub_medium_api.usePubMediumNeighbors(pub_medium_id),
+  photopoem_api.useFilteredPhotopoems({ 'pubmedium-id': pub_medium_id }),
+  pub_medium_api.usePubMediumMetics(pub_medium_id)
+]);
 const photopoemsHavePubDates = computed(() => {
   return pub_medium_photopoems.value?.some(poem => poem.publicationDate);
 });

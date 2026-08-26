@@ -13,15 +13,25 @@ const person_id = Number(router.params.id);
 const person_api = usePerson();
 const photopoem_api = usePhotopoem();
 const place_api = usePlace();
-// Todo wrap all the awaits in a promise all
-const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemes(person_id));
-const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifs(person_id));
-const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchPersonMetrics(person_id));
-const { data: authorOf } = await photopoem_api.useFilteredPhotopoems({ 'author-id': person_id });
-const { data: photographerOf } = await photopoem_api.useFilteredPhotopoems({ 'photographer-id': person_id });
-const { data: participatedOn } = await photopoem_api.useFilteredPhotopoems({ 'participant-id': person_id });
-const { data: contributorOf } = await photopoem_api.useFilteredPhotopoems({ 'other-contributor-id': person_id });
-const { data: depictedOn } = await photopoem_api.useFilteredPhotopoems({ 'depicted-person-id': person_id });
+const [
+  { data: authorThemes },
+  { data: authorImageMotifs },
+  { data: personMetrics },
+  { data: authorOf },
+  { data: photographerOf },
+  { data: participatedOn },
+  { data: contributorOf },
+  { data: depictedOn }
+] = await Promise.all([
+  useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemes(person_id)),
+  useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifs(person_id)),
+  useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchPersonMetrics(person_id)),
+  photopoem_api.useFilteredPhotopoems({ 'author-id': person_id }),
+  photopoem_api.useFilteredPhotopoems({ 'photographer-id': person_id }),
+  photopoem_api.useFilteredPhotopoems({ 'participant-id': person_id }),
+  photopoem_api.useFilteredPhotopoems({ 'other-contributor-id': person_id }),
+  photopoem_api.useFilteredPhotopoems({ 'depicted-person-id': person_id })
+]);
 
 const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
   const normalize = (list: any[] | undefined, role: PersonRole) =>
@@ -39,8 +49,13 @@ const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
 const show_map = ref<boolean>(true);
 
 
-const { data: person_item } = await person_api.usePersonId(person_id);
-const { data: person_neighbors } = await person_api.usePersonIdNeighbors(person_id);
+const [
+  { data: person_item },
+  { data: person_neighbors }
+] = await Promise.all([
+  person_api.usePersonId(person_id),
+  person_api.usePersonIdNeighbors(person_id)
+]);
 
 onMounted(async () => {
   const places = await place_api.getContributionPlaces(person_id);

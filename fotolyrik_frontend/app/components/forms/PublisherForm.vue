@@ -30,8 +30,7 @@ const onFormSubmit = async (e: any) => {
         e.reset();
       } else if (props.action === "edit" && props.publisher?.id) {
         await publisherApi.updatePublisher(props.publisher.id, e.values);
-        await refreshNuxtData('publisher-list');
-        await refreshNuxtData(`publisher-${props.publisher.id}`)
+        await Promise.all( [refreshNuxtData('publisher-list'), await refreshNuxtData(`publisher-${props.publisher.id}`)])
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/keywords/${props.publisher?.id}`);
       }

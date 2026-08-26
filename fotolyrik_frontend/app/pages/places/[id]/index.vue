@@ -32,10 +32,17 @@ useHead(() => ({
   title: place_item.value?.name ? `${place_item.value?.name}` : 'Nicht gefunden',
 }));
 
-const {data: place_item, status}  = await place_api.usePlaceId(place_id)
-const {data: place_pub_media}  = await pubmedium_api.useFilteredPubMedium({ 'pubplace-id': place_id })
-const {data:place_metrics}  = await place_api.usePlaceMetricsId(place_id)
-const {data: place_photopoems}  = await photopoem_api.useFilteredPhotopoems({ 'pubplace-id': place_id })
+const [
+  { data: place_item, status },
+  { data: place_pub_media },
+  { data: place_metrics },
+  { data: place_photopoems }
+] = await Promise.all([
+  place_api.usePlaceId(place_id),
+  pubmedium_api.useFilteredPubMedium({ 'pubplace-id': place_id }),
+  place_api.usePlaceMetricsId(place_id),
+  photopoem_api.useFilteredPhotopoems({ 'pubplace-id': place_id })
+]);
 
 onMounted(async () => {
   if (!document.getElementById("map")) {
