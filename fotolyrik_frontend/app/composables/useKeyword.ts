@@ -7,6 +7,10 @@ export const useKeyword = () => {
         return $fetch<KeywordDTO>(`/api/keywords/${id}`);
     }
 
+    function searchPaginated(query: string, pageable:Pageable): Promise<Page<KeywordDTO>> {
+        return $fetch<Page<KeywordDTO>>(`/api/keywords/search_paginated`, { query: { query, ...pageable } });
+    }
+
     function create(payload: Partial<KeywordDTO>) {
         return $fetch<KeywordDTO>('/api/keywords', {
             method: 'POST',
@@ -30,6 +34,7 @@ export const useKeyword = () => {
     function getAll(){
         return useAsyncData('keyword-list', fetchAll);
     }
+
     function getById(id: number){
         return useAsyncData( `keyword-${id}`, () => fetchById(id) );
     }
@@ -37,6 +42,7 @@ export const useKeyword = () => {
     return {
         fetchAll,
         fetchById,
+        searchPaginated,
         create,
         update,
         deleteById,

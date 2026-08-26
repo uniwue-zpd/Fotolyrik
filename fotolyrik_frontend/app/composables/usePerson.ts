@@ -52,12 +52,19 @@ export const usePerson = () => {
             query: { query }
         });
     }
+
+    function searchPaginated(query: string, pageable:Pageable): Promise<Page<PersonPreviewDTO>> {
+        return $fetch<Page<PersonPreviewDTO>>(`/api/persons/search_paginated`, { query: { query, ...pageable } });
+    }
+
     function getAll(){
         return useAsyncData('person-list', fetchAll);
     }
+
     function getById(id: number){
         return useAsyncData( `person-${id}`, () => fetchById(id) );
     }
+
     function getNeighborsById(id: number){
         return useAsyncData(`person-${id}-neighbor`,() =>  fetchNeighborsById(id))
     }
@@ -73,6 +80,7 @@ export const usePerson = () => {
         fetchAuthorImageMotifsById,
         fetchMetricsById,
         search,
+        searchPaginated,
         getAll,
         getById,
         getNeighborsById,

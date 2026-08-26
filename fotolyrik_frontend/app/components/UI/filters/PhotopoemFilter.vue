@@ -20,16 +20,20 @@ const emit = defineEmits<{
 
 
 
-const personStore = usePersonStore();
-const pubMediumStore = usePubMediumStore();
-const languageStore = useLanguageStore();
-const copyrightStatusStore = useCopyrightStatusStore();
-const keywordStore = useKeywordStore();
-const locationStore = useLocationStore();
+const personApi = usePerson();
+const pubMediumApi = usePubMedium();
+const languageApi = useLanguage();
+const copyrightStatusApi = useCopyrightStatus();
+const keywordApi = useKeyword();
+const locationApi = useLocation();
 
-const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
-const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
-const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
+const {data: languageList} = await languageApi.getAll();
+const {data: locationList} = await locationApi.getAll();
+const {data: copyrightStatusList} = await copyrightStatusApi.getAll();
+
+const languages = computed(() => languageList.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
+const locations = computed(()=> locationList.value?.map(l=>({id: l.id, name: l.name}) ));
+const copyrightStatuses = computed(() => copyrightStatusList.value?.map(cs => ({ id: cs.id, value: cs.value })));
 
 
 function getPersonOptionLabel(opt: PersonPreviewDTO) {
@@ -125,7 +129,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="pub-medium-id" class="text-xs font-bold ">Publikationsmedium</label>
             <PaginatedSelect
-                :fetch-function="pubMediumStore.searchPubMediaPaginated"
+                :fetch-function="pubMediumApi.searchPaginated"
                 :cull-function="pm => ({ id: pm.id, title: pm.title })"
                 sort="title,asc"
                 id="pub-medium-id"
@@ -157,7 +161,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="author-id" class="text-xs font-bold ">Autor:in</label>
             <PaginatedSelect
-                :fetch-function="personStore.searchPeoplePaginated"
+                :fetch-function="personApi.searchPaginated"
                 :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
                 sort="firstName,asc"
                 id="author-id"
@@ -173,7 +177,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
             <PaginatedSelect
-                :fetch-function="personStore.searchPeoplePaginated"
+                :fetch-function="personApi.searchPaginated"
                 :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
                 sort="firstName,asc"
                 id="photographer-id"
@@ -189,7 +193,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
             <PaginatedSelect
-                :fetch-function="personStore.searchPeoplePaginated"
+                :fetch-function="personApi.searchPaginated"
                 :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
                 sort="firstName,asc"
                 id="depicted-person-id"
@@ -205,7 +209,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
             <PaginatedSelect
-                :fetch-function="personStore.searchPeoplePaginated"
+                :fetch-function="personApi.searchPaginated"
                 :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
                 sort="firstName,asc"
                 id="contributor-id"
@@ -221,7 +225,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="theme-id" class="text-xs font-bold ">Thematik</label>
             <PaginatedSelect
-                :fetch-function="keywordStore.searchKeywordPaginated"
+                :fetch-function="keywordApi.searchPaginated"
                 :cull-function="k => ({ id: k.id, value: k.value })"
                 sort="value,asc"
                 id="theme-id"
@@ -237,7 +241,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="image-motif-id" class="text-xs font-bold ">Bildmotiv</label>
             <PaginatedSelect
-                :fetch-function="keywordStore.searchKeywordPaginated"
+                :fetch-function="keywordApi.searchPaginated"
                 :cull-function="(k) => ({ id: k.id, value: k.value })"
                 sort="value,asc"
                 id="image-motif-id"

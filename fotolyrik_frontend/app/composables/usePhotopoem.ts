@@ -1,3 +1,5 @@
+import type {Page, PhotopoemPageable} from "~/utils/types";
+
 export const usePhotopoem = () => {
     function fetchAll() {
         return $fetch<PhotoPoemDTO[]>('/api/photopoems');
@@ -36,15 +38,23 @@ export const usePhotopoem = () => {
             method: 'DELETE'
         });
     }
+
+    function fetchPaginated(params: PhotopoemPageable) {
+        return $fetch<Page<PhotoPoemDTO>>('/api/photopoems', { query: params });
+    }
+
     function getAll(){
         return useAsyncData('photopoem-list', fetchAll);
     }
+
     function getById(id: number){
         return useAsyncData( `photopoem-${id}`, () => fetchById(id) );
     }
+
     function getHighlight(){
         return useAsyncData('photopoem-highlight', fetchHighlight)
     }
+
     function getAllFiltered(params: any){
         if (Object.keys(params).length !== 1) console.error('provide only one filter')
         const [key, value] = Object.entries(params)[0]!;
@@ -59,6 +69,7 @@ export const usePhotopoem = () => {
         create,
         update,
         deleteById,
+        fetchPaginated,
         getAll,
         getById,
         getHighlight,

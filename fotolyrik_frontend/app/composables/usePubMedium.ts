@@ -17,6 +17,10 @@ export const usePubMedium = () => {
         });
     }
 
+    function searchPaginated(query: string, pageable: Pageable): Promise<Page<PubMediumPreviewDTO>> {
+        return $fetch<Page<PubMediumPreviewDTO>>(`/api/publication_media/search_paginated`, { query: { query, ...pageable } });
+    }
+
     function create(payload: Partial<PubMediumDTO>) {
         return $fetch<PubMediumDTO>('/api/publication_media', {
             method: 'POST',
@@ -44,17 +48,21 @@ export const usePubMedium = () => {
     function getAll(){
         return useAsyncData('pubMedium-list', fetchAll);
     }
+
     function getById(id: number){
         return useAsyncData( `pubMedium-${id}`, () => fetchById(id) );
     }
+
     function getAllFiltered(params: any){
         if (Object.keys(params).length !== 1) console.error('provide only one filter')
         const [key, value] = Object.entries(params)[0]!;
         return useAsyncData(`pubMedium-${key}-${value}`, ()=>filter(params));
     }
+
     function getNeighborsById(id: number) {
         return useAsyncData( `pubMedium-${id}-neighbor`, () => fetchPubMediumNeighborsById(id));
     }
+
     function getMetricsById(id:number){
         return useAsyncData(`pubMedium-metrics-${id}`, ()=> fetchMetricsById(id));
     }
@@ -63,6 +71,7 @@ export const usePubMedium = () => {
         fetchAll,
         fetchById,
         filter,
+        searchPaginated,
         create,
         update,
         deleteById,

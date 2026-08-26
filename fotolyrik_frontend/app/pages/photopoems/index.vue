@@ -3,7 +3,7 @@ import { ref, watch, onBeforeUnmount } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 import {useFiles} from "~/composables/useFiles";
 import PhotopoemFilter from "~/components/UI/filters/PhotopoemFilter.vue";
-import type {PhotopoemPageable} from "~/utils/types";
+import type {Page, PhotopoemPageable} from "~/utils/types";
 
 const initialPageParameter: PhotopoemPageable = {
   page: 0,
@@ -58,7 +58,7 @@ const pageOptions = computed(() =>
 
 const { data: photopoems, pending: isLoading, error: hasError, refresh } = useAsyncData<Page<PhotoPoemDTO>>(
     'photopoems-paginated',
-    () => photopoemApi.fetchPhotopoemsPaginated({...pageParameter, ...filters})
+    () => photopoemApi.fetchPaginated({...pageParameter, ...filters})
 );
 
 const debouncedRefresh = debounce(() => {
