@@ -8,7 +8,7 @@ import {useFiles} from "~/composables/useFiles";
 const router = useRoute();
 const photopoem_id = Number(router.params.id);
 const {data: photopoem_item} = await usePhotopoem().usePhotopoemId(photopoem_id);
-const file_store = useFiles();
+const file_api = useFiles();
 
 declare const Tify: any; // stops type errors, Tify comes from plain JS library
 
@@ -46,7 +46,7 @@ useHead(() => ({
 
 onMounted(async () => {
   if (show_scans.value) {
-    scans.value = (await Promise.all(scan_ids.value.map((id) => file_store.getImageContent(id)))
+    scans.value = (await Promise.all(scan_ids.value.map((id) => file_api.getImageContent(id)))
     ).filter((url) => url !== null) as string[];
   }
   const manifestPageNumber = photopoem_item.value?.manifestPageNumber ?? 1;
