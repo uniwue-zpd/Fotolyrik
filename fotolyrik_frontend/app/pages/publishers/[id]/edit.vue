@@ -3,18 +3,9 @@ import PublisherForm from "~/components/forms/PublisherForm.vue";
 
 const route = useRoute();
 const publisher_id = Number(route.params.id);
-const publisherStore = usePublisherStore();
-const publisher_item = ref<PublisherDTO | null>(null);
-const loading = ref(true);
+const publisherApi = usePublisher();
+const {data: publisher_item}= await publisherApi.usePublisherId(publisher_id)
 
-onMounted(async () => {
-  try {
-    await publisherStore.fetchPublisherById(publisher_id);
-    publisher_item.value = publisherStore.currentPublisher ?? null;
-  } finally {
-    loading.value = false;
-  }
-});
 </script>
 
 <template>

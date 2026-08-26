@@ -7,13 +7,14 @@ import {FormField} from "@primevue/forms";
 const toast = useToast();
 const pubMediumStore = usePubMediumStore();
 const placeApi = usePlace();
-const publisherStore = usePublisherStore();
+const publisherApi= usePublisher();
 const pubRhythmStore = usePubRhythmStore();
 
 const {data: placeList } = await placeApi.usePlaceList();
+const {data: publisherList} = await publisherApi.usePublisherList();
 
 const publication_places = computed(() => placeList.value?.map(p => ({id: p.id, name: p.name})));
-const publishers = computed(() => publisherStore.publishers.map(pu => ({id: pu.id, name: pu.name})));
+const publishers = computed(() => publisherList.value?.map(pu => ({id: pu.id, name: pu.name})));
 const publication_rhythms = computed(() => pubRhythmStore.publication_rhythms.map(pr => ({id: pr.id, value: pr.value})));
 
 const data_refreshing = ref(false);
@@ -164,7 +165,7 @@ const onFormSubmit = async (e: any) => {
                     class="pl-7"
                     optionLabel="name"
                     :options="publishers"
-                    :key="publishers.length"
+                    :key="publishers?.length"
                     editable
                     showClear
                     fluid

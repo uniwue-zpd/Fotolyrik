@@ -27,11 +27,20 @@ export const usePublisher = () => {
         });
     }
 
+    function usePublisherList(){
+        return useAsyncData('publisher-list', fetchPublishers);
+    }
+    function usePublisherId(id: number){
+        return useAsyncData( `publisher-${id}`, () => fetchPublisherById(id) );
+    }
+
     return {
         fetchPublishers,
         fetchPublisherById,
         createPublisher,
         updatePublisher,
-        deletePublisher
+        deletePublisher,
+        usePublisherList,
+        usePublisherId,
     };
 };
