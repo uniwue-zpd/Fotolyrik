@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.IDSliceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
@@ -32,6 +33,13 @@ public class PubMediumController {
         return pubMediumService.getPubMediumById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
+    }
+
+    @GetMapping("/{id}/neighbor")
+    public ResponseEntity<IDSliceDTO> getPubMediumNeighborIDs(@PathVariable Long id) {
+        return pubMediumService.getPubMediumNeighborIds(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/filter")

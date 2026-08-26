@@ -1,5 +1,6 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.IDSliceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
@@ -10,6 +11,7 @@ import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PubMediumMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublicationRhythmMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
+import io.micrometer.core.instrument.config.MeterFilter;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -204,5 +206,24 @@ public class PubMediumService {
      */
     public PubMediumMetricsDTO getPubMediumMetrics(Long pubMediumId) {
         return pubMediumRepository.getMetricsByPubMedium(pubMediumId);
+    }
+
+    /**
+     * GET the next and previous IDs of a pub medium by ID sorted by title ASC, subtitle ASC
+     * @param id of the current pub medium
+     * @return {@link Optional} of {@link IDSliceDTO}
+     */
+    public Optional<IDSliceDTO> getPubMediumNeighborIds(Long id) {
+        var list = pubMediumRepository.findNeighborIdsById(id, 1);
+
+        int currentIndex = list.indexOf(id);
+        if (currentIndex == -1) return Optional.empty();
+
+        var slice = new IDSliceDTO();
+        slice.setCurrent(id);
+        slice.setPrevious(currentIndex > 0 ? list.get(currentIndex - 1) : null);
+        slice.setNext(currentIndex < list.size() - 1 ? list.get(currentIndex + 1) : null);
+
+        return Optional.of(slice);
     }
 }
