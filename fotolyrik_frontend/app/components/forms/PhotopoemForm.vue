@@ -35,14 +35,16 @@ const [
   languageHandle,
   locationHandle,
   copyrightStatusHandle,
-  pubMediumHandle
+  pubMediumHandle,
+  {data: files}
 ] = await Promise.all([
   personApi.usePersonList(),
   keywordApi.useKeywordList(),
   languageApi.useLanguageList(),
   locationApi.useLocationList(),
   copyrightStatusApi.useCopyrightStatusList(),
-  pubMediumApi.usePubMediumList()
+  pubMediumApi.usePubMediumList(),
+  fileApi.useFileList(),
 ]);
 const publicationMedia = computed(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })));
 const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
@@ -51,8 +53,17 @@ const languages = computed(() => languageHandle.data.value?.map((l:LanguageDTO) 
 const locations = computed(()=> locationHandle.data.value?.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(()=> copyrightStatusHandle.data.value?.map(cs => ({ id: cs.id, value: cs.value })));
 
-const { data: files } = await fileApi.useFileList();
+const pubMediaLoading = ref(false);
+const pubMediaSuggestions = ref<PubMediumDTO[]>([]);
+const debouncedPubMediaSearch = debounce(async (query: string) => {
+  pubMediaLoading.value = true;
+  pubMediaSuggestions.value = await pubMediumApi.filterPubMedia({'title': query});
+  pubMediaLoading.value = false;
+}, 300);
 
+const onPubMediaComplete = (event: any) => {
+  debouncedPubMediaSearch(event.query);
+};
 
 const data_refreshing = ref(false);
 
@@ -61,6 +72,11 @@ const props = defineProps<{
   header: string;
   photopoem?: PhotoPoemDTO;
 }>();
+
+const selectedPubMedium = ref<PubMediumPreviewDTO | null>(null);
+watch(() => props.photopoem?.publicationMedium, (newVal) => {
+  selectedPubMedium.value = newVal || null;
+});
 
 const resolver = ref(
   zodResolver(
@@ -76,7 +92,7 @@ const resolver = ref(
       pageCount: z.any(),
       pictureCount: z.any(),
       publicationDate: z.any(),
-      publicationMedium: z.any(),
+      publicationMedium: z.any().optional().nullable(),
       foundIn: z.any(),
       authors: z.any(),
       photographers: z.any(),
@@ -115,6 +131,7 @@ const contributionsForm: Ref<InstanceType<typeof ContributionForm> | null> = ref
 const onFormSubmit = async (e: any) => {
   if (e.valid && contributionsForm.value?.isValid()) {
     e.values.contributions = contributionsForm.value?.getContributions();
+    e.values.publicationMedium = selectedPubMedium.value;
     try {
       if (props.action === "create") {
         await photopoemApi.createPhotopoem(e.values);
@@ -321,21 +338,22 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-        <FormField v-slot="$field" name="publicationMedium" class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1">
           <label for="publicationMedium" class="font-bold">Publikationsmedium</label>
           <div class="flex flex-row gap-4 flex-nowrap">
-            <IconField class="flex-1 min-w-0">
-              <InputIcon class="pi pi-book"/>
-              <Select
-                labelId="publicationMedium"
-                placeholder="Publikationsmedium auswählen"
-                class="pl-7"
+            <AutoComplete
+                id="publicationMedium"
+                v-model="selectedPubMedium"
+                class="flex-1 min-w-0"
+                placeholder="Publikationsmedium suchen..."
+                :suggestions="pubMediaSuggestions"
+                :loading="pubMediaLoading"
+                @complete="onPubMediaComplete"
                 optionLabel="title"
                 :options="publicationMedia"
                 :key="publicationMedia?.length"
                 fluid
-              />
-            </IconField>
+            />
             <NuxtLink to="/publication_media/create" target="_blank">
               <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
             </NuxtLink>
@@ -343,7 +361,7 @@ const onFormSubmit = async (e: any) => {
           <Message v-if="$form.publicationMedium?.invalid" severity="error" size="small" variant="simple">
             {{ $form.publicationMedium.error.message }}
           </Message>
-        </FormField>
+        </div>
         <FormField v-slot="$field" name="foundIn" class="flex flex-col gap-1">
           <label for="foundIn" class="font-bold">Fundort</label>
           <div class="flex flex-row gap-4 flex-nowrap">
