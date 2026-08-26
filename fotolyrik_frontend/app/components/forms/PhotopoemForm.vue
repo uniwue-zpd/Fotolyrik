@@ -29,7 +29,6 @@ const debouncedSearch = debounce(async (query: string) => {
 const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
-// TODO move store fetch function out  and move all await use Async data into composables
 const {data: personList} = personApi.usePersonList();
 const {data: keywordList} = keywordApi.useKeywordList();
 const {data: languageList} = languageApi.useLanguageList();

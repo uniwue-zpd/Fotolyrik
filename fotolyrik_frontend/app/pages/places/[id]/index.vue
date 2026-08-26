@@ -10,18 +10,13 @@ import NotFoundPlaceholder from "~/components/UI/placeholders/NotFoundPlaceholde
 import PlaceMetrics from "~/components/visualizations/PlaceMetrics.vue";
 import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue";
 
-const loading = ref(true);
 
-const place_store = usePlaceStore();
+const place_api = usePlace();
 const pubmedium_store = usePubMediumStore();
 const photopoem_api = usePhotopoem();
 
 const route = useRoute();
 const place_id = Number(route.params.id);
-const place_item = ref<PlaceDTO | null>(null);
-const place_pub_media = ref<PubMediumDTO[] | []>([]);
-const place_metrics = ref<PlaceMetricsDTO | null>(null);
-const place_photopoems = ref<PhotoPoemDTO[] | []>([]);
 const has_coords = computed(() => {
   return place_item.value && place_item.value.latitude && place_item.value.longitude;
 });
@@ -37,15 +32,13 @@ useHead(() => ({
   title: place_item.value?.name ? `${place_item.value?.name}` : 'Nicht gefunden',
 }));
 
+const {data: place_item, status}  = place_api.usePlaceId(place_id)
+const place_pub_media = ref<PubMediumDTO[] | []>([]);
+const {data:place_metrics}  = place_api.usePlaceMetricsId(place_id)
+const {data: place_photopoems}  = photopoem_api.useFilteredPhotopoems({ 'pubplace-id': place_id })
+
 onMounted(async () => {
-  try {
-    await place_store.fetchPlaceById(place_id);
-    place_item.value = place_store.current_place ?? null;
-  } finally {
-    loading.value = false;
-  }
   place_pub_media.value = await pubmedium_store.filterPubMedia({ 'pubplace-id': place_id });
-  place_metrics.value = await place_store.fetchPlaceMetrics(place_id)
   if (!document.getElementById("map")) {
     return;
   }
@@ -90,7 +83,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <SkeletonPlaceholder v-if="loading"/>
+  <SkeletonPlaceholder v-if="status ==='pending'"/>
   <NotFoundPlaceholder v-else-if="!place_item"/>
   <div v-else class="flex flex-col gap-4 mb-9">
     <div class="flex flex-row justify-between">
@@ -116,8 +109,8 @@ onMounted(async () => {
 
     </div>
     <div class="text-md roboto-plain">{{ place_item?.description }}</div>
-    <h2 class="text-xl font-bold text-primary outfit-headline" v-if="place_photopoems.length > 0">Häufigkeitsverteilung</h2>
-    <div class="h-[250px]  rounded-md" v-if="place_photopoems.length > 0">
+    <h2 class="text-xl font-bold text-primary outfit-headline" v-if=" place_photopoems && place_photopoems.length > 0">Häufigkeitsverteilung</h2>
+    <div class="h-[250px]  rounded-md" v-if="place_photopoems && place_photopoems.length > 0">
       <PhotopoemDatePlot :data="place_photopoems ?? []" />
     </div>
     <h2 class="text-xl font-bold text-primary outfit-headline">Netzwerke</h2>

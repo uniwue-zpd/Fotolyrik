@@ -8,7 +8,7 @@ const props = defineProps<{
   place?: PlaceDTO;
 }>();
 
-const placeStore = usePlaceStore();
+const placeApi = usePlace();
 const toast = useToast();
 
 const formRef = ref<any>(null);
@@ -23,11 +23,14 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === 'create') {
-        await placeStore.createPlace(e.values);
+        await placeApi.createPlace(e.values);
+        await refreshNuxtData('place-list');
         toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich erstellt', life: 3000});
         navigateTo('/places')
       } else if (props.action === 'edit' && props.place?.id) {
-        await placeStore.updatePlace(e.values, props.place.id);
+        await placeApi.updatePlace(props.place.id, e.values);
+        await refreshNuxtData('place-list');
+        await refreshNuxtData(`place-${props.place.id}`)
         toast.add({severity: 'success', summary: 'Erfolg', detail: 'Erfolgreich aktualisiert', life: 3000});
         navigateTo(`/places/${props.place?.id}`);
       }

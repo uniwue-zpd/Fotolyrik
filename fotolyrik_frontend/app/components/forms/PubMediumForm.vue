@@ -6,11 +6,13 @@ import {FormField} from "@primevue/forms";
 
 const toast = useToast();
 const pubMediumStore = usePubMediumStore();
-const placeStore = usePlaceStore();
+const placeApi = usePlace();
 const publisherStore = usePublisherStore();
 const pubRhythmStore = usePubRhythmStore();
 
-const publication_places = computed(() => placeStore.places.map(p => ({id: p.id, name: p.name})));
+const {data: placeList } = placeApi.usePlaceList();
+
+const publication_places = computed(() => placeList.value?.map(p => ({id: p.id, name: p.name})));
 const publishers = computed(() => publisherStore.publishers.map(pu => ({id: pu.id, name: pu.name})));
 const publication_rhythms = computed(() => pubRhythmStore.publication_rhythms.map(pr => ({id: pr.id, value: pr.value})));
 
@@ -137,7 +139,7 @@ const onFormSubmit = async (e: any) => {
               class="flex-1 min-w-0"
               optionLabel="name"
               :options="publication_places"
-              :key="publication_places.length"
+              :key="publication_places?.length"
               :maxSelectedLabels="2"
               filter
               fluid

@@ -3,8 +3,8 @@ import { ref, onMounted } from  'vue';
 import { FilterMatchMode } from "@primevue/core";
 import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
 
-const place_store = usePlaceStore();
-const places = computed(() => place_store.places);
+const place_api = usePlace();
+const {data:places} = place_api.usePlaceList();
 const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
 
 const filters = ref({
@@ -14,7 +14,7 @@ const filters = ref({
 });
 
 onMounted(async () => {
-  await map_ref.value?.populatePlaces(places.value);
+  if(places.value) await map_ref.value?.populatePlaces(places.value);
 });
 </script>
 

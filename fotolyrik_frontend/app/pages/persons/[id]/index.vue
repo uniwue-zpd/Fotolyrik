@@ -12,8 +12,8 @@ const router = useRoute();
 const person_id = Number(router.params.id);
 const person_api = usePerson();
 const photopoem_api = usePhotopoem();
-const place_store = usePlaceStore();
-// TODO all into composables
+const place_api = usePlace();
+// Todo wrap all the awaits in a promise all
 const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemes(person_id));
 const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifs(person_id));
 const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchPersonMetrics(person_id));
@@ -42,9 +42,8 @@ const show_map = ref<boolean>(true);
 const { data: person_item } = person_api.usePersonId(person_id);
 const { data: person_neighbors } = person_api.usePersonIdNeighbors(person_id);
 
-
 onMounted(async () => {
-  const places = await place_store.getContributionPlaces(person_id);
+  const places = await place_api.getContributionPlaces(person_id);
   show_map.value = places.length > 0;
   await map_ref.value?.populatePlaces(places);
 });

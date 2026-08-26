@@ -34,6 +34,15 @@ export const usePlace = () => {
     function fetchPlaceMetrics(id: number) {
         return $fetch<PlaceMetricsDTO>(`/api/places/${id}/stats/metrics`);
     }
+    function usePlaceList(){
+        return useAsyncData('place-list', fetchPlaces);
+    }
+    function usePlaceId(id: number){
+        return useAsyncData( `place-${id}`, () => fetchPlaceById(id) );
+    }
+    function usePlaceMetricsId(id: number){
+        return useAsyncData( `place-metrics-${id}`, () => fetchPlaceMetrics(id) );
+    }
 
     return {
         fetchPlaces,
@@ -42,6 +51,9 @@ export const usePlace = () => {
         createPlace,
         updatePlace,
         deletePlace,
-        fetchPlaceMetrics
+        fetchPlaceMetrics,
+        usePlaceList,
+        usePlaceId,
+        usePlaceMetricsId,
     };
 };

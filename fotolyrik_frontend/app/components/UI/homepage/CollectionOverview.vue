@@ -4,21 +4,22 @@ import Chart from 'primevue/chart';
 const chartData = ref();
 const photopoem_api = usePhotopoem();
 const pubmedia_store = usePubMediumStore();
-const place_store = usePlaceStore();
+const place_api = usePlace();
 const person_api = usePerson();
 const keyword_api = useKeyword();
 
 const darkModeTextColor = computed(()=>{return useColorMode().value == 'dark'? 'white':'black'});
 
 const pubmediaCount = computed(() => pubmedia_store.pub_media.length);
-const placeCount = computed(() => place_store.places.length);
 
 const {data: keywordList} = keyword_api.useKeywordList();
 const {data: personList} = person_api.usePersonList();
 const {data: photopoemList} = photopoem_api.usePhotopoemList();
+const {data: placeList} = place_api.usePlaceList();
 const keywordCount = computed(()=> keywordList.value?.length);
 const personCount = computed(()=> personList.value?.length);
 const photopoemCount = computed(() => photopoemList.value?.length);
+const placeCount = computed(() => placeList.value?.length);
 
 
 const setChartData = () => {
