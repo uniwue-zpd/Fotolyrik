@@ -13,10 +13,13 @@ import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PersonMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -177,7 +180,18 @@ public class PersonService {
     }
 
     public List<PersonPreviewDTO> searchPeople(String query) {
-        List<Person> result = personRepository.searchPeople(query);
+        List<Person> result = personRepository.searchPeople(query,
+                Pageable.unpaged(Sort.by("lastName").ascending())).getContent();
         return personMapper.PersonsToPreviewDTOs(result);
+    }
+
+    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query) {
+        Page<Person> result;
+        if (query  == null||  query.trim().length()<2){
+            result =  personRepository.findAll(pageable);
+        } else {
+            result = personRepository.searchPeople(query, pageable);
+        }
+        return result.map(personMapper::PersonToPreviewDTO);
     }
 }

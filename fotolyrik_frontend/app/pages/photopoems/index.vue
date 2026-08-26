@@ -2,210 +2,179 @@
 import { ref, watch, onBeforeUnmount } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 import {useFiles} from "~/composables/useFiles";
+import PhotopoemFilter from "~/components/UI/filters/PhotopoemFilter.vue";
+import type {PhotopoemPageable} from "~/utils/types";
+
+const initialPageParameter: PhotopoemPageable = {
+  page: 0,
+  size: 15,
+  sort: 'title,asc'
+};
+
+const initialFilters: PhotopoemPageable ={
+  title: undefined,
+  subtitle: undefined,
+  'alt-title': undefined,
+  series: undefined,
+  volume: undefined,
+  issue: undefined,
+  'publication-date': undefined,
+  'pub-medium-id': undefined,
+  'pub-place-id': undefined,
+  'location-id': undefined,
+  'author-id': undefined,
+  'photographer-id': undefined,
+  'depicted-person-id': undefined,
+  'contributor-id': undefined,
+  'theme-id': undefined,
+  'image-motif-id': undefined,
+  'copyright-image-id': undefined,
+  'copyright-text-id': undefined,
+  'language-id': undefined
+};
+
+const pageParameter = reactive<PhotopoemPageable> ({...initialPageParameter});
+const filters = reactive<PhotopoemPageable>({...initialFilters});
+const resetFilter = () => {
+  Object.assign(pageParameter, initialPageParameter);
+  Object.assign(filters, initialFilters);
+};
+
+const sortOptions = ref([
+  { label: 'Aufsteigend (A-Z)', value: 'title,asc' },
+  { label: 'Absteigend (Z-A)', value: 'title,desc' }
+]);
 
 const photopoemApi = usePhotopoem();
 const fileApi = useFiles();
 const {data: photopoemList} = await photopoemApi.getAll();
 
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  title: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
-});
-
-// Preload image object URLs
-const previewURLs = ref<Record<number, string>>({});
-watch(
-  () => photopoemList.value,
-  async (photopoems) => {
-    if (!photopoems || photopoems.length === 0) return;
-    const tasks: Promise<void>[] = [];
-    photopoems.forEach((p) => {
-      if (p.images && p.images.length > 0 && p.imagesVisible === AccessLevel.PUBLIC) {
-        p.images.forEach((img: any) => {
-          if (!previewURLs.value[img.id]) {
-            tasks.push((async () => {
-              try {
-                const url = await fileApi.getContent(img.id);
-                if (url) previewURLs.value[img.id] = url;
-              } catch (err) {
-                console.error('Failed to preload image', img.id, err);
-              }
-            })());
-          }
-        });
-      }
-    });
-    try {
-      await Promise.all(tasks);
-    } catch (e) {
-      console.error('Error preloading images', e);
-    }
-  },
-  { immediate: true, deep: true }
+const pageOptions = computed(() =>
+    Array.from({ length: photopoems.value?.totalPages ?? 0 }, (_, index) => ({
+      label: `${ index + 1 }`,
+      value: index
+    }))
 );
 
-// Revoke blob URLs on unmount
-onBeforeUnmount(() => {
-  Object.values(previewURLs.value).forEach((url) => {
-    try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ }
-  });
-  previewURLs.value = {};
-});
+const { data: photopoems, pending: isLoading, error: hasError, refresh } = useAsyncData<Page<PhotoPoemDTO>>(
+    'photopoems-paginated',
+    () => photopoemApi.fetchPhotopoemsPaginated({...pageParameter, ...filters})
+);
+
+const debouncedRefresh = debounce(() => {
+  if (pageParameter.page == 0){
+    refresh();
+  }else{
+    pageParameter.page = 0; // this will trigger refresh on the other watcher
+  }
+}, 300);
+
+watch(
+    filters,
+    () => {
+      debouncedRefresh();
+    },
+    { deep: true }
+);
+
+watch(
+    pageParameter,
+    () => {
+      refresh();
+    },
+    { deep: true }
+);
 
 useHead(() => ({
-  title: 'Sammlung'
+  title: 'Fotogedichte - Sammlung'
 }));
+
+
 </script>
 
 <template>
-  <Card>
-    <template #title>
-      <h1 class="text-3xl font-bold outfit-headline text-primary">Fotogedichte</h1>
-    </template>
-    <template #content>
-      <DataTable
-          v-model:filters="filters"
-          filter-display="row"
-          :global-filter-fields="['title', 'altTitle', 'volume', 'issue', 'pageNumber', 'publicationDate', 'publicationMedium.title', 'contributions.contributor.fullName']"
-          :value="photopoemList"
-          stripedRows paginator :rows="10"
-      >
-        <template #header>
-          <div class="flex flex-row justify-between items-center">
-            <div class="p-2 border border-solid rounded-md hover:shadow-md">
-              <NuxtLink to="/photopoems/create" class="flex items-center">
-                <i class="pi pi-pen-to-square mr-2"/>
-                <div class="text-primary roboto-plain">Neu anlegen</div>
-              </NuxtLink>
-            </div>
-            <IconField>
-              <InputIcon>
-                <i class="pi pi-search"/>
-              </InputIcon>
-              <InputText
-                  v-model="filters['global'].value"
-                  type="text"
-                  placeholder="Felder durchsuchen"
-              />
-            </IconField>
+  <div class="flex flex-col gap-4">
+    <h1 class="text-3xl font-bold outfit-headline text-primary">Fotogedichte</h1>
+    <div class="flex flex-row justify-end">
+      <Select
+          :options="sortOptions"
+          v-model="pageParameter.sort"
+          optionLabel="label"
+          optionValue="value"
+          class="h-9 items-center"
+      />
+    </div> <div class="flex flex-col gap-5 lg:flex-row justify-between">
+      <div class="lg:w-1/4">
+        <PhotopoemFilter :filters="filters" @reset-filters="resetFilter" ></PhotopoemFilter>
+      </div>
+      <div class="lg:w-3/4 ">
+        <div class="flex flex-col gap-2 h-full">
+          <div v-if="isLoading" class="flex flex-col gap-2 items-center">
+            <ProgressSpinner/>
+            <div class="roboto-plain text-primary font-semibold text-lg">Inhalte werden geladen</div>
           </div>
-        </template>
-        <Column field="title" header="Titel" :sortable="true">
-          <template #body="{ data }">
-            <div class="flex flex-row space-x-5 items-center">
-              <NuxtLink
-                  v-if="data.title"
-                  :to="`/photopoems/${data.id}`"
-                  class="roboto-plain font-semibold"
-              >
-                {{ data.title }}
-              </NuxtLink>
-              <div v-else class="roboto-italic text-gray-500">
-                Unbenannt
-              </div>
-              <AvatarGroup>
-                <div v-if="data.images.length > 0 && data.imagesVisible === AccessLevel.PUBLIC">
-                  <Avatar
-                      v-for="image in data.images"
-                      :key="image.id"
-                      :image="previewURLs[image.id] || ''"
-                      shape="circle"
-                      oncontextmenu="return false;"
-                  />
+          <div v-else-if="photopoems" class="flex flex-col gap-2 justify-between min-h-full">
+            <div class="flex flex-col gap-2">
+              <div v-for="photopoem in photopoems.content" :key="photopoem.id" class="border-2 border-primary rounded-md p-2 shadow-md">
+                <div class="flex flex-col gap-1">
+                  <NuxtLink
+                      :to="`/photopoems/${photopoem.id}`"
+                      class="text-lg group relative w-fit outfit-headline font-semibold text-primary"
+                  >
+                    {{ photopoem.title || photopoem.altTitle || 'Unbenanntes Fotogedicht' }}
+                    <span class="absolute bottom-0 left-0 h-px w-0 bg-current transition-all duration-300 group-hover:w-full"/>
+                  </NuxtLink>
+                  <div v-if="photopoem.publicationDate" class="flex flex-row gap-2">
+                    <span class="text-sm roboto-plain">Erschienen: </span>
+                    <div class="text-sm text-primary outfit-headline font-medium">
+                      {{ photopoem.publicationDate }}
+                    </div>
+                  </div>
+                  <div v-if="photopoem.publicationMedium" class="flex flex-row gap-2">
+                    <span class="text-sm roboto-plain">In: </span>
+                    <NuxtLink
+                        :to="`/publication_media/${ photopoem.publicationMedium.id }`"
+                        class="text-sm text-primary outfit-headline font-medium"
+                    >
+                      {{ photopoem.publicationMedium.title }}
+                    </NuxtLink>
+                  </div>
                 </div>
-              </AvatarGroup>
+              </div>
             </div>
-          </template>
-          <template #filter="{ filterModel, filterCallback }">
-            <InputText
-                v-model="filterModel.value"
-                type="text" @input="filterCallback()"
-                placeholder="Nach Titel suchen"
-            />
-          </template>
-        </Column>
-        <Column field="altTitle" header="Alternativtitel" class="roboto-plain">
-          <template #body="{ data }">
-            <NuxtLink
-                v-if="!data.title"
-                :to="`/photopoems/${data.id}`"
-                class="roboto-plain font-semibold"
-            >
-              {{ data.altTitle }}
-            </NuxtLink>
-            <div v-else class="roboto-plain">
-              {{ data.altTitle }}
+            <div class="flex items-center justify-center align-bottom gap-3">
+              <button
+                  type="button"
+                  class="px-2 h-9 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
+                  :disabled="pageParameter.page === 0"
+                  aria-label="Vorherige Seite"
+                  @click="pageParameter.page!--"
+              >
+                <i class="pi pi-chevron-left"/>
+              </button>
+              <Select
+                  v-model="pageParameter.page"
+                  :options="pageOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  :disabled="photopoems?.totalPages <= 1"
+                  class="h-9 items-center"
+              />
+              <button
+                  type="button"
+                  class="px-2 h-9 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
+                  :disabled="pageParameter.page! >= (photopoems?.totalPages ?? 1) - 1"
+                  aria-label="Nächste Seite"
+                  @click="pageParameter.page!++"
+              >
+                <i class="pi pi-chevron-right"/>
+              </button>
             </div>
-          </template>
-        </Column>
-        <Column field="volume" header="Jahrgang" class="roboto-plain"/>
-        <Column field="issue" header="Ausgabe" class="roboto-plain"/>
-        <Column field="pageNumber" header="Seite(n)" class="roboto-plain"/>
-        <Column field="pageCount" header="Umfang" class="roboto-plain" :sortable="true"/>
-        <Column field="publicationDate" header="Publikationsdatum" class="roboto-plain"/>
-        <Column field="publicationMedium.title" header="Publikationsmedium" :sortable="true">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.publicationMedium != null">
-              <NuxtLink :to="`/publication_media/${slotProps.data.publicationMedium.id}`" class="roboto-plain">
-                {{ slotProps.data.publicationMedium.title }}
-              </NuxtLink>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-        <Column header ="Autor:innen" field="contributions">
-          <template #body="slotProps: {data:PhotoPoemDTO}">
-            <div v-if="slotProps.data.contributions && slotProps.data.contributions.filter(x => x.role === ContributionRole.AUTHOR).length > 0">
-              <ul class="list-inside">
-                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === ContributionRole.AUTHOR)" :key="c.contributor?.id ?? index">
-                  <NuxtLink :to="`/persons/${c.contributor?.id}`" class="roboto-plain">
-                    {{ c.contributor.fullName }}
-                  </NuxtLink>
-                </li>
-              </ul>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-        <Column header ="Fotograf:innen" field="contributions">
-          <template #body="slotProps: {data:PhotoPoemDTO}">
-            <div v-if="slotProps.data.contributions && slotProps.data.contributions.filter(x => x.role === ContributionRole.PHOTOGRAPHER).length > 0">
-              <ul class="list-inside">
-                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === ContributionRole.PHOTOGRAPHER)" :key="c.contributor?.id ?? index">
-                  <NuxtLink :to="`/persons/${c.contributor?.id}`" class="roboto-plain">
-                    {{ c.contributor.fullName }}
-                  </NuxtLink>
-                </li>
-              </ul>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-        <Column header ="Sonstige Mitwirkende" field="contributions">
-          <template #body="slotProps: {data:PhotoPoemDTO}">
-            <div v-if="slotProps.data.contributions && slotProps.data.contributions.filter(x => x.role === ContributionRole.OTHER).length > 0">
-              <ul class="list-inside">
-                <li v-for="(c, index) in slotProps.data.contributions.filter(x => x.role === ContributionRole.OTHER)" :key="c.contributor?.id ?? index">
-                  <NuxtLink :to="`/persons/${c.contributor?.id}`" class="roboto-plain">
-                    {{ c.contributor.fullName }}
-                  </NuxtLink>
-                </li>
-              </ul>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-      </DataTable>
-    </template>
-  </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>

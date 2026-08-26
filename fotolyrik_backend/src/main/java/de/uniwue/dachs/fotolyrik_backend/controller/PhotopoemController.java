@@ -5,6 +5,8 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PhotopoemDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.FullText;
 import de.uniwue.dachs.fotolyrik_backend.service.FullTextService;
 import de.uniwue.dachs.fotolyrik_backend.service.PhotopoemService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,39 @@ public class PhotopoemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PhotopoemDTO>> getPhotopoems() {
+    public ResponseEntity<Page<PhotopoemDTO>> getPaginatedPhotopoems(
+            Pageable pageable,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String subtitle,
+            @RequestParam(required = false, value="alttitle") String altTitle,
+            @RequestParam(required = false) String series,
+            @RequestParam(required = false) Long volume,
+            @RequestParam(required = false) Long issue,
+            @RequestParam(required = false, value = "publication-date") String publicationDate,
+            @RequestParam(required = false, value = "pub-medium-id") Long pubMediumId,
+            @RequestParam(required = false, value = "pub-place-id") Long pubPlaceId,
+            @RequestParam(required = false, value = "location-id") Long locationId,
+            @RequestParam(required = false, value = "author-id") Long authorId,
+            @RequestParam(required = false, value = "photographer-id") Long photographerId,
+            @RequestParam(required = false, value = "depicted-person-id") Long depictedPersonId,
+            @RequestParam(required = false, value = "contributor-id") Long contributorId,
+            @RequestParam(required = false, value = "theme-id") Long themeId,
+            @RequestParam(required = false, value = "image-motif-id") Long imageMotifId,
+            @RequestParam(required = false, value = "copyright-image-id") Long copyrightStatusImageId,
+            @RequestParam(required = false, value = "copyright-text-id") Long copyrightStatusTextId,
+            @RequestParam(required = false, value = "language-id") Long languageId
+    ) {
+        Page<PhotopoemDTO> photopoems = photopoemService.getPaginatedPhotopoems(
+                pageable, title, subtitle, altTitle, series, volume, issue, publicationDate,
+                pubMediumId, pubPlaceId, locationId, authorId, photographerId,
+                depictedPersonId, contributorId, themeId, imageMotifId, copyrightStatusImageId,
+                copyrightStatusTextId, languageId
+        );
+        return ResponseEntity.ok(photopoems);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PhotopoemDTO>> getAllPhotopoems() {
         List<PhotopoemDTO> photopoems = photopoemService.getAllPhotopoems();
         return ResponseEntity.ok(photopoems);
     }

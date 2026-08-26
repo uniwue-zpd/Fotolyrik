@@ -262,3 +262,83 @@ export interface PlaceMetricsDTO {
     photographers: number;
     depictedPeople: number;
 }
+
+/**
+ * Describes a `Page` object returned after calling an endpoint with `Pageable` parameters
+ */
+export interface Page<T> {
+    content: T[];
+    pageable: {
+        pageNumber: number;
+        pageSize: number;
+        sort: {
+            empty: boolean;
+            unsorted: boolean;
+            sorted: boolean;
+        };
+        offset: number;
+        unpaged: boolean;
+        pages: boolean;
+    };
+    last: boolean;
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number;
+    sort: {
+        empty: boolean;
+        unsorted: boolean;
+        sorted: boolean;
+    };
+    numberOfElements: number;
+    first: boolean;
+    empty: boolean;
+}
+
+/**
+ * Describes pagination and sorting parameters used for paged API requests.
+ * Compatible with Spring Data Pageable query parameters:
+ * - `page`: Zero-based page index to retrieve.
+ * - `size`: Maximum number of elements per page.
+ * - `sort`: Sorting criteria in the format `property,direction`
+ *   (e.g. `title,asc` or `publicationDate,desc`). Multiple sort criteria
+ *   can be provided as an array.
+ */
+export interface Pageable {
+    page?: number;
+    size?: number;
+    sort?: string | string[];
+}
+
+/**
+ * Describes pagination, sorting, and filtering parameters for paged photopoem API requests.
+ * Extends Spring Data Pageable query parameters with optional filters specific to photopoems.
+ * All filter parameters are combined as query parameters and restrict the returned results.
+ * Filter parameters:
+ * - Text fields (`title`, `subtitle`, `alt-title`, `series`) filter by corresponding metadata values.
+ * - Numeric identifiers (`*-id`) filter by related entities such as authors, publication media,
+ *   themes, image motifs, or copyright holders.
+ * - `volume` and `issue` filter by publication information.
+ * - `publication-date` filters by the publication date of the photopoem.
+ */
+export interface PhotopoemPageable extends Pageable {
+    title?: string;
+    subtitle?: string;
+    'alt-title'?: string;
+    series?: string;
+    volume?: number;
+    issue?: number;
+    'publication-date'?: string;
+    'pub-medium-id'?: number;
+    'pub-place-id'?: number;
+    'location-id'?: number;
+    'author-id'?: number;
+    'photographer-id'?: number;
+    'depicted-person-id'?: number;
+    'contributor-id'?: number;
+    'theme-id'?: number;
+    'image-motif-id'?: number;
+    'copyright-image-id'?: number;
+    'copyright-text-id'?: number;
+    'language-id'?: number;
+}
