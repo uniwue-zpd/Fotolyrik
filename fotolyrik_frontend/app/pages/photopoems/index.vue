@@ -46,8 +46,6 @@ const sortOptions = ref([
 ]);
 
 const photopoemApi = usePhotopoem();
-const fileApi = useFiles();
-const {data: photopoemList} = await photopoemApi.getAll();
 
 const pageOptions = computed(() =>
     Array.from({ length: photopoems.value?.totalPages ?? 0 }, (_, index) => ({

@@ -2,7 +2,7 @@ import type {Page, PhotopoemPageable} from "~/utils/types";
 
 export const usePhotopoem = () => {
     function fetchAll() {
-        return $fetch<PhotoPoemDTO[]>('/api/photopoems');
+        return $fetch<PhotoPoemDTO[]>('/api/photopoems/all');
     }
 
     function fetchById(id: number) {
