@@ -86,7 +86,8 @@ public class Photopoem extends BaseEntity {
     @ManyToMany
     @JoinTable(
             name = "photopoem_themes",
-            joinColumns = @JoinColumn(name = "photopoem_id"),
+            joinColumns = @JoinColumn(name = "photopoem_id",
+            foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (photopoem_id) REFERENCES photopoem(id) ON DELETE CASCADE")),
             inverseJoinColumns = @JoinColumn(name = "keyword_id")
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -95,7 +96,8 @@ public class Photopoem extends BaseEntity {
     @ManyToMany
     @JoinTable(
             name = "photopoem_image_motifs",
-            joinColumns = @JoinColumn(name = "photopoem_id"),
+            joinColumns = @JoinColumn(name = "photopoem_id",
+            foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (photopoem_id) REFERENCES photopoem(id) ON DELETE CASCADE")),
             inverseJoinColumns = @JoinColumn(name = "keyword_id")
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
