@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.sql.Types;
 import java.time.Year;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,9 +43,11 @@ public class PubMedium extends BaseEntity {
 
     private String editorialOffice;
 
+    @JdbcTypeCode(Types.SMALLINT)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
     private Year startYear;
 
+    @JdbcTypeCode(Types.SMALLINT)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
     private Year endYear;
 
