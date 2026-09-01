@@ -1,10 +1,10 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
-import de.uniwue.dachs.fotolyrik_backend.model.Person;
+import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
 import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
+import de.uniwue.dachs.fotolyrik_backend.repository.PhotopoemRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.KeywordMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -13,17 +13,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class KeywordService {
     private final KeywordRepository keywordRepository;
     private final KeywordMapper keywordMapper;
+    private final PhotopoemRepository photopoemRepository;
 
-    public KeywordService(KeywordRepository keywordRepository, KeywordMapper keywordMapper) {
+    public KeywordService(KeywordRepository keywordRepository, KeywordMapper keywordMapper, PhotopoemRepository photopoemRepository) {
         this.keywordRepository = keywordRepository;
         this.keywordMapper = keywordMapper;
+        this.photopoemRepository = photopoemRepository;
     }
 
     // GET all keywords
@@ -57,14 +61,21 @@ public class KeywordService {
                 .orElseThrow(() -> new EntityNotFoundException("Entity with id '" + id + "' can't be updated"));
     }
 
-    // DELETE keyword by ID
+    /**
+     * Deletes a keyword by its ID. Before deletion, it detaches the keyword from all photopoems that reference it, either as a theme or an image motif.
+     * If the keyword with the specified ID does not exist, an EntityNotFoundException is thrown.
+     * @param id the ID of the keyword to delete
+     * @throws EntityNotFoundException if the keyword with the specified ID does not exist
+     */
     @Transactional
     public void deleteKeyword(Long id) {
         if (!keywordRepository.existsById(id)) {
             throw new EntityNotFoundException("Keyword with ID '" + id + "' does not exist");
         }
+        detachKeywordByIdFromPhotopoems(id);
         keywordRepository.deleteById(id);
     }
+
     // GET a list of keywords constrained by QUERY and PAGEABLE
     public Page<KeywordDTO> searchKeywordsPaginated(Pageable pageable, String query) {
         Page<Keyword> result;
@@ -74,5 +85,19 @@ public class KeywordService {
             result = keywordRepository.findByValueContainingIgnoreCase(query, pageable);
         }
         return result.map(keywordMapper::KeywordToKeywordDTO);
+    }
+
+    /**
+     * Detach a keyword from all photopoems that reference it, either as a theme or an image motif.
+     * @param id the ID of the keyword to detach
+     */
+    private void detachKeywordByIdFromPhotopoems(Long id) {
+        Set<Photopoem> photopoemsWithKeyword = new HashSet<>();
+        photopoemsWithKeyword.addAll(photopoemRepository.findByThemes_Id(id));
+        photopoemsWithKeyword.addAll(photopoemRepository.findByImageMotifs_Id(id));
+        photopoemsWithKeyword.forEach(photopoem -> {
+            photopoem.getThemes().removeIf(keyword -> keyword.getId().equals(id));
+            photopoem.getImageMotifs().removeIf(keyword -> keyword.getId().equals(id));
+        });
     }
 }
