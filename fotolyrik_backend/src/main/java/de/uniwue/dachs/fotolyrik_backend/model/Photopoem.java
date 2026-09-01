@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "photopoem")
@@ -86,21 +84,17 @@ public class Photopoem extends BaseEntity {
     @ManyToMany
     @JoinTable(
             name = "photopoem_themes",
-            joinColumns = @JoinColumn(name = "photopoem_id",
-            foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (photopoem_id) REFERENCES photopoem(id) ON DELETE CASCADE")),
+            joinColumns = @JoinColumn(name = "photopoem_id"),
             inverseJoinColumns = @JoinColumn(name = "keyword_id")
     )
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Keyword> themes = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
             name = "photopoem_image_motifs",
-            joinColumns = @JoinColumn(name = "photopoem_id",
-            foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (photopoem_id) REFERENCES photopoem(id) ON DELETE CASCADE")),
+            joinColumns = @JoinColumn(name = "photopoem_id"),
             inverseJoinColumns = @JoinColumn(name = "keyword_id")
     )
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Keyword> imageMotifs = new HashSet<>();
 
     private String form;
