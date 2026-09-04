@@ -8,8 +8,9 @@ function getRandomRgb(): string {
   const b = Math.floor(Math.random() * 256);
   return `rgba(${r}, ${g}, ${b}, 0.4)`;
 }
-const keywordStore = useKeywordStore();
-const keywords = keywordStore.keywords.map((k:KeywordDTO) => ({id: k.id, value: k.value, gndId: k.gndId, color: getRandomRgb()}));
+const keyword_api = useKeyword();
+const {data:keyword_list} = await keyword_api.getAll();
+const keywords = computed(()=> keyword_list.value?.map((k:KeywordDTO) => ({id: k.id, value: k.value, gndId: k.gndId, color: getRandomRgb()})));
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },

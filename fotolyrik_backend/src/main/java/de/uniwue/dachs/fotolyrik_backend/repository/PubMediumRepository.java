@@ -50,5 +50,21 @@ public interface PubMediumRepository extends JpaRepository<PubMedium, Long>, Jpa
     WHERE pm.id = :pubMediumId;
     """ ,nativeQuery=true)
     PubMediumMetricsDTO getMetricsByPubMedium(@Param("pubMediumId") Long pubMediumId);
+
+    @Query(value = """
+    WITH sorted_pub_mediums AS (
+        SELECT 
+            id,
+            ROW_NUMBER() OVER (ORDER BY title ASC, subtitle ASC, id ASC) AS rn
+        FROM pub_medium
+    )
+    SELECT pm.id
+    FROM sorted_pub_mediums target
+    JOIN sorted_pub_mediums pm 
+      ON pm.rn BETWEEN (target.rn - :padding) AND (target.rn + :padding)
+    WHERE target.id = :id
+    ORDER BY pm.rn ASC
+    """, nativeQuery = true)
+    List<Long> findNeighborIdsById(@Param("id") Long id, @Param("padding") int padding);
 }
 

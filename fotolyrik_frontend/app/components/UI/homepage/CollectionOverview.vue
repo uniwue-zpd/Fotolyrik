@@ -2,18 +2,34 @@
 import Chart from 'primevue/chart';
 
 const chartData = ref();
-const photopoem_store = usePhotopoemStore();
-const pubmedia_store = usePubMediumStore();
-const place_store = usePlaceStore();
-const person_store = usePersonStore();
-const keyword_store = useKeywordStore();
+const photopoem_api = usePhotopoem();
+const pub_medium_api = usePubMedium();
+const place_api = usePlace();
+const person_api = usePerson();
+const keyword_api = useKeyword();
 
 const darkModeTextColor = computed(()=>{return useColorMode().value == 'dark'? 'white':'black'});
-const photopoemCount = computed(() => photopoem_store.photopoems.length);
-const pubmediaCount = computed(() => pubmedia_store.pub_media.length);
-const placeCount = computed(() => place_store.places.length);
-const personCount = computed(() => person_store.persons.length);
-const keywordCount = computed(() => keyword_store.keywords.length);
+
+
+const [
+  { data: keywordList },
+  { data: personList },
+  { data: photopoemList },
+  { data: placeList },
+  { data: pubMediumList }
+] = await Promise.all([
+  keyword_api.getAll(),
+  person_api.getAll(),
+  photopoem_api.getAll(),
+  place_api.getAll(),
+  pub_medium_api.getAll()
+]);
+const keywordCount = computed(()=> keywordList.value?.length);
+const personCount = computed(()=> personList.value?.length);
+const photopoemCount = computed(() => photopoemList.value?.length);
+const placeCount = computed(() => placeList.value?.length);
+const pubmediaCount = computed(() => pubMediumList.value?.length);
+
 
 const setChartData = () => {
   return {

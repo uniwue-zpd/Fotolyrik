@@ -14,6 +14,22 @@ import java.util.List;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
+    @Query(value = """
+        WITH sorted_persons AS (
+            SELECT 
+                id,
+                ROW_NUMBER() OVER (ORDER BY first_name ASC, last_name ASC, id ASC) AS rn
+            FROM person
+        )
+        SELECT p.id
+        FROM sorted_persons target
+        JOIN sorted_persons p 
+          ON p.rn BETWEEN (target.rn - :padding) AND (target.rn + :padding)
+        WHERE target.id = :id
+        ORDER BY p.rn ASC
+        """, nativeQuery = true)
+    List<Long> findNeighborIdsById(@Param("id") Long id, @Param("padding") int padding);
+
     @Query(value = "SELECT DISTINCT pl.* " + // Use specific columns or pl.* depending on your needs
             "FROM contribution c " +
             "JOIN photopoem p         ON c.photopoem_id = p.id " +

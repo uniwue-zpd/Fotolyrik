@@ -10,20 +10,28 @@ import PersonContributionsPlot from "~/components/visualizations/PersonContribut
 
 const router = useRoute();
 const person_id = Number(router.params.id);
-const person_store = usePersonStore();
-const photopoem_store = usePhotopoemStore();
-const place_store = usePlaceStore();
-const person_item = ref<PersonDTO | null>(null);
-const previous_person = ref<PersonDTO | null>(null);
-const next_person = ref<PersonDTO | null>(null);
-const { data: authorThemes } = await useAsyncData(`author-${ person_id }-themes`, () => person_store.fetchAuthorThemes(person_id));
-const { data: authorImageMotifs } = await useAsyncData(`author-${ person_id }-image-motifs`, () => person_store.fetchAuthorImageMotifs(person_id));
-const { data: personMetrics } = await useAsyncData(`person-${ person_id }-metrics`, () => person_store.fetchPersonMetrics(person_id));
-const { data: authorOf } = await useAsyncData(`author-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'author-id': person_id }));
-const { data: photographerOf } = await useAsyncData(`photographer-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'photographer-id': person_id }));
-const { data: participatedOn } = await useAsyncData(`participant-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'participant-id': person_id }));
-const { data: contributorOf } = await useAsyncData(`contributor-${ person_id }-of`, () => photopoem_store.filterPhotopoems({ 'other-contributor-id': person_id }));
-const { data: depictedOn } = await useAsyncData(`depicted-${ person_id }-on`, () => photopoem_store.filterPhotopoems({ 'depicted-person-id': person_id }));
+const person_api = usePerson();
+const photopoem_api = usePhotopoem();
+const place_api = usePlace();
+const [
+  { data: authorThemes },
+  { data: authorImageMotifs },
+  { data: personMetrics },
+  { data: authorOf },
+  { data: photographerOf },
+  { data: participatedOn },
+  { data: contributorOf },
+  { data: depictedOn }
+] = await Promise.all([
+  useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemesById(person_id)),
+  useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifsById(person_id)),
+  useAsyncData(`person-${ person_id }-metrics`, () => person_api.fetchMetricsById(person_id)),
+  photopoem_api.getAllFiltered({ 'author-id': person_id }),
+  photopoem_api.getAllFiltered({ 'photographer-id': person_id }),
+  photopoem_api.getAllFiltered({ 'participant-id': person_id }),
+  photopoem_api.getAllFiltered({ 'other-contributor-id': person_id }),
+  photopoem_api.getAllFiltered({ 'depicted-person-id': person_id })
+]);
 
 const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
   const normalize = (list: any[] | undefined, role: PersonRole) =>
@@ -38,13 +46,21 @@ const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
   ];
 });
 const map_ref = ref<InstanceType<typeof MultiPlaceMap> | null>(null);
+const show_map = ref<boolean>(true);
+
+
+const [
+  { data: person_item },
+  { data: person_neighbors }
+] = await Promise.all([
+  person_api.getById(person_id),
+  person_api.getNeighborsById(person_id)
+]);
 
 onMounted(async () => {
-  await person_store.fetchPersonById(person_id);
-  person_item.value = person_store.currentPerson;
-  previous_person.value = person_store.previousPerson();
-  next_person.value = person_store.nextPerson();
-  await map_ref.value?.populatePlaces(await place_store.getContributionPlaces(person_id));
+  const places = await place_api.getContributionPlacesById(person_id);
+  show_map.value = places.length > 0;
+  await map_ref.value?.populatePlaces(places);
 });
 
 useHead(() => {
@@ -106,9 +122,12 @@ useHead(() => {
           </tr>
           </tbody>
         </table>
+        <div v-if="person_item === null"> Fehler. Person konnte nicht gefunden werden.</div>
+        <div v-if=" show_map">
         <Divider/>
         <h2 class="text-xl font-bold text-primary outfit-headline">Veröffentlichungsorte</h2>
-        <MultiPlaceMap ref="map_ref"></MultiPlaceMap>
+        <MultiPlaceMap  ref="map_ref"></MultiPlaceMap>
+        </div>
         <div class="flex flex-col gap-4">
           <div v-if="authorThemes && authorThemes.length > 0 || authorImageMotifs && authorImageMotifs.length > 0" class="flex flex-col gap-2">
             <Divider/>
@@ -197,9 +216,9 @@ useHead(() => {
     </Card>
     <div class="flex flex-row justify-between">
       <div class="previus">
-        <div v-if="previous_person" class="p-2 border border-solid rounded-md hover:shadow-md">
+        <div v-if="person_neighbors?.previous" class="p-2 border border-solid rounded-md hover:shadow-md">
           <NuxtLink
-              :to="`/persons/${previous_person.id}`"
+              :to="`/persons/${person_neighbors.previous}`"
               class="flex flex-row items-center space-x-2"
           >
             <i class="pi pi-arrow-left"/>
@@ -208,9 +227,9 @@ useHead(() => {
         </div>
       </div>
       <div class="next">
-        <div v-if="next_person" class="p-2 border border-solid rounded-md hover:shadow-md">
+        <div v-if="person_neighbors?.next" class="p-2 border border-solid rounded-md hover:shadow-md">
           <NuxtLink
-              :to="`/persons/${next_person.id}`"
+              :to="`/persons/${person_neighbors.next}`"
               class="flex flex-row items-center space-x-2"
           >
             <div class="roboto-plain">Nächster Eintrag</div>

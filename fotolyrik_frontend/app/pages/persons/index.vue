@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
-import { usePersonStore } from "~/stores/PersonStore";
 
-const store = usePersonStore();
+const person_api = usePerson();
+const {data: personList} = await person_api.getAll();
 const persons = computed(() => {
-  return store.persons.map(person => ({
+  return personList.value?.map(person => ({
     ...person,
     pseudonyms: person.pseudonyms.sort().join(', ')
   }));

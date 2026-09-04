@@ -3,29 +3,20 @@ import KeywordForm from "~/components/forms/KeywordForm.vue";
 
 const route = useRoute();
 const keyword_id = Number(route.params.id);
-const keywordStore = useKeywordStore();
-const keyword_item = ref<KeywordDTO | null>(null);
-const loading = ref(true);
+const keywordApi = useKeyword();
 
-onMounted(async () => {
-  try {
-    await keywordStore.fetchKeywordById(keyword_id);
-    keyword_item.value = keywordStore.currentKeyword ?? null;
-  } finally {
-    loading.value = false;
-  }
-});
+const { data: keyword_item, status } = await keywordApi.getById(keyword_id);
 </script>
 
 <template>
-  <div v-if="!keyword_item">
+  <div v-if="status === 'pending'">
     <div class="flex flex-row space-x-2 items-center justify-center p-2 bg-[#F1F2F2] rounded-md">
       <i class="pi pi-spin pi-spinner"/>
       <p class="roboto-plain">Schlagwort wird geladen</p>
     </div>
   </div>
   <KeywordForm
-      v-else
+      v-else-if="keyword_item"
       action="edit"
       header="Schlagwort bearbeiten"
       :keyword="keyword_item"

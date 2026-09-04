@@ -16,7 +16,7 @@ public class Place extends BaseEntity {
 
     private String description;
 
-    private double longitude;
+    private Double longitude;
 
-    private double latitude;
+    private Double latitude;
 }
