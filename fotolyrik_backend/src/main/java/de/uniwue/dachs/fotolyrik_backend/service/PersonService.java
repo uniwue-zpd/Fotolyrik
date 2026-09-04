@@ -6,9 +6,8 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.EdgeGroup;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.NodeNameProjection;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
@@ -16,17 +15,13 @@ import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PersonMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -214,27 +209,25 @@ public class PersonService {
     }
 
 
-    /**
-     * GET worked with graph
-     * @return a graph documenting which person contributed to the same photopoem as another person
-     */
     public GraphDTO getWorkedWithGraph() {
-        List<EdgeGroup> edgeGroups = personRepository.findGraphEdges();
-        List<NodeNameProjection> nodeProjections = personRepository.findGraphNodes();
+        List<AdjacencyProjection> adjacencyList = personRepository.findAdjacencyList();
 
-        Map<Long, String> nodesMap = nodeProjections.stream()
+        Map<Long, String> nodesMap = adjacencyList.stream()
                 .collect(Collectors.toMap(
-                        NodeNameProjection::getId,
-                        NodeNameProjection::getPreviewName
+                        AdjacencyProjection::getId,
+                        AdjacencyProjection::getName,
+                        (existing, replacement) -> existing
                 ));
 
-        List<List<Long>> edgesList = edgeGroups.stream()
-                .map(EdgeGroup::getNodeIds)
-                .collect(Collectors.toList());
+        Map<Long, Set<Long>> edgesMap = adjacencyList.stream()
+                .collect(Collectors.toMap(
+                        AdjacencyProjection::getId,
+                        AdjacencyProjection::getTargets
+                ));
 
         GraphDTO graphDTO = new GraphDTO();
         graphDTO.setNodes(nodesMap);
-        graphDTO.setEdges(edgesList);
+        graphDTO.setEdges(edgesMap);
 
         return graphDTO;
     }
