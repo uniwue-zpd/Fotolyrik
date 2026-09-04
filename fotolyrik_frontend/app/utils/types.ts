@@ -262,6 +262,10 @@ export interface PlaceMetricsDTO {
     photographers: number;
     depictedPeople: number;
 }
+export interface GraphDTO{
+    nodes: Record<string,string>; // id -> name
+    edges: Record<string,Array<number>>; // id -> targets
+}
 
 /**
  * Describes a `Page` object returned after calling an endpoint with `Pageable` parameters

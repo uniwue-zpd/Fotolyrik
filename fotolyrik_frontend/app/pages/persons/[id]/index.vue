@@ -7,6 +7,7 @@ import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
 import AuthorKeywordsTreemap from "~/components/visualizations/AuthorKeywordsTreemap.vue";
 import PersonMetrics from "~/components/visualizations/PersonMetrics.vue";
 import PersonContributionsPlot from "~/components/visualizations/PersonContributionsPlot.vue";
+import RelationGraph from "~/components/visualizations/RelationGraph.vue";
 
 const router = useRoute();
 const person_id = Number(router.params.id);
@@ -147,6 +148,9 @@ useHead(() => {
             <Divider/>
             <h2 class="text-xl font-bold text-primary outfit-headline">Beiträge nach Veröffentlichungsdatum</h2>
             <PersonContributionsPlot :data="contributionsSummary"/>
+          </div>
+          <div>
+            <RelationGraph :id="person_id"></RelationGraph>
           </div>
           <div v-if="authorOf && authorOf.length > 0" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Autor:in von</h2>
