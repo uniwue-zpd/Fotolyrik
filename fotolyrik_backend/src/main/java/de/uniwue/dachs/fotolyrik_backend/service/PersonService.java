@@ -6,6 +6,9 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.EdgeGroup;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.NodeNameProjection;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
@@ -16,12 +19,15 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
@@ -179,12 +185,24 @@ public class PersonService {
         return personRepository.getMetricsByPerson(personId);
     }
 
+    /**
+     * GET a list of persons based on search query
+     * @param query defining which person
+     * @return a List of {@link PersonPreviewDTO} found persons
+     */
     public List<PersonPreviewDTO> searchPeople(String query) {
         List<Person> result = personRepository.searchPeople(query,
                 Pageable.unpaged(Sort.by("lastName").ascending())).getContent();
         return personMapper.PersonsToPreviewDTOs(result);
     }
 
+
+    /**
+     * GET a page of persons based on search query
+     * @param query defining which person
+     * @param pageable defining sorting and size of page
+     * @return a Page of {@link PersonPreviewDTO} found persons
+     */
     public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query) {
         Page<Person> result;
         if (query  == null||  query.trim().length()<2){
@@ -193,5 +211,31 @@ public class PersonService {
             result = personRepository.searchPeople(query, pageable);
         }
         return result.map(personMapper::PersonToPreviewDTO);
+    }
+
+
+    /**
+     * GET worked with graph
+     * @return a graph documenting which person contributed to the same photopoem as another person
+     */
+    public GraphDTO getWorkedWithGraph() {
+        List<EdgeGroup> edgeGroups = personRepository.findGraphEdges();
+        List<NodeNameProjection> nodeProjections = personRepository.findGraphNodes();
+
+        Map<Long, String> nodesMap = nodeProjections.stream()
+                .collect(Collectors.toMap(
+                        NodeNameProjection::getId,
+                        NodeNameProjection::getPreviewName
+                ));
+
+        List<List<Long>> edgesList = edgeGroups.stream()
+                .map(EdgeGroup::getNodeIds)
+                .collect(Collectors.toList());
+
+        GraphDTO graphDTO = new GraphDTO();
+        graphDTO.setNodes(nodesMap);
+        graphDTO.setEdges(edgesList);
+
+        return graphDTO;
     }
 }

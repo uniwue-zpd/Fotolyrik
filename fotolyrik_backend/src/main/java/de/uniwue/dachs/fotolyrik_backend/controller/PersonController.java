@@ -6,6 +6,7 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +73,10 @@ public class PersonController {
         }
     }
 
+    @GetMapping("/stats/graph/worked_with")
+    public ResponseEntity<GraphDTO> getWorkedWithGraph() {
+        return ResponseEntity.ok(personService.getWorkedWithGraph());
+    }
     @GetMapping("/{id}/stats/contribution_places")
     public ResponseEntity<List<PlaceDTO>> getContributionPlacesByPersonId(@PathVariable Long id) {
         try {

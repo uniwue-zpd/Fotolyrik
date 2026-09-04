@@ -2,6 +2,8 @@ package de.uniwue.dachs.fotolyrik_backend.repository;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.EdgeGroup;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.NodeNameProjection;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -110,4 +112,29 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
         ORDER BY p.lastName ASC NULLS LAST
     """)
     Page<Person> searchPeople(@Param("query") String query, Pageable pageable);
+
+    @Query(value = """
+        SELECT ARRAY_AGG(contributor_id ORDER BY contributor_id) AS nodeIds
+        FROM contribution
+        GROUP BY photopoem_id
+        HAVING COUNT(contributor_id) > 1
+        ORDER BY photopoem_id
+        """, nativeQuery = true)
+    List<EdgeGroup> findGraphEdges();
+
+    @Query(value = """
+        SELECT DISTINCT
+            p.id AS id,
+            CONCAT(p.last_name, ' ', p.first_name) AS previewName
+        FROM contribution c
+        JOIN person p ON c.contributor_id = p.id
+        WHERE c.photopoem_id IN (
+            SELECT photopoem_id
+            FROM contribution
+            GROUP BY photopoem_id
+            HAVING COUNT(contributor_id) > 1
+        )
+        ORDER BY p.id
+        """, nativeQuery = true)
+    List<NodeNameProjection> findGraphNodes();
 }
