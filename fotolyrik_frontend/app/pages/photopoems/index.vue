@@ -5,7 +5,7 @@ import type { Page, PhotopoemPageable } from "~/utils/types";
 
 const initialPageParameter: PhotopoemPageable = {
   page: 0,
-  size: 15,
+  size: 10,
   sort: 'title,asc'
 };
 
