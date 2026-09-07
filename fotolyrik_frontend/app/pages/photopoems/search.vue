@@ -2,14 +2,14 @@
 import {ref} from "vue";
 import type {FullTextSearchResult} from "~/utils/types";
 
-const fullTextStore = useFullTextStore();
+const fullTextApi = useFullText();
 const submitted = ref(false);
 const results = ref<FullTextSearchResult[]>([]);
 const query_result_status = ref('');
 
 const submit = async (formData: { query: string}) => {
   try {
-    results.value = await fullTextStore.searchFullTexts(formData.query);
+    results.value = await fullTextApi.searchFullTexts(formData.query);
     submitted.value = true;
     results.value.length > 0 ? query_result_status.value = 'success': query_result_status.value = 'empty';
   } catch (error) {

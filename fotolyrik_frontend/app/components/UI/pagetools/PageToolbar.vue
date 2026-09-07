@@ -8,11 +8,11 @@ const props = defineProps<{
   page_url: string;
 }>();
 
-const person_store = usePersonStore();
-const photopoem_store = usePhotopoemStore();
-const pub_medium_store = usePubMediumStore();
-const keyword_store = useKeywordStore();
-const place_store = usePlaceStore();
+const person_api = usePerson();
+const photopoem_api = usePhotopoem();
+const pub_medium_api = usePubMedium();
+const keyword_api = useKeyword();
+const place_api = usePlace();
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -38,15 +38,20 @@ const items = ref([
         accept: async () => {
           try {
             if (props.entity_type === 'person') {
-              await person_store.deletePerson(props.id);
+              await person_api.deleteById(props.id);
+              await refreshNuxtData('person-list');
             } else if (props.entity_type === 'place') {
-              await place_store.deletePlace(props.id);
+              await place_api.deleteById(props.id);
+              await refreshNuxtData('place-list');
             } else if (props.entity_type === 'photopoem') {
-              await photopoem_store.deletePhotopoem(props.id);
+              await photopoem_api.deleteById(props.id);
+              await refreshNuxtData('photopoem-list');
             } else if (props.entity_type === 'pub_medium') {
-              await pub_medium_store.deletePubMedium(props.id);
+              await pub_medium_api.deleteById(props.id);
+              await refreshNuxtData('pubMedium-list');
             } else if (props.entity_type === 'keyword') {
-              await keyword_store.deleteKeyword(props.id);
+              await keyword_api.deleteById(props.id);
+              await refreshNuxtData('keyword-list');
             }
             toast.add({ severity: 'success', summary: 'Gelöscht', detail: 'Eintrag erfolgreich gelöscht', life: 3000 });
             router.push(props.page_url.substring(0, props.page_url.lastIndexOf('/')));

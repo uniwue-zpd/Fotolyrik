@@ -5,27 +5,25 @@ import PubMediumMetrics from "~/components/visualizations/PubMediumMetrics.vue";
 import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue";
 
 const router = useRoute();
-const pubmedium_store = usePubMediumStore();
-const photopoem_store = usePhotopoemStore();
+const pub_medium_api = usePubMedium();
+const photopoem_api = usePhotopoem();
 
 const pub_medium_id = Number(router.params.id);
-const pub_medium_item = ref<PubMediumDTO | null>(null);
-const previous_pub_medium = ref<PubMediumDTO | null>(null);
-const next_pub_medium = ref<PubMediumDTO | null>(null);
-const pub_medium_photopoems = ref<PhotoPoemDTO[] | []>([]);
-const pub_medium_metrics = ref<PubMediumMetricsDTO | null>(null);
+const [
+  { data: pub_medium_item },
+  { data: pub_medium_neighbors },
+  { data: pub_medium_photopoems },
+  { data: pub_medium_metrics }
+] = await Promise.all([
+  pub_medium_api.getById(pub_medium_id),
+  pub_medium_api.getNeighborsById(pub_medium_id),
+  photopoem_api.getAllFiltered({ 'pubmedium-id': pub_medium_id }),
+  pub_medium_api.getMetricsById(pub_medium_id)
+]);
 const photopoemsHavePubDates = computed(() => {
-  return pub_medium_photopoems.value.some(poem => poem.publicationDate);
+  return pub_medium_photopoems.value?.some(poem => poem.publicationDate);
 });
 
-onMounted(async () => {
-  await pubmedium_store.fetchPubMediumById(pub_medium_id);
-  pub_medium_item.value = pubmedium_store.current_pub_medium;
-  previous_pub_medium.value = pubmedium_store.previousPubMedium();
-  next_pub_medium.value = pubmedium_store.nextPubMedium();
-  pub_medium_photopoems.value = await photopoem_store.filterPhotopoems({'pubmedium-id': pub_medium_id});
-  pub_medium_metrics.value = await pubmedium_store.fetchPubMediumMetrics(pub_medium_id);
-});
 
 </script>
 
@@ -101,7 +99,7 @@ onMounted(async () => {
             </table>
             <PubMediumMetrics v-if="pub_medium_metrics" :data="pub_medium_metrics"/>
           </div>
-          <div v-if="pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+          <div v-if=" pub_medium_photopoems && pub_medium_photopoems.length > 0" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Fotogedichte in "{{ pub_medium_item?.title }}"</h2>
             <div class="overflow-y-auto pb-2">
               <div class="flex flex-col gap-3 md:grid md:grid-cols-5">
@@ -120,9 +118,9 @@ onMounted(async () => {
     </Card>
     <div class="flex flex-row justify-between">
       <div class="previus">
-        <div v-if="previous_pub_medium" class="p-2 border border-solid rounded-md hover:shadow-md">
+        <div v-if="pub_medium_neighbors?.previous" class="p-2 border border-solid rounded-md hover:shadow-md">
           <NuxtLink
-              :to="`/publication_media/${ previous_pub_medium.id }`"
+              :to="`/publication_media/${ pub_medium_neighbors.previous }`"
               class="flex flex-row items-center space-x-2"
           >
             <i class="pi pi-arrow-left"/>
@@ -131,9 +129,9 @@ onMounted(async () => {
         </div>
       </div>
       <div class="next">
-        <div v-if="next_pub_medium" class="p-2 border border-solid rounded-md hover:shadow-md">
+        <div v-if="pub_medium_neighbors?.next" class="p-2 border border-solid rounded-md hover:shadow-md">
           <NuxtLink
-              :to="`/publication_media/${ next_pub_medium.id }`"
+              :to="`/publication_media/${ pub_medium_neighbors.next }`"
               class="flex flex-row items-center space-x-2"
           >
             <div class=" roboto-plain">Nächster Eintrag</div>

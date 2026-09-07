@@ -71,6 +71,11 @@ export interface PersonDTO extends Auditable {
     gndId: string | null;
     image: FileDTO | null;
 }
+export interface IDSliceDTO{
+    previous: number;
+    current: number;
+    next: number;
+}
 
 export interface PersonPreviewDTO {
     id: number;

@@ -2,8 +2,9 @@
 import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 
-const locationStore = useLocationStore();
-const locations = computed(() => locationStore.locations.map(l => ({
+const locationApi = useLocation();
+const {data: locationList} = await locationApi.getAll();
+const locations = computed(() => locationList.value?.map(l => ({
   id: l.id,
   name: l.name,
   description: l.description

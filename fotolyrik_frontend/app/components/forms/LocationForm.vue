@@ -3,7 +3,7 @@ import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 
 const toast = useToast();
-const locationStore = useLocationStore();
+const locationApi = useLocation();
 
 const props = defineProps<{
   action: "create" | "edit";
@@ -24,11 +24,13 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await locationStore.createLocation(e.values);
+        await locationApi.create(e.values);
+        await refreshNuxtData('location-list');
         toast.add({ severity: "success", summary: "Erfolg", detail: "Ort erfolgreich erstellt", life: 3000 });
         e.reset();
       } else if (props.action === "edit" && props.location?.id) {
-        await locationStore.updateLocation(e.values, props.location.id);
+        await locationApi.update(props.location.id, e.values);
+        await Promise.all([refreshNuxtData('location-list'), refreshNuxtData(`location-${props.location.id}`)])
         toast.add({ severity: "success", summary: "Erfolg", detail: "Ort erfolgreich aktualisiert", life: 3000 });
         navigateTo(`/locations/${props.location?.id}`);
       }

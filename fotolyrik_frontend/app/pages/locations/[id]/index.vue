@@ -2,29 +2,23 @@
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 
-const location_store = useLocationStore();
-const photopoem_store = usePhotopoemStore();
+const locationApi = useLocation();
+const photopoem_api = usePhotopoem();
 
 const router = useRoute();
 const location_id = Number(router.params.id);
-const location_item = ref<LocationDTO | null>(null);
 
-const loading = ref(true);
-
-const is_location = ref<PhotoPoemDTO[] | []>([]);
-
-onMounted(async () => {
-  try {
-    await location_store.fetchLocationById(location_id);
-    location_item.value = location_store.current_location ?? null;
-    is_location.value = await photopoem_store.filterPhotopoems({ 'location-id': location_id });
-
-    useHead({
-      title: location_item.value ? `${location_item.value.name} - Fundortsverzeichnis` : 'Nicht gefunden - Fundortsverzeichnis',
-    });
-  } finally {
-    loading.value = false;
-  }
+const [
+  { data: location_item },
+  { data: is_location }
+] = await Promise.all([
+  locationApi.getById(location_id),
+  photopoem_api.getAllFiltered({ 'location-id': location_id })
+]);
+useHead({
+  title: () => location_item.value
+      ? `${location_item.value.name} - Fundortsverzeichnis`
+      : 'Nicht gefunden - Fundortsverzeichnis',
 });
 </script>
 
@@ -53,7 +47,7 @@ onMounted(async () => {
       </div>
       <Divider/>
       <div class="flex flex-col gap-2">
-        <div v-if="is_location.length > 0" class="max-h-[30vh] flex flex-col gap-2">
+        <div v-if="is_location && is_location.length > 0" class="max-h-[30vh] flex flex-col gap-2">
           <h2 class="text-xl font-bold text-primary outfit-headline">Fotogedichte an diesem Fundort</h2>
           <div class="overflow-y-auto pb-2">
             <div class="flex flex-col gap-3 md:grid md:grid-cols-5">

@@ -16,6 +16,10 @@ public interface PhotopoemRepository extends JpaRepository<Photopoem, Long>, Jpa
 
     List<Photopoem> findAllByAuthors_IdAndPhotographers_id(Long author_id, Long photographer_id);
 
+    List<Photopoem> findByThemes_Id(Long keywordId);
+
+    List<Photopoem> findByImageMotifs_Id(Long keywordId);
+
     @Query("SELECT p.id FROM Photopoem p ORDER BY p.id")
     List<Long> findAllIds();
 }

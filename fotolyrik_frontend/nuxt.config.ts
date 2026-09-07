@@ -45,7 +45,6 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-      '@pinia/nuxt',
       '@primevue/nuxt-module',
       '@formkit/nuxt',
       '@nuxt/icon',

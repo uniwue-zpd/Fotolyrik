@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { ref, watch, onBeforeUnmount } from "vue";
+import { FilterMatchMode } from "@primevue/core";
+import {useFiles} from "~/composables/useFiles";
 import PhotopoemFilter from "~/components/UI/filters/PhotopoemFilter.vue";
-const photopoemStore = usePhotopoemStore();
+import type {Page, PhotopoemPageable} from "~/utils/types";
 
 const initialPageParameter: PhotopoemPageable = {
   page: 0,
@@ -42,6 +45,8 @@ const sortOptions = ref([
   { label: 'Absteigend (Z-A)', value: 'title,desc' }
 ]);
 
+const photopoemApi = usePhotopoem();
+
 const pageOptions = computed(() =>
     Array.from({ length: photopoems.value?.totalPages ?? 0 }, (_, index) => ({
       label: `${ index + 1 }`,
@@ -51,7 +56,7 @@ const pageOptions = computed(() =>
 
 const { data: photopoems, pending: isLoading, error: hasError, refresh } = useAsyncData<Page<PhotoPoemDTO>>(
     'photopoems-paginated',
-    () => photopoemStore.fetchPhotopoemsPaginated({...pageParameter, ...filters})
+    () => photopoemApi.fetchPaginated({...pageParameter, ...filters})
 );
 
 const debouncedRefresh = debounce(() => {

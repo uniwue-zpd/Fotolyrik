@@ -3,18 +3,8 @@ import PlaceForm from "~/components/forms/PlaceForm.vue";
 
 const route = useRoute();
 const place_id = Number(route.params.id);
-const placeStore = usePlaceStore();
-const place_item = ref<PlaceDTO | null>(null);
-const loading = ref(true);
-
-onMounted(async () => {
-  try {
-    await placeStore.fetchPlaceById(place_id);
-    place_item.value = placeStore.current_place ?? null;
-  } finally {
-    loading.value = false;
-  }
-});
+const placeApi = usePlace();
+const {data: place_item} = await placeApi.getById(place_id);
 </script>
 
 <template>

@@ -5,47 +5,65 @@ import { z } from "zod";
 import { Form } from '@primevue/forms';
 import { FormField } from '@primevue/forms';
 import ContributionForm from "~/components/forms/ContributionForm.vue";
+import {useFiles} from "~/composables/useFiles";
 
 const toast = useToast();
-const personStore = usePersonStore();
-const photopoemStore = usePhotopoemStore();
-const pubMediumStore = usePubMediumStore();
-const fileStore = useFileStore();
-const languageStore = useLanguageStore();
-const copyrightStatusStore = useCopyrightStatusStore();
-const keywordStore = useKeywordStore();
-const locationStore = useLocationStore();
+const personApi = usePerson();
+const photopoemApi = usePhotopoem();
+const pubMediumApi = usePubMedium();
+const fileApi = useFiles();
+const languageApi = useLanguage();
+const copyrightStatusApi = useCopyrightStatus();
+const keywordApi = useKeyword();
+const locationApi = useLocation();
 
 const personLoading = ref(false);
 const personSuggestions = ref<PersonPreviewDTO[]>([]);
 
 const debouncedSearch = debounce(async (query: string) => {
   personLoading.value = true;
-  personSuggestions.value = await personStore.searchPeople(query);
+  personSuggestions.value = await personApi.search(query);
   personLoading.value = false;
 }, 300);
 
 const onPersonComplete = (event: any) => {
   debouncedSearch(event.query);
 }
+const [
+  personHandle,
+  keywordHandle,
+  languageHandle,
+  locationHandle,
+  copyrightStatusHandle,
+  pubMediumHandle,
+  {data: files}
+] = await Promise.all([
+  personApi.getAll(),
+  keywordApi.getAll(),
+  languageApi.getAll(),
+  locationApi.getAll(),
+  copyrightStatusApi.getAll(),
+  pubMediumApi.getAll(),
+  fileApi.getAll(),
+]);
+const publicationMedia = computed(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })));
+const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
+const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
+const languages = computed(() => languageHandle.data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
+const locations = computed(()=> locationHandle.data.value?.map(l=>({id: l.id, name: l.name}) ));
+const copyrightStatuses = computed(()=> copyrightStatusHandle.data.value?.map(cs => ({ id: cs.id, value: cs.value })));
+
 const pubMediaLoading = ref(false);
 const pubMediaSuggestions = ref<PubMediumDTO[]>([]);
 const debouncedPubMediaSearch = debounce(async (query: string) => {
   pubMediaLoading.value = true;
-  pubMediaSuggestions.value = await pubMediumStore.filterPubMedia({'title': query});
+  pubMediaSuggestions.value = await pubMediumApi.filter({'title': query});
   pubMediaLoading.value = false;
 }, 300);
 
 const onPubMediaComplete = (event: any) => {
   debouncedPubMediaSearch(event.query);
 };
-
-const persons = computed(() => personStore.persons.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
-const keywords = computed(() => keywordStore.keywords.map((k: KeywordDTO) => ({ id: k.id, value: k.value })));
-const languages = computed(() => languageStore.languages.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
-const files = computed(() => fileStore.files);
-const locations = computed(()=> locationStore.locations.map(l=>({id: l.id, name: l.name}) ));
-const copyrightStatuses = computed(() => copyrightStatusStore.copyrightStatuses.map(cs => ({ id: cs.id, value: cs.value })));
 
 const data_refreshing = ref(false);
 
@@ -99,7 +117,8 @@ const resolver = ref(
 async function handleRefresh() {
   data_refreshing.value = true;
   try {
-    await useRefreshStoreData();
+
+    await Promise.all([personHandle.refresh , keywordHandle.refresh, languageHandle.refresh, locationHandle.refresh, copyrightStatusHandle.refresh, pubMediumHandle.refresh])
     toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
   } catch (err) {
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});
@@ -115,11 +134,13 @@ const onFormSubmit = async (e: any) => {
     e.values.publicationMedium = selectedPubMedium.value;
     try {
       if (props.action === "create") {
-        await photopoemStore.createPhotopoem(e.values);
+        await photopoemApi.create(e.values);
+        await refreshNuxtData('photopoem-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         navigateTo("/photopoems")
       } else if (props.action === "edit" && props.photopoem?.id) {
-        await photopoemStore.updatePhotopoem(e.values, props.photopoem.id);
+        await photopoemApi.update(props.photopoem.id, e.values);
+        await Promise.all([refreshNuxtData('photopoem-list'), await refreshNuxtData(`photopoem-${props.photopoem.id}`)]);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/photopoems/${props.photopoem?.id}`);
       }
@@ -308,7 +329,7 @@ const onFormSubmit = async (e: any) => {
                 optionLabel="name"
                 :maxSelectedLabels="3"
                 :options="languages"
-                :key="languages.length"
+                :key="languages?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 filter fluid showClear
             />
@@ -329,9 +350,8 @@ const onFormSubmit = async (e: any) => {
                 :loading="pubMediaLoading"
                 @complete="onPubMediaComplete"
                 optionLabel="title"
-                force-selection
-                dropdown
-                showClear
+                :options="publicationMedia"
+                :key="publicationMedia?.length"
                 fluid
             />
             <NuxtLink to="/publication_media/create" target="_blank">
@@ -351,7 +371,7 @@ const onFormSubmit = async (e: any) => {
                 selectedItemsLabel="{0} Fundorte ausgewählt"
                 optionLabel="name"
                 :options="locations"
-                :key="locations.length"
+                :key="locations?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 :maxSelectedLabels="3"
                 filter fluid
@@ -399,7 +419,7 @@ const onFormSubmit = async (e: any) => {
                 :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
                 :maxSelectedLabels="2"
                 :options="persons"
-                :key="persons.length"
+                :key="persons?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 filter fluid disabled
             />
@@ -417,7 +437,7 @@ const onFormSubmit = async (e: any) => {
                 :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
                 :maxSelectedLabels="2"
                 :options="persons"
-                :key="persons.length"
+                :key="persons?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 filter fluid disabled
             />
@@ -435,7 +455,7 @@ const onFormSubmit = async (e: any) => {
                 :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
                 :maxSelectedLabels="2"
                 :options="persons"
-                :key="persons.length"
+                :key="persons?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 filter fluid disabled
             />
@@ -463,7 +483,7 @@ const onFormSubmit = async (e: any) => {
                 selectedItemsLabel="{0} Thematiken ausgewählt"
                 optionLabel="value"
                 :options="keywords"
-                :key="keywords.length"
+                :key="keywords?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 :maxSelectedLabels="3"
                 filter fluid
@@ -480,7 +500,7 @@ const onFormSubmit = async (e: any) => {
                 selectedItemsLabel="{0} Bildmotive ausgewählt"
                 optionLabel="value"
                 :options="keywords"
-                :key="keywords.length"
+                :key="keywords?.length"
                 :virtual-scroller-options="{ itemSize: 50 }"
                 :maxSelectedLabels="3"
                 filter fluid
@@ -567,14 +587,14 @@ const onFormSubmit = async (e: any) => {
                 :options="files"
                 optionLabel="originalFilename"
                 :virtual-scroller-options="{ itemSize: 50 }"
-                :key="files.length"
+                :key="files?.length"
                 :maxSelectedLabels="2"
                 fluid filter showClear
             >
               <template #option="slotProps">
                 <div class="flex flex-row space-x-2">
                   <Avatar
-                      :image="fileStore.getImagePreview(`/api/uploads/${slotProps.option.filename}`)"
+                      :image="`/api/uploads/${slotProps.option.filename}`"
                       shape="square"
                       oncontextmenu="return false;"
                   />

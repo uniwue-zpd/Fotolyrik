@@ -2,7 +2,7 @@
 import {zodResolver} from "@primevue/forms/resolvers/zod";
 import {z} from "zod";
 
-const publisherStore = usePublisherStore();
+const publisherApi = usePublisher();
 const toast = useToast();
 
 const props = defineProps<{
@@ -24,11 +24,13 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await publisherStore.createPublisher(e.values);
+        await publisherApi.create(e.values);
+        await refreshNuxtData('publisher-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         e.reset();
       } else if (props.action === "edit" && props.publisher?.id) {
-        await publisherStore.updatePublisher(e.values, props.publisher.id);
+        await publisherApi.update(props.publisher.id, e.values);
+        await Promise.all( [refreshNuxtData('publisher-list'), await refreshNuxtData(`publisher-${props.publisher.id}`)])
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/keywords/${props.publisher?.id}`);
       }

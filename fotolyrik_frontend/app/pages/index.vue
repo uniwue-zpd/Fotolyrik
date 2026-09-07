@@ -5,8 +5,9 @@ useHead(() => ({
   title: 'Fotolyrik - Startseite'
 }));
 
-const keywordStore = useKeywordStore();
-const topics = computed(() => keywordStore.keywords.slice(0, 20));
+const keywordApi = useKeyword();
+const { data: keywords } = await keywordApi.getAll();
+const topics = computed(() => keywords.value?.slice(0, 20));
 
 import { ref } from 'vue';
 import "maplibre-gl/dist/maplibre-gl.css"

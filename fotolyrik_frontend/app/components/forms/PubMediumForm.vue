@@ -5,14 +5,20 @@ import { z } from "zod";
 import {FormField} from "@primevue/forms";
 
 const toast = useToast();
-const pubMediumStore = usePubMediumStore();
-const placeStore = usePlaceStore();
-const publisherStore = usePublisherStore();
-const pubRhythmStore = usePubRhythmStore();
+const pubMediumApi = usePubMedium();
+const placeApi = usePlace();
+const publisherApi= usePublisher();
+const pubRhythmApi = usePubRhythm();
 
-const publication_places = computed(() => placeStore.places.map(p => ({id: p.id, name: p.name})));
-const publishers = computed(() => publisherStore.publishers.map(pu => ({id: pu.id, name: pu.name})));
-const publication_rhythms = computed(() => pubRhythmStore.publication_rhythms.map(pr => ({id: pr.id, value: pr.value})));
+const [placeHandle, publisherHandle, pubRhythmHandle] = await Promise.all([
+  placeApi.getAll(),
+  publisherApi.getAll(),
+  pubRhythmApi.getAll()
+]);
+
+const publication_places = computed(() => placeHandle.data.value?.map(p => ({id: p.id, name: p.name})));
+const publishers = computed(() => publisherHandle.data.value?.map(pu => ({id: pu.id, name: pu.name})));
+const publication_rhythms = computed(() => pubRhythmHandle.data.value?.map(pr => ({id: pr.id, value: pr.value})));
 
 const data_refreshing = ref(false);
 
@@ -44,7 +50,7 @@ const resolver = ref(
 async function handleRefresh() {
   data_refreshing.value = true;
   try {
-    await useRefreshStoreData();
+    await Promise.all([placeHandle.refresh,publisherHandle.refresh,pubRhythmHandle.refresh])
     toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
   } catch (err) {
     toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});
@@ -57,11 +63,13 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await pubMediumStore.createPubMedium(e.values);
+        await pubMediumApi.create(e.values);
+        await refreshNuxtData('pubMedium-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         navigateTo("/publication_media")
       } else if (props.action === "edit" && props.pub_medium?.id) {
-        await pubMediumStore.updatePubMedium(e.values, props.pub_medium.id);
+        await pubMediumApi.update(props.pub_medium.id,e.values );
+        await  Promise.all([refreshNuxtData('pubMedium-list'), await refreshNuxtData(`pubMedium-${props.pub_medium.id}`)])
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/publication_media/${props.pub_medium?.id}`);
       }
@@ -137,7 +145,7 @@ const onFormSubmit = async (e: any) => {
               class="flex-1 min-w-0"
               optionLabel="name"
               :options="publication_places"
-              :key="publication_places.length"
+              :key="publication_places?.length"
               :maxSelectedLabels="2"
               filter
               fluid
@@ -162,7 +170,7 @@ const onFormSubmit = async (e: any) => {
                     class="pl-7"
                     optionLabel="name"
                     :options="publishers"
-                    :key="publishers.length"
+                    :key="publishers?.length"
                     editable
                     showClear
                     fluid
@@ -185,7 +193,7 @@ const onFormSubmit = async (e: any) => {
                 class="flex-1 min-w-0"
                 optionLabel="value"
                 :options="publication_rhythms"
-                :key="publication_rhythms.length"
+                :key="publication_rhythms?.length"
                 :maxSelectedLabels="2"
                 filter
                 fluid

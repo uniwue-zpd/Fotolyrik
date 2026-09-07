@@ -3,7 +3,7 @@ import {zodResolver} from "@primevue/forms/resolvers/zod";
 import {z} from "zod";
 
 const toast = useToast();
-const keywordStore = useKeywordStore();
+const keywordApi = useKeyword();
 
 const props = defineProps<{
   action: "create" | "edit";
@@ -24,11 +24,13 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await keywordStore.createKeyword(e.values);
+        await keywordApi.create(e.values);
+        await refreshNuxtData('keyword-list');
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         e.reset();
       } else if (props.action === "edit" && props.keyword?.id) {
-        await keywordStore.updateKeyword(e.values, props.keyword.id);
+        await keywordApi.update(props.keyword.id, e.values);
+        await Promise.all([refreshNuxtData('keyword-list'), refreshNuxtData(`keyword-${props.keyword.id}`)])
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
         navigateTo(`/keywords/${props.keyword?.id}`);
       }

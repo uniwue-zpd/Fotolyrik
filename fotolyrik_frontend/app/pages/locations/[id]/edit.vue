@@ -3,18 +3,9 @@ import LocationForm from "~/components/forms/LocationForm.vue";
 
 const route = useRoute();
 const location_id = Number(route.params.id);
-const locationStore = useLocationStore();
-const location_item = ref<LocationDTO | null>(null);
-const loading = ref(true);
+const locationApi = useLocation();
 
-onMounted(async () => {
-  try {
-    await locationStore.fetchLocationById(location_id);
-    location_item.value = locationStore.current_location ?? null;
-  } finally {
-    loading.value = false;
-  }
-});
+const { data: location_item, status } = await locationApi.getById(location_id);
 </script>
 
 <template>

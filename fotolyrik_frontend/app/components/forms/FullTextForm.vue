@@ -3,13 +3,14 @@ import type { FullTextDTO } from "~/utils/types";
 import { useToast } from "primevue/usetoast";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
+import {useFullText} from "~/composables/useFullText";
 
 const toast = useToast();
-const photopoemStore = usePhotopoemStore();
-const fullTextStore = useFullTextStore();
-const photopoems = computed(() => photopoemStore.photopoems.map(p => ({ id: p.id, title: p.title, altTitle: p.altTitle })));
-
-const photopoemLoading = ref(false);
+const photopoemApi = usePhotopoem();
+const fullTextApi = useFullText();
+const photopoem_handle = await photopoemApi.getAll();
+const photopoems = computed(() => photopoem_handle.data.value?.map(p => ({ id: p.id, title: p.title, altTitle: p.altTitle })));
+const photopoemLoading = computed(()=> photopoem_handle.status.value === 'pending');
 
 const props = defineProps<{
   action: "create" | "edit" | "edit-by-photopoem";
@@ -31,22 +32,18 @@ const resolver = ref(
 );
 
 const onPhotopoemReload = async () => {
-  if (!photopoemLoading.value) {
-    photopoemLoading.value = true;
-    await photopoemStore.refreshPhotopoemsData();
-    photopoemLoading.value = false;
-  }
+  photopoem_handle.refresh()
 };
 
 const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       if (props.action === "create") {
-        await fullTextStore.createFullText(e.values);
+        await fullTextApi.create(e.values);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
         e.reset();
       } else if (props.action === "edit" && props.fulltext?.id) {
-        await fullTextStore.updateFullText(props.fulltext.id, e.values);
+        await fullTextApi.update(props.fulltext.id, e.values);
         toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich upgedated", life: 3000});
       }
     } catch (error) {
@@ -84,7 +81,7 @@ const onFormSubmit = async (e: any) => {
                 class="pl-7"
                 :optionLabel="(opt) => opt.title ? opt.title : opt.altTitle"
                 :options="photopoems"
-                :key="photopoems.length"
+                :key="photopoems?.length"
                 fluid
               />
             </IconField>
