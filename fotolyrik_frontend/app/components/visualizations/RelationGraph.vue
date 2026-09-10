@@ -79,6 +79,7 @@ function drawGraph() {
       .selectAll('g')
       .data(nodes)
       .join('g')
+      .style('cursor', 'pointer')
       .call(
           d3.drag<SVGGElement, any>()
               .on('start', (event, d) => {
@@ -130,6 +131,11 @@ function drawGraph() {
   nodeSelection.on('mouseenter', (_, d: any) => {
     activeFocusId = d.id
     updateOpacity()
+  })
+
+  nodeSelection.on('click', (event: MouseEvent, d: any) => {
+    if (event.defaultPrevented) return
+    navigateTo(`/persons/${d.id}`)
   })
 
   updateOpacity()
