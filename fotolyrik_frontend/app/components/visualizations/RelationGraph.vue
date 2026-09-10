@@ -4,22 +4,23 @@ import * as d3 from 'd3'
 
 const props = defineProps<{
   id?: number
+  graph?: GraphDTO | undefined
+  route?: string
+  heading?: string
 }>()
 
-const person_api = usePerson()
-const { data: graph } = await useAsyncData('person-worked-with-graph', person_api.fetchWorkedWithGraph)
 
 const svgRef = ref<SVGSVGElement | null>(null)
 let simulation: d3.Simulation<any, any> | null = null
 
 function drawGraph() {
-  if (!svgRef.value || !graph.value || !props.id || !graph.value.nodes[props.id]) return
+  if (!svgRef.value || !props.graph || !props.graph || !props.id || !props.graph.nodes[props.id]) return
 
   d3.select(svgRef.value).selectAll('*').remove()
   if (simulation) simulation.stop()
 
-  const rawNodes = graph.value.nodes
-  const rawEdges = graph.value.edges
+  const rawNodes = props.graph.nodes
+  const rawEdges = props.graph.edges
 
   const nodes = Object.entries(rawNodes).map(([nodeId, name]) => ({
     id: Number(nodeId),
@@ -135,7 +136,7 @@ function drawGraph() {
 
   nodeSelection.on('click', (event: MouseEvent, d: any) => {
     if (event.defaultPrevented) return
-    navigateTo(`/persons/${d.id}`)
+    navigateTo(`/${props.route}/${d.id}`)
   })
 
   updateOpacity()
@@ -160,7 +161,7 @@ function drawGraph() {
   })
 }
 
-watch([() => graph.value, () => props.id, svgRef], () => {
+watch([() => props.graph, () => props.id, svgRef], () => {
   drawGraph()
 }, { flush: 'post' })
 
@@ -170,9 +171,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div v-if="props.id && graph?.nodes && graph.nodes[props.id] !== undefined">
+  <div v-if="props.id && props.graph?.nodes && props.graph.nodes[props.id] !== undefined">
     <Divider />
-    <h2 class="text-xl font-bold text-primary outfit-headline">Kollaboriert mit:</h2>
+    <h2 class="text-xl font-bold text-primary outfit-headline">{{props.heading}}</h2>
     <svg ref="svgRef" class="w-full h-auto max-h-[500px] cursor-grab active:cursor-grabbing"></svg>
   </div>
 </template>

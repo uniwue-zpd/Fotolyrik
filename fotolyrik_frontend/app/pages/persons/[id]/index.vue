@@ -22,7 +22,8 @@ const [
   { data: photographerOf },
   { data: participatedOn },
   { data: contributorOf },
-  { data: depictedOn }
+  { data: depictedOn },
+  { data: relationsGraph },
 ] = await Promise.all([
   useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemesById(person_id)),
   useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifsById(person_id)),
@@ -31,7 +32,8 @@ const [
   photopoem_api.getAllFiltered({ 'photographer-id': person_id }),
   photopoem_api.getAllFiltered({ 'participant-id': person_id }),
   photopoem_api.getAllFiltered({ 'other-contributor-id': person_id }),
-  photopoem_api.getAllFiltered({ 'depicted-person-id': person_id })
+  photopoem_api.getAllFiltered({ 'depicted-person-id': person_id }),
+  useAsyncData('person-worked-with-graph', person_api.fetchWorkedWithGraph)
 ]);
 
 const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
@@ -150,7 +152,7 @@ useHead(() => {
             <PersonContributionsPlot :data="contributionsSummary"/>
           </div>
           <div>
-            <RelationGraph :id="person_id"></RelationGraph>
+            <RelationGraph :id="person_id" :graph="relationsGraph" route="persons" heading="Kollaboriert mit:"  ></RelationGraph>
           </div>
           <div v-if="authorOf && authorOf.length > 0" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Autor:in von</h2>
