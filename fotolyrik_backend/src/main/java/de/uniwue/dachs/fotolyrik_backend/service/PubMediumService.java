@@ -5,6 +5,8 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PubMediumService {
@@ -265,5 +268,28 @@ public class PubMediumService {
             result = pubMediumRepository.searchPubMedia(query, pageable);
         }
         return result.map(pubMediumMapper::PubMediumToPubMediumPreviewDTO);
+    }
+
+    public GraphDTO getSamePlaceGraph() {
+        List<AdjacencyProjection> adjacencyList = pubMediumRepository.findMediumAdjacencyListByPlace();
+
+        Map<Long, String> nodesMap = adjacencyList.stream()
+                .collect(Collectors.toMap(
+                        AdjacencyProjection::getId,
+                        AdjacencyProjection::getName,
+                        (existing, replacement) -> existing
+                ));
+
+        Map<Long, Set<Long>> edgesMap = adjacencyList.stream()
+                .collect(Collectors.toMap(
+                        AdjacencyProjection::getId,
+                        AdjacencyProjection::getTargets
+                ));
+
+        GraphDTO graphDTO = new GraphDTO();
+        graphDTO.setNodes(nodesMap);
+        graphDTO.setEdges(edgesMap);
+
+        return graphDTO;
     }
 }
