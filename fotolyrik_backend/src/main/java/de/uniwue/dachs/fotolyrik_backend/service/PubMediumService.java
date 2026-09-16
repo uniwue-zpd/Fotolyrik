@@ -11,12 +11,10 @@ import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import de.uniwue.dachs.fotolyrik_backend.specification.PubMediumSpecification;
-import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
-import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PubMediumMapper;
-import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublicationRhythmMapper;
-import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.*;
 import io.micrometer.core.instrument.config.MeterFilter;
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.graph.Graph;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,17 +32,19 @@ public class PubMediumService {
     private final PlaceMapper placeMapper;
     private final PublisherMapper publisherMapper;
     private final PublicationRhythmMapper publicationRhythmMapper;
+    private final GraphMapper graphMapper;
 
     public PubMediumService(PubMediumRepository pubMediumRepository,
                             PubMediumMapper pubMediumMapper,
                             PlaceMapper placeMapper,
                             PublisherMapper publisherMapper,
-                            PublicationRhythmMapper publicationRhythmMapper) {
+                            PublicationRhythmMapper publicationRhythmMapper, GraphMapper graphMapper) {
         this.pubMediumRepository = pubMediumRepository;
         this.pubMediumMapper = pubMediumMapper;
         this.placeMapper = placeMapper;
         this.publisherMapper = publisherMapper;
         this.publicationRhythmMapper = publicationRhythmMapper;
+        this.graphMapper = graphMapper;
     }
 
     /**
@@ -271,25 +271,6 @@ public class PubMediumService {
     }
 
     public GraphDTO getSamePlaceGraph() {
-        List<AdjacencyProjection> adjacencyList = pubMediumRepository.findMediumAdjacencyListByPlace();
-
-        Map<Long, String> nodesMap = adjacencyList.stream()
-                .collect(Collectors.toMap(
-                        AdjacencyProjection::getId,
-                        AdjacencyProjection::getName,
-                        (existing, replacement) -> existing
-                ));
-
-        Map<Long, Set<Long>> edgesMap = adjacencyList.stream()
-                .collect(Collectors.toMap(
-                        AdjacencyProjection::getId,
-                        AdjacencyProjection::getTargets
-                ));
-
-        GraphDTO graphDTO = new GraphDTO();
-        graphDTO.setNodes(nodesMap);
-        graphDTO.setEdges(edgesMap);
-
-        return graphDTO;
+        return graphMapper.fromAdjacencyList(pubMediumRepository.findMediumAdjacencyListByPlace());
     }
 }

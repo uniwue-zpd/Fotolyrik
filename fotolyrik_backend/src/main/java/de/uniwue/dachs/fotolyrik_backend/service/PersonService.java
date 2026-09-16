@@ -14,6 +14,7 @@ import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PersonMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.GraphMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -30,12 +31,14 @@ public class PersonService {
     private final FileRepository fileRepository;
     private final PersonMapper personMapper;
     private final PlaceMapper placeMapper;
+    private final GraphMapper graphMapper;
 
-    public PersonService(PersonRepository personRepository, FileRepository fileRepository, PersonMapper personMapper, PlaceMapper placeMapper) {
+    public PersonService(PersonRepository personRepository, FileRepository fileRepository, PersonMapper personMapper, PlaceMapper placeMapper, GraphMapper graphMapper) {
         this.personRepository = personRepository;
         this.fileRepository = fileRepository;
         this.personMapper = personMapper;
         this.placeMapper = placeMapper;
+        this.graphMapper = graphMapper;
     }
 
     /**
@@ -210,25 +213,6 @@ public class PersonService {
 
 
     public GraphDTO getWorkedWithGraph() {
-        List<AdjacencyProjection> adjacencyList = personRepository.findAdjacencyList();
-
-        Map<Long, String> nodesMap = adjacencyList.stream()
-                .collect(Collectors.toMap(
-                        AdjacencyProjection::getId,
-                        AdjacencyProjection::getName,
-                        (existing, replacement) -> existing
-                ));
-
-        Map<Long, Set<Long>> edgesMap = adjacencyList.stream()
-                .collect(Collectors.toMap(
-                        AdjacencyProjection::getId,
-                        AdjacencyProjection::getTargets
-                ));
-
-        GraphDTO graphDTO = new GraphDTO();
-        graphDTO.setNodes(nodesMap);
-        graphDTO.setEdges(edgesMap);
-
-        return graphDTO;
+        return graphMapper.fromAdjacencyList(personRepository.findAdjacencyList());
     }
 }

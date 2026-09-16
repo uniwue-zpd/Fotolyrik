@@ -62,4 +62,5 @@ public class PlaceController {
         PlaceMetricsDTO metrics = placeService.getPlaceMetrics(id);
         return ResponseEntity.ok(metrics);
     }
+
 }
