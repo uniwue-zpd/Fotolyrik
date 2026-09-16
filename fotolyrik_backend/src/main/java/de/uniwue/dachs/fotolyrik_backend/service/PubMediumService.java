@@ -3,18 +3,17 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 import de.uniwue.dachs.fotolyrik_backend.DTO.IDSliceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
-import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import de.uniwue.dachs.fotolyrik_backend.specification.PubMediumSpecification;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PubMediumMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublicationRhythmMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.*;
-import io.micrometer.core.instrument.config.MeterFilter;
 import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.graph.Graph;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class PubMediumService {
