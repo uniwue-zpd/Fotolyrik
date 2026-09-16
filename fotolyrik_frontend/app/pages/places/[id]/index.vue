@@ -9,6 +9,7 @@ import SkeletonPlaceholder from "~/components/UI/placeholders/SkeletonPlaceholde
 import NotFoundPlaceholder from "~/components/UI/placeholders/NotFoundPlaceholder.vue";
 import PlaceMetrics from "~/components/visualizations/PlaceMetrics.vue";
 import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue";
+import RelationGraph from "~/components/visualizations/RelationGraph.vue";
 
 
 const place_api = usePlace();

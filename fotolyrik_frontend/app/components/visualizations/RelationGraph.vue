@@ -7,14 +7,14 @@ const props = defineProps<{
   graph?: GraphDTO | undefined
   route?: string
   heading?: string
+  otherTargets?: boolean
 }>()
-
 
 const svgRef = ref<SVGSVGElement | null>(null)
 let simulation: d3.Simulation<any, any> | null = null
 
 function drawGraph() {
-  if (!svgRef.value || !props.graph || !props.graph || !props.id || !props.graph.nodes[props.id]) return
+  if (!svgRef.value || !props.graph || !props.id || !props.graph.nodes[props.id]) return
 
   d3.select(svgRef.value).selectAll('*').remove()
   if (simulation) simulation.stop()
@@ -24,22 +24,50 @@ function drawGraph() {
 
   const nodes = Object.entries(rawNodes).map(([nodeId, name]) => ({
     id: Number(nodeId),
-    name: name as string
+    name: name as string,
+    isTarget: false
   }))
 
   const nodeIds = new Set(Object.keys(rawNodes).map(Number))
 
   const links: { source: number; target: number }[] = []
 
-  Object.entries(rawEdges).forEach(([sourceId, targetIds]) => {
-    const s = Number(sourceId)
-    if (!nodeIds.has(s)) return;
-    (targetIds as number[]).forEach((t) => {
-      if (nodeIds.has(t)) {
-        links.push({ source: s, target: t })
-      }
+  if (props.otherTargets) {
+    const targetNodeMap = new Map<number, number>()
+    let nextTargetNodeId = Math.max(...nodeIds, 0) + 1
+
+    Object.entries(rawEdges).forEach(([sourceId, targetIds]) => {
+      const s = Number(sourceId)
+      if (!nodeIds.has(s)) return
+
+          ;(targetIds as number[]).forEach((t) => {
+        if (!targetNodeMap.has(t)) {
+          targetNodeMap.set(t, nextTargetNodeId++)
+          nodes.push({
+            id: targetNodeMap.get(t)!,
+            name: '',
+            isTarget: true
+          })
+        }
+
+        links.push({
+          source: s,
+          target: targetNodeMap.get(t)!
+        })
+      })
     })
-  })
+  } else {
+    Object.entries(rawEdges).forEach(([sourceId, targetIds]) => {
+      const s = Number(sourceId)
+      if (!nodeIds.has(s)) return
+
+          ;(targetIds as number[]).forEach((t) => {
+        if (nodeIds.has(t)) {
+          links.push({ source: s, target: t })
+        }
+      })
+    })
+  }
 
   let activeFocusId = props.id
 
@@ -101,8 +129,11 @@ function drawGraph() {
       )
 
   nodeSelection.append('circle')
-      .attr('r', 12)
-      .attr('fill', (d: any) => d.id === props.id ? '#e63946' : '#42b883')
+      .attr('r', (d: any) => d.isTarget ? 8 : 12)
+      .attr('fill', (d: any) => {
+        if (d.isTarget) return '#999'
+        return d.id === props.id ? '#e63946' : '#42b883'
+      })
 
   nodeSelection.append('text')
       .text((d: any) => d.name)
@@ -113,9 +144,11 @@ function drawGraph() {
 
   function updateOpacity() {
     const activeNeighbors = new Set<number>([activeFocusId])
+
     links.forEach((l) => {
       const s = typeof l.source === 'object' ? (l.source as any).id : l.source
       const t = typeof l.target === 'object' ? (l.target as any).id : l.target
+
       if (s === activeFocusId) activeNeighbors.add(t)
       if (t === activeFocusId) activeNeighbors.add(s)
     })
@@ -130,12 +163,13 @@ function drawGraph() {
   }
 
   nodeSelection.on('mouseenter', (_, d: any) => {
+    if (d.isTarget) return
     activeFocusId = d.id
     updateOpacity()
   })
 
   nodeSelection.on('click', (event: MouseEvent, d: any) => {
-    if (event.defaultPrevented) return
+    if (d.isTarget || event.defaultPrevented) return
     navigateTo(`/${props.route}/${d.id}`)
   })
 
@@ -156,12 +190,13 @@ function drawGraph() {
       const transform = d3.zoomIdentity
           .translate(width / 2, height / 2)
           .translate(-(targetNode as any).x, -(targetNode as any).y)
+
       svg.call(zoom.transform as any, transform)
     }
   })
 }
 
-watch([() => props.graph, () => props.id, svgRef], () => {
+watch([() => props.graph, () => props.id, () => props.otherTargets, svgRef], () => {
   drawGraph()
 }, { flush: 'post' })
 

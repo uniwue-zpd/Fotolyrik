@@ -3,6 +3,7 @@ import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 import PubMediumMetrics from "~/components/visualizations/PubMediumMetrics.vue";
 import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue";
+import RelationGraph from "~/components/visualizations/RelationGraph.vue";
 
 const router = useRoute();
 const pub_medium_api = usePubMedium();
@@ -13,12 +14,14 @@ const [
   { data: pub_medium_item },
   { data: pub_medium_neighbors },
   { data: pub_medium_photopoems },
-  { data: pub_medium_metrics }
+  { data: pub_medium_metrics },
+  { data: relationsGraph },
 ] = await Promise.all([
   pub_medium_api.getById(pub_medium_id),
   pub_medium_api.getNeighborsById(pub_medium_id),
   photopoem_api.getAllFiltered({ 'pubmedium-id': pub_medium_id }),
-  pub_medium_api.getMetricsById(pub_medium_id)
+  pub_medium_api.getMetricsById(pub_medium_id),
+  useAsyncData('pub-medium-same-place-graph', pub_medium_api.fetchSamePlaceGraph),
 ]);
 const photopoemsHavePubDates = computed(() => {
   return pub_medium_photopoems.value?.some(poem => poem.publicationDate);
@@ -112,6 +115,9 @@ const photopoemsHavePubDates = computed(() => {
           <div v-if="photopoemsHavePubDates" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Veröffentlichungen nach Datum</h2>
             <PhotopoemDatePlot :data="pub_medium_photopoems ?? []"/>
+          </div>
+          <div>
+            <RelationGraph :id="pub_medium_id" :graph="relationsGraph" route="publication_media" heading="Am gleichen Ort veröffentlicht:"  other-targets></RelationGraph>
           </div>
         </div>
       </template>

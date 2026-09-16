@@ -70,14 +70,12 @@ public interface PubMediumRepository extends JpaRepository<PubMedium, Long>, Jpa
 
     @Query(value = """
     SELECT
-        pm1.id AS id,
-        pm1.title AS name,
-        ARRAY_AGG(DISTINCT pmp2.pub_medium_id) AS targets
-    FROM pub_medium pm1
-    JOIN pub_medium_place pmp1 ON pm1.id = pmp1.pub_medium_id
-    JOIN pub_medium_place pmp2 ON pmp1.pub_place_id = pmp2.pub_place_id
-                               AND pmp1.pub_medium_id != pmp2.pub_medium_id
-    GROUP BY pm1.id, pm1.title
+        pm.id AS id,
+        pm.title AS name,
+        ARRAY_AGG(DISTINCT pmp.pub_place_id) AS targets
+    FROM pub_medium pm
+    JOIN pub_medium_place pmp ON pm.id = pmp.pub_medium_id
+    GROUP BY pm.id, pm.title
     """, nativeQuery = true)
     List<AdjacencyProjection> findMediumAdjacencyListByPlace();
 }
