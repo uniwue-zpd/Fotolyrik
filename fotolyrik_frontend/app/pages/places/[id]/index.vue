@@ -37,12 +37,14 @@ const [
   { data: place_item, status },
   { data: place_pub_media },
   { data: place_metrics },
-  { data: place_photopoems }
+  { data: place_photopoems },
+  { data: relationsGraph },
 ] = await Promise.all([
   place_api.getById(place_id),
   pubmedium_api.getAllFiltered({ 'pubplace-id': place_id }),
   place_api.getMetricsById(place_id),
-  photopoem_api.getAllFiltered({ 'pubplace-id': place_id })
+  photopoem_api.getAllFiltered({ 'pubplace-id': place_id }),
+  useAsyncData('place-same-pub-medium-graph', place_api.fetchSamePubMediumGraph),
 ]);
 
 onMounted(async () => {
@@ -119,6 +121,9 @@ onMounted(async () => {
     <h2 class="text-xl font-bold text-primary outfit-headline" v-if=" place_photopoems && place_photopoems.length > 0">Häufigkeitsverteilung</h2>
     <div class="h-[250px]  rounded-md" v-if="place_photopoems && place_photopoems.length > 0">
       <PhotopoemDatePlot :data="place_photopoems ?? []" />
+    </div>
+    <div>
+      <RelationGraph :id="place_id" :graph="relationsGraph" route="places" heading="Gemeinsame Veröffentlichungen:"  ></RelationGraph>
     </div>
     <h2 class="text-xl font-bold text-primary outfit-headline">Netzwerke</h2>
     <div class="flex flex-col gap-2 md:grid md:grid-cols-2">
