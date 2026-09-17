@@ -73,7 +73,7 @@ const props = defineProps<{
   photopoem?: PhotoPoemDTO;
 }>();
 
-const selectedPubMedium = ref<PubMediumPreviewDTO | null>(null);
+const selectedPubMedium = ref<PubMediumPreviewDTO | null>(props.photopoem?.publicationMedium || null);
 watch(() => props.photopoem?.publicationMedium, (newVal) => {
   selectedPubMedium.value = newVal || null;
 });
@@ -340,6 +340,7 @@ const onFormSubmit = async (e: any) => {
         </div>
         <div class="flex flex-col gap-1">
           <label for="publicationMedium" class="font-bold">Publikationsmedium</label>
+          {{ console.log(selectedPubMedium) }}
           <div class="flex flex-row gap-4 flex-nowrap">
             <AutoComplete
                 id="publicationMedium"
