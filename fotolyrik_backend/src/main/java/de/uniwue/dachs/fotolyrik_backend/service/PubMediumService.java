@@ -3,9 +3,8 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 import de.uniwue.dachs.fotolyrik_backend.DTO.IDSliceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
-import de.uniwue.dachs.fotolyrik_backend.model.Person;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
 import de.uniwue.dachs.fotolyrik_backend.specification.PubMediumSpecification;
@@ -13,7 +12,7 @@ import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PubMediumMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublicationRhythmMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
-import io.micrometer.core.instrument.config.MeterFilter;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,17 +30,19 @@ public class PubMediumService {
     private final PlaceMapper placeMapper;
     private final PublisherMapper publisherMapper;
     private final PublicationRhythmMapper publicationRhythmMapper;
+    private final GraphMapper graphMapper;
 
     public PubMediumService(PubMediumRepository pubMediumRepository,
                             PubMediumMapper pubMediumMapper,
                             PlaceMapper placeMapper,
                             PublisherMapper publisherMapper,
-                            PublicationRhythmMapper publicationRhythmMapper) {
+                            PublicationRhythmMapper publicationRhythmMapper, GraphMapper graphMapper) {
         this.pubMediumRepository = pubMediumRepository;
         this.pubMediumMapper = pubMediumMapper;
         this.placeMapper = placeMapper;
         this.publisherMapper = publisherMapper;
         this.publicationRhythmMapper = publicationRhythmMapper;
+        this.graphMapper = graphMapper;
     }
 
     /**
@@ -265,5 +266,9 @@ public class PubMediumService {
             result = pubMediumRepository.searchPubMedia(query, pageable);
         }
         return result.map(pubMediumMapper::PubMediumToPubMediumPreviewDTO);
+    }
+
+    public GraphDTO getSamePlaceGraph() {
+        return graphMapper.fromAdjacencyList(pubMediumRepository.findMediumAdjacencyListByPlace());
     }
 }

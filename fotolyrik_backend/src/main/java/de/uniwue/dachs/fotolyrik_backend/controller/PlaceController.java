@@ -2,6 +2,7 @@ package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PlaceMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import de.uniwue.dachs.fotolyrik_backend.service.PlaceService;
 import jakarta.persistence.EntityNotFoundException;
@@ -62,4 +63,10 @@ public class PlaceController {
         PlaceMetricsDTO metrics = placeService.getPlaceMetrics(id);
         return ResponseEntity.ok(metrics);
     }
+
+    @GetMapping("/stats/graph/same_pub_medium")
+    public ResponseEntity<GraphDTO> getSamePlaceGraph() {
+        return ResponseEntity.ok(placeService.getSamePublicationMediumGraph());
+    }
+
 }

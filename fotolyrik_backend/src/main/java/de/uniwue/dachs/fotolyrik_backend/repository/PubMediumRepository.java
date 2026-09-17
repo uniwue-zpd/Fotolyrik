@@ -2,6 +2,7 @@ package de.uniwue.dachs.fotolyrik_backend.repository;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,5 +67,16 @@ public interface PubMediumRepository extends JpaRepository<PubMedium, Long>, Jpa
     ORDER BY pm.rn ASC
     """, nativeQuery = true)
     List<Long> findNeighborIdsById(@Param("id") Long id, @Param("padding") int padding);
+
+    @Query(value = """
+    SELECT
+        pm.id AS id,
+        pm.title AS name,
+        ARRAY_AGG(DISTINCT pmp.pub_place_id) AS targets
+    FROM pub_medium pm
+    JOIN pub_medium_place pmp ON pm.id = pmp.pub_medium_id
+    GROUP BY pm.id, pm.title
+    """, nativeQuery = true)
+    List<AdjacencyProjection> findMediumAdjacencyListByPlace();
 }
 

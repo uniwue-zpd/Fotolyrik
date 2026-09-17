@@ -6,22 +6,24 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PersonMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.GraphMapper;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
@@ -29,12 +31,14 @@ public class PersonService {
     private final FileRepository fileRepository;
     private final PersonMapper personMapper;
     private final PlaceMapper placeMapper;
+    private final GraphMapper graphMapper;
 
-    public PersonService(PersonRepository personRepository, FileRepository fileRepository, PersonMapper personMapper, PlaceMapper placeMapper) {
+    public PersonService(PersonRepository personRepository, FileRepository fileRepository, PersonMapper personMapper, PlaceMapper placeMapper, GraphMapper graphMapper) {
         this.personRepository = personRepository;
         this.fileRepository = fileRepository;
         this.personMapper = personMapper;
         this.placeMapper = placeMapper;
+        this.graphMapper = graphMapper;
     }
 
     /**
@@ -179,12 +183,24 @@ public class PersonService {
         return personRepository.getMetricsByPerson(personId);
     }
 
+    /**
+     * GET a list of persons based on search query
+     * @param query defining which person
+     * @return a List of {@link PersonPreviewDTO} found persons
+     */
     public List<PersonPreviewDTO> searchPeople(String query) {
         List<Person> result = personRepository.searchPeople(query,
                 Pageable.unpaged(Sort.by("lastName").ascending())).getContent();
         return personMapper.PersonsToPreviewDTOs(result);
     }
 
+
+    /**
+     * GET a page of persons based on search query
+     * @param query defining which person
+     * @param pageable defining sorting and size of page
+     * @return a Page of {@link PersonPreviewDTO} found persons
+     */
     public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query) {
         Page<Person> result;
         if (query  == null||  query.trim().length()<2){
@@ -193,5 +209,10 @@ public class PersonService {
             result = personRepository.searchPeople(query, pageable);
         }
         return result.map(personMapper::PersonToPreviewDTO);
+    }
+
+
+    public GraphDTO getWorkedWithGraph() {
+        return graphMapper.fromAdjacencyList(personRepository.findAdjacencyList());
     }
 }

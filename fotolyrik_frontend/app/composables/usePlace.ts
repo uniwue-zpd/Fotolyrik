@@ -34,6 +34,9 @@ export const usePlace = () => {
     function fetchMetricsById(id: number) {
         return $fetch<PlaceMetricsDTO>(`/api/places/${id}/stats/metrics`);
     }
+    function fetchSamePubMediumGraph(){
+        return $fetch<GraphDTO>(`/api/places/stats/graph/same_pub_medium`);
+    }
     function getAll(){
         return useAsyncData('place-list', fetchAll);
     }
@@ -52,6 +55,7 @@ export const usePlace = () => {
         update,
         deleteById,
         fetchMetricsById,
+        fetchSamePubMediumGraph,
         getAll,
         getById,
         getMetricsById,

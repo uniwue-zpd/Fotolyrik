@@ -7,6 +7,7 @@ import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
 import AuthorKeywordsTreemap from "~/components/visualizations/AuthorKeywordsTreemap.vue";
 import PersonMetrics from "~/components/visualizations/PersonMetrics.vue";
 import PersonContributionsPlot from "~/components/visualizations/PersonContributionsPlot.vue";
+import RelationGraph from "~/components/visualizations/RelationGraph.vue";
 
 const router = useRoute();
 const person_id = Number(router.params.id);
@@ -21,7 +22,8 @@ const [
   { data: photographerOf },
   { data: participatedOn },
   { data: contributorOf },
-  { data: depictedOn }
+  { data: depictedOn },
+  { data: relationsGraph },
 ] = await Promise.all([
   useAsyncData(`author-${ person_id }-themes`, () => person_api.fetchAuthorThemesById(person_id)),
   useAsyncData(`author-${ person_id }-image-motifs`, () => person_api.fetchAuthorImageMotifsById(person_id)),
@@ -30,7 +32,8 @@ const [
   photopoem_api.getAllFiltered({ 'photographer-id': person_id }),
   photopoem_api.getAllFiltered({ 'participant-id': person_id }),
   photopoem_api.getAllFiltered({ 'other-contributor-id': person_id }),
-  photopoem_api.getAllFiltered({ 'depicted-person-id': person_id })
+  photopoem_api.getAllFiltered({ 'depicted-person-id': person_id }),
+  useAsyncData('person-worked-with-graph', person_api.fetchWorkedWithGraph)
 ]);
 
 const contributionsSummary = computed<PhotoPoemPublicationDateDTO[]>(() => {
@@ -147,6 +150,9 @@ useHead(() => {
             <Divider/>
             <h2 class="text-xl font-bold text-primary outfit-headline">Beiträge nach Veröffentlichungsdatum</h2>
             <PersonContributionsPlot :data="contributionsSummary"/>
+          </div>
+          <div>
+            <RelationGraph :id="person_id" :graph="relationsGraph" route="persons" heading="Kollaboriert mit:"  ></RelationGraph>
           </div>
           <div v-if="authorOf && authorOf.length > 0" class="max-h-[30vh] flex flex-col gap-2">
             <h2 class="text-xl font-bold text-primary outfit-headline">Autor:in von</h2>

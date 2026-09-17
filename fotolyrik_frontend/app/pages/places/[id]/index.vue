@@ -9,6 +9,7 @@ import SkeletonPlaceholder from "~/components/UI/placeholders/SkeletonPlaceholde
 import NotFoundPlaceholder from "~/components/UI/placeholders/NotFoundPlaceholder.vue";
 import PlaceMetrics from "~/components/visualizations/PlaceMetrics.vue";
 import PhotopoemDatePlot from "~/components/visualizations/PhotopoemDatePlot.vue";
+import RelationGraph from "~/components/visualizations/RelationGraph.vue";
 
 
 const place_api = usePlace();
@@ -17,6 +18,22 @@ const photopoem_api = usePhotopoem();
 
 const route = useRoute();
 const place_id = Number(route.params.id);
+
+
+const [
+  { data: place_item, status },
+  { data: place_pub_media },
+  { data: place_metrics },
+  { data: place_photopoems },
+  { data: relationsGraph },
+] = await Promise.all([
+  place_api.getById(place_id),
+  pubmedium_api.getAllFiltered({ 'pubplace-id': place_id }),
+  place_api.getMetricsById(place_id),
+  photopoem_api.getAllFiltered({ 'pubplace-id': place_id }),
+  useAsyncData('place-same-pub-medium-graph', place_api.fetchSamePubMediumGraph),
+]);
+
 const has_coords = computed(() => {
   return place_item.value && place_item.value.latitude && place_item.value.longitude;
 });
@@ -32,17 +49,6 @@ useHead(() => ({
   title: place_item.value?.name ? `${place_item.value?.name}` : 'Nicht gefunden',
 }));
 
-const [
-  { data: place_item, status },
-  { data: place_pub_media },
-  { data: place_metrics },
-  { data: place_photopoems }
-] = await Promise.all([
-  place_api.getById(place_id),
-  pubmedium_api.getAllFiltered({ 'pubplace-id': place_id }),
-  place_api.getMetricsById(place_id),
-  photopoem_api.getAllFiltered({ 'pubplace-id': place_id })
-]);
 
 onMounted(async () => {
   if (!document.getElementById("map")) {
@@ -118,6 +124,9 @@ onMounted(async () => {
     <h2 class="text-xl font-bold text-primary outfit-headline" v-if=" place_photopoems && place_photopoems.length > 0">Häufigkeitsverteilung</h2>
     <div class="h-[250px]  rounded-md" v-if="place_photopoems && place_photopoems.length > 0">
       <PhotopoemDatePlot :data="place_photopoems ?? []" />
+    </div>
+    <div>
+      <RelationGraph :id="place_id" :graph="relationsGraph" route="places" heading="Gemeinsame Veröffentlichungen:"  ></RelationGraph>
     </div>
     <h2 class="text-xl font-bold text-primary outfit-headline">Netzwerke</h2>
     <div class="flex flex-col gap-2 md:grid md:grid-cols-2">

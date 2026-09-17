@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onBeforeUnmount } from "vue";
+import { FilterMatchMode } from "@primevue/core";
+import {useFiles} from "~/composables/useFiles";
 import PhotopoemFilter from "~/components/UI/filters/PhotopoemFilter.vue";
-import type { Page, PhotopoemPageable } from "~/utils/types";
+import type {Page, PhotopoemPageable} from "~/utils/types";
 
 const initialPageParameter: PhotopoemPageable = {
   page: 0,
