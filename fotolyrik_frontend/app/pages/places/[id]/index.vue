@@ -18,6 +18,22 @@ const photopoem_api = usePhotopoem();
 
 const route = useRoute();
 const place_id = Number(route.params.id);
+
+
+const [
+  { data: place_item, status },
+  { data: place_pub_media },
+  { data: place_metrics },
+  { data: place_photopoems },
+  { data: relationsGraph },
+] = await Promise.all([
+  place_api.getById(place_id),
+  pubmedium_api.getAllFiltered({ 'pubplace-id': place_id }),
+  place_api.getMetricsById(place_id),
+  photopoem_api.getAllFiltered({ 'pubplace-id': place_id }),
+  useAsyncData('place-same-pub-medium-graph', place_api.fetchSamePubMediumGraph),
+]);
+
 const has_coords = computed(() => {
   return place_item.value && place_item.value.latitude && place_item.value.longitude;
 });
@@ -33,19 +49,6 @@ useHead(() => ({
   title: place_item.value?.name ? `${place_item.value?.name}` : 'Nicht gefunden',
 }));
 
-const [
-  { data: place_item, status },
-  { data: place_pub_media },
-  { data: place_metrics },
-  { data: place_photopoems },
-  { data: relationsGraph },
-] = await Promise.all([
-  place_api.getById(place_id),
-  pubmedium_api.getAllFiltered({ 'pubplace-id': place_id }),
-  place_api.getMetricsById(place_id),
-  photopoem_api.getAllFiltered({ 'pubplace-id': place_id }),
-  useAsyncData('place-same-pub-medium-graph', place_api.fetchSamePubMediumGraph),
-]);
 
 onMounted(async () => {
   if (!document.getElementById("map")) {
