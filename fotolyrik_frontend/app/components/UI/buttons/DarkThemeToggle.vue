@@ -7,6 +7,9 @@ const states = {
   light: {icon: 'pi-sun', next: 'dark'},
 } as const;
 const currentIndex = ref("light" as keyof typeof states);
+defineProps<{
+  inPopup?: boolean
+}>()
 
 until(() => colorMode.unknown).toBe(false).then(() => {
   currentIndex.value = colorMode.value as keyof typeof states;
@@ -20,5 +23,11 @@ const toggle = () => {
 </script>
 
 <template>
-    <Button type="button" :icon="currentIcon" rounded-sm aria-label="User" variant="link" class="text-white" @click="toggle"/>
+
+  <div v-if="inPopup"  class="flex items-center gap-2 cursor-pointer" @click="toggle">
+    <i :class="currentIcon" aria-hidden="true"></i>
+    <span class="outfit-headline">Farbschema</span>
+
+  </div>
+  <i v-else :class="currentIcon +' text-white'" @click="toggle"></i>
 </template>

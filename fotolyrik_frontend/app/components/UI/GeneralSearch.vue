@@ -3,6 +3,9 @@ import { ref } from "vue";
 
 const visible = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
+defineProps<{
+  inPopup?: boolean
+}>()
 
 // Handle search input
 const query = ref('');
@@ -65,8 +68,17 @@ watch(query, (val) => {
 </script>
 
 <template>
-  <button @click="visible = true" class="cursor-pointer">
-    <i class="pi pi-search text-white"/>
+  <button
+      @click="visible = true"
+      class="cursor-pointer w-full" >
+    <div v-if="!inPopup" class="flex items-center gap-3 justify-start">
+      <i class="pi pi-search text-white"></i>
+    </div>
+    <div v-else
+        class="flex items-center justify-start gap-3" >
+      <i class="pi pi-search"></i>
+      <span class="outfit-headline">Suchen</span>
+    </div>
   </button>
   <Dialog v-model:visible="visible" modal :dismissableMask="true" position="top" class="min-w-[30%] p-2" @hide="clearResults">
     <template #header>
