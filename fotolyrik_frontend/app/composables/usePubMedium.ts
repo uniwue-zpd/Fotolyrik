@@ -17,6 +17,12 @@ export const usePubMedium = () => {
         });
     }
 
+    function search(query: string) {
+        return $fetch<PubMediumPreviewDTO[]>('/api/publication_media/search', {
+            query: { query }
+        });
+    }
+
     function searchPaginated(query: string, pageable: Pageable): Promise<Page<PubMediumPreviewDTO>> {
         return $fetch<Page<PubMediumPreviewDTO>>(`/api/publication_media/search_paginated`, { query: { query, ...pageable } });
     }
@@ -71,6 +77,7 @@ export const usePubMedium = () => {
         fetchAll,
         fetchById,
         filter,
+        search,
         searchPaginated,
         create,
         update,

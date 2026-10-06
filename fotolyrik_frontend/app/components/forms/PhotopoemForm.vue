@@ -46,24 +46,12 @@ const [
   pubMediumApi.getAll(),
   fileApi.getAll(),
 ]);
-const publicationMedia = computed(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })));
+const publicationMedia = computed<PubMediumPreviewDTO[]>(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })) ?? []);
 const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
 const languages = computed(() => languageHandle.data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 const locations = computed(()=> locationHandle.data.value?.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(()=> copyrightStatusHandle.data.value?.map(cs => ({ id: cs.id, value: cs.value })));
-
-const pubMediaLoading = ref(false);
-const pubMediaSuggestions = ref<PubMediumDTO[]>([]);
-const debouncedPubMediaSearch = debounce(async (query: string) => {
-  pubMediaLoading.value = true;
-  pubMediaSuggestions.value = await pubMediumApi.filter({'title': query});
-  pubMediaLoading.value = false;
-}, 300);
-
-const onPubMediaComplete = (event: any) => {
-  debouncedPubMediaSearch(event.query);
-};
 
 const data_refreshing = ref(false);
 
@@ -72,11 +60,6 @@ const props = defineProps<{
   header: string;
   photopoem?: PhotoPoemDTO;
 }>();
-
-const selectedPubMedium = ref<PubMediumPreviewDTO | null>(null);
-watch(() => props.photopoem?.publicationMedium, (newVal) => {
-  selectedPubMedium.value = newVal || null;
-});
 
 const resolver = ref(
   zodResolver(
@@ -131,7 +114,6 @@ const contributionsForm: Ref<InstanceType<typeof ContributionForm> | null> = ref
 const onFormSubmit = async (e: any) => {
   if (e.valid && contributionsForm.value?.isValid()) {
     e.values.contributions = contributionsForm.value?.getContributions();
-    e.values.publicationMedium = selectedPubMedium.value;
     try {
       if (props.action === "create") {
         await photopoemApi.create(e.values);
@@ -338,20 +320,19 @@ const onFormSubmit = async (e: any) => {
             </Message>
           </FormField>
         </div>
-        <div class="flex flex-col gap-1">
+        <FormField v-slot="$field" name="publicationMedium" class="flex flex-col gap-1">
           <label for="publicationMedium" class="font-bold">Publikationsmedium</label>
           <div class="flex flex-row gap-4 flex-nowrap">
-            <AutoComplete
-                id="publicationMedium"
-                v-model="selectedPubMedium"
+            <Select
+                inputId="publicationMedium"
+                name="publicationMedium"
                 class="flex-1 min-w-0"
                 placeholder="Publikationsmedium suchen..."
-                :suggestions="pubMediaSuggestions"
-                :loading="pubMediaLoading"
-                @complete="onPubMediaComplete"
                 optionLabel="title"
                 :options="publicationMedia"
-                :key="publicationMedia?.length"
+                dataKey="id"
+                filter
+                showClear
                 fluid
             />
             <NuxtLink to="/publication_media/create" target="_blank">
@@ -361,7 +342,7 @@ const onFormSubmit = async (e: any) => {
           <Message v-if="$form.publicationMedium?.invalid" severity="error" size="small" variant="simple">
             {{ $form.publicationMedium.error.message }}
           </Message>
-        </div>
+        </FormField>
         <FormField v-slot="$field" name="foundIn" class="flex flex-col gap-1">
           <label for="foundIn" class="font-bold">Fundort</label>
           <div class="flex flex-row gap-4 flex-nowrap">
