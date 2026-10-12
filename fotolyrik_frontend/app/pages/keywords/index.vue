@@ -3,11 +3,9 @@ import { ref, watch } from "vue";
 import type { Page } from "~/utils/types";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
 
-function getRandomRgb(): string {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `rgba(${r}, ${g}, ${b}, 0.4)`;
+function getKeywordColor(id: number): string {
+  const hue = (id * 137.508) % 360;
+  return `hsla(${hue}, 80%, 70%, 0.4)`;
 }
 
 const initialPageParameter = {
@@ -117,7 +115,7 @@ watch([pageParameter, searchQuery], () => refresh(), { deep: true });
           <div class="flex flex-wrap gap-3">
             <NuxtLink v-if="keywords" v-for="keyword in keywords.content" :to="`/keywords/${keyword.id}`"
               class="font-medium roboto-plain p-1 rounded-lg transition-transform hover:scale-105 shadow-md hover:shadow-lg"
-              :style="[{ background: getRandomRgb() }]">
+              :style="[{ background: getKeywordColor(keyword.id) }]">
               {{ keyword.value }}
             </NuxtLink>
           </div>
