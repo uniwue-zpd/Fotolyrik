@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import PageSelection from "~/components/UI/buttons/PageSelection.vue";
 import PhotopoemFilter from "~/components/UI/filters/PhotopoemFilter.vue";
 import type { Page, PhotopoemPageable } from "~/utils/types";
 
@@ -53,13 +54,6 @@ const pageSizeOptions = ref([
 ]);
 
 const photopoemApi = usePhotopoem();
-
-const pageOptions = computed(() =>
-    Array.from({ length: photopoems.value?.totalPages ?? 0 }, (_, index) => ({
-      label: `${ index + 1 }`,
-      value: index
-    }))
-);
 
 const {
   data: photopoems,
@@ -125,34 +119,7 @@ useHead(() => ({
                 </div>
               </div>
             </div>
-            <div class="flex items-center justify-center align-bottom gap-3">
-              <button
-                  type="button"
-                  class="px-2 h-9 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
-                  :disabled="pageParameter.page === 0"
-                  aria-label="Vorherige Seite"
-                  @click="pageParameter.page!--"
-              >
-                <i class="pi pi-chevron-left"/>
-              </button>
-              <Select
-                  v-model="pageParameter.page"
-                  :options="pageOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  :disabled="photopoems?.totalPages <= 1"
-                  class="h-9 items-center"
-              />
-              <button
-                  type="button"
-                  class="px-2 h-9 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
-                  :disabled="pageParameter.page! >= (photopoems?.totalPages ?? 1) - 1"
-                  aria-label="Nächste Seite"
-                  @click="pageParameter.page!++"
-              >
-                <i class="pi pi-chevron-right"/>
-              </button>
-            </div>
+            <PageSelection :pageParameter :totalPages="photopoems?.totalPages" />
           </div>
         </div>
       </div>
