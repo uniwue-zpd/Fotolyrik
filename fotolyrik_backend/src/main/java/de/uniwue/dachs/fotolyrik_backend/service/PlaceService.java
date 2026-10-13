@@ -2,8 +2,10 @@ package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PlaceMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import de.uniwue.dachs.fotolyrik_backend.repository.PlaceRepository;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.GraphMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
@@ -17,10 +19,12 @@ import java.util.Optional;
 public class PlaceService {
     private final PlaceRepository placeRepository;
     private final PlaceMapper placeMapper;
+    private final GraphMapper graphMapper;
 
-    public PlaceService(PlaceRepository placeRepository, PlaceMapper placeMapper) {
+    public PlaceService(PlaceRepository placeRepository, PlaceMapper placeMapper, GraphMapper graphMapper) {
         this.placeRepository = placeRepository;
         this.placeMapper = placeMapper;
+        this.graphMapper = graphMapper;
     }
 
     public List<PlaceDTO> getAllPlaces() {
@@ -68,5 +72,9 @@ public class PlaceService {
      */
     public PlaceMetricsDTO getPlaceMetrics(Long placeId) {
         return placeRepository.getMetricsByPlace(placeId);
+    }
+
+    public GraphDTO getSamePublicationMediumGraph(){
+        return graphMapper.fromAdjacencyList(placeRepository.findAdjacencyList());
     }
 }

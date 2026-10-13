@@ -2,6 +2,7 @@ package de.uniwue.dachs.fotolyrik_backend.repository;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -110,4 +111,19 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
         ORDER BY p.lastName ASC NULLS LAST
     """)
     Page<Person> searchPeople(@Param("query") String query, Pageable pageable);
+
+    @Query(value = """
+    SELECT
+        c1.contributor_id AS id,
+        TRIM(CONCAT(p.last_name, ' ', p.first_name)) AS name,
+        ARRAY_AGG(DISTINCT c2.contributor_id) AS targets
+    FROM contribution c1
+    JOIN contribution c2 ON c1.photopoem_id = c2.photopoem_id 
+                         AND c1.contributor_id != c2.contributor_id
+    JOIN person p ON c1.contributor_id = p.id
+    WHERE (p.first_name IS NOT NULL AND TRIM(p.first_name) != '')
+       OR (p.last_name IS NOT NULL AND TRIM(p.last_name) != '')
+    GROUP BY c1.contributor_id, p.last_name, p.first_name
+    """, nativeQuery = true)
+    List<AdjacencyProjection> findAdjacencyList();
 }

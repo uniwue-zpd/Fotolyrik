@@ -51,6 +51,10 @@ export const usePubMedium = () => {
         return $fetch<PubMediumMetricsDTO>(`/api/publication_media/${id}/stats/metrics`);
     }
 
+    function fetchSamePlaceGraph(){
+        return $fetch<GraphDTO>(`/api/publication_media/stats/graph/same_place`);
+    }
+
     function getAll(){
         return useAsyncData('pubMedium-list', fetchAll);
     }
@@ -83,6 +87,7 @@ export const usePubMedium = () => {
         update,
         deleteById,
         fetchMetricsById,
+        fetchSamePlaceGraph,
         getAll,
         getById,
         getAllFiltered,

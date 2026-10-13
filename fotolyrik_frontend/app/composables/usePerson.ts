@@ -47,6 +47,10 @@ export const usePerson = () => {
         return $fetch<PersonMetricsDTO>(`/api/persons/${id}/stats/metrics`);
     }
 
+    function fetchWorkedWithGraph(){
+        return $fetch<GraphDTO>(`/api/persons/stats/graph/worked_with`);
+    }
+
     function search(query: string) {
         return $fetch<PersonPreviewDTO[]>('/api/persons/search', {
             query: { query }
@@ -79,6 +83,7 @@ export const usePerson = () => {
         fetchAuthorThemesById,
         fetchAuthorImageMotifsById,
         fetchMetricsById,
+        fetchWorkedWithGraph,
         search,
         searchPaginated,
         getAll,
