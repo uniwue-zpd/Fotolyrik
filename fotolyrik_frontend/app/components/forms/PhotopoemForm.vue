@@ -322,7 +322,6 @@ const onFormSubmit = async (e: any) => {
         </div>
         <FormField v-slot="$field" name="publicationMedium" class="flex flex-col gap-1">
           <label for="publicationMedium" class="font-bold">Publikationsmedium</label>
-          {{ console.log(selectedPubMedium) }}
           <div class="flex flex-row gap-4 flex-nowrap">
             <Select
                 inputId="publicationMedium"
