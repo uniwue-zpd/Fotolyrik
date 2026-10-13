@@ -90,7 +90,7 @@ const items = ref([
       class="pagetoolbar"
   >
     <template #button="{ toggleCallback }">
-      <Button icon="pi pi-bars" @click="toggleCallback" style="color: black"/>
+      <Button icon="pi pi-bars" class="!text-color" @click="toggleCallback" />
     </template>
     <template #item="{ item, toggleCallback }">
       <div class="px-2 cursor-pointer" @click="toggleCallback">
@@ -123,4 +123,5 @@ const items = ref([
   border: none;
   color: black;
 }
+
 </style>

@@ -80,14 +80,16 @@ useHead(() => {
   <div class="flex flex-col gap-2">
     <Card>
       <template #title>
-        <div class="flex flex-row justify-between">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
           <h1 class="text-3xl font-bold text-primary outfit-headline">{{ person_item?.fullName || person_item?.pseudonyms[0] }}</h1>
-          <PageToolbar
-              v-if="person_item"
-              :id="person_item.id"
-              entity_type="person"
-              :page_url="`${router.fullPath}`"
-          />
+          <div class="w-full sm:w-auto flex justify-end">
+            <PageToolbar
+                v-if="person_item"
+                :id="person_item.id"
+                entity_type="person"
+                :page_url="`${router.fullPath}`"
+            />
+          </div>
         </div>
       </template>
       <template #content>
