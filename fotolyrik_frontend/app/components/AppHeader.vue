@@ -12,6 +12,10 @@ const toggleUser = (event: any) => {
 const toggleMobileMenu = (event: any) => {
   mobileMenu.value.toggle(event);
 };
+
+const closeMobileMenu = () => {
+  mobileMenu.value?.hide();
+};
 </script>
 
 <template>
@@ -48,12 +52,11 @@ const toggleMobileMenu = (event: any) => {
 
         <Popover ref="mobileMenu">
           <div class="flex flex-col gap-4 p-2 min-w-[180px]">
-            <NuxtLink to="/project" class="outfit-headline"> Projekt </NuxtLink>
-            <NuxtLink to="/photopoems" class="outfit-headline"> Sammlung </NuxtLink>
-            <NuxtLink to="/contact" class="outfit-headline"> Kontakt </NuxtLink>
+            <NuxtLink to="/project" class="outfit-headline" @click="closeMobileMenu"> Projekt </NuxtLink>
+            <NuxtLink to="/photopoems" class="outfit-headline" @click="closeMobileMenu"> Sammlung </NuxtLink>
+            <NuxtLink to="/contact" class="outfit-headline" @click="closeMobileMenu"> Kontakt </NuxtLink>
             <GeneralSearch in-popup />
             <UIButtonsDarkThemeToggle in-popup />
-
           </div>
         </Popover>
       </div>
