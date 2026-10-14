@@ -82,6 +82,8 @@ export interface PersonPreviewDTO {
     fullName: string | null;
     studioName: string | null;
     pseudonyms: [string] | [];
+    birthYear: number | null;
+    deathYear: number | null;
 }
 export enum ContributionRole {
     AUTHOR = "AUTHOR",
