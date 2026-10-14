@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 import type { Page } from "~/utils/types";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
+import ContentCard from "~/components/UI/cards/ContentCard.vue";
 
 const { width } = useWindowSize();
 
@@ -99,16 +100,10 @@ watch(pageParameter, () => refresh(), { deep: true });
                   </div>
                 </div>
               </div>
-              <div v-else-if="keywords" v-for="keyword in keywords.content" :key="keyword.id"
-                class="border-2 border-primary rounded-md p-2 shadow-md">
-                <div class="flex flex-col gap-1">
-                  <NuxtLink :to="`/keywords/${keyword.id}`"
-                    class="text-lg group relative w-fit outfit-headline font-semibold text-primary">
-                    {{ keyword.value }}
-                    <span
-                      class="absolute bottom-0 left-0 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
-                  </NuxtLink>
-
+              <ContentCard v-else-if="keywords" v-for="keyword in keywords.content" :key="keyword.id"
+                :headerLink="`/keywords/${keyword.id}`">
+                <template #header>{{ keyword.value }}</template>
+                <template #subContent>
                   <div v-if="keyword" class="flex flex-row gap-2">
                     <span class="text-sm roboto-plain">GND-ID:</span>
                     <NuxtLink :to="`https://explore.gnd.network/gnd/${keyword.gndId}`" title="Zum GND-Explorer wechseln"
@@ -118,8 +113,8 @@ watch(pageParameter, () => refresh(), { deep: true });
                       </div>
                     </NuxtLink>
                   </div>
-                </div>
-              </div>
+                </template>
+              </ContentCard>
             </div>
           </div>
         </TabPanel>
