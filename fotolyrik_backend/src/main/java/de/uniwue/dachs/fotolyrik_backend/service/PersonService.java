@@ -202,11 +202,13 @@ public class PersonService {
      * @return a Page of {@link PersonPreviewDTO} found persons
      */
     public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query) {
+        String normalizedQuery = query == null ? "" : query.trim();
+
         Page<Person> result;
-        if (query  == null||  query.trim().length()<2){
-            result =  personRepository.findAll(pageable);
+        if (normalizedQuery.length() < 2) {
+            result = personRepository.findAll(pageable);
         } else {
-            result = personRepository.searchPeople(query, pageable);
+            result = personRepository.searchPeoplePaginated(normalizedQuery, pageable);
         }
         return result.map(personMapper::PersonToPreviewDTO);
     }

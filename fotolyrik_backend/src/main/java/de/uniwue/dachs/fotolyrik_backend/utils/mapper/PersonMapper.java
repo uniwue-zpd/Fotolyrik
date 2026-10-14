@@ -32,6 +32,8 @@ public class PersonMapper {
         personPreviewDTO.setFullName(person.getFullName());
         personPreviewDTO.setStudioName(person.getStudioName());
         personPreviewDTO.setPseudonyms(person.getPseudonyms());
+        personPreviewDTO.setBirthYear(person.getBirthYear());
+        personPreviewDTO.setDeathYear(person.getDeathYear());
         return personPreviewDTO;
     }
 
