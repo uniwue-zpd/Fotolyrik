@@ -69,7 +69,7 @@ watch(searchQuery, () => {
 
     <Divider />
 
-    <div class="flex flex-row justify-between items-stretch gap-2 mb-2">
+    <div class="flex flex-row justify-between items-stretch gap-2 mb-2 w-full">
       <div v-if="width > 600 || !searchFocused" class="p-2 border border-solid rounded-md hover:shadow-md">
         <NuxtLink to="/persons/create" class="flex items-center">
           <i class="pi pi-pen-to-square mr-2" />
@@ -78,12 +78,12 @@ watch(searchQuery, () => {
       </div>
       <Select v-if="width > 600 || !searchFocused" v-model="pageParameter.size" :options="pageSizeOptions"
         :optionLabel="width > 600 ? 'label' : 'value'" optionValue="value" />
-      <IconField class="search-field min-w-0 flex-1" :class="{ 'is-expanded': width <= 600 && searchFocused }">
+      <IconField class="search-field" :class="{ 'is-expanded': width <= 600 && searchFocused }">
         <InputIcon>
           <i class="pi pi-search" />
         </InputIcon>
-        <InputText v-model="searchQuery" type="text" placeholder="In allen Angaben suchen" class="search-input"
-          aria-label="In allen Angaben suchen" @focus="searchFocused = true" @blur="searchFocused = false" />
+        <InputText v-model="searchQuery" type="text" placeholder="Suchen" class="search-input"
+          aria-label="Suchen" @focus="searchFocused = true" @blur="searchFocused = false" />
       </IconField>
     </div>
     <span v-if="!persons_data || persons_data.totalPages === 0"
@@ -93,12 +93,12 @@ watch(searchQuery, () => {
       <ContentCard flex-dir="row" :headerLink="`/persons/${person.id}`">
         <template #header>{{ person.fullName?.trim() || "(Kein Name)" }}</template>
         <template #subContent>
-          <div class="flex flex-row gap-2 w-full *:text-sm *:text-primary *:outfit-headline *:font-medium">
+          <div class="flex flex-row gap-2 *:text-sm *:text-primary *:outfit-headline *:font-medium">
             <div v-if="person.birthYear && person.deathYear">
               ({{ person.birthYear }} - {{ person.deathYear }})
             </div>
             <div v-if="person.pseudonyms.length > 0" class="flex flex-row gap-1">
-              aka. 
+              aka.
               <div v-for="(pseudonym, index) in person.pseudonyms">
                 "{{ pseudonym }}"{{ index < person.pseudonyms.length - 1 ? ', ' : '' }} </div>
               </div>
@@ -192,3 +192,22 @@ watch(searchQuery, () => {
     </template>
   </Card>
 </template>
+
+<style scoped>
+@media (max-width: 600px) {
+  .search-field {
+    flex: 0 1 8rem;
+    min-width: 0;
+    transition: flex-grow 250ms ease;
+  }
+
+  .search-field.is-expanded {
+    flex-grow: 1;
+  }
+
+  .search-input {
+    width: 100%;
+    min-width: 0;
+  }
+}
+</style>
