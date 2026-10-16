@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { FilterMatchMode } from "@primevue/core";
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
 import type { PersonSearchField, PersonSearchMatchMode } from "~/utils/types";
@@ -47,7 +46,7 @@ const pageSizeOptions = ref([
 const person_api = usePerson();
 
 const {
-  data: persons_data,
+  data: persons,
   pending: isLoading,
   refresh
 } = useAsyncData<Page<PersonPreviewDTO>>(
@@ -59,20 +58,6 @@ const {
     searchMatchMode.value
   )
 );
-
-const { data: personList } = await person_api.getAll();
-
-const persons = computed(() => {
-  return personList.value?.map(person => ({
-    ...person,
-    pseudonyms: person.pseudonyms.sort().join(', ')
-  }));
-})
-
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  fullName: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
-});
 
 watch(pageParameter, () => refresh(), { deep: true });
 watch([searchQuery, searchField, searchMatchMode], () => {
@@ -91,9 +76,7 @@ watch([searchQuery, searchField, searchMatchMode], () => {
       Eine Übersicht aller Personen in der Datenbank. Klicken Sie auf eine Person, um Details anzuzeigen oder zu
       bearbeiten.
     </p>
-
     <Divider />
-
     <div class="flex flex-row flex-wrap justify-between items-stretch gap-2 mb-2 w-full">
       <div v-if="!smallScreen || !searchFocused" class="flex flex-row gap-2">
         <div class="p-2 border border-solid rounded-md hover:shadow-md">
@@ -105,7 +88,6 @@ watch([searchQuery, searchField, searchMatchMode], () => {
         <Select v-model="pageParameter.size" :options="pageSizeOptions" :optionLabel="!smallScreen ? 'label' : 'value'"
           optionValue="value" />
       </div>
-
       <div class="flex min-w-0 gap-2 justify-between" :class="{ 'flex-col w-full': smallScreen && searchFocused }">
         <div v-if="!smallScreen || searchFocused" class="flex flex-row gap-2">
           <Select v-model="searchField" :options="searchFieldOptions" optionLabel="label" optionValue="value"
@@ -125,14 +107,17 @@ watch([searchQuery, searchField, searchMatchMode], () => {
               aria-label="Suchen" @focus="searchFocused = true" />
           </IconField>
         </div>
-
-
       </div>
     </div>
-    <span v-if="!persons_data || persons_data.totalPages === 0"
-      class="flex w-full justify-center text-primary text-2xl py-5">
+    <span v-if="!persons || persons.totalPages === 0" class="flex w-full justify-center text-primary text-2xl py-5">
       Keine Personen gefunden!</span>
-    <div v-else-if="persons_data" v-for="person in persons_data.content" :key="person.id" class="flex flex-col gap-2">
+    <div v-else-if="isLoading" v-for="_ in pageParameter.size"
+      class="border-2 border-primary rounded-md p-2 shadow-md animate-pulse">
+      <div class="flex flex-col gap-1">
+        <div class="w-fit text-lg outfit-headline font-semibold text-transparent">Placeholder</div>
+      </div>
+    </div>
+    <div v-else-if="persons" v-for="person in persons.content" :key="person.id" class="flex flex-col gap-2">
       <ContentCard flex-dir="row" :headerLink="`/persons/${person.id}`">
         <template #header>{{ person.fullName?.trim() || "(Kein Name)" }}</template>
         <template #subContent>
@@ -149,7 +134,7 @@ watch([searchQuery, searchField, searchMatchMode], () => {
         </template>
       </ContentCard>
     </div>
-    <PageSelection :page-parameter="pageParameter" :total-pages="persons_data?.totalPages" />
+    <PageSelection :page-parameter="pageParameter" :total-pages="persons?.totalPages" />
   </div>
 </template>
 
