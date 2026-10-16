@@ -6,13 +6,15 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
+import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchField;
+import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchMatchMode;
 import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.events.Event;
+import org.springframework.web.server.ResponseStatusException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -117,8 +119,18 @@ public class PersonController {
         return ResponseEntity.ok(persons);
     }
     @GetMapping("/search_paginated")
-    public ResponseEntity<Page<PersonPreviewDTO>> searchPeoplePaginated(Pageable pageable, @RequestParam String query) {
-        Page<PersonPreviewDTO> persons = personService.searchPeoplePaginated(pageable, query);
+    public ResponseEntity<Page<PersonPreviewDTO>> searchPeoplePaginated(
+            Pageable pageable,
+            @RequestParam String query,
+            @RequestParam(required = false) PersonSearchField field,
+            @RequestParam(required = false) PersonSearchMatchMode matchMode) {
+        if ((field == null) != (matchMode == null)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Both field and matchMode must be provided together");
+        }
+        Page<PersonPreviewDTO> persons = field == null
+                ? personService.searchPeoplePaginated(pageable, query)
+                : personService.searchPeoplePaginated(pageable, query, field, matchMode);
         return ResponseEntity.ok(persons);
     }
 }

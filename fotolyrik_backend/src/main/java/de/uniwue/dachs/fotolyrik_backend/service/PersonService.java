@@ -6,12 +6,14 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
+import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchField;
+import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchMatchMode;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
+import de.uniwue.dachs.fotolyrik_backend.specification.PersonSpecification;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PersonMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.GraphMapper;
@@ -23,7 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
@@ -210,6 +211,17 @@ public class PersonService {
         } else {
             result = personRepository.searchPeoplePaginated(normalizedQuery, pageable);
         }
+        return result.map(personMapper::PersonToPreviewDTO);
+    }
+
+    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query,
+                                                        PersonSearchField field,
+                                                        PersonSearchMatchMode matchMode) {
+        String normalizedQuery = query == null ? "" : query.trim();
+        Page<Person> result = normalizedQuery.isEmpty()
+                ? personRepository.findAll(pageable)
+                : personRepository.findAll(
+                        PersonSpecification.search(normalizedQuery, field, matchMode), pageable);
         return result.map(personMapper::PersonToPreviewDTO);
     }
 

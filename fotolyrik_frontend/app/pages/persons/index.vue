@@ -3,11 +3,31 @@ import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
+import type { PersonSearchField, PersonSearchMatchMode } from "~/utils/types";
 
 const { width } = useWindowSize();
+const smallScreen = computed(() => { return width.value < 800 })
 
 const searchFocused = ref(false);
 const searchQuery = ref("");
+const searchField = ref<PersonSearchField>("ALL");
+const searchMatchMode = ref<PersonSearchMatchMode>("CONTAINS");
+
+const searchFieldOptions: { label: string; value: PersonSearchField }[] = [
+  { label: "Alle Felder", value: "ALL" },
+  { label: "Name", value: "FULL_NAME" },
+  { label: "Geburtsjahr", value: "BIRTH_YEAR" },
+  { label: "Sterbejahr", value: "DEATH_YEAR" },
+  { label: "Pseudonyme", value: "PSEUDONYMS" }
+];
+const searchMatchModeOptions: { label: string; value: PersonSearchMatchMode }[] = [
+  { label: "Beginnt mit", value: "STARTS_WITH" },
+  { label: "Enthält", value: "CONTAINS" },
+  { label: "Enthält nicht", value: "NOT_CONTAINS" },
+  { label: "Endet mit", value: "ENDS_WITH" },
+  { label: "Ist gleich", value: "EQUALS" },
+  { label: "Ist ungleich", value: "NOT_EQUALS" }
+];
 
 const initialPageParameter = {
   page: 0,
@@ -32,7 +52,12 @@ const {
   refresh
 } = useAsyncData<Page<PersonPreviewDTO>>(
   "persons-paginated",
-  () => person_api.searchPaginated(searchQuery.value, { ...pageParameter })
+  () => person_api.searchPaginated(
+    searchQuery.value,
+    { ...pageParameter },
+    searchField.value,
+    searchMatchMode.value
+  )
 );
 
 const { data: personList } = await person_api.getAll();
@@ -50,7 +75,7 @@ const filters = ref({
 });
 
 watch(pageParameter, () => refresh(), { deep: true });
-watch(searchQuery, () => {
+watch([searchQuery, searchField, searchMatchMode], () => {
   if (pageParameter.page !== 0) {
     pageParameter.page = 0;
     return;
@@ -69,22 +94,40 @@ watch(searchQuery, () => {
 
     <Divider />
 
-    <div class="flex flex-row justify-between items-stretch gap-2 mb-2 w-full">
-      <div v-if="width > 600 || !searchFocused" class="p-2 border border-solid rounded-md hover:shadow-md">
-        <NuxtLink to="/persons/create" class="flex items-center">
-          <i class="pi pi-pen-to-square mr-2" />
-          <div class="text-primary roboto-plain">Neu {{ width > 600 ? 'anlegen' : '' }}</div>
-        </NuxtLink>
+    <div class="flex flex-row flex-wrap justify-between items-stretch gap-2 mb-2 w-full">
+      <div v-if="!smallScreen || !searchFocused" class="flex flex-row gap-2">
+        <div class="p-2 border border-solid rounded-md hover:shadow-md">
+          <NuxtLink to="/persons/create" class="flex items-center">
+            <i class="pi pi-pen-to-square mr-2" />
+            <div class="text-primary roboto-plain">Neu {{ !smallScreen ? 'anlegen' : '' }}</div>
+          </NuxtLink>
+        </div>
+        <Select v-model="pageParameter.size" :options="pageSizeOptions" :optionLabel="!smallScreen ? 'label' : 'value'"
+          optionValue="value" />
       </div>
-      <Select v-if="width > 600 || !searchFocused" v-model="pageParameter.size" :options="pageSizeOptions"
-        :optionLabel="width > 600 ? 'label' : 'value'" optionValue="value" />
-      <IconField class="search-field" :class="{ 'is-expanded': width <= 600 && searchFocused }">
-        <InputIcon>
-          <i class="pi pi-search" />
-        </InputIcon>
-        <InputText v-model="searchQuery" type="text" placeholder="Suchen" class="search-input"
-          aria-label="Suchen" @focus="searchFocused = true" @blur="searchFocused = false" />
-      </IconField>
+
+      <div class="flex min-w-0 gap-2 justify-between" :class="{ 'flex-col w-full': smallScreen && searchFocused }">
+        <div v-if="!smallScreen || searchFocused" class="flex flex-row gap-2">
+          <Select v-model="searchField" :options="searchFieldOptions" optionLabel="label" optionValue="value"
+            aria-label="Suchfeld" class="flex-1" />
+          <Select v-model="searchMatchMode" :options="searchMatchModeOptions" optionLabel="label" optionValue="value"
+            aria-label="Suchoperator" class="flex-1" />
+          <Button v-if="smallScreen && searchFocused" type="button" icon="pi pi-angle-up" aria-label="Suche einklappen"
+            variant="outlined" class="ml-auto" style="border-color: var(--p-select-border-color)"
+            @click="searchFocused = false" />
+        </div>
+        <div class="w-40 min-w-0" :class="{ 'min-w-full': smallScreen && searchFocused }">
+          <IconField class="search-field w-full min-w-0" :class="{ 'is-expanded': smallScreen && searchFocused }">
+            <InputIcon>
+              <i class="pi pi-search" />
+            </InputIcon>
+            <InputText v-model="searchQuery" type="text" placeholder="Suchen" class="search-input w-full min-w-0"
+              aria-label="Suchen" @focus="searchFocused = true" />
+          </IconField>
+        </div>
+
+
+      </div>
     </div>
     <span v-if="!persons_data || persons_data.totalPages === 0"
       class="flex w-full justify-center text-primary text-2xl py-5">
@@ -108,93 +151,10 @@ watch(searchQuery, () => {
     </div>
     <PageSelection :page-parameter="pageParameter" :total-pages="persons_data?.totalPages" />
   </div>
-
-
-
-  <Card>
-    <template #title>
-      <h1 class="text-3xl font-bold text-primary outfit-headline">Personen</h1>
-    </template>
-    <template #content>
-      <DataTable v-model:filters="filters" filter-display="row"
-        :global-filter-fields="['fullName', 'sex', 'birthYear', 'deathYear', 'pseudonyms']" :value="persons" stripedRows
-        paginator :rows="10">
-        <template #header>
-          <div class="flex flex-row justify-between items-center">
-            <div class="p-2 border border-solid rounded-md hover:shadow-md">
-              <NuxtLink to="/persons/create" class="flex items-center">
-                <i class="pi pi-pen-to-square mr-2" />
-                <div class="text-primary roboto-plain">Neu anlegen</div>
-              </NuxtLink>
-            </div>
-            <IconField>
-              <InputIcon>
-                <i class="pi pi-search" />
-              </InputIcon>
-              <InputText v-model="filters['global'].value" type="text" placeholder="Tabelle durchsuchen" />
-            </IconField>
-          </div>
-        </template>
-        <Column field="fullName" header="Name" sortable>
-          <template #body="slotProps">
-            <NuxtLink :to="`/persons/${slotProps.data.id}`" class="roboto-plain font-semibold">
-              {{ slotProps.data.fullName || `Person mit ID: ${slotProps.data.id}` }}
-            </NuxtLink>
-          </template>
-          <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-              placeholder="Nach Namen suchen" />
-          </template>
-        </Column>
-        <Column field="firstName" header="Vorname" class="roboto-plain" :sortable="true" />
-        <Column field="lastName" header="Nachname" class="roboto-plain" :sortable="true" />
-        <Column field="pseudonyms" header="Pseudonyme" class="roboto-plain" :sortable="true">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.pseudonyms">
-              <div class="roboto-plain">{{ slotProps.data.pseudonyms }}</div>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-        <Column field="birthYear" header="Geburtsjahr" :sortable="true">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.birthYear != null">
-              <div class="roboto-plain">{{ slotProps.data.birthYear }}</div>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-        <Column field="deathYear" header="Sterbejahr" :sortable="true">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.deathYear != null">
-              <div class="roboto-plain">{{ slotProps.data.deathYear }}</div>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-        <Column field="sex" header="Geschlecht" :sortable="true">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.sex != null">
-              <div class="roboto-plain">{{ slotProps.data.sex === 'männlich' ? "männlich" : "weiblich" }}</div>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-      </DataTable>
-    </template>
-  </Card>
 </template>
 
 <style scoped>
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   .search-field {
     flex: 0 1 8rem;
     min-width: 0;

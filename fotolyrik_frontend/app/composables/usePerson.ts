@@ -57,8 +57,15 @@ export const usePerson = () => {
         });
     }
 
-    function searchPaginated(query: string, pageable:Pageable): Promise<Page<PersonPreviewDTO>> {
-        return $fetch<Page<PersonPreviewDTO>>(`/api/persons/search_paginated`, { query: { query, ...pageable } });
+    function searchPaginated(
+        query: string,
+        pageable: Pageable,
+        field?: PersonSearchField,
+        matchMode?: PersonSearchMatchMode
+    ): Promise<Page<PersonPreviewDTO>> {
+        return $fetch<Page<PersonPreviewDTO>>(`/api/persons/search_paginated`, {
+            query: { query, ...pageable, ...(field && matchMode ? { field, matchMode } : {}) }
+        });
     }
 
     function getAll(){
