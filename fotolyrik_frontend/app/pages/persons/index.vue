@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
 import type { PersonSearchField, PersonSearchMatchMode } from "~/utils/types";
 
 const { width } = useWindowSize();
-const smallScreen = computed(() => { return width.value < 800 })
+const smallScreen = computed(() => { return width.value < 850 })
 
 const searchFocused = ref(false);
 const searchQuery = ref("");
 const searchField = ref<PersonSearchField>("ALL");
 const searchMatchMode = ref<PersonSearchMatchMode>("CONTAINS");
+
+const expandSearch = async () => {
+  searchFocused.value = true;
+  await nextTick();
+  searchContainer.value?.querySelector("input")?.focus();
+};
 
 const searchFieldOptions: { label: string; value: PersonSearchField }[] = [
   { label: "Alle Felder", value: "ALL" },
@@ -77,7 +83,7 @@ watch([searchQuery, searchField, searchMatchMode], () => {
       bearbeiten.
     </p>
     <Divider />
-    <div class="flex flex-row flex-wrap justify-between items-stretch gap-2 mb-2 w-full">
+    <div class="flex flex-row flex-wrap justify-between items-stretch gap-2 mb-2">
       <div v-if="!smallScreen || !searchFocused" class="flex flex-row gap-2">
         <div class="p-2 border border-solid rounded-md hover:shadow-md">
           <NuxtLink to="/persons/create" class="flex items-center">
@@ -98,20 +104,28 @@ watch([searchQuery, searchField, searchMatchMode], () => {
             variant="outlined" class="ml-auto" style="border-color: var(--p-select-border-color)"
             @click="searchFocused = false" />
         </div>
-        <div class="w-40 min-w-0" :class="{ 'min-w-full': smallScreen && searchFocused }">
-          <IconField class="search-field w-full min-w-0" :class="{ 'is-expanded': smallScreen && searchFocused }">
+        <div ref="searchContainer"
+          class="min-w-0 shrink-0 transition-[width] duration-300 ease-in-out motion-reduce:transition-none"
+          :class="{ 'w-10': smallScreen && !searchFocused, 'w-full': smallScreen && searchFocused, 'w-40': !smallScreen }">
+          <Button v-if="smallScreen && !searchFocused" type="button" icon="pi pi-search" aria-label="Suchen"
+            variant="outlined" class="h-10 w-10 p-0" @click="expandSearch"
+            style="border-color: var(--p-select-border-color)" />
+          <IconField v-else class=" w-full min-w-0" :class="{ '': smallScreen && searchFocused }">
             <InputIcon>
               <i class="pi pi-search" />
             </InputIcon>
-            <InputText v-model="searchQuery" type="text" placeholder="Suchen" class="search-input w-full min-w-0"
+              <InputText v-model="searchQuery" type="text" placeholder="Suchen" class=" w-full min-w-0"
               aria-label="Suchen" @focus="searchFocused = true" />
+            <InputIcon v-if="searchQuery" class="cursor-pointer" @click="searchQuery = ''">
+              <i class="pi pi-times" />
+            </InputIcon>
           </IconField>
         </div>
       </div>
     </div>
     <span v-if="!persons || persons.totalPages === 0" class="flex w-full justify-center text-primary text-2xl py-5">
       Keine Personen gefunden!</span>
-    <div v-else-if="isLoading" v-for="_ in pageParameter.size"
+    <div v-else-if="isLoading && searchQuery.length < 2" v-for="_ in pageParameter.size"
       class="border-2 border-primary rounded-md p-2 shadow-md animate-pulse">
       <div class="flex flex-col gap-1">
         <div class="w-fit text-lg outfit-headline font-semibold text-transparent">Placeholder</div>
@@ -139,20 +153,5 @@ watch([searchQuery, searchField, searchMatchMode], () => {
 </template>
 
 <style scoped>
-@media (max-width: 800px) {
-  .search-field {
-    flex: 0 1 8rem;
-    min-width: 0;
-    transition: flex-grow 250ms ease;
-  }
 
-  .search-field.is-expanded {
-    flex-grow: 1;
-  }
-
-  .search-input {
-    width: 100%;
-    min-width: 0;
-  }
-}
 </style>

@@ -90,7 +90,7 @@ watch(pageParameter, () => refresh(), { deep: true });
         <TabPanel value="0" class="flex flex-col">
           <div class="flex flex-col gap-2 justify-between">
             <div class="flex flex-col gap-2">
-              <div v-if="isLoading" v-for="_ in pageParameter.size"
+              <div v-if="isLoading && searchQuery.length < 2" v-for="_ in pageParameter.size"
                 class="border-2 border-primary rounded-md p-2 shadow-md animate-pulse">
                 <div class="flex flex-col gap-1">
                   <div class="w-fit text-lg outfit-headline font-semibold text-transparent">Placeholder</div>
