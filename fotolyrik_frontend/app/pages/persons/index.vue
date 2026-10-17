@@ -9,6 +9,7 @@ const smallScreen = computed(() => { return width.value < 850 })
 
 const searchFocused = ref(false);
 const searchQuery = ref("");
+const searchContainer = ref<HTMLElement | null>(null);
 const searchField = ref<PersonSearchField>("ALL");
 const searchMatchMode = ref<PersonSearchMatchMode>("CONTAINS");
 
