@@ -19,6 +19,10 @@ const expandSearch = async () => {
   await nextTick();
   searchContainer.value?.querySelector("input")?.focus();
 };
+const clearFilters = () => {
+  searchQuery.value = '';
+  sexFilter.value = 'ALL';
+}
 
 const allSexFilterOption = { label: "Alle Geschlechter", value: "ALL" as const, icon: "filter" };
 const sexFilterOptions: { label: string; value: PersonSexFilter; icon: string }[] = [
@@ -46,6 +50,8 @@ const searchMatchModeOptions: { label: string; value: PersonSearchMatchMode }[] 
   { label: "Ist gleich", value: "EQUALS" },
   { label: "Ist ungleich", value: "NOT_EQUALS" }
 ];
+
+const filtersActive = computed(() => { return searchQuery.value.length > 2 || selectedSexFilter.value.value != 'ALL' });
 
 const initialPageParameter = {
   page: 0,
@@ -133,6 +139,9 @@ watch([searchQuery, searchField, searchMatchMode, sexFilter], () => {
             variant="outlined" class="ml-auto" style="border-color: var(--p-select-border-color)"
             @click="searchFocused = false" />
         </div>
+        <Button v-if="smallScreen && !searchFocused" type="button"
+          icon="pi pi-times" aria-label="Suchen" variant="link" class="whitespace-nowrap min-w-fit" :class="{ 'opacity-80': !filtersActive }"
+          @click="clearFilters">Clear Filters</Button>
         <div ref="searchContainer"
           class="min-w-0 shrink-0 transition-[width] duration-300 ease-in-out motion-reduce:transition-none"
           :class="{ 'w-10': smallScreen && !searchFocused, 'w-full': smallScreen && searchFocused, 'w-40': !smallScreen }">
