@@ -11,6 +11,7 @@ import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchField;
 import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchMatchMode;
+import de.uniwue.dachs.fotolyrik_backend.model.PersonSexFilter;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.specification.PersonSpecification;
@@ -217,11 +218,25 @@ public class PersonService {
     public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query,
                                                         PersonSearchField field,
                                                         PersonSearchMatchMode matchMode) {
+        return searchPeoplePaginated(pageable, query, field, matchMode, null);
+    }
+
+    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query,
+                                                        PersonSexFilter sex) {
+        return searchPeoplePaginated(
+                pageable, query, PersonSearchField.ALL, PersonSearchMatchMode.CONTAINS, sex);
+    }
+
+    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query,
+                                                        PersonSearchField field,
+                                                        PersonSearchMatchMode matchMode,
+                                                        PersonSexFilter sex) {
         String normalizedQuery = query == null ? "" : query.trim();
-        Page<Person> result = normalizedQuery.isEmpty()
-                ? personRepository.findAll(pageable)
-                : personRepository.findAll(
-                        PersonSpecification.search(normalizedQuery, field, matchMode), pageable);
+        var specification = PersonSpecification.sex(sex);
+        if (!normalizedQuery.isEmpty()) {
+            specification = specification.and(PersonSpecification.search(normalizedQuery, field, matchMode));
+        }
+        Page<Person> result = personRepository.findAll(specification, pageable);
         return result.map(personMapper::PersonToPreviewDTO);
     }
 

@@ -11,6 +11,7 @@ public class PersonPreviewDTO {
     private Long id;
     private String fullName;
     private String studioName;
+    private String sex;
     private List<String> pseudonyms;
     private Integer birthYear;
     private Integer deathYear;

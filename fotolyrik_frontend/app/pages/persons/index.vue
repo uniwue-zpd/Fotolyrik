@@ -2,7 +2,7 @@
 import { nextTick, ref } from "vue";
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
-import type { PersonSearchField, PersonSearchMatchMode } from "~/utils/types";
+import type { PersonSearchField, PersonSearchMatchMode, PersonSexFilter } from "~/utils/types";
 
 const { width } = useWindowSize();
 const smallScreen = computed(() => { return width.value < 850 })
@@ -10,6 +10,7 @@ const smallScreen = computed(() => { return width.value < 850 })
 const searchFocused = ref(false);
 const searchQuery = ref("");
 const searchContainer = ref<HTMLElement | null>(null);
+const sexFilter = ref<PersonSexFilter>("ALL");
 const searchField = ref<PersonSearchField>("ALL");
 const searchMatchMode = ref<PersonSearchMatchMode>("CONTAINS");
 
@@ -18,6 +19,17 @@ const expandSearch = async () => {
   await nextTick();
   searchContainer.value?.querySelector("input")?.focus();
 };
+
+const allSexFilterOption = { label: "Alle Geschlechter", value: "ALL" as const, icon: "filter" };
+const sexFilterOptions: { label: string; value: PersonSexFilter; icon: string }[] = [
+  allSexFilterOption,
+  { label: "Männlich", value: "MALE", icon: "mars" },
+  { label: "Weiblich", value: "FEMALE", icon: "venus" },
+  { label: "Unbekannt", value: "UNKNOWN", icon: "question-circle" }
+]
+const selectedSexFilter = computed(
+  () => sexFilterOptions.find(option => option.value === sexFilter.value) ?? allSexFilterOption
+);
 
 const searchFieldOptions: { label: string; value: PersonSearchField }[] = [
   { label: "Alle Felder", value: "ALL" },
@@ -62,12 +74,13 @@ const {
     searchQuery.value,
     { ...pageParameter },
     searchField.value,
-    searchMatchMode.value
+    searchMatchMode.value,
+    sexFilter.value
   )
 );
 
 watch(pageParameter, () => refresh(), { deep: true });
-watch([searchQuery, searchField, searchMatchMode], () => {
+watch([searchQuery, searchField, searchMatchMode, sexFilter], () => {
   if (pageParameter.page !== 0) {
     pageParameter.page = 0;
     return;
@@ -96,11 +109,26 @@ watch([searchQuery, searchField, searchMatchMode], () => {
           optionValue="value" />
       </div>
       <div class="flex min-w-0 gap-2 justify-between" :class="{ 'flex-col w-full': smallScreen && searchFocused }">
-        <div v-if="!smallScreen || searchFocused" class="flex flex-row gap-2">
+        <div v-if="!smallScreen || searchFocused" class="flex min-w-0 flex-row gap-2">
+          <Select v-model="sexFilter" :options="sexFilterOptions" optionLabel="label" optionValue="value"
+            aria-label="Geschlecht filtern" class="w-14 shrink-0" title="Geschlecht filtern">
+            <template #value>
+              <span class="flex h-full items-center justify-center" :title="selectedSexFilter.label">
+                <i :class="`pi pi-${selectedSexFilter.icon}`" aria-hidden="true" />
+                <span class="sr-only">{{ selectedSexFilter.label }}</span>
+              </span>
+            </template>
+            <template #option="slotProps">
+              <div class="flex items-center gap-3 py-1">
+                <i :class="`pi pi-${slotProps.option.icon}`" aria-hidden="true" />
+                <span class="font-medium">{{ slotProps.option.label }}</span>
+              </div>
+            </template>
+          </Select>
           <Select v-model="searchField" :options="searchFieldOptions" optionLabel="label" optionValue="value"
-            aria-label="Suchfeld" class="flex-1" />
+            aria-label="Suchfeld" />
           <Select v-model="searchMatchMode" :options="searchMatchModeOptions" optionLabel="label" optionValue="value"
-            aria-label="Suchoperator" class="flex-1" />
+            aria-label="Suchoperator" />
           <Button v-if="smallScreen && searchFocused" type="button" icon="pi pi-angle-up" aria-label="Suche einklappen"
             variant="outlined" class="ml-auto" style="border-color: var(--p-select-border-color)"
             @click="searchFocused = false" />
@@ -115,7 +143,7 @@ watch([searchQuery, searchField, searchMatchMode], () => {
             <InputIcon>
               <i class="pi pi-search" />
             </InputIcon>
-              <InputText v-model="searchQuery" type="text" placeholder="Suchen" class=" w-full min-w-0"
+            <InputText v-model="searchQuery" type="text" placeholder="Suchen" class=" w-full min-w-0"
               aria-label="Suchen" @focus="searchFocused = true" />
             <InputIcon v-if="searchQuery" class="cursor-pointer" @click="searchQuery = ''">
               <i class="pi pi-times" />
@@ -132,18 +160,25 @@ watch([searchQuery, searchField, searchMatchMode], () => {
         <div class="w-fit text-lg outfit-headline font-semibold text-transparent">Placeholder</div>
       </div>
     </div>
-    <div v-else-if="persons" v-for="person in persons.content" :key="person.id" class="flex flex-col gap-2">
-      <ContentCard flex-dir="row" :headerLink="`/persons/${person.id}`">
-        <template #header>{{ person.fullName?.trim() || "(Kein Name)" }}</template>
+    <div v-else-if="persons" v-for="{ sex, fullName, birthYear, deathYear, pseudonyms, id } in persons.content"
+      :key="id" class="flex flex-col gap-2">
+      <ContentCard flex-dir="row" :headerLink="`/persons/${id}`">
+        <template #preHeader>
+          <i v-if="sex" :class="`pi pi-${sex === 'männlich' ? 'mars' : 'venus'} mr-1`" />
+          <i v-else :class="`pi pi-question-circle mr-1`" />
+        </template>
+        <template #header>
+          {{ fullName?.trim() || "(Kein Name)" }}
+        </template>
         <template #subContent>
           <div class="flex flex-row gap-2 *:text-sm *:text-primary *:outfit-headline *:font-medium">
-            <div v-if="person.birthYear && person.deathYear">
-              ({{ person.birthYear }} - {{ person.deathYear }})
+            <div v-if="birthYear && deathYear">
+              ({{ birthYear }} - {{ deathYear }})
             </div>
-            <div v-if="person.pseudonyms.length > 0" class="flex flex-row gap-1">
+            <div v-if="pseudonyms.length > 0" class="flex flex-row gap-1">
               aka.
-              <div v-for="(pseudonym, index) in person.pseudonyms">
-                "{{ pseudonym }}"{{ index < person.pseudonyms.length - 1 ? ', ' : '' }} </div>
+              <div v-for="(pseudonym, index) in pseudonyms">
+                "{{ pseudonym }}"{{ index < pseudonyms.length - 1 ? ', ' : '' }} </div>
               </div>
             </div>
         </template>
@@ -153,6 +188,4 @@ watch([searchQuery, searchField, searchMatchMode], () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

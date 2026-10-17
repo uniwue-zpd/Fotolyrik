@@ -34,6 +34,7 @@ public class PersonMapper {
         personPreviewDTO.setPseudonyms(person.getPseudonyms());
         personPreviewDTO.setBirthYear(person.getBirthYear());
         personPreviewDTO.setDeathYear(person.getDeathYear());
+        personPreviewDTO.setSex(person.getSex());
         return personPreviewDTO;
     }
 

@@ -3,6 +3,7 @@ package de.uniwue.dachs.fotolyrik_backend.specification;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchField;
 import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchMatchMode;
+import de.uniwue.dachs.fotolyrik_backend.model.PersonSexFilter;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
@@ -17,6 +18,20 @@ import java.util.Locale;
 
 public final class PersonSpecification {
     private PersonSpecification() {}
+
+    public static Specification<Person> sex(PersonSexFilter sex) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            if (sex == null) {
+                return null;
+            }
+
+            return switch (sex) {
+                case MALE -> criteriaBuilder.equal(root.get("sex"), "männlich");
+                case FEMALE -> criteriaBuilder.equal(root.get("sex"), "weiblich");
+                case UNKNOWN -> criteriaBuilder.isNull(root.get("sex"));
+            };
+        };
+    }
 
     public static Specification<Person> search(String query, PersonSearchField field,
                                                PersonSearchMatchMode matchMode) {

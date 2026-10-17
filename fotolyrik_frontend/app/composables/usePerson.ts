@@ -61,10 +61,16 @@ export const usePerson = () => {
         query: string,
         pageable: Pageable,
         field?: PersonSearchField,
-        matchMode?: PersonSearchMatchMode
+        matchMode?: PersonSearchMatchMode,
+        sex?: PersonSexFilter
     ): Promise<Page<PersonPreviewDTO>> {
         return $fetch<Page<PersonPreviewDTO>>(`/api/persons/search_paginated`, {
-            query: { query, ...pageable, ...(field && matchMode ? { field, matchMode } : {}) }
+            query: {
+                query,
+                ...pageable,
+                ...(field && matchMode ? { field, matchMode } : {}),
+                ...(sex && sex !== "ALL" ? { sex } : {})
+            }
         });
     }
 
