@@ -4,8 +4,10 @@ import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
 import type { PersonSearchField, PersonSearchMatchMode, PersonSexFilter } from "~/utils/types";
 
+const toast = useToast();
+
 const { width } = useWindowSize();
-const smallScreen = computed(() => { return width.value < 850 })
+const smallScreen = computed(() => { return width.value < 850 });
 
 const searchFocused = ref(false);
 const searchQuery = ref("");
@@ -22,6 +24,7 @@ const expandSearch = async () => {
 const clearFilters = () => {
   searchQuery.value = '';
   sexFilter.value = 'ALL';
+  toast.add({ detail: 'Filter wurden entfernt', life: 1500 })
 }
 
 const allSexFilterOption = { label: "Alle Geschlechter", value: "ALL" as const, icon: "filter" };
@@ -51,7 +54,7 @@ const searchMatchModeOptions: { label: string; value: PersonSearchMatchMode }[] 
   { label: "Ist ungleich", value: "NOT_EQUALS" }
 ];
 
-const filtersActive = computed(() => { return searchQuery.value.length > 2 || selectedSexFilter.value.value != 'ALL' });
+const filtersActive = computed(() => { return searchQuery.value.length >= 2 || selectedSexFilter.value.value != 'ALL' });
 
 const initialPageParameter = {
   page: 0,
@@ -139,9 +142,9 @@ watch([searchQuery, searchField, searchMatchMode, sexFilter], () => {
             variant="outlined" class="ml-auto" style="border-color: var(--p-select-border-color)"
             @click="searchFocused = false" />
         </div>
-        <Button v-if="smallScreen && !searchFocused" type="button"
-          icon="pi pi-times" aria-label="Suchen" variant="link" class="whitespace-nowrap min-w-fit" :class="{ 'opacity-80': !filtersActive }"
-          @click="clearFilters">Clear Filters</Button>
+        <Button v-if="smallScreen && !searchFocused && filtersActive" type="button" icon="pi pi-times"
+          aria-label="Suchen" variant="link" class="whitespace-nowrap min-w-fit" @click="clearFilters">Filter
+          entfernen</Button>
         <div ref="searchContainer"
           class="min-w-0 shrink-0 transition-[width] duration-300 ease-in-out motion-reduce:transition-none"
           :class="{ 'w-10': smallScreen && !searchFocused, 'w-full': smallScreen && searchFocused, 'w-40': !smallScreen }">
