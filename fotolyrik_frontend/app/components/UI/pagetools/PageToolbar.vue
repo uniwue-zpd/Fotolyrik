@@ -53,14 +53,14 @@ const items = ref([
               await keyword_api.deleteById(props.id);
               await refreshNuxtData('keyword-list');
             }
-            toast.add({ severity: 'success', summary: 'Gelöscht', detail: 'Eintrag erfolgreich gelöscht', life: 3000 });
+            toast.add({ color: 'success', title: 'Gelöscht', description: 'Eintrag erfolgreich gelöscht', duration: 3000 });
             router.push(props.page_url.substring(0, props.page_url.lastIndexOf('/')));
           } catch (error) {
-            toast.add({ severity: 'error', summary: 'Fehler', detail: 'Eintrag konnte nicht gelöscht werden', life: 3000 });
+            toast.add({ color: 'error', title: 'Fehler', description: 'Eintrag konnte nicht gelöscht werden', duration: 3000 });
           }
         },
         reject: () => {
-          toast.add({ severity: 'info', summary: 'Abgebrochen', detail: 'Löschvorgang abgebrochen', life: 3000 });
+          toast.add({ color: 'info', title: 'Abgebrochen', description: 'Löschvorgang abgebrochen', duration: 3000 });
         }
       });
     }
@@ -70,7 +70,7 @@ const items = ref([
     icon: 'pi pi-share-alt',
     command: () => {
       navigator.clipboard.writeText(props.page_url);
-      toast.add({ severity: 'info', summary: 'Hinweis', detail: 'Link erfolgreich kopiert!', life: 3000 });
+      toast.add({ color: 'info', title: 'Hinweis', description: 'Link erfolgreich kopiert!', duration: 3000 });
     }
   },
   {
