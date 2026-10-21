@@ -31,9 +31,9 @@ const filters = ref({
           stripedRows paginator :rows="10"
       >
         <template #header>
-          <div class="flex flex-row justify-between items-center">
-            <div class="p-2 border border-solid rounded-md hover:shadow-md">
-              <NuxtLink to="/persons/create" class="flex items-center">
+          <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+            <div class="p-2 border border-solid rounded-md hover:shadow-md text-center">
+              <NuxtLink to="/persons/create" class="flex items-center justify-center">
                 <i class="pi pi-pen-to-square mr-2"/>
                 <div class="text-primary roboto-plain">Neu anlegen</div>
               </NuxtLink>
@@ -46,6 +46,7 @@ const filters = ref({
                   v-model="filters['global'].value"
                   type="text"
                   placeholder="Tabelle durchsuchen"
+                  class="w-full"
               />
             </IconField>
           </div>

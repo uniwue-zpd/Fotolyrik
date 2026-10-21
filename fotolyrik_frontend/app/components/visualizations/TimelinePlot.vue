@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as d3 from "d3";
-import { ref, onMounted, watch } from "vue";
-import type {PhotoPoemPublicationDateDTO} from "~/utils/types";
+import { ref, onMounted, onUnmounted, watch, computed } from "vue";
+import type { PhotoPoemPublicationDateDTO } from "~/utils/types";
 
 const props = withDefaults(defineProps<{
   width?: number;
@@ -17,8 +17,20 @@ const props = withDefaults(defineProps<{
 });
 
 const svgRef = ref<SVGSVGElement | null>(null);
+const isMobile = ref(false);
 const startYear = 1850;
 const endYear = 1950;
+
+const checkMobile = () => {
+  if (typeof window !== "undefined") {
+    isMobile.value = window.innerWidth <= 640;
+  }
+};
+
+// Dynamically increase height on mobile to accommodate larger text without clipping
+const currentHeight = computed(() => {
+  return isMobile.value ? props.height + 50 : props.height;
+});
 
 function getYear(date?: string | null): number | null {
   if (!date) return null;
@@ -34,14 +46,18 @@ function render() {
   d3.select(svgRef.value).selectAll("*").remove();
 
   const svg = d3.select(svgRef.value);
+  const chartHeight = currentHeight.value;
+  const centerY = chartHeight / 2;
+  const axisY = chartHeight - 30;
 
   const x = d3.scaleLinear()
       .domain([startYear, endYear])
       .range([60, props.width - 30]);
 
-  // Render Axis
+  // Render Axis with explicit classes and adjusted position for mobile text room
   svg.append("g")
-      .attr("transform", `translate(0, ${props.height - 20})`)
+      .attr("class", "axis x-axis")
+      .attr("transform", `translate(0, ${axisY})`)
       .call(
           d3.axisBottom(x)
               .tickFormat(d3.format("d"))
@@ -56,14 +72,14 @@ function render() {
       ...d,
       fx: calculatedX,
       x: calculatedX,
-      y: props.height / 2
+      y: centerY
     };
   });
 
   // Simulation
   const simulation = d3.forceSimulation(nodes as any)
       .force("x", d3.forceX((d: any) => d.fx).strength(1))
-      .force("y", d3.forceY(props.height / 2).strength(0.05))
+      .force("y", d3.forceY(centerY).strength(0.05))
       .force("collide", d3.forceCollide(7))
       .stop();
 
@@ -114,14 +130,62 @@ function render() {
   }
 }
 
-onMounted(render);
+onMounted(() => {
+  checkMobile();
+  window.addEventListener("resize", checkMobile);
+  render();
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", checkMobile);
+});
+
 watch(() => props.data, render, { deep: true });
+watch(currentHeight, () => {
+  render();
+});
 </script>
 
 <template>
   <div class="timeline-chart-wrapper">
     <slot name="extra" :svg="d3.select(svgRef)" />
 
-    <svg ref="svgRef" :viewBox="`0 0 ${width} ${height}`"/>
+    <svg ref="svgRef" class="timeline-d3-svg" :viewBox="`0 0 ${width} ${currentHeight}`"/>
   </div>
 </template>
+
+<style scoped>
+.timeline-chart-wrapper {
+  width: 100%;
+  color: currentColor;
+}
+
+.timeline-d3-svg {
+  width: 100%;
+  height: auto;
+  overflow: hidden; /* Keeps chart points cleanly clipped */
+}
+</style>
+
+<style>
+.timeline-d3-svg text,
+.timeline-d3-svg .axis text,
+.timeline-d3-svg .x-axis text {
+  fill: currentColor;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.timeline-d3-svg line,
+.timeline-d3-svg path.domain {
+  stroke: currentColor;
+}
+
+@media (max-width: 640px) {
+  .timeline-d3-svg text,
+  .timeline-d3-svg .axis text,
+  .timeline-d3-svg .x-axis text {
+    font-size: 26px !important;
+  }
+}
+</style>
