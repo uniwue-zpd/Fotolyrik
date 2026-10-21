@@ -53,6 +53,9 @@ export default defineNuxtConfig({
       '@nuxt/ui',
   ],
   primevue: {
+    composables: {
+      exclude: ['useToast'],
+    },
     options: {
       theme: {
         preset: UniwuePreset,
