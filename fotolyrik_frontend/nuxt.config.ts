@@ -50,6 +50,7 @@ export default defineNuxtConfig({
       '@nuxt/icon',
       '@nuxtjs/color-mode',
       '@vueuse/nuxt',
+      '@nuxt/ui',
   ],
   primevue: {
     options: {
