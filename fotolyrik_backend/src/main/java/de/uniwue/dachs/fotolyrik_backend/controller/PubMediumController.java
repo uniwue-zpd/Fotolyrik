@@ -5,6 +5,7 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PubMediumDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PubMediumPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PubMediumService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -103,6 +104,10 @@ public class PubMediumController {
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
+    }
+    @GetMapping("/stats/graph/same_place")
+    public ResponseEntity<GraphDTO> getSamePlaceGraph() {
+        return ResponseEntity.ok(pubMediumService.getSamePlaceGraph());
     }
 
     @GetMapping("/{id}/stats/metrics")

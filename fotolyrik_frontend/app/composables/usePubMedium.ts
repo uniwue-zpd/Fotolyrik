@@ -17,6 +17,12 @@ export const usePubMedium = () => {
         });
     }
 
+    function search(query: string) {
+        return $fetch<PubMediumPreviewDTO[]>('/api/publication_media/search', {
+            query: { query }
+        });
+    }
+
     function searchPaginated(query: string, pageable: Pageable): Promise<Page<PubMediumPreviewDTO>> {
         return $fetch<Page<PubMediumPreviewDTO>>(`/api/publication_media/search_paginated`, { query: { query, ...pageable } });
     }
@@ -45,6 +51,10 @@ export const usePubMedium = () => {
         return $fetch<PubMediumMetricsDTO>(`/api/publication_media/${id}/stats/metrics`);
     }
 
+    function fetchSamePlaceGraph(){
+        return $fetch<GraphDTO>(`/api/publication_media/stats/graph/same_place`);
+    }
+
     function getAll(){
         return useAsyncData('pubMedium-list', fetchAll);
     }
@@ -71,11 +81,13 @@ export const usePubMedium = () => {
         fetchAll,
         fetchById,
         filter,
+        search,
         searchPaginated,
         create,
         update,
         deleteById,
         fetchMetricsById,
+        fetchSamePlaceGraph,
         getAll,
         getById,
         getAllFiltered,

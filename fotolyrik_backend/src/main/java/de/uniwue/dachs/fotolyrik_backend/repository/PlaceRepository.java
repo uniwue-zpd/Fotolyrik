@@ -2,11 +2,14 @@ package de.uniwue.dachs.fotolyrik_backend.repository;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PlaceMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface PlaceRepository extends JpaRepository<Place, Long> {
@@ -39,4 +42,23 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     WHERE pmp.pub_place_id = :placeId;
     """, nativeQuery = true)
     PlaceMetricsDTO getMetricsByPlace(@Param("placeId") Long placeId);
+
+    @Query(value = """
+    SELECT
+        p.id AS id,
+        p.name AS name,
+        ARRAY_AGG(DISTINCT p_target.id) AS targets
+    FROM place p
+        JOIN pub_medium_place pmp1
+            ON p.id = pmp1.pub_place_id
+        JOIN pub_medium_place pmp2
+            ON pmp1.pub_medium_id = pmp2.pub_medium_id
+        JOIN place p_target
+            ON pmp2.pub_place_id = p_target.id
+            AND p_target.id <> p.id
+    GROUP BY
+        p.id,
+        p.name
+    """, nativeQuery = true)
+    List<AdjacencyProjection> findAdjacencyList();
 }
