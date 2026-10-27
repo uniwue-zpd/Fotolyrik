@@ -82,7 +82,19 @@ export interface PersonPreviewDTO {
     fullName: string | null;
     studioName: string | null;
     pseudonyms: [string] | [];
+    birthYear: number | null;
+    deathYear: number | null;
+    sex: 'männlich' | 'weiblich' | null;
 }
+export type PersonSearchField = "ALL" | "FULL_NAME" | "BIRTH_YEAR" | "DEATH_YEAR" | "PSEUDONYMS";
+export type PersonSearchMatchMode =
+    | "STARTS_WITH"
+    | "CONTAINS"
+    | "NOT_CONTAINS"
+    | "ENDS_WITH"
+    | "EQUALS"
+    | "NOT_EQUALS";
+export type PersonSexFilter = "ALL" | "MALE" | "FEMALE" | "UNKNOWN";
 export enum ContributionRole {
     AUTHOR = "AUTHOR",
     PHOTOGRAPHER = "PHOTOGRAPHER",

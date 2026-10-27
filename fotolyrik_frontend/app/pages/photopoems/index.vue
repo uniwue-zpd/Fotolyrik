@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, watch, onBeforeUnmount } from "vue";
-import { FilterMatchMode } from "@primevue/core";
+import { ref, watch } from "vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
+import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PhotopoemFilter from "~/components/UI/filters/PhotopoemFilter.vue";
 import type {Page, PhotopoemPageable} from "~/utils/types";
 
@@ -101,12 +101,12 @@ useHead(() => ({
           </div>
           <div v-else-if="photopoems" class="flex flex-col gap-2 justify-between min-h-full">
             <div class="flex flex-col gap-2">
-              <div v-for="photopoem in photopoems.content" :key="photopoem.id" class="border-2 border-primary rounded-md p-2 shadow-md">
-                <div class="flex flex-col gap-1">
-                  <NuxtLink :to="`/photopoems/${photopoem.id}`" class="text-lg group relative w-fit outfit-headline font-semibold text-primary">
-                    {{ photopoem.title || photopoem.altTitle || "Unbenanntes Fotogedicht" }}
-                    <span class="absolute bottom-0 left-0 h-px w-0 bg-current transition-all duration-300 group-hover:w-full"/>
-                  </NuxtLink>
+              <ContentCard v-for="photopoem in photopoems.content" :key="photopoem.id"
+                :headerLink="`/photopoems/${photopoem.id}`">
+                <template #header>
+                  {{ photopoem.title || photopoem.altTitle || "Unbenanntes Fotogedicht" }}
+                </template>
+                <template #subContent>
                   <div v-if="photopoem.publicationDate" class="flex flex-row gap-2">
                     <span class="text-sm roboto-plain">Erschienen:</span>
                     <div class="text-sm text-primary outfit-headline font-medium">{{ photopoem.publicationDate }}</div>
@@ -117,8 +117,8 @@ useHead(() => ({
                       {{ photopoem.publicationMedium.title }}
                     </NuxtLink>
                   </div>
-                </div>
-              </div>
+                </template>
+              </ContentCard>
             </div>
             <PageSelection :pageParameter :totalPages="photopoems?.totalPages" />
           </div>
