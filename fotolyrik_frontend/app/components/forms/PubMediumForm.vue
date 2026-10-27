@@ -51,9 +51,9 @@ async function handleRefresh() {
   data_refreshing.value = true;
   try {
     await Promise.all([placeHandle.refresh,publisherHandle.refresh,pubRhythmHandle.refresh])
-    toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
+    toast.add({ color: 'success', title: 'Erfolg', description: 'Datenbankdaten erfolgreich aktualisiert', duration: 2000 });
   } catch (err) {
-    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});
+    toast.add({ color: 'error', title: 'Fehler', description: 'Fehler beim Aktualisieren der Datenbankdaten', duration: 2000 });
   } finally {
     data_refreshing.value = false;
   }
@@ -65,17 +65,17 @@ const onFormSubmit = async (e: any) => {
       if (props.action === "create") {
         await pubMediumApi.create(e.values);
         await refreshNuxtData('pubMedium-list');
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
         navigateTo("/publication_media")
       } else if (props.action === "edit" && props.pub_medium?.id) {
         await pubMediumApi.update(props.pub_medium.id,e.values );
         await  Promise.all([refreshNuxtData('pubMedium-list'), await refreshNuxtData(`pubMedium-${props.pub_medium.id}`)])
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
         navigateTo(`/publication_media/${props.pub_medium?.id}`);
       }
     } catch (error) {
       console.log(error);
-      toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
+      toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
     }
   }
 };

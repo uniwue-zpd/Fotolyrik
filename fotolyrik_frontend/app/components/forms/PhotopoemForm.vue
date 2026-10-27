@@ -102,9 +102,9 @@ async function handleRefresh() {
   try {
 
     await Promise.all([personHandle.refresh , keywordHandle.refresh, languageHandle.refresh, locationHandle.refresh, copyrightStatusHandle.refresh, pubMediumHandle.refresh])
-    toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
+    toast.add({ color: 'success', title: 'Erfolg', description: 'Datenbankdaten erfolgreich aktualisiert', duration: 2000 });
   } catch (err) {
-    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});
+    toast.add({ color: 'error', title: 'Fehler', description: 'Fehler beim Aktualisieren der Datenbankdaten', duration: 2000 });
   } finally {
     data_refreshing.value = false;
   }
@@ -118,17 +118,17 @@ const onFormSubmit = async (e: any) => {
       if (props.action === "create") {
         await photopoemApi.create(e.values);
         await refreshNuxtData('photopoem-list');
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
         navigateTo("/photopoems")
       } else if (props.action === "edit" && props.photopoem?.id) {
         await photopoemApi.update(props.photopoem.id, e.values);
         await Promise.all([refreshNuxtData('photopoem-list'), await refreshNuxtData(`photopoem-${props.photopoem.id}`)]);
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
         navigateTo(`/photopoems/${props.photopoem?.id}`);
       }
     } catch (error) {
       console.log(error);
-      toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
+      toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
     }
     contributionsForm.value?.checkRefetch();
   }

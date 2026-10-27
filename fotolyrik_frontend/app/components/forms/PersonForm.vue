@@ -45,17 +45,17 @@ const onFormSubmit = async (e: any) => {
       if (props.action === "create") {
         await personApi.create(e.values);
         await refreshNuxtData('person-list');
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
         e.reset();
       } else if (props.action === "edit" && props.person?.id) {
         await personApi.update( props.person.id , e.values);
         await Promise.all([refreshNuxtData('person-list'), await refreshNuxtData(`person-${props.person.id}`)])
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
         navigateTo(`/persons/${props.person?.id}`);
       }
     } catch (error) {
       console.log(error);
-      toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
+      toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
     }
   }
 };
