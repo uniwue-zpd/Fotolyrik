@@ -26,17 +26,17 @@ const onFormSubmit = async (e: any) => {
       if (props.action === "create") {
         await keywordApi.create(e.values);
         await refreshNuxtData('keyword-list');
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
         e.reset();
       } else if (props.action === "edit" && props.keyword?.id) {
         await keywordApi.update(props.keyword.id, e.values);
         await Promise.all([refreshNuxtData('keyword-list'), refreshNuxtData(`keyword-${props.keyword.id}`)])
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
         navigateTo(`/keywords/${props.keyword?.id}`);
       }
     } catch (error) {
       console.log(error);
-      toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
+      toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
     }
   }
 };

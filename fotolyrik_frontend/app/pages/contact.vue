@@ -28,11 +28,11 @@ const onFormSubmit = async (e: any) => {
   if (e.valid) {
     try {
       await apiClient.post("/contact", e.values)
-      toast.add({severity: "success", detail: "Erfolgreich zugestellt", life: 3000});
+      toast.add({ color: "success", description: "Erfolgreich zugestellt", duration: 3000 });
       e.reset()
     } catch (error) {
       console.log(error)
-      toast.add({severity: "error", summary: "Fehler", detail: "Fehler beim Senden der Nachricht", life: 3000})
+      toast.add({ color: "error", title: "Fehler", description: "Fehler beim Senden der Nachricht", duration: 3000 })
     }
   }
 };
