@@ -46,7 +46,7 @@ const [
   pubMediumApi.getAll(),
   fileApi.getAll(),
 ]);
-const publicationMedia = computed<PubMediumPreviewDTO[]>(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })) ?? []);
+const publicationMedia = computed<{ id: number, title: string }[]>(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })) ?? []);
 const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
 const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
 const languages = computed(() => languageHandle.data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));

@@ -24,7 +24,7 @@ const expandSearch = async () => {
 const clearFilters = () => {
   searchQuery.value = '';
   sexFilter.value = 'ALL';
-  toast.add({ detail: 'Filter wurden entfernt', life: 1500 })
+  toast.add({ description: 'Filter wurden entfernt', duration: 1500 })
 }
 
 const allSexFilterOption = { label: "Alle Geschlechter", value: "ALL" as const, icon: "filter" };

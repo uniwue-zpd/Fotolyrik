@@ -171,8 +171,8 @@ export interface PlacePreviewDTO {
 export interface PubMediumPreviewDTO {
     id: number;
     title: string;
-    startYear: number | null;
-    endYear: number | null;
+    startYear: string | null;
+    endYear: string | null;
 }
 export interface LocationDTO extends Auditable {
     name: string;
