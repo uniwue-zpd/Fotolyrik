@@ -27,6 +27,12 @@ export const usePubMedium = () => {
         return $fetch<Page<PubMediumPreviewDTO>>(`/api/publication_media/search_paginated`, { query: { query, ...pageable } });
     }
 
+    function filterPaginated(pageable: PubMediumPageable): Promise<Page<PubMediumPreviewDTO>> {
+        return $fetch<Page<PubMediumPreviewDTO>>('/api/publication_media/filter_paginated', {
+            query: pageable
+        });
+    }
+
     function create(payload: Partial<PubMediumDTO>) {
         return $fetch<PubMediumDTO>('/api/publication_media', {
             method: 'POST',
@@ -83,6 +89,7 @@ export const usePubMedium = () => {
         filter,
         search,
         searchPaginated,
+        filterPaginated,
         create,
         update,
         deleteById,

@@ -7,6 +7,10 @@ export const usePublisher = () => {
         return $fetch<PublisherDTO>(`/api/publishers/${id}`);
     }
 
+    function searchPaginated(query: string, pageable: Pageable): Promise<Page<PublisherDTO>> {
+        return $fetch<Page<PublisherDTO>>(`/api/publishers/search_paginated`, { query: { query, ...pageable } });
+    }
+
     function create(payload: Partial<PublisherDTO>) {
         return $fetch<PublisherDTO>('/api/publishers', {
             method: 'POST',
@@ -37,6 +41,7 @@ export const usePublisher = () => {
     return {
         fetchAll,
         fetchById,
+        searchPaginated,
         create,
         update,
         deleteById,

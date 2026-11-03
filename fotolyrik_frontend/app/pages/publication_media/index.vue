@@ -2,17 +2,30 @@
 import { ref, watch } from "vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
-import type { Page, Pageable } from "~/utils/types";
+import PublicationMediaFilter from "~/components/UI/filters/PubMediaFilter.vue";
+import type { Page, PubMediumPageable } from "~/utils/types";
 
 const { width } = useWindowSize();
 
-const initialPageParameter: Pageable = {
+const initialPageParameter: PubMediumPageable = {
   page: 0,
   size: 10,
   sort: "title,asc"
 };
 
-const pageParameter = reactive<Pageable>({ ...initialPageParameter });
+const initialFilters: PubMediumPageable = {
+  title: undefined,
+  subtitle: undefined,
+  'publisher.name': undefined,
+  editorialOffice: undefined,
+  startYear: undefined,
+  endYear: undefined,
+  amountVolumes: undefined,
+  amountIssues: undefined
+};
+
+const pageParameter = reactive<PubMediumPageable>({ ...initialPageParameter });
+const filters = reactive<PubMediumPageable>({ ...initialFilters });
 
 const sortOptions = ref([
   { label: "Aufsteigend (A-Z)", value: "title,asc" },
@@ -36,9 +49,23 @@ const {
   refresh
 } = useAsyncData<Page<PubMediumPreviewDTO>>(
   "publication-media-paginated",
-  () => pubMediumApi.searchPaginated("", { ...pageParameter })
+  () => pubMediumApi.filterPaginated({ ...pageParameter, ...filters })
 );
 
+const resetFilter = () => {
+  Object.assign(pageParameter, initialPageParameter);
+  Object.assign(filters, initialFilters);
+};
+
+const debouncedRefresh = debounce(() => {
+  if (pageParameter.page === 0) {
+    refresh();
+  } else {
+    pageParameter.page = 0;
+  }
+}, 300);
+
+watch(filters, () => debouncedRefresh(), { deep: true });
 watch(pageParameter, () => refresh(), { deep: true });
 
 useHead(() => ({
@@ -47,13 +74,12 @@ useHead(() => ({
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <h1 class="text-2xl outfit-headline text-primary font-bold">Publikationsmedien</h1>
+  <div class="flex flex-col gap-4">
+    <h1 class="text-3xl outfit-headline text-primary font-bold">Publikationsmedien</h1>
     <p class="roboto-plain">
       Eine Übersicht aller Publikationsmedien in der Datenbank. Klicken Sie auf ein Publikationsmedium, um Details
       anzuzeigen oder zu bearbeiten.
     </p>
-    <Divider />
     <div class="flex flex-row justify-between gap-2">
       <div class="p-2 border border-solid rounded-md hover:shadow-md">
         <NuxtLink to="/publication_media/create" class="flex items-center">
@@ -68,30 +94,34 @@ useHead(() => ({
           class="h-9 items-center" />
       </div>
     </div>
-    <div v-if="false" class="flex flex-col gap-2 items-center">
-      <ProgressSpinner />
-      <div class="roboto-plain text-primary font-semibold text-lg">Inhalte werden geladen</div>
-    </div>
-    <div v-else-if="hasError" class="roboto-plain text-red-600">
-      Die Publikationsmedien konnten nicht geladen werden.
-    </div>
-    <div v-else-if="publicationMedia" class="flex flex-col gap-2 justify-between min-h-full">
-      <div class="flex flex-col gap-2">
-        <ContentCard v-for="{ id, title, startYear, endYear } in publicationMedia.content" :key="id"
-          :showPlaceholder="isLoading" :headerLink="`/publication_media/${id}`">
-          <template #header>
-            {{ title || "Unbenanntes Publikationsmedium" }}
-          </template>
-          <template #subContent>
-            <div class="flex flex-row gap-2">
-              <div class="text-sm roboto-plain">Erschienen:</div>
-              <div class="text-sm text-primary outfit-headline font-medium">
-                {{ startYear ?? '????' }} - {{ endYear ?? '????' }}</div>
-            </div>
-          </template>
-        </ContentCard>
+    <div class="flex flex-col gap-5 lg:flex-row justify-between">
+      <div class="lg:w-1/4">
+        <PublicationMediaFilter :filters="filters" @reset-filters="resetFilter" />
       </div>
-      <PageSelection :pageParameter :totalPages="publicationMedia?.totalPages" />
+      <div class="lg:w-3/4 lg:max-w-3/4">
+        <div v-if="hasError" class="roboto-plain text-red-600">
+          Die Publikationsmedien konnten nicht geladen werden.
+        </div>
+        <div v-else-if="publicationMedia" class="flex flex-col gap-2 justify-between min-h-full">
+          <div class="flex flex-col gap-2">
+            <ContentCard v-for="{ id, title, startYear, endYear } in publicationMedia.content" :key="id"
+              :headerLink="`/publication_media/${id}`" :show-placeholder="isLoading">
+              <template #header>
+                {{ title || "Unbenanntes Publikationsmedium" }}
+              </template>
+              <template #subContent>
+                <div class="flex flex-row gap-2">
+                  <div class="text-sm roboto-plain">Erschienen:</div>
+                  <div class="text-sm text-primary outfit-headline font-medium">
+                    {{ startYear ?? '????' }} - {{ endYear ?? '????' }}
+                  </div>
+                </div>
+              </template>
+            </ContentCard>
+          </div>
+          <PageSelection :pageParameter :totalPages="publicationMedia.totalPages" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -360,3 +360,14 @@ export interface PhotopoemPageable extends Pageable {
     'copyright-text-id'?: number;
     'language-id'?: number;
 }
+
+export interface PubMediumPageable extends Pageable {
+    title?: string;
+    subtitle?: string;
+    'publisher.name'?: string;
+    editorialOffice?: string;
+    startYear?: number;
+    endYear?: number;
+    amountVolumes?: number;
+    amountIssues?: number;
+}

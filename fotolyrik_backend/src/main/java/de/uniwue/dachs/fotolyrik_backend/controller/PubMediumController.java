@@ -80,6 +80,24 @@ public class PubMediumController {
         );
     }
 
+    @GetMapping("/filter_paginated")
+    public ResponseEntity<Page<PubMediumPreviewDTO>> filterPubMediaPaginated(
+            Pageable pageable,
+            @RequestParam(required = false, value = "title") String title,
+            @RequestParam(required = false, value = "subtitle") String subtitle,
+            @RequestParam(required = false, value = "publisher.name") String publisherName,
+            @RequestParam(required = false, value = "editorialOffice") String editorialOffice,
+            @RequestParam(required = false, value = "startYear") Long startYear,
+            @RequestParam(required = false, value = "endYear") Long endYear,
+            @RequestParam(required = false, value = "amountVolumes") Long amountVolumes,
+            @RequestParam(required = false, value = "amountIssues") Long amountIssues
+    ) {
+        return ResponseEntity.ok(pubMediumService.filterPubMediaPaginated(
+                pageable, title, subtitle, publisherName, editorialOffice,
+                startYear, endYear, amountVolumes, amountIssues
+        ));
+    }
+
     @PostMapping
     public ResponseEntity<PubMediumDTO> savePubMedium(@RequestBody PubMediumDTO pubMediumDTO) {
         PubMediumDTO savedPubMedium = pubMediumService.createPubMedium(pubMediumDTO);

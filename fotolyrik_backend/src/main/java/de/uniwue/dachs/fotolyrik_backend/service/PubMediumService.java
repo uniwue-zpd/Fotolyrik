@@ -268,6 +268,48 @@ public class PubMediumService {
         return result.map(pubMediumMapper::PubMediumToPubMediumPreviewDTO);
     }
 
+    public Page<PubMediumPreviewDTO> filterPubMediaPaginated(
+            Pageable pageable,
+            String title,
+            String subtitle,
+            String publisherName,
+            String editorialOffice,
+            Long startYear,
+            Long endYear,
+            Long amountVolumes,
+            Long amountIssues
+    ) {
+        Specification<PubMedium> specification = Specification.where(null);
+
+        if (title != null && !title.isEmpty()) {
+            specification = specification.and(PubMediumSpecification.hasTitle(title));
+        }
+        if (subtitle != null && !subtitle.isEmpty()) {
+            specification = specification.and(PubMediumSpecification.hasSubtitle(subtitle));
+        }
+        if (publisherName != null && !publisherName.isEmpty()) {
+            specification = specification.and(PubMediumSpecification.hasPublisher(publisherName));
+        }
+        if (editorialOffice != null && !editorialOffice.isEmpty()) {
+            specification = specification.and(PubMediumSpecification.hasEditorialOffice(editorialOffice));
+        }
+        if (startYear != null) {
+            specification = specification.and(PubMediumSpecification.hasStartYear(startYear));
+        }
+        if (endYear != null) {
+            specification = specification.and(PubMediumSpecification.hasEndYear(endYear));
+        }
+        if (amountVolumes != null) {
+            specification = specification.and(PubMediumSpecification.hasAmountVolumes(amountVolumes));
+        }
+        if (amountIssues != null) {
+            specification = specification.and(PubMediumSpecification.hasAmountIssues(amountIssues));
+        }
+
+        return pubMediumRepository.findAll(specification, pageable)
+                .map(pubMediumMapper::PubMediumToPubMediumPreviewDTO);
+    }
+
     public GraphDTO getSamePlaceGraph() {
         return graphMapper.fromAdjacencyList(pubMediumRepository.findMediumAdjacencyListByPlace());
     }

@@ -4,6 +4,8 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PublisherDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Publisher;
 import de.uniwue.dachs.fotolyrik_backend.service.PublisherService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,11 @@ public class PublisherController {
     public ResponseEntity<List<PublisherDTO>> getPublishers() {
         List<PublisherDTO> publishers = publisherService.getAllPublishers();
         return ResponseEntity.ok().body(publishers);
+    }
+
+    @GetMapping("/search_paginated")
+    public ResponseEntity<Page<PublisherDTO>> searchPublishersPaginated(Pageable pageable, @RequestParam(required = false) String query) {
+        return ResponseEntity.ok(publisherService.searchPublishersPaginated(pageable, query));
     }
 
     @GetMapping("/{id}")
