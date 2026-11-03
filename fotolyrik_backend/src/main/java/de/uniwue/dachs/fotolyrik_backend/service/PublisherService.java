@@ -5,6 +5,8 @@ import de.uniwue.dachs.fotolyrik_backend.model.Publisher;
 import de.uniwue.dachs.fotolyrik_backend.repository.PublisherRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,18 @@ public class PublisherService {
      */
     public List<PublisherDTO> getAllPublishers() {
         return publisherMapper.PublishersToPublisherDTOs(publisherRepository.findAll());
+    }
+
+    /**
+     * @param pageable paging and sorting information
+     * @param query name filter; all publishers are returned if it is shorter than 2 characters
+     * @return a {@link Page} of matching {@link Publisher} as {@link PublisherDTO} objects
+     */
+    public Page<PublisherDTO> searchPublishersPaginated(Pageable pageable, String query) {
+        Page<Publisher> result = (query == null || query.trim().length() < 2)
+                ? publisherRepository.findAll(pageable)
+                : publisherRepository.findByNameContainingIgnoreCase(query.trim(), pageable);
+        return result.map(publisherMapper::PublisherToPublisherDTO);
     }
 
     /**

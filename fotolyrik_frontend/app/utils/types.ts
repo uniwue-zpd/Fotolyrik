@@ -411,3 +411,14 @@ export interface PhotopoemPageable extends Pageable {
     'language-id'?: number;
     language?: string;
 }
+
+export interface PubMediumPageable extends Pageable {
+    title?: string;
+    subtitle?: string;
+    'publisher.name'?: string;
+    editorialOffice?: string;
+    startYear?: number;
+    endYear?: number;
+    amountVolumes?: number;
+    amountIssues?: number;
+}
