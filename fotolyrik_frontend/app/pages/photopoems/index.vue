@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import CreateButton from "~/components/UI/buttons/CreateButton.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PhotopoemFilter from "~/components/UI/filters/PhotopoemFilter.vue";
@@ -84,10 +85,17 @@ useHead(() => ({
 
 <template>
   <div class="flex flex-col gap-4">
-    <h1 class="text-3xl font-bold outfit-headline text-primary">Fotogedichte</h1>
-    <div class="flex flex-row justify-end gap-2">
-      <Select v-model="pageParameter.sort" :options="sortOptions" optionLabel="label" optionValue="value" class="h-9 items-center" />
-      <Select v-model="pageParameter.size" :options="pageSizeOptions" optionLabel="label" optionValue="value" class="h-9 items-center" />
+    <h1 class="text-3xl outfit-headline text-primary font-bold">Fotogedichte</h1>
+    <p class="roboto-plain">
+      Eine Übersicht aller Fotogedichte in der Datenbank. Klicken Sie auf ein Fotogedicht, um Details
+      anzuzeigen oder zu bearbeiten.
+    </p>
+    <div class="flex flex-row justify-between gap-2">
+      <CreateButton to="/places/create" />
+      <div class="flex flex-row gap-2">
+        <Select v-model="pageParameter.sort" :options="sortOptions" optionLabel="label" optionValue="value" class="h-9 items-center" />
+        <Select v-model="pageParameter.size" :options="pageSizeOptions" optionLabel="label" optionValue="value" class="h-9 items-center" />
+      </div>
     </div>
     <div class="flex flex-col gap-5 lg:flex-row justify-between">
       <div class="lg:w-1/4">
