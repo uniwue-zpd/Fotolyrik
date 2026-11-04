@@ -103,7 +103,7 @@ useHead(() => ({
         <div v-else-if="publicationMedia" class="flex flex-col gap-2 justify-between min-h-full min-w-0">
           <div class="flex flex-col gap-2 min-w-0">
             <ContentCard v-for="{ id, title, startYear, endYear } in publicationMedia.content" :key="id"
-              :headerLink="`/publication_media/${id}`" :show-placeholder="isLoading">
+              :headerLink="`/publication_media/${id}`" :showPlaceholder="isLoading">
               <template #header>
                 {{ title || "Unbenanntes Publikationsmedium" }}
               </template>

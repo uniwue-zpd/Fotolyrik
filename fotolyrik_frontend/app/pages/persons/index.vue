@@ -162,15 +162,10 @@ watch([searchQuery, searchField, searchMatchMode, sexFilter], () => {
     </div>
     <span v-if="!persons || persons.totalPages === 0" class="flex w-full justify-center text-primary text-2xl py-5">
       Keine Personen gefunden!</span>
-    <div v-else-if="isLoading && searchQuery.length < 2" v-for="_ in pageParameter.size"
-      class="border-2 border-primary rounded-md p-2 shadow-md animate-pulse">
-      <div class="flex flex-col gap-1">
-        <div class="w-fit text-lg outfit-headline font-semibold text-transparent">Placeholder</div>
-      </div>
-    </div>
     <div v-else-if="persons" v-for="{ sex, fullName, birthYear, deathYear, pseudonyms, id } in persons.content"
       :key="id" class="flex flex-col gap-2">
-      <ContentCard flex-dir="row" :headerLink="`/persons/${id}`">
+      <ContentCard flex-dir="row" :headerLink="`/persons/${id}`"
+        :show-placeholder="isLoading && searchQuery.length < 2">
         <template #preHeader>
           <i v-if="sex" :class="`pi pi-${sex === 'männlich' ? 'mars' : 'venus'} mr-1`" />
           <i v-else :class="`pi pi-question-circle mr-1`" />

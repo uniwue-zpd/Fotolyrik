@@ -86,18 +86,8 @@ watch(pageParameter, () => refresh(), { deep: true });
         <TabPanel value="0" class="flex flex-col">
           <div class="flex flex-col gap-2 justify-between">
             <div class="flex flex-col gap-2">
-              <div v-if="isLoading && searchQuery.length < 2" v-for="_ in pageParameter.size"
-                class="border-2 border-primary rounded-md p-2 shadow-md animate-pulse">
-                <div class="flex flex-col gap-1">
-                  <div class="w-fit text-lg outfit-headline font-semibold text-transparent">Placeholder</div>
-                  <div class="flex flex-row gap-2">
-                    <span class="text-sm roboto-plain text-transparent">GND-ID:</span>
-                    <div class="text-sm outfit-headline font-medium text-transparent">Placeholder</div>
-                  </div>
-                </div>
-              </div>
-              <ContentCard v-else-if="keywords" v-for="keyword in keywords.content" :key="keyword.id"
-                :headerLink="`/keywords/${keyword.id}`">
+              <ContentCard v-if="keywords" v-for="keyword in keywords.content" :key="keyword.id"
+                :showPlaceholder="isLoading && searchQuery.length < 2" :headerLink="`/keywords/${keyword.id}`">
                 <template #header>{{ keyword.value }}</template>
                 <template #subContent>
                   <div v-if="keyword" class="flex flex-row gap-2">
