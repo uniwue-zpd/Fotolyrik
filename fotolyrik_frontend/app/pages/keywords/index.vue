@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CreateButton from "~/components/UI/buttons/CreateButton.vue";
 import { ref, watch } from "vue";
 import type { Page } from "~/utils/types";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
@@ -68,12 +69,7 @@ watch(pageParameter, () => refresh(), { deep: true });
         </Tab>
       </TabList>
       <div class="flex flex-row justify-between items-stretch gap-2 mx-4 mt-4">
-        <div v-if="width > 600 || !searchFocused" class="p-2 border border-solid rounded-md hover:shadow-md">
-          <NuxtLink to="/keywords/create" class="flex items-center">
-            <i class="pi pi-pen-to-square mr-2" />
-            <div class="text-primary roboto-plain">Neu {{ width > 600 ? 'anlegen' : '' }}</div>
-          </NuxtLink>
-        </div>
+        <CreateButton v-if="width > 600 || !searchFocused" to="/keywords/create" />
         <Select v-if="width > 600 || !searchFocused" v-model="pageParameter.size" :options="pageSizeOptions"
           :optionLabel="width > 600 ? 'label' : 'value'" optionValue="value" />
         <IconField class="search-field" :class="{ 'is-expanded': width <= 600 && searchFocused }">

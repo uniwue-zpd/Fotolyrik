@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CreateButton from "~/components/UI/buttons/CreateButton.vue";
 import { ref, onMounted } from  'vue';
 import { FilterMatchMode } from "@primevue/core";
 import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
@@ -32,12 +33,7 @@ onMounted(async () => {
     >
       <template #header>
         <div class="flex flex-row justify-between items-center">
-          <div class="p-2 border border-solid rounded-md hover:shadow-md">
-            <NuxtLink to="/places/create" class="flex items-center">
-              <i class="pi pi-pen-to-square mr-2"/>
-              <div class="text-primary roboto-plain">Neu anlegen</div>
-            </NuxtLink>
-          </div>
+          <CreateButton to="/places/create" />
           <IconField>
             <InputIcon>
               <i class="pi pi-search"/>

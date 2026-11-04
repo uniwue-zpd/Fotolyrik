@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CreateButton from "~/components/UI/buttons/CreateButton.vue";
 import { nextTick, ref } from "vue";
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
@@ -108,12 +109,7 @@ watch([searchQuery, searchField, searchMatchMode, sexFilter], () => {
     <Divider />
     <div class="flex flex-row flex-wrap justify-between items-stretch gap-2 mb-2">
       <div v-if="!smallScreen || !searchFocused" class="flex flex-row gap-2">
-        <div class="p-2 border border-solid rounded-md hover:shadow-md">
-          <NuxtLink to="/persons/create" class="flex items-center">
-            <i class="pi pi-pen-to-square mr-2" />
-            <div class="text-primary roboto-plain">Neu {{ !smallScreen ? 'anlegen' : '' }}</div>
-          </NuxtLink>
-        </div>
+        <CreateButton to="/persons/create" />
         <Select v-model="pageParameter.size" :options="pageSizeOptions" :optionLabel="!smallScreen ? 'label' : 'value'"
           optionValue="value" />
       </div>
