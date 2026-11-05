@@ -85,16 +85,14 @@ export interface PersonPreviewDTO {
     birthYear: number | null;
     deathYear: number | null;
     sex: 'männlich' | 'weiblich' | null;
+    gndId: string | null;
 }
-export type PersonSearchField = "ALL" | "FULL_NAME" | "BIRTH_YEAR" | "DEATH_YEAR" | "PSEUDONYMS";
-export type PersonSearchMatchMode =
-    | "STARTS_WITH"
-    | "CONTAINS"
-    | "NOT_CONTAINS"
-    | "ENDS_WITH"
-    | "EQUALS"
-    | "NOT_EQUALS";
-export type PersonSexFilter = "ALL" | "MALE" | "FEMALE" | "UNKNOWN";
+export interface PersonPageable extends Pageable {
+    name?: string;
+    'birth-year'?: number | null;
+    'death-year'?: number | null;
+    sex?: 'männlich' | 'weiblich' | null;
+}
 export enum ContributionRole {
     AUTHOR = "AUTHOR",
     PHOTOGRAPHER = "PHOTOGRAPHER",

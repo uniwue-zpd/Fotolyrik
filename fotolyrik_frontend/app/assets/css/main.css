@@ -31,6 +31,34 @@ layer(base);
 @theme {
     --color-gray-accent: var(--gray-accent);
 }
+
+/*
+  Nuxt UI theme: mirrors the PrimeVue UniwuePreset (nuxt.config.ts) so that
+  Nuxt UI components and PrimeVue components share the same brand colors.
+*/
+@theme static {
+    --color-uniwue-50: #7dbbff;
+    --color-uniwue-100: #479fff;
+    --color-uniwue-200: #1182fe;
+    --color-uniwue-300: #0067d9;
+    --color-uniwue-400: #0054b0;
+    --color-uniwue-500: #004188;
+    --color-uniwue-600: #003773;
+    --color-uniwue-700: #002d5f;
+    --color-uniwue-800: #00234a;
+    --color-uniwue-900: #001936;
+    --color-uniwue-950: #001328;
+}
+:root {
+    --ui-primary: #063D79;
+    --ui-radius: 0.375rem;
+    --ui-border: var(--color-gray-200);
+}
+:root.dark {
+    --ui-primary: #136ac6;
+    --ui-border: var(--color-zinc-800);
+}
+
 #__nuxt {
     display: flex;
     flex-direction: column;

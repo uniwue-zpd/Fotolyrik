@@ -9,9 +9,6 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
-import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchField;
-import de.uniwue.dachs.fotolyrik_backend.model.PersonSearchMatchMode;
-import de.uniwue.dachs.fotolyrik_backend.model.PersonSexFilter;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
 import de.uniwue.dachs.fotolyrik_backend.specification.PersonSpecification;
@@ -24,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.*;
 
@@ -198,46 +196,23 @@ public class PersonService {
 
 
     /**
-     * GET a page of persons based on search query
-     * @param query defining which person
+     * GET a page of persons filtered by the given (optional) attributes
      * @param pageable defining sorting and size of page
+     * @param name matched against full, first, last and studio name and pseudonyms
+     * @param birthYear exact birth year
+     * @param deathYear exact death year
+     * @param sex "männlich" or "weiblich"
      * @return a Page of {@link PersonPreviewDTO} found persons
      */
-    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query) {
-        String normalizedQuery = query == null ? "" : query.trim();
+    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String name, Integer birthYear,
+                                                        Integer deathYear, String sex) {
+        Specification<Person> spec = Specification.where(null);
+        if (name != null && !name.isBlank()) spec = spec.and(PersonSpecification.hasName(name));
+        if (birthYear != null) spec = spec.and(PersonSpecification.hasBirthYear(birthYear));
+        if (deathYear != null) spec = spec.and(PersonSpecification.hasDeathYear(deathYear));
+        if (sex != null && !sex.isBlank()) spec = spec.and(PersonSpecification.hasSex(sex));
 
-        Page<Person> result;
-        if (normalizedQuery.length() < 2) {
-            result = personRepository.findAll(pageable);
-        } else {
-            result = personRepository.searchPeoplePaginated(normalizedQuery, pageable);
-        }
-        return result.map(personMapper::PersonToPreviewDTO);
-    }
-
-    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query,
-                                                        PersonSearchField field,
-                                                        PersonSearchMatchMode matchMode) {
-        return searchPeoplePaginated(pageable, query, field, matchMode, null);
-    }
-
-    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query,
-                                                        PersonSexFilter sex) {
-        return searchPeoplePaginated(
-                pageable, query, PersonSearchField.ALL, PersonSearchMatchMode.CONTAINS, sex);
-    }
-
-    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String query,
-                                                        PersonSearchField field,
-                                                        PersonSearchMatchMode matchMode,
-                                                        PersonSexFilter sex) {
-        String normalizedQuery = query == null ? "" : query.trim();
-        var specification = PersonSpecification.sex(sex);
-        if (!normalizedQuery.isEmpty()) {
-            specification = specification.and(PersonSpecification.search(normalizedQuery, field, matchMode));
-        }
-        Page<Person> result = personRepository.findAll(specification, pageable);
-        return result.map(personMapper::PersonToPreviewDTO);
+        return personRepository.findAll(spec, pageable).map(personMapper::PersonToPreviewDTO);
     }
 
 

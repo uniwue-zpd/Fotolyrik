@@ -15,4 +15,5 @@ public class PersonPreviewDTO {
     private List<String> pseudonyms;
     private Integer birthYear;
     private Integer deathYear;
+    private String gndId;
 }

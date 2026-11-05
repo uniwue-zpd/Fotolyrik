@@ -114,34 +114,6 @@ public interface PersonRepository extends JpaRepository<Person, Long>, JpaSpecif
     Page<Person> searchPeople(@Param("query") String query, Pageable pageable);
 
     @Query(value = """
-    SELECT DISTINCT p FROM Person p
-        LEFT JOIN p.pseudonyms pseudonym
-        WHERE LOWER(CONCAT(COALESCE(p.firstName, ''), ' ', COALESCE(p.lastName, '')))
-                LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.sex, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(CAST(p.birthYear AS string), '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(CAST(p.deathYear AS string), '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        ORDER BY p.lastName ASC NULLS LAST
-    """, countQuery = """
-    SELECT COUNT(DISTINCT p) FROM Person p
-        LEFT JOIN p.pseudonyms pseudonym
-        WHERE LOWER(CONCAT(COALESCE(p.firstName, ''), ' ', COALESCE(p.lastName, '')))
-                LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(p.sex, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(CAST(p.birthYear AS string), '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(CAST(p.deathYear AS string), '')) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-    """)
-    Page<Person> searchPeoplePaginated(@Param("query") String query, Pageable pageable);
-
-    @Query(value = """
     SELECT
         c1.contributor_id AS id,
         TRIM(CONCAT(p.last_name, ' ', p.first_name)) AS name,

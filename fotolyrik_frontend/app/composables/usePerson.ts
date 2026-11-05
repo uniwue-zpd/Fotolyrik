@@ -57,21 +57,15 @@ export const usePerson = () => {
         });
     }
 
-    function searchPaginated(
-        query: string,
-        pageable: Pageable,
-        field?: PersonSearchField,
-        matchMode?: PersonSearchMatchMode,
-        sex?: PersonSexFilter
-    ): Promise<Page<PersonPreviewDTO>> {
-        return $fetch<Page<PersonPreviewDTO>>(`/api/persons/search_paginated`, {
-            query: {
-                query,
-                ...pageable,
-                ...(field && matchMode ? { field, matchMode } : {}),
-                ...(sex && sex !== "ALL" ? { sex } : {})
-            }
-        });
+    function fetchPaginated(params: PersonPageable): Promise<Page<PersonPreviewDTO>> {
+        const query = Object.fromEntries(
+            Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
+        );
+        return $fetch<Page<PersonPreviewDTO>>('/api/persons/search_paginated', { query });
+    }
+
+    function searchPaginated(query: string, pageable: Pageable): Promise<Page<PersonPreviewDTO>> {
+        return fetchPaginated({ ...pageable, name: query });
     }
 
     function getAll(){
@@ -98,6 +92,7 @@ export const usePerson = () => {
         fetchMetricsById,
         fetchWorkedWithGraph,
         search,
+        fetchPaginated,
         searchPaginated,
         getAll,
         getById,

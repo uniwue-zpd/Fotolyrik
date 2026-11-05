@@ -1,67 +1,39 @@
 <script setup lang="ts">
-import { nextTick, ref } from "vue";
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
-import type { PersonSearchField, PersonSearchMatchMode, PersonSexFilter } from "~/utils/types";
+import PersonFilter from "~/components/UI/filters/PersonFilter.vue";
+import type { Page, PersonPageable } from "~/utils/types";
 
-const toast = useToast();
-
-const { width } = useWindowSize();
-const smallScreen = computed(() => { return width.value < 850 });
-
-const searchFocused = ref(false);
-const searchQuery = ref("");
-const searchContainer = ref<HTMLElement | null>(null);
-const sexFilter = ref<PersonSexFilter>("ALL");
-const searchField = ref<PersonSearchField>("ALL");
-const searchMatchMode = ref<PersonSearchMatchMode>("CONTAINS");
-
-const expandSearch = async () => {
-  searchFocused.value = true;
-  await nextTick();
-  searchContainer.value?.querySelector("input")?.focus();
-};
-const clearFilters = () => {
-  searchQuery.value = '';
-  sexFilter.value = 'ALL';
-  toast.add({ detail: 'Filter wurden entfernt', life: 1500 })
-}
-
-const allSexFilterOption = { label: "Alle Geschlechter", value: "ALL" as const, icon: "filter" };
-const sexFilterOptions: { label: string; value: PersonSexFilter; icon: string }[] = [
-  allSexFilterOption,
-  { label: "Männlich", value: "MALE", icon: "mars" },
-  { label: "Weiblich", value: "FEMALE", icon: "venus" },
-  { label: "Unbekannt", value: "UNKNOWN", icon: "question-circle" }
-]
-const selectedSexFilter = computed(
-  () => sexFilterOptions.find(option => option.value === sexFilter.value) ?? allSexFilterOption
-);
-
-const searchFieldOptions: { label: string; value: PersonSearchField }[] = [
-  { label: "Alle Felder", value: "ALL" },
-  { label: "Name", value: "FULL_NAME" },
-  { label: "Geburtsjahr", value: "BIRTH_YEAR" },
-  { label: "Sterbejahr", value: "DEATH_YEAR" },
-  { label: "Pseudonyme", value: "PSEUDONYMS" }
-];
-const searchMatchModeOptions: { label: string; value: PersonSearchMatchMode }[] = [
-  { label: "Beginnt mit", value: "STARTS_WITH" },
-  { label: "Enthält", value: "CONTAINS" },
-  { label: "Enthält nicht", value: "NOT_CONTAINS" },
-  { label: "Endet mit", value: "ENDS_WITH" },
-  { label: "Ist gleich", value: "EQUALS" },
-  { label: "Ist ungleich", value: "NOT_EQUALS" }
-];
-
-const filtersActive = computed(() => { return searchQuery.value.length >= 2 || selectedSexFilter.value.value != 'ALL' });
-
-const initialPageParameter = {
+const initialPageParameter: PersonPageable = {
   page: 0,
   size: 15,
   sort: "lastName,asc"
 };
-const pageParameter = reactive<Pageable>({ ...initialPageParameter });
+
+const initialFilters: PersonPageable = {
+  name: undefined,
+  'birth-year': undefined,
+  'death-year': undefined,
+  sex: null
+};
+
+const pageParameter = reactive<PersonPageable>({ ...initialPageParameter });
+const filters = reactive<PersonPageable>({ ...initialFilters });
+
+const resetFilter = () => {
+  Object.assign(pageParameter, initialPageParameter);
+  Object.assign(filters, initialFilters);
+};
+
+const sortOptions = ref([
+  { label: "Name aufsteigend", value: "lastName,asc" },
+  { label: "Name absteigend", value: "lastName,desc" }
+]);
+
+const sort = computed({
+  get: () => String(pageParameter.sort ?? initialPageParameter.sort),
+  set: (value: string) => { pageParameter.sort = value; }
+});
 
 const pageSizeOptions = ref([
   { label: "5 pro Seite", value: 5 },
@@ -71,7 +43,7 @@ const pageSizeOptions = ref([
   { label: "50 pro Seite", value: 50 }
 ]);
 
-const person_api = usePerson();
+const personApi = usePerson();
 
 const {
   data: persons,
@@ -79,125 +51,82 @@ const {
   refresh
 } = useAsyncData<Page<PersonPreviewDTO>>(
   "persons-paginated",
-  () => person_api.searchPaginated(
-    searchQuery.value,
-    { ...pageParameter },
-    searchField.value,
-    searchMatchMode.value,
-    sexFilter.value
-  )
+  () => personApi.fetchPaginated({ ...pageParameter, ...filters })
 );
 
-watch(pageParameter, () => refresh(), { deep: true });
-watch([searchQuery, searchField, searchMatchMode, sexFilter], () => {
-  if (pageParameter.page !== 0) {
+const debouncedRefresh = debounce(() => {
+  if (pageParameter.page === 0) {
+    refresh();
+  } else {
     pageParameter.page = 0;
-    return;
   }
-  refresh();
-});
+}, 300);
+
+watch(filters, () => debouncedRefresh(), { deep: true });
+watch(pageParameter, () => refresh(), { deep: true });
+
+useHead(() => ({
+  title: 'Personen - Übersicht'
+}));
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <h1 class="text-2xl outfit-headline text-primary font-bold">Personen</h1>
-    <p class="roboto-plain">
-      Eine Übersicht aller Personen in der Datenbank. Klicken Sie auf eine Person, um Details anzuzeigen oder zu
-      bearbeiten.
-    </p>
-    <Divider />
-    <div class="flex flex-row flex-wrap justify-between items-stretch gap-2 mb-2">
-      <div v-if="!smallScreen || !searchFocused" class="flex flex-row gap-2">
-        <div class="p-2 border border-solid rounded-md hover:shadow-md">
-          <NuxtLink to="/persons/create" class="flex items-center">
-            <i class="pi pi-pen-to-square mr-2" />
-            <div class="text-primary roboto-plain">Neu {{ !smallScreen ? 'anlegen' : '' }}</div>
-          </NuxtLink>
-        </div>
-        <Select v-model="pageParameter.size" :options="pageSizeOptions" :optionLabel="!smallScreen ? 'label' : 'value'"
-          optionValue="value" />
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <h1 class="text-3xl font-bold outfit-headline text-primary">Personen</h1>
+      <p class="roboto-plain">
+        Eine Übersicht aller Personen in der Datenbank. Klicken Sie auf eine Person, um Details anzuzeigen oder zu
+        bearbeiten.
+      </p>
+    </div>
+    <div class="grid grid-cols-[1fr_auto] gap-2 sm:flex sm:flex-wrap sm:justify-end">
+      <UButton to="/persons/create" icon="i-lucide-square-pen" label="Neu anlegen" color="neutral" variant="outline"
+        size="lg" class="col-span-2 justify-center text-primary hover:shadow-md" />
+      <USelect v-model="sort" :items="sortOptions" size="lg" class="w-full sm:w-48" />
+      <USelect v-model="pageParameter.size" :items="pageSizeOptions" size="lg" class="sm:w-36" />
+    </div>
+    <div class="flex flex-col gap-5 lg:flex-row justify-between">
+      <div class="lg:w-1/4">
+        <PersonFilter :filters="filters" @reset-filters="resetFilter" />
       </div>
-      <div class="flex min-w-0 gap-2 justify-between" :class="{ 'flex-col w-full': smallScreen && searchFocused }">
-        <div v-if="!smallScreen || searchFocused" class="flex min-w-0 flex-row gap-2">
-          <Select v-model="sexFilter" :options="sexFilterOptions" optionLabel="label" optionValue="value"
-            aria-label="Geschlecht filtern" class="w-14 shrink-0" title="Geschlecht filtern">
-            <template #value>
-              <span class="flex h-full items-center justify-center" :title="selectedSexFilter.label">
-                <i :class="`pi pi-${selectedSexFilter.icon}`" aria-hidden="true" />
-                <span class="sr-only">{{ selectedSexFilter.label }}</span>
-              </span>
-            </template>
-            <template #option="slotProps">
-              <div class="flex items-center gap-3 py-1">
-                <i :class="`pi pi-${slotProps.option.icon}`" aria-hidden="true" />
-                <span class="font-medium">{{ slotProps.option.label }}</span>
-              </div>
-            </template>
-          </Select>
-          <Select v-model="searchField" :options="searchFieldOptions" optionLabel="label" optionValue="value"
-            aria-label="Suchfeld" />
-          <Select v-model="searchMatchMode" :options="searchMatchModeOptions" optionLabel="label" optionValue="value"
-            aria-label="Suchoperator" />
-          <Button v-if="smallScreen && searchFocused" type="button" icon="pi pi-angle-up" aria-label="Suche einklappen"
-            variant="outlined" class="ml-auto" style="border-color: var(--p-select-border-color)"
-            @click="searchFocused = false" />
+      <div class="flex flex-col gap-2 justify-between lg:w-3/4">
+        <div v-if="isLoading" class="flex flex-col gap-2 items-center py-5">
+          <ProgressSpinner />
+          <div class="roboto-plain text-primary font-semibold text-lg">Inhalte werden geladen</div>
         </div>
-        <Button v-if="smallScreen && !searchFocused && filtersActive" type="button" icon="pi pi-times"
-          aria-label="Suchen" variant="link" class="whitespace-nowrap min-w-fit" @click="clearFilters">Filter
-          entfernen</Button>
-        <div ref="searchContainer"
-          class="min-w-0 shrink-0 transition-[width] duration-300 ease-in-out motion-reduce:transition-none"
-          :class="{ 'w-10': smallScreen && !searchFocused, 'w-full': smallScreen && searchFocused, 'w-40': !smallScreen }">
-          <Button v-if="smallScreen && !searchFocused" type="button" icon="pi pi-search" aria-label="Suchen"
-            variant="outlined" class="h-10 w-10 p-0" @click="expandSearch"
-            style="border-color: var(--p-select-border-color)" />
-          <IconField v-else class=" w-full min-w-0" :class="{ '': smallScreen && searchFocused }">
-            <InputIcon>
-              <i class="pi pi-search" />
-            </InputIcon>
-            <InputText v-model="searchQuery" type="text" placeholder="Suchen" class=" w-full min-w-0"
-              aria-label="Suchen" @focus="searchFocused = true" />
-            <InputIcon v-if="searchQuery" class="cursor-pointer" @click="searchQuery = ''">
-              <i class="pi pi-times" />
-            </InputIcon>
-          </IconField>
+        <div v-else-if="!persons || persons.content.length === 0"
+          class="flex w-full justify-center text-primary text-2xl py-5">
+          Keine Personen gefunden!
         </div>
+        <div v-else class="flex flex-col gap-2">
+            <ContentCard v-for="{ id, fullName, studioName, birthYear, deathYear, pseudonyms, gndId } in persons.content" :key="id"
+              :headerLink="`/persons/${id}`">
+              <template #header>
+                <template v-if="fullName?.trim() || studioName?.trim()">
+                  {{ fullName?.trim() || studioName?.trim() }}
+                </template>
+                <span v-else class="text-muted font-medium">Name unbekannt</span>
+              </template>
+              <template #subContent>
+                <div v-if="birthYear || deathYear || pseudonyms.length > 0 || gndId"
+                  class="flex flex-row flex-wrap gap-x-2 text-sm text-primary outfit-headline font-medium">
+                  <span v-if="birthYear || deathYear">({{ birthYear ?? '?' }} - {{ deathYear ?? '?' }})</span>
+                  <span v-if="pseudonyms.length > 0" class="whitespace-normal">
+                    aka. {{ pseudonyms.map(p => `"${p}"`).join(', ') }}
+                  </span>
+                  <span v-if="gndId" class="flex flex-row gap-1">
+                    <span class="roboto-plain font-normal text-default">GND-ID:</span>
+                    <NuxtLink :to="`https://explore.gnd.network/gnd/${gndId}`" target="_blank"
+                      title="Zum GND-Explorer wechseln" class="hover:underline">
+                      {{ gndId }}
+                    </NuxtLink>
+                  </span>
+                </div>
+              </template>
+            </ContentCard>
+        </div>
+        <PageSelection :page-parameter="pageParameter" :total-pages="persons?.totalPages" />
       </div>
     </div>
-    <span v-if="!persons || persons.totalPages === 0" class="flex w-full justify-center text-primary text-2xl py-5">
-      Keine Personen gefunden!</span>
-    <div v-else-if="isLoading && searchQuery.length < 2" v-for="_ in pageParameter.size"
-      class="border-2 border-primary rounded-md p-2 shadow-md animate-pulse">
-      <div class="flex flex-col gap-1">
-        <div class="w-fit text-lg outfit-headline font-semibold text-transparent">Placeholder</div>
-      </div>
-    </div>
-    <div v-else-if="persons" v-for="{ sex, fullName, birthYear, deathYear, pseudonyms, id } in persons.content"
-      :key="id" class="flex flex-col gap-2">
-      <ContentCard flex-dir="row" :headerLink="`/persons/${id}`">
-        <template #preHeader>
-          <i v-if="sex" :class="`pi pi-${sex === 'männlich' ? 'mars' : 'venus'} mr-1`" />
-          <i v-else :class="`pi pi-question-circle mr-1`" />
-        </template>
-        <template #header>
-          {{ fullName?.trim() || "(Kein Name)" }}
-        </template>
-        <template #subContent>
-          <div class="flex flex-row gap-2 *:text-sm *:text-primary *:outfit-headline *:font-medium">
-            <div v-if="birthYear && deathYear">
-              ({{ birthYear }} - {{ deathYear }})
-            </div>
-            <div v-if="pseudonyms.length > 0" class="flex flex-row gap-1">
-              aka.
-              <div v-for="(pseudonym, index) in pseudonyms">
-                "{{ pseudonym }}"{{ index < pseudonyms.length - 1 ? ', ' : '' }} </div>
-              </div>
-            </div>
-        </template>
-      </ContentCard>
-    </div>
-    <PageSelection :page-parameter="pageParameter" :total-pages="persons?.totalPages" />
   </div>
 </template>
-
-<style scoped></style>

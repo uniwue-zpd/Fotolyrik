@@ -35,6 +35,7 @@ public class PersonMapper {
         personPreviewDTO.setBirthYear(person.getBirthYear());
         personPreviewDTO.setDeathYear(person.getDeathYear());
         personPreviewDTO.setSex(person.getSex());
+        personPreviewDTO.setGndId(person.getGndId());
         return personPreviewDTO;
     }
 
