@@ -94,25 +94,20 @@ watch(pageParameter, () => refresh(), { deep: true });
                 class="border-2 border-primary rounded-md p-2 shadow-md animate-pulse">
                 <div class="flex flex-col gap-1">
                   <div class="w-fit text-lg outfit-headline font-semibold text-transparent">Placeholder</div>
-                  <div class="flex flex-row gap-2">
-                    <span class="text-sm roboto-plain text-transparent">GND-ID:</span>
-                    <div class="text-sm outfit-headline font-medium text-transparent">Placeholder</div>
-                  </div>
+                  <div class="h-5" />
                 </div>
               </div>
               <ContentCard v-else-if="keywords" v-for="keyword in keywords.content" :key="keyword.id"
                 :headerLink="`/keywords/${keyword.id}`">
                 <template #header>{{ keyword.value }}</template>
                 <template #subContent>
-                  <div v-if="keyword" class="flex flex-row gap-2">
-                    <span class="text-sm roboto-plain">GND-ID:</span>
-                    <NuxtLink :to="`https://explore.gnd.network/gnd/${keyword.gndId}`" title="Zum GND-Explorer wechseln"
-                      target="_blank">
-                      <div class="text-sm text-primary outfit-headline font-medium hover:underline">
-                        {{ keyword.gndId }}
-                      </div>
-                    </NuxtLink>
-                  </div>
+                  <NuxtLink v-if="keyword.gndId" :to="`https://explore.gnd.network/gnd/${keyword.gndId}`" target="_blank" rel="noopener"
+                    title="Im GND-Explorer öffnen"
+                    class="group/gnd inline-flex items-center gap-1 text-sm text-primary outfit-headline font-medium">
+                    <img src="/gnd-logo.png" alt="GND" class="h-4 w-auto shrink-0" />
+                    <span class="group-hover/gnd:underline">{{ keyword.gndId }}</span>
+                    <UIcon name="i-lucide-external-link" class="size-3 shrink-0 opacity-70" />
+                  </NuxtLink>
                 </template>
               </ContentCard>
             </div>

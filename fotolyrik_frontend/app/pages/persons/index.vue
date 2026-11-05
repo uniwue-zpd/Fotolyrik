@@ -114,13 +114,13 @@ useHead(() => ({
                   <span v-if="pseudonyms.length > 0" class="whitespace-normal">
                     aka. {{ pseudonyms.map(p => `"${p}"`).join(', ') }}
                   </span>
-                  <span v-if="gndId" class="flex flex-row gap-1">
-                    <span class="roboto-plain font-normal text-default">GND-ID:</span>
-                    <NuxtLink :to="`https://explore.gnd.network/gnd/${gndId}`" target="_blank"
-                      title="Zum GND-Explorer wechseln" class="hover:underline">
-                      {{ gndId }}
-                    </NuxtLink>
-                  </span>
+                  <NuxtLink v-if="gndId" :to="`https://explore.gnd.network/gnd/${gndId}`" target="_blank" rel="noopener"
+                    title="Im GND-Explorer öffnen"
+                    class="group/gnd inline-flex items-center gap-1 text-sm text-primary outfit-headline font-medium">
+                    <img src="/gnd-logo.png" alt="GND" class="h-4 w-auto shrink-0" />
+                    <span class="group-hover/gnd:underline">{{ gndId }}</span>
+                    <UIcon name="i-lucide-external-link" class="size-3 shrink-0 opacity-70" />
+                  </NuxtLink>
                 </div>
               </template>
             </ContentCard>

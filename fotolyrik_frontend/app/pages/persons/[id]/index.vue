@@ -114,6 +114,16 @@ useHead(() => {
             <td class="px-6 py-4 whitespace-nowrap font-semibold">Sterbejahr</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ person_item.deathYear }}</td>
           </tr>
+          <tr v-if="person_item.gndId">
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">GND</td>
+            <td class="px-6 py-4 whitespace-nowrap"><NuxtLink :to="`https://explore.gnd.network/gnd/${person_item.gndId}`" target="_blank" rel="noopener"
+                    title="Im GND-Explorer öffnen"
+                    class="group/gnd inline-flex items-center gap-1 text-base text-primary outfit-headline font-medium">
+                    <img src="/gnd-logo.png" alt="GND" class="h-5 w-auto shrink-0" />
+                    <span class="group-hover/gnd:underline">{{ person_item.gndId }}</span>
+                    <UIcon name="i-lucide-external-link" class="size-4 shrink-0 opacity-70" />
+                  </NuxtLink></td>
+          </tr>
           <tr v-if="person_item.pseudonyms.length > 0">
             <td class="px-6 py-4 whitespace-nowrap font-semibold">Pseudonyme</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ person_item.pseudonyms.join(', ') }}</td>

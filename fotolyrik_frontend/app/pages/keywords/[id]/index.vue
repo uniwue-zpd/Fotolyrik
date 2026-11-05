@@ -41,18 +41,15 @@ useHead({
       </div>
     </template>
     <template #content>
-      <div v-if="keyword_item.gndId" class="flex flex-row space-x-5 py-5">
-        <div class="font-semibold roboto-plain">GND-ID:</div>
-        <div class="flex flex-row space-x-2 items-center">
-          <p class="font-mono">{{ keyword_item.gndId }}</p>
-          <NuxtLink
-              :to="`https://explore.gnd.network/gnd/${keyword_item?.gndId}`"
-              title="Zum GND-Explorer wechseln"
-              target="_blank"
-          >
-            <i class="pi pi-external-link text-[#0073C9]"/>
-          </NuxtLink>
-        </div>
+      <div v-if="keyword_item.gndId" class="flex flex-row items-center gap-5 py-5">
+        <div class="font-semibold roboto-plain">GND</div>
+        <NuxtLink :to="`https://explore.gnd.network/gnd/${keyword_item.gndId}`" target="_blank" rel="noopener"
+                    title="Im GND-Explorer öffnen"
+                    class="group/gnd inline-flex items-center gap-1 text-base text-primary outfit-headline font-medium">
+                    <img src="/gnd-logo.png" alt="GND" class="h-5 w-auto shrink-0" />
+                    <span class="group-hover/gnd:underline">{{ keyword_item.gndId }}</span>
+                    <UIcon name="i-lucide-external-link" class="size-4 shrink-0 opacity-70" />
+                  </NuxtLink>
       </div>
       <Divider/>
       <div class="flex flex-col gap-2">
