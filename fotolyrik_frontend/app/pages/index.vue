@@ -26,6 +26,12 @@ const images = ref([
     'k-10.jpg'
 ]);
 
+const topicResponsiveOptions = [
+  { breakpoint: '1024px', numVisible: 3, numScroll: 1 },
+  { breakpoint: '768px', numVisible: 2, numScroll: 1 },
+  { breakpoint: '480px', numVisible: 1, numScroll: 1 }
+];
+
 const responsiveOptions = ref([
   {
     breakpoint: '1400px',
@@ -142,14 +148,18 @@ const responsiveOptions = ref([
     </div>
     <div class="topics bg-gray-accent p-5">
       <div class="flex flex-col gap-2">
-        <Carousel :value="topics" :numVisible="4" :numScroll="1" controls="true" indicator-type="disc" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
+        <Carousel :value="topics" :numVisible="4" :numScroll="1" :responsiveOptions="topicResponsiveOptions" circular :autoplayInterval="3000">
           <template #item="{ data }">
-            <NuxtLink :to="`/keywords/${data.id}`" class="flex flex-col items-center m-2">
-              <p class="roboto-plain font-medium text-primary">{{ data.value }}</p>
-              <div class="p-8">
-                <Icon name="i-material-symbols-bookmark-outline" class="w-full text-5xl md:text-7xl"/>
-              </div>
-            </NuxtLink>
+            <div class="p-2 h-full">
+              <NuxtLink :to="`/keywords/${data.id}`" :title="data.value"
+                class="group flex flex-col items-center justify-center gap-3 h-full rounded-md bg-default px-3 py-5 shadow-sm hover:shadow-md transition-shadow">
+                <Icon name="i-material-symbols-bookmark-outline"
+                  class="text-4xl md:text-5xl text-primary transition-transform group-hover:-translate-y-0.5" />
+                <p class="w-full truncate text-center outfit-headline font-semibold text-primary group-hover:underline">
+                  {{ data.value }}
+                </p>
+              </NuxtLink>
+            </div>
           </template>
         </Carousel>
         <div class="flex flex-row justify-center">
