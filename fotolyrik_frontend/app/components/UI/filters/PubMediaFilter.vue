@@ -63,6 +63,7 @@ const fetchEditorialOffice = (query: string, pageable: Pageable) =>
             <label for="editorial-office" class="text-xs font-bold ">Redaktion</label>
             <PaginatedSelect
               :fetchFunction="fetchEditorialOffice"
+              :cullFunction="office => office"
               sort="editorialOffice,asc"
               id="editorial-office"
               placeholder="Redaktion wählen"
