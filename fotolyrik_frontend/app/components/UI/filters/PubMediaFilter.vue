@@ -21,7 +21,7 @@ const emit = defineEmits<{
 const publisherApi = usePublisher();
 const pubMediumApi = usePubMedium();
 
-async function fetchEditorialOffice(query: string, pageable: Pageable): Promise<Page<PubMediumPreviewDTO>> {
+async function fetchEditorialOffices(query: string, pageable: Pageable): Promise<Page<PubMediumPreviewDTO>> {
   const filter = {
     ...pageable,
     'editorialOffice': query,
@@ -70,7 +70,7 @@ async function fetchEditorialOffice(query: string, pageable: Pageable): Promise<
           <div class="grid grid-cols-1">
             <label for="editorial-office" class="text-xs font-bold ">Redaktion</label>
             <PaginatedSelect
-              :fetchFunction="fetchEditorialOffice"
+              :fetchFunction="fetchEditorialOffices"
               :cullFunction="pm => ({ editorialOffice: pm.editorialOffice })"
               sort="editorialOffice,asc"
               id="editorial-office"
