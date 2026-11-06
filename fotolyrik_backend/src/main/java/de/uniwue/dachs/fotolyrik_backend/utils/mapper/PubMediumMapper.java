@@ -39,6 +39,7 @@ public class PubMediumMapper {
         pubMediumPreviewDTO.setTitle(pubMedium.getTitle());
         pubMediumPreviewDTO.setStartYear(pubMedium.getStartYear());
         pubMediumPreviewDTO.setEndYear(pubMedium.getEndYear());
+        pubMediumPreviewDTO.setEditorialOffice(pubMedium.getEditorialOffice());
         return pubMediumPreviewDTO;
     }
 

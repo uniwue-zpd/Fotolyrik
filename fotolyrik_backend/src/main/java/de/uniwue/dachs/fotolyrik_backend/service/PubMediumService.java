@@ -70,6 +70,19 @@ public class PubMediumService {
     }
 
     /**
+     * GET a page of distinct, non-empty editorial office names
+     * @param query optional case-insensitive substring filter
+     * @param pageable pagination and sorting parameters (sort by {@code editorialOffice})
+     */
+    public Page<String> searchEditorialOffices(String query, Pageable pageable) {
+        String escaped = (query == null ? "" : query.trim().toLowerCase(java.util.Locale.ROOT))
+                .replace("\\", "\\\\")
+                .replace("%", "\\%")
+                .replace("_", "\\_");
+        return pubMediumRepository.findDistinctEditorialOffices("%" + escaped + "%", pageable);
+    }
+
+    /**
      * GET an unpaginated list of publication medium previews matching the given criteria
      * @param criteria optional filters; unset values are ignored
      * @param sort sort order; falls back to ascending title if unsorted

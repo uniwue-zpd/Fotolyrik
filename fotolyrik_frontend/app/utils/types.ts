@@ -202,6 +202,7 @@ export interface PubMediumPreviewDTO {
     title: string;
     startYear: string | null;
     endYear: string | null;
+    editorialOffice: string | null;
 }
 export interface LocationDTO extends Auditable {
     name: string;

@@ -95,6 +95,15 @@ public class PubMediumController {
         return ResponseEntity.ok(pubMediumService.searchFlat(criteria, sort));
     }
 
+    /** Distinct editorial office names, optionally filtered by {@code query}. */
+    @GetMapping("/editorial-offices")
+    public ResponseEntity<Page<String>> getEditorialOffices(
+            @RequestParam(required = false) String query,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(pubMediumService.searchEditorialOffices(query, pageable));
+    }
+
     // ---------- Read: single ----------
 
     @GetMapping("/{id}")

@@ -19,6 +19,10 @@ const emit = defineEmits<{
 }>()
 
 const publisherApi = usePublisher();
+const pubMediumApi = usePubMedium();
+
+const fetchEditorialOffice = (query: string, pageable: Pageable) =>
+  pubMediumApi.fetchEditorialOffices({ ...pageable, query });
 
 </script>
 <template>
@@ -57,7 +61,15 @@ const publisherApi = usePublisher();
 
           <div class="grid grid-cols-1">
             <label for="editorial-office" class="text-xs font-bold ">Redaktion</label>
-            <InputText id="editorial-office" v-model="filters.editorialOffice" fluid />
+            <PaginatedSelect
+              :fetchFunction="fetchEditorialOffice"
+              sort="editorialOffice,asc"
+              id="editorial-office"
+              placeholder="Redaktion wählen"
+              v-model="filters['editorial-office']"
+              showClear
+              fluid
+            />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
