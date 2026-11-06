@@ -63,6 +63,10 @@ public class PubMediumSpecification {
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("editorialOffice")), "%" + editorialOffice.toLowerCase() + "%");
     }
 
+    public static Specification<PubMedium> editorialOfficeIsNotNull() {
+        return (root, query, cb) -> cb.isNotNull(root.get("editorialOffice"));
+    }
+
     public static Specification<PubMedium> hasStartYear(Long startYear) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("startYear"), startYear);

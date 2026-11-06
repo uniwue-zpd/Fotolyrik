@@ -277,7 +277,8 @@ public class PubMediumService {
             Long startYear,
             Long endYear,
             Long amountVolumes,
-            Long amountIssues
+            Long amountIssues,
+            Boolean editorialOfficeNotNull
     ) {
         Specification<PubMedium> specification = Specification.where(null);
 
@@ -304,6 +305,9 @@ public class PubMediumService {
         }
         if (amountIssues != null) {
             specification = specification.and(PubMediumSpecification.hasAmountIssues(amountIssues));
+        }
+        if (editorialOfficeNotNull != null) {
+            specification = specification.and(PubMediumSpecification.editorialOfficeIsNotNull());
         }
 
         return pubMediumRepository.findAll(specification, pageable)

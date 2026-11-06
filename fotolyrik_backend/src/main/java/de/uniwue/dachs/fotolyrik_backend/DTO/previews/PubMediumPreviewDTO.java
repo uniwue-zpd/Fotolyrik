@@ -16,4 +16,5 @@ public class PubMediumPreviewDTO {
     private Year startYear;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
     private Year endYear;
+    private String editorialOffice;
 }

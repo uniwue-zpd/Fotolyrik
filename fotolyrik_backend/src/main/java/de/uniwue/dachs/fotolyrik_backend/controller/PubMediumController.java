@@ -90,11 +90,12 @@ public class PubMediumController {
             @RequestParam(required = false, value = "startYear") Long startYear,
             @RequestParam(required = false, value = "endYear") Long endYear,
             @RequestParam(required = false, value = "amountVolumes") Long amountVolumes,
-            @RequestParam(required = false, value = "amountIssues") Long amountIssues
+            @RequestParam(required = false, value = "amountIssues") Long amountIssues,
+            @RequestParam(required = false, value = "editorialOfficeNotNull") Boolean editorialOfficeNotNull
     ) {
         return ResponseEntity.ok(pubMediumService.filterPubMediaPaginated(
                 pageable, title, subtitle, publisherName, editorialOffice,
-                startYear, endYear, amountVolumes, amountIssues
+                startYear, endYear, amountVolumes, amountIssues, editorialOfficeNotNull
         ));
     }
 

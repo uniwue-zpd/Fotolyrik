@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
-import type { PubMediumPageable } from "~/utils/types";
+import type { PubMediumPageable, PubMediumPreviewDTO } from "~/utils/types";
 import PaginatedSelect from './PaginatedSelect.vue';
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
@@ -19,6 +19,18 @@ const emit = defineEmits<{
 }>()
 
 const publisherApi = usePublisher();
+const pubMediumApi = usePubMedium();
+
+async function fetchEditorialOffice(query: string, pageable: Pageable): Promise<Page<PubMediumPreviewDTO>> {
+  const filter = {
+    ...pageable,
+    'editorialOffice': query,
+    'editorialOfficeNotNull': true
+  }
+  const res = await pubMediumApi.filterPaginated(filter);
+
+  return res;
+}
 
 </script>
 <template>
@@ -57,7 +69,18 @@ const publisherApi = usePublisher();
 
           <div class="grid grid-cols-1">
             <label for="editorial-office" class="text-xs font-bold ">Redaktion</label>
-            <InputText id="editorial-office" v-model="filters.editorialOffice" fluid />
+            <PaginatedSelect
+              :fetchFunction="fetchEditorialOffice"
+              :cullFunction="pm => ({ editorialOffice: pm.editorialOffice })"
+              sort="editorialOffice,asc"
+              id="editorial-office"
+              placeholder="Redaktion wählen"
+              v-model="filters['editorialOffice']"
+              option-value="editorialOffice"
+              :option-label="(pm) => pm.editorialOffice"
+              showClear
+              fluid
+            />
           </div>
 
           <div class="grid grid-cols-2 gap-3">

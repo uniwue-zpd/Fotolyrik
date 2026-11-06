@@ -6,8 +6,6 @@ import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PublicationMediaFilter from "~/components/UI/filters/PubMediaFilter.vue";
 import type { Page, PubMediumPageable } from "~/utils/types";
 
-const { width } = useWindowSize();
-
 const initialPageParameter: PubMediumPageable = {
   page: 0,
   size: 10,
