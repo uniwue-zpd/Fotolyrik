@@ -127,11 +127,12 @@ public class PersonController {
         }
     }
 
-    @GetMapping("/stats/graph/worked_with")
+    @GetMapping(value = "/stats", params = {"type=worked-with", "view=graph"})
     public ResponseEntity<GraphDTO> getWorkedWithGraph() {
         return ResponseEntity.ok(personService.getWorkedWithGraph());
     }
-    @GetMapping("/{id}/stats/contribution_places")
+
+    @GetMapping(value = "/{id}/stats", params = "type=contribution-places")
     public ResponseEntity<List<PlaceDTO>> getContributionPlacesByPersonId(@PathVariable Long id) {
         try {
             var contributionPlaces = personService.getContributionPlaces(id);
@@ -141,7 +142,7 @@ public class PersonController {
         }
     }
 
-    @GetMapping("/{id}/stats/themes")
+    @GetMapping(value = "/{id}/stats", params = "type=themes")
     public ResponseEntity<List<KeywordCountDTO>> getThemesByAuthor(
             @PathVariable Long id,
             @RequestParam(required = false, defaultValue = "10") Long limit) {
@@ -149,7 +150,7 @@ public class PersonController {
         return ResponseEntity.ok(themes);
     }
 
-    @GetMapping("/{id}/stats/image-motifs")
+    @GetMapping(value = "/{id}/stats", params = "type=image-motifs")
     public ResponseEntity<List<KeywordCountDTO>> getImageMotifsByAuthor(
             @PathVariable Long id,
             @RequestParam(required = false, defaultValue = "10") Long limit) {
@@ -157,7 +158,7 @@ public class PersonController {
         return ResponseEntity.ok(imageMotifs);
     }
 
-    @GetMapping("/{id}/stats/metrics")
+    @GetMapping(value = "/{id}/stats", params = "type=metrics")
     public ResponseEntity<PersonMetricsDTO> getPersonMetrics(@PathVariable Long id) {
         PersonMetricsDTO metrics = personService.getPersonMetrics(id);
         return ResponseEntity.ok(metrics);
