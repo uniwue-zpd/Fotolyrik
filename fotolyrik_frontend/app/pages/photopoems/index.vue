@@ -19,17 +19,17 @@ const initialFilters: PhotopoemPageable = {
   volume: undefined,
   issue: undefined,
   'publication-date': undefined,
-  'pub-medium-id': undefined,
-  'pub-place-id': undefined,
+  'pubmedium-id': undefined,
+  'pubplace-id': undefined,
   'location-id': undefined,
   'author-id': undefined,
   'photographer-id': undefined,
   'depicted-person-id': undefined,
-  'contributor-id': undefined,
+  'other-contributor-id': undefined,
   'theme-id': undefined,
   'image-motif-id': undefined,
-  'copyright-image-id': undefined,
-  'copyright-text-id': undefined,
+  'copyright-status-image-id': undefined,
+  'copyright-status-text-id': undefined,
   'language-id': undefined
 };
 

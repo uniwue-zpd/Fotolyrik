@@ -4,7 +4,7 @@ import TimelinePlot from "./TimelinePlot.vue";
 defineProps<{
   width?: number;
   height?: number;
-  data: PhotoPoemDTO[];
+  data: PhotoPoemPreviewDTO[];
 }>();
 </script>
 

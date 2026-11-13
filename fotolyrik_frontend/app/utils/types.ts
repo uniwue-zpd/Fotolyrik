@@ -141,6 +141,9 @@ export interface PhotoPoemPreviewDTO {
     id: number;
     title: string | null;
     altTitle: string | null;
+    publicationDate: string | null;
+    images?: FileDTO[] | [];
+    imagesVisible?: AccessLevel;
 }
 enum DepictedRole {
     DEPICTED = "DEPICTED"
@@ -343,16 +346,28 @@ export interface PhotopoemPageable extends Pageable {
     volume?: number;
     issue?: number;
     'publication-date'?: string;
-    'pub-medium-id'?: number;
-    'pub-place-id'?: number;
+    'pubmedium-id'?: number;
+    pubmedium?: string;
+    'pubplace-id'?: number;
     'location-id'?: number;
     'author-id'?: number;
+    author?: string;
     'photographer-id'?: number;
+    photographer?: string;
     'depicted-person-id'?: number;
-    'contributor-id'?: number;
+    'depicted-person'?: string;
+    'participant-id'?: number;
+    participant?: string;
+    'other-contributor-id'?: number;
+    'other-contributor'?: string;
     'theme-id'?: number;
+    theme?: string;
     'image-motif-id'?: number;
-    'copyright-image-id'?: number;
-    'copyright-text-id'?: number;
+    'image-motif'?: string;
+    'copyright-status-image-id'?: number;
+    'copyright-status-image'?: string;
+    'copyright-status-text-id'?: number;
+    'copyright-status-text'?: string;
     'language-id'?: number;
+    language?: string;
 }
