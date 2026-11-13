@@ -11,6 +11,7 @@ import de.uniwue.dachs.fotolyrik_backend.model.File;
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.repository.FileRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PersonRepository;
+import de.uniwue.dachs.fotolyrik_backend.specification.PersonSearchCriteria;
 import de.uniwue.dachs.fotolyrik_backend.specification.PersonSpecification;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PersonMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
@@ -184,37 +185,52 @@ public class PersonService {
     }
 
     /**
-     * GET a list of persons based on search query
-     * @param query defining which person
-     * @return a List of {@link PersonPreviewDTO} found persons
+     * GET a page of persons matching the given criteria
+     * @param criteria optional filters; unset values are ignored
+     * @param pageable pagination and sorting parameters
+     * @return a {@link Page} of full {@link PersonDTO} objects
      */
-    public List<PersonPreviewDTO> searchPeople(String query) {
-        List<Person> result = personRepository.searchPeople(query,
-                Pageable.unpaged(Sort.by("lastName").ascending())).getContent();
-        return personMapper.PersonsToPreviewDTOs(result);
+    public Page<PersonDTO> searchPaginated(PersonSearchCriteria criteria, Pageable pageable) {
+        return personRepository.findAll(buildSpecification(criteria), pageable)
+                .map(personMapper::PersonToPersonDTO);
     }
-
 
     /**
-     * GET a page of persons filtered by the given (optional) attributes
-     * @param pageable defining sorting and size of page
-     * @param name matched against full, first, last and studio name and pseudonyms
-     * @param birthYear exact birth year
-     * @param deathYear exact death year
-     * @param sex "männlich" or "weiblich"
-     * @return a Page of {@link PersonPreviewDTO} found persons
+     * GET an unpaginated list of person previews matching the given criteria
+     * @param criteria optional filters; unset values are ignored
+     * @param sort sort order; falls back to ascending last name if unsorted
+     * @return a {@link List} of {@link PersonPreviewDTO} objects
      */
-    public Page<PersonPreviewDTO> searchPeoplePaginated(Pageable pageable, String name, Integer birthYear,
-                                                        Integer deathYear, String sex) {
-        Specification<Person> spec = Specification.where(null);
-        if (name != null && !name.isBlank()) spec = spec.and(PersonSpecification.hasName(name));
-        if (birthYear != null) spec = spec.and(PersonSpecification.hasBirthYear(birthYear));
-        if (deathYear != null) spec = spec.and(PersonSpecification.hasDeathYear(deathYear));
-        if (sex != null && !sex.isBlank()) spec = spec.and(PersonSpecification.hasSex(sex));
-
-        return personRepository.findAll(spec, pageable).map(personMapper::PersonToPreviewDTO);
+    public List<PersonPreviewDTO> searchFlat(PersonSearchCriteria criteria, Sort sort) {
+        Sort effectiveSort = sort != null && sort.isSorted() ? sort : Sort.by("lastName").ascending();
+        return personMapper.PersonsToPreviewDTOs(
+                personRepository.findAll(buildSpecification(criteria), effectiveSort));
     }
 
+    /**
+     * Builds a {@link Specification} that combines all set criteria with AND.
+     * @param c search criteria; {@code null} values and blank strings are ignored
+     */
+    private Specification<Person> buildSpecification(PersonSearchCriteria c) {
+        Specification<Person> spec = Specification.where(null);
+        if (c == null) return spec;
+        if (hasText(c.name())) spec = spec.and(PersonSpecification.hasName(c.name()));
+        if (hasText(c.studioName())) spec = spec.and(PersonSpecification.hasStudioName(c.studioName()));
+        if (hasText(c.pseudonym())) spec = spec.and(PersonSpecification.hasPseudonym(c.pseudonym()));
+        if (hasText(c.gndId())) spec = spec.and(PersonSpecification.hasGndId(c.gndId()));
+        if (hasText(c.sex())) spec = spec.and(PersonSpecification.hasSex(c.sex()));
+        if (c.birthYear() != null) spec = spec.and(PersonSpecification.hasBirthYear(c.birthYear()));
+        if (c.birthYearFrom() != null || c.birthYearTo() != null)
+            spec = spec.and(PersonSpecification.birthYearBetween(c.birthYearFrom(), c.birthYearTo()));
+        if (c.deathYear() != null) spec = spec.and(PersonSpecification.hasDeathYear(c.deathYear()));
+        if (c.deathYearFrom() != null || c.deathYearTo() != null)
+            spec = spec.and(PersonSpecification.deathYearBetween(c.deathYearFrom(), c.deathYearTo()));
+        return spec;
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
+    }
 
     public GraphDTO getWorkedWithGraph() {
         return graphMapper.fromAdjacencyList(personRepository.findAdjacencyList());

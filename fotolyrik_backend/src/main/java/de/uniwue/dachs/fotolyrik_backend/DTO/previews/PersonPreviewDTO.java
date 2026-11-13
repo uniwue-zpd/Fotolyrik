@@ -9,11 +9,9 @@ import java.util.List;
 @Setter
 public class PersonPreviewDTO {
     private Long id;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String studioName;
-    private String sex;
     private List<String> pseudonyms;
-    private Integer birthYear;
-    private Integer deathYear;
     private String gndId;
 }
