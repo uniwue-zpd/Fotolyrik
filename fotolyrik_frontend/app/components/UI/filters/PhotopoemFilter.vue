@@ -134,7 +134,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="title,asc"
                 id="pub-medium-id"
                 placeholder="Medium wählen"
-                v-model="filters['pub-medium-id']"
+                v-model="filters['pubmedium-id']"
                 option-value="id"
                 :optionLabel="(p)=> p.title"
                 showClear
@@ -214,7 +214,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
                 sort="firstName,asc"
                 id="contributor-id"
                 placeholder="Mitwirkende Person wählen"
-                v-model="filters['contributor-id']"
+                v-model="filters['other-contributor-id']"
                 option-value="id"
                 :optionLabel="getPersonOptionLabel"
                 showClear
@@ -260,7 +260,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
               <Select
                   id="copyright-image-id"
                   placeholder="Status"
-                  v-model="filters['copyright-image-id']"
+                  v-model="filters['copyright-status-image-id']"
                   optionLabel="value"
                   optionValue="id"
                   :options="copyrightStatuses"
@@ -274,7 +274,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
               <Select
                   id="copyright-text-id"
                   placeholder="Status"
-                  v-model="filters['copyright-text-id']"
+                  v-model="filters['copyright-status-text-id']"
                   optionLabel="value"
                   optionValue="id"
                   :options="copyrightStatuses"
