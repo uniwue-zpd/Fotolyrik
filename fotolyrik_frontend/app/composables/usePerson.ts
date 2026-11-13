@@ -1,6 +1,6 @@
 export const usePerson = () => {
     function fetchAll() {
-        return $fetch<PersonDTO[]>('/api/persons');
+        return $fetch<PersonDTO[]>('/api/persons/all');
     }
 
     function fetchById(id: number) {
@@ -32,39 +32,57 @@ export const usePerson = () => {
     }
 
     function fetchAuthorThemesById(id: number, limit?: number) {
-        return $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats/themes`, {
-            query: { limit }
+        return $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats`, {
+            query: { type: 'themes', limit }
         });
     }
 
     function fetchAuthorImageMotifsById(id: number, limit?: number) {
-        return $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats/image-motifs`, {
-            query: { limit }
+        return $fetch<KeywordCountDTO[]>(`/api/persons/${id}/stats`, {
+            query: { type: 'image-motifs', limit }
         });
     }
 
     function fetchMetricsById(id: number) {
-        return $fetch<PersonMetricsDTO>(`/api/persons/${id}/stats/metrics`);
-    }
-
-    function fetchWorkedWithGraph(){
-        return $fetch<GraphDTO>(`/api/persons/stats/graph/worked_with`);
-    }
-
-    function search(query: string) {
-        return $fetch<PersonPreviewDTO[]>('/api/persons/search', {
-            query: { query }
+        return $fetch<PersonMetricsDTO>(`/api/persons/${id}/stats`, {
+            query: { type: 'metrics' }
         });
     }
 
-    function fetchPaginated(params: PersonPageable): Promise<Page<PersonPreviewDTO>> {
-        const query = Object.fromEntries(
-            Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
-        );
-        return $fetch<Page<PersonPreviewDTO>>('/api/persons/search_paginated', { query });
+    function fetchWorkedWithGraph(){
+        return $fetch<GraphDTO>(`/api/persons/stats`, {
+            query: { type: 'worked-with', view: 'graph' }
+        });
     }
 
-    function searchPaginated(query: string, pageable: Pageable): Promise<Page<PersonPreviewDTO>> {
+    /** Removes undefined, null and empty-string values so they are not sent as query parameters. */
+    function cleanQuery(params: Record<string, any>) {
+        return Object.fromEntries(
+            Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
+        );
+    }
+
+    /** Flat view: unpaginated list of lightweight previews matching the given filters. */
+    function fetchFlat(params: PersonPageable): Promise<PersonPreviewDTO[]> {
+        return $fetch<PersonPreviewDTO[]>('/api/persons', {
+            query: { ...cleanQuery(params), view: 'flat' }
+        });
+    }
+
+    /** Name search (first/last/full name, studio name, pseudonyms) for autocompletes. */
+    async function search(query: string): Promise<PersonPreviewDTO[]> {
+        if (!query || query.trim().length < 2) return [];
+        return fetchFlat({ name: query.trim() });
+    }
+
+    /** Paginated view: page of full person DTOs. All filters are optional. */
+    function fetchPaginated(params: PersonPageable): Promise<Page<PersonDTO>> {
+        return $fetch<Page<PersonDTO>>('/api/persons', {
+            query: { ...cleanQuery(params), view: 'paginated' }
+        });
+    }
+
+    function searchPaginated(query: string, pageable: Pageable): Promise<Page<PersonDTO>> {
         return fetchPaginated({ ...pageable, name: query });
     }
 
@@ -92,6 +110,7 @@ export const usePerson = () => {
         fetchMetricsById,
         fetchWorkedWithGraph,
         search,
+        fetchFlat,
         fetchPaginated,
         searchPaginated,
         getAll,

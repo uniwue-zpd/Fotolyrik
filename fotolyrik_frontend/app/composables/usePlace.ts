@@ -8,7 +8,9 @@ export const usePlace = () => {
     }
 
     function getContributionPlacesById(personId: number) {
-        return $fetch<PlaceDTO[]>(`/api/persons/${personId}/stats/contribution_places`);
+        return $fetch<PlaceDTO[]>(`/api/persons/${personId}/stats`, {
+            query: { type: 'contribution-places' }
+        });
     }
 
     function create(payload: Partial<PlaceDTO>) {

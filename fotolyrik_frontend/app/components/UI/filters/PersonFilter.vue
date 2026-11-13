@@ -83,6 +83,52 @@ const sex = computed({
           </UFormField>
         </div>
 
+        <UFormField label="Geburtsjahr von / bis" name="birth-year-range">
+          <div class="grid grid-cols-2 gap-3">
+            <UInputNumber
+              v-model="filters['birth-year-from']"
+              :format-options="{ useGrouping: false }"
+              :increment="false"
+              :decrement="false"
+              placeholder="von"
+              aria-label="Geburtsjahr von"
+              class="w-full"
+            />
+            <UInputNumber
+              v-model="filters['birth-year-to']"
+              :format-options="{ useGrouping: false }"
+              :increment="false"
+              :decrement="false"
+              placeholder="bis"
+              aria-label="Geburtsjahr bis"
+              class="w-full"
+            />
+          </div>
+        </UFormField>
+
+        <UFormField label="Sterbejahr von / bis" name="death-year-range">
+          <div class="grid grid-cols-2 gap-3">
+            <UInputNumber
+              v-model="filters['death-year-from']"
+              :format-options="{ useGrouping: false }"
+              :increment="false"
+              :decrement="false"
+              placeholder="von"
+              aria-label="Sterbejahr von"
+              class="w-full"
+            />
+            <UInputNumber
+              v-model="filters['death-year-to']"
+              :format-options="{ useGrouping: false }"
+              :increment="false"
+              :decrement="false"
+              placeholder="bis"
+              aria-label="Sterbejahr bis"
+              class="w-full"
+            />
+          </div>
+        </UFormField>
+
         <UFormField label="Geschlecht" name="sex">
           <URadioGroup v-model="sex" :items="sexItems" orientation="horizontal" />
         </UFormField>

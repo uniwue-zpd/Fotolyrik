@@ -112,7 +112,7 @@ const contributions = ref<Contribution[]>(
             v-model="contribution.contributor"
             :suggestions="personSuggestions"
             @complete="onPersonComplete"
-            :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
+            :optionLabel="(opt) => [opt.firstName, opt.lastName].filter(Boolean).join(' ') || opt.pseudonyms?.[0] || opt.studioName"
             showClear fluid
         />
         <AutoComplete

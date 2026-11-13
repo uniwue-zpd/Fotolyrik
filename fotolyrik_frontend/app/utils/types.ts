@@ -69,6 +69,7 @@ export interface PersonDTO extends Auditable {
     deathYear: number | null;
     sex: "weiblich" | "männlich" | null;
     gndId: string | null;
+    notes: string | null;
     image: FileDTO | null;
 }
 export interface IDSliceDTO{
@@ -79,18 +80,23 @@ export interface IDSliceDTO{
 
 export interface PersonPreviewDTO {
     id: number;
-    fullName: string | null;
+    firstName: string | null;
+    lastName: string | null;
     studioName: string | null;
     pseudonyms: [string] | [];
-    birthYear: number | null;
-    deathYear: number | null;
-    sex: 'männlich' | 'weiblich' | null;
     gndId: string | null;
 }
 export interface PersonPageable extends Pageable {
     name?: string;
+    'studio-name'?: string;
+    pseudonym?: string;
+    'gnd-id'?: string;
     'birth-year'?: number | null;
+    'birth-year-from'?: number | null;
+    'birth-year-to'?: number | null;
     'death-year'?: number | null;
+    'death-year-from'?: number | null;
+    'death-year-to'?: number | null;
     sex?: 'männlich' | 'weiblich' | null;
 }
 export enum ContributionRole {
