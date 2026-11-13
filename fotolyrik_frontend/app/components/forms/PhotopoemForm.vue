@@ -47,7 +47,7 @@ const [
   fileApi.getAll(),
 ]);
 const publicationMedia = computed<PubMediumPreviewDTO[]>(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })) ?? []);
-const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
+const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })));
 const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
 const languages = computed(() => languageHandle.data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 const locations = computed(()=> locationHandle.data.value?.map(l=>({id: l.id, name: l.name}) ));
@@ -373,7 +373,7 @@ const onFormSubmit = async (e: any) => {
               placeholder="Abgebildete Personen auswählen"
               :suggestions="personSuggestions"
               @complete="onPersonComplete"
-              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
+              :optionLabel="(opt) => [opt.firstName, opt.lastName].filter(Boolean).join(' ') || opt.pseudonyms?.[0] || opt.studioName"
               showClear fluid multiple
               :loading="personLoading"
           />
@@ -396,8 +396,8 @@ const onFormSubmit = async (e: any) => {
                 inputId="authors"
                 placeholder="Autor:innen auswählen"
                 selectedItemsLabel="{0} Personen ausgewählt"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
+                :optionLabel="(opt) => [opt.firstName, opt.lastName].filter(Boolean).join(' ') || (opt.pseudonyms || []).join(', ')"
+                :optionValue="opt => ({ id: opt.id, firstName: opt.firstName, lastName: opt.lastName, studioName: opt.studioName, pseudonyms: opt.pseudonyms, gndId: opt.gndId })"
                 :maxSelectedLabels="2"
                 :options="persons"
                 :key="persons?.length"
@@ -414,8 +414,8 @@ const onFormSubmit = async (e: any) => {
                 inputId="photographers"
                 placeholder="Fotograf:innen auswählen"
                 selectedItemsLabel="{0} Personen ausgewählt"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
+                :optionLabel="(opt) => [opt.firstName, opt.lastName].filter(Boolean).join(' ') || (opt.pseudonyms || []).join(', ')"
+                :optionValue="opt => ({ id: opt.id, firstName: opt.firstName, lastName: opt.lastName, studioName: opt.studioName, pseudonyms: opt.pseudonyms, gndId: opt.gndId })"
                 :maxSelectedLabels="2"
                 :options="persons"
                 :key="persons?.length"
@@ -432,8 +432,8 @@ const onFormSubmit = async (e: any) => {
                 inputId="otherContributors"
                 placeholder="Sonstige Mitwirkende auswählen"
                 selectedItemsLabel="{0} Personen ausgewählt"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
+                :optionLabel="(opt) => [opt.firstName, opt.lastName].filter(Boolean).join(' ') || (opt.pseudonyms || []).join(', ')"
+                :optionValue="opt => ({ id: opt.id, firstName: opt.firstName, lastName: opt.lastName, studioName: opt.studioName, pseudonyms: opt.pseudonyms, gndId: opt.gndId })"
                 :maxSelectedLabels="2"
                 :options="persons"
                 :key="persons?.length"

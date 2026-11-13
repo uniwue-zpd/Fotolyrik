@@ -2,7 +2,7 @@
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
 import PersonFilter from "~/components/UI/filters/PersonFilter.vue";
-import type { Page, PersonPageable } from "~/utils/types";
+import type { Page, PersonDTO, PersonPageable } from "~/utils/types";
 
 const initialPageParameter: PersonPageable = {
   page: 0,
@@ -12,8 +12,15 @@ const initialPageParameter: PersonPageable = {
 
 const initialFilters: PersonPageable = {
   name: undefined,
+  'studio-name': undefined,
+  pseudonym: undefined,
+  'gnd-id': undefined,
   'birth-year': undefined,
+  'birth-year-from': undefined,
+  'birth-year-to': undefined,
   'death-year': undefined,
+  'death-year-from': undefined,
+  'death-year-to': undefined,
   sex: null
 };
 
@@ -49,7 +56,7 @@ const {
   data: persons,
   pending: isLoading,
   refresh
-} = useAsyncData<Page<PersonPreviewDTO>>(
+} = useAsyncData<Page<PersonDTO>>(
   "persons-paginated",
   () => personApi.fetchPaginated({ ...pageParameter, ...filters })
 );

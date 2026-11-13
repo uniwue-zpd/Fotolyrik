@@ -29,7 +29,7 @@ const {data: highlight} = await usePhotopoem().getHighlight();
                         :to="`/persons/${ person.id }`"
                         class="text-primary font-medium"
                     >
-                      {{ person.fullName || person.pseudonyms[0] }}
+                      {{ [person.firstName, person.lastName].filter(Boolean).join(' ') || person.pseudonyms[0] }}
                   </NuxtLink>
                   </li>
                 </ul>
@@ -46,7 +46,7 @@ const {data: highlight} = await usePhotopoem().getHighlight();
                         :to="`/persons/${ person.id }`"
                         class="text-primary font-medium"
                     >
-                    {{ person.fullName }}
+                    {{ [person.firstName, person.lastName].filter(Boolean).join(' ') || person.pseudonyms[0] }}
                   </NuxtLink>
                   </li>
                 </ul>

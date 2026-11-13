@@ -38,7 +38,7 @@ const copyrightStatuses = computed(() => copyrightStatusList.value?.map(cs => ({
 
 function getPersonOptionLabel(opt: PersonPreviewDTO) {
   if (!opt) return '';
-  return opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ');
+  return [opt.firstName, opt.lastName].filter(Boolean).join(' ') || (opt.pseudonyms || []).join(', ');
 }
 
 
@@ -162,7 +162,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="author-id" class="text-xs font-bold ">Autor:in</label>
             <PaginatedSelect
                 :fetch-function="personApi.searchPaginated"
-                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
+                :cull-function="p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })"
                 sort="firstName,asc"
                 id="author-id"
                 placeholder="Autor:in suchen / wählen"
@@ -178,7 +178,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
             <PaginatedSelect
                 :fetch-function="personApi.searchPaginated"
-                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
+                :cull-function="p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })"
                 sort="firstName,asc"
                 id="photographer-id"
                 placeholder="Fotograf:in suchen / wählen"
@@ -194,7 +194,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
             <PaginatedSelect
                 :fetch-function="personApi.searchPaginated"
-                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
+                :cull-function="p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })"
                 sort="firstName,asc"
                 id="depicted-person-id"
                 placeholder="Abgebildete Person wählen"
@@ -210,7 +210,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
             <PaginatedSelect
                 :fetch-function="personApi.searchPaginated"
-                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
+                :cull-function="p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })"
                 sort="firstName,asc"
                 id="contributor-id"
                 placeholder="Mitwirkende Person wählen"
