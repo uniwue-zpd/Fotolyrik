@@ -19,7 +19,7 @@ const [
   { data: pubMediumList }
 ] = await Promise.all([
   keyword_api.getAll(),
-  person_api.getAll(),
+  useAsyncData('person-list', person_api.fetchAll),
   photopoem_api.getAll(),
   place_api.getAll(),
   pub_medium_api.getAll()

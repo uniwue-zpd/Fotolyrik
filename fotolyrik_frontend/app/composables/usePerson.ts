@@ -62,46 +62,26 @@ export const usePerson = () => {
         );
     }
 
-    /** Flat view: unpaginated list of lightweight previews matching the given filters. */
-    function fetchFlat(params: PersonPageable): Promise<PersonPreviewDTO[]> {
+    /** Flat view: unpaginated list of lightweight previews. All filters are optional. */
+    function fetchFlat(params: PersonPageable = {}) {
         return $fetch<PersonPreviewDTO[]>('/api/persons', {
             query: { ...cleanQuery(params), view: 'flat' }
         });
     }
 
-    /** Name search (first/last/full name, studio name, pseudonyms) for autocompletes. */
-    async function search(query: string): Promise<PersonPreviewDTO[]> {
-        if (!query || query.trim().length < 2) return [];
-        return fetchFlat({ name: query.trim() });
-    }
-
     /** Paginated view: page of full person DTOs. All filters are optional. */
-    function fetchPaginated(params: PersonPageable): Promise<Page<PersonDTO>> {
+    function fetchPaginated(params: PersonPageable = {}) {
         return $fetch<Page<PersonDTO>>('/api/persons', {
             query: { ...cleanQuery(params), view: 'paginated' }
         });
-    }
-
-    function searchPaginated(query: string, pageable: Pageable): Promise<Page<PersonDTO>> {
-        return fetchPaginated({ ...pageable, name: query });
-    }
-
-    function getAll(){
-        return useAsyncData('person-list', fetchAll);
-    }
-
-    function getById(id: number){
-        return useAsyncData( `person-${id}`, () => fetchById(id) );
-    }
-
-    function getNeighborsById(id: number){
-        return useAsyncData(`person-${id}-neighbor`,() =>  fetchNeighborsById(id))
     }
 
     return {
         fetchAll,
         fetchById,
         fetchNeighborsById,
+        fetchFlat,
+        fetchPaginated,
         create,
         update,
         deleteById,
@@ -109,12 +89,5 @@ export const usePerson = () => {
         fetchAuthorImageMotifsById,
         fetchMetricsById,
         fetchWorkedWithGraph,
-        search,
-        fetchFlat,
-        fetchPaginated,
-        searchPaginated,
-        getAll,
-        getById,
-        getNeighborsById,
     };
 };

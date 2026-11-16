@@ -21,6 +21,7 @@ const emit = defineEmits<{
 
 
 const personApi = usePerson();
+const searchPersons = (name: string, pageable: Pageable) => personApi.fetchPaginated({ ...pageable, name });
 const pubMediumApi = usePubMedium();
 const languageApi = useLanguage();
 const copyrightStatusApi = useCopyrightStatus();
@@ -161,7 +162,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="author-id" class="text-xs font-bold ">Autor:in</label>
             <PaginatedSelect
-                :fetch-function="personApi.searchPaginated"
+                :fetch-function="searchPersons"
                 :cull-function="p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })"
                 sort="firstName,asc"
                 id="author-id"
@@ -177,7 +178,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
             <PaginatedSelect
-                :fetch-function="personApi.searchPaginated"
+                :fetch-function="searchPersons"
                 :cull-function="p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })"
                 sort="firstName,asc"
                 id="photographer-id"
@@ -193,7 +194,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
             <PaginatedSelect
-                :fetch-function="personApi.searchPaginated"
+                :fetch-function="searchPersons"
                 :cull-function="p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })"
                 sort="firstName,asc"
                 id="depicted-person-id"
@@ -209,7 +210,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
             <PaginatedSelect
-                :fetch-function="personApi.searchPaginated"
+                :fetch-function="searchPersons"
                 :cull-function="p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })"
                 sort="firstName,asc"
                 id="contributor-id"

@@ -22,7 +22,8 @@ const personSuggestions = ref<PersonPreviewDTO[]>([]);
 
 const debouncedSearch = debounce(async (query: string) => {
   personLoading.value = true;
-  personSuggestions.value = await personApi.search(query);
+  const name = query.trim();
+  personSuggestions.value = name.length < 2 ? [] : await personApi.fetchFlat({ name });
   personLoading.value = false;
 }, 300);
 
@@ -38,7 +39,7 @@ const [
   pubMediumHandle,
   {data: files}
 ] = await Promise.all([
-  personApi.getAll(),
+  useAsyncData('person-list', personApi.fetchAll),
   keywordApi.getAll(),
   languageApi.getAll(),
   locationApi.getAll(),

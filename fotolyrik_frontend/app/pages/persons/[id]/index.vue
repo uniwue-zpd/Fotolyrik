@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import type { PersonDTO } from "~/utils/types";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
@@ -56,8 +55,8 @@ const [
   { data: person_item },
   { data: person_neighbors }
 ] = await Promise.all([
-  person_api.getById(person_id),
-  person_api.getNeighborsById(person_id)
+  useAsyncData(`person-${person_id}`, () => person_api.fetchById(person_id)),
+  useAsyncData(`person-${person_id}-neighbor`, () => person_api.fetchNeighborsById(person_id))
 ]);
 
 onMounted(async () => {
