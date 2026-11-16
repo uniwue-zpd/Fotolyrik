@@ -1,6 +1,10 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.KeywordPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.specification.KeywordSearchCriteria;
+import de.uniwue.dachs.fotolyrik_backend.specification.KeywordSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
 import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
@@ -76,15 +80,43 @@ public class KeywordService {
         keywordRepository.deleteById(id);
     }
 
-    // GET a list of keywords constrained by QUERY and PAGEABLE
-    public Page<KeywordDTO> searchKeywordsPaginated(Pageable pageable, String query) {
-        Page<Keyword> result;
-        if (query  == null||  query.trim().length()<2){
-            result =  keywordRepository.findAll(pageable);
-        } else {
-            result = keywordRepository.findByValueContainingIgnoreCase(query, pageable);
-        }
-        return result.map(keywordMapper::KeywordToKeywordDTO);
+    /**
+     * GET a page of keywords matching the given criteria
+     * @param criteria optional filters; unset values are ignored
+     * @param pageable pagination and sorting parameters
+     * @return a {@link Page} of {@link KeywordPreviewDTO} objects
+     */
+    public Page<KeywordPreviewDTO> searchPaginated(KeywordSearchCriteria criteria, Pageable pageable) {
+        return keywordRepository.findAll(buildSpecification(criteria), pageable)
+                .map(keywordMapper::KeywordToKeywordPreviewDTO);
+    }
+
+    /**
+     * GET an unpaginated list of keyword previews matching the given criteria
+     * @param criteria optional filters; unset values are ignored
+     * @param sort sort order; falls back to ascending value if unsorted
+     * @return a {@link List} of {@link KeywordPreviewDTO} objects
+     */
+    public List<KeywordPreviewDTO> searchFlat(KeywordSearchCriteria criteria, Sort sort) {
+        Sort effectiveSort = sort != null && sort.isSorted() ? sort : Sort.by("value").ascending();
+        return keywordMapper.KeywordsToKeywordPreviewDTOs(
+                keywordRepository.findAll(buildSpecification(criteria), effectiveSort));
+    }
+
+    /**
+     * Builds a {@link Specification} that combines all set criteria with AND.
+     * @param c search criteria; {@code null} values and blank strings are ignored
+     */
+    private Specification<Keyword> buildSpecification(KeywordSearchCriteria c) {
+        Specification<Keyword> spec = Specification.where(null);
+        if (c == null) return spec;
+        if (hasText(c.value())) spec = spec.and(KeywordSpecification.hasValue(c.value()));
+        if (hasText(c.gndId())) spec = spec.and(KeywordSpecification.hasGndId(c.gndId()));
+        return spec;
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 
     /**

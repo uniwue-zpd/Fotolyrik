@@ -63,6 +63,7 @@ public class KeywordMapper {
         KeywordPreviewDTO keywordPreviewDTO = new KeywordPreviewDTO();
         keywordPreviewDTO.setId(keyword.getId());
         keywordPreviewDTO.setValue(keyword.getValue());
+        keywordPreviewDTO.setGndId(keyword.getGndId());
         return  keywordPreviewDTO;
     }
 

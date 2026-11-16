@@ -40,7 +40,7 @@ const [
   {data: files}
 ] = await Promise.all([
   useAsyncData('person-list', personApi.fetchAll),
-  keywordApi.getAll(),
+  useAsyncData('keyword-list', keywordApi.fetchAll),
   languageApi.getAll(),
   locationApi.getAll(),
   copyrightStatusApi.getAll(),

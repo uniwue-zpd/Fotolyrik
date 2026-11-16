@@ -27,6 +27,7 @@ const searchPubMedia = (query: string, pageable: Pageable) => pubMediumApi.fetch
 const languageApi = useLanguage();
 const copyrightStatusApi = useCopyrightStatus();
 const keywordApi = useKeyword();
+const searchKeywords = (value: string, pageable: Pageable) => keywordApi.fetchPaginated({ ...pageable, value });
 const locationApi = useLocation();
 
 const {data: languageList} = await languageApi.getAll();
@@ -228,7 +229,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="theme-id" class="text-xs font-bold ">Thematik</label>
             <PaginatedSelect
-                :fetch-function="keywordApi.searchPaginated"
+                :fetch-function="searchKeywords"
                 :cull-function="k => ({ id: k.id, value: k.value })"
                 sort="value,asc"
                 id="theme-id"
@@ -244,7 +245,7 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="image-motif-id" class="text-xs font-bold ">Bildmotiv</label>
             <PaginatedSelect
-                :fetch-function="keywordApi.searchPaginated"
+                :fetch-function="searchKeywords"
                 :cull-function="(k) => ({ id: k.id, value: k.value })"
                 sort="value,asc"
                 id="image-motif-id"

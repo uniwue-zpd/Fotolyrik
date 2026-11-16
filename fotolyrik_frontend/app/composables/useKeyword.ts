@@ -1,14 +1,31 @@
 export const useKeyword = () => {
     function fetchAll() {
-        return $fetch<KeywordDTO[]>('/api/keywords');
+        return $fetch<KeywordDTO[]>('/api/keywords/all');
     }
 
     function fetchById(id: number) {
         return $fetch<KeywordDTO>(`/api/keywords/${id}`);
     }
 
-    function searchPaginated(query: string, pageable:Pageable): Promise<Page<KeywordDTO>> {
-        return $fetch<Page<KeywordDTO>>(`/api/keywords/search_paginated`, { query: { query, ...pageable } });
+    /** Removes undefined, null and empty-string values so they are not sent as query parameters. */
+    function cleanQuery(params: Record<string, any>) {
+        return Object.fromEntries(
+            Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
+        );
+    }
+
+    /** Flat view: unpaginated list of keyword previews. All filters are optional. */
+    function fetchFlat(params: KeywordPageable = {}) {
+        return $fetch<KeywordPreviewDTO[]>('/api/keywords', {
+            query: { ...cleanQuery(params), view: 'flat' }
+        });
+    }
+
+    /** Paginated view: page of keyword previews. All filters are optional. */
+    function fetchPaginated(params: KeywordPageable = {}) {
+        return $fetch<Page<KeywordPreviewDTO>>('/api/keywords', {
+            query: { ...cleanQuery(params), view: 'paginated' }
+        });
     }
 
     function create(payload: Partial<KeywordDTO>) {
@@ -31,22 +48,13 @@ export const useKeyword = () => {
         });
     }
 
-    function getAll(){
-        return useAsyncData('keyword-list', fetchAll);
-    }
-
-    function getById(id: number){
-        return useAsyncData( `keyword-${id}`, () => fetchById(id) );
-    }
-
     return {
         fetchAll,
         fetchById,
-        searchPaginated,
+        fetchFlat,
+        fetchPaginated,
         create,
         update,
         deleteById,
-        getAll,
-        getById,
     };
 };
