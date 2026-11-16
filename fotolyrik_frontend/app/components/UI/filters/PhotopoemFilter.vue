@@ -5,9 +5,9 @@ import PaginatedSelect from "~/components/UI/filters/PaginatedSelect.vue";
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('lg')
-const activeTab = ref<string|null>(null)
+const activeTab = ref<string | undefined>(undefined)
 watchEffect(() => {
-  activeTab.value = isMobile.value ? null : "0"
+  activeTab.value = isMobile.value ? undefined : "0"
 })
 
 const props = defineProps<{
@@ -44,85 +44,85 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
 
 </script>
 <template>
-  <Accordion  :value="activeTab">
-    <AccordionPanel value="0">
-      <AccordionHeader class="text-lg font-semibold border-b border-gray-200">
-        Filtern nach:
-      </AccordionHeader>
-      <AccordionContent class="flex flex-col gap-2" >
+  <UAccordion v-model="activeTab" :items="[{ label: 'Filtern nach:', value: '0' }]" :unmount-on-hide="false">
+    <template #body>
         <div class="flex flex-col gap-3">
           <div class="grid grid-cols-1">
             <label for="title" class="text-xs font-bold ">Titel</label>
-            <InputText
+            <UInput
                 id="title"
                 placeholder="z. B. Telephon-Tragödie"
                 v-model="filters.title"
-                fluid
+                class="w-full"
             />
           </div>
 
           <div class="grid grid-cols-1">
             <label for="subtitle" class="text-xs font-bold ">Untertitel</label>
-            <InputText
+            <UInput
                 id="subtitle"
                 placeholder="z. B. Aschermittwoch"
                 v-model="filters.subtitle"
-                fluid
+                class="w-full"
             />
           </div>
 
           <div class="grid grid-cols-1">
             <label for="alt-title" class="text-xs font-bold ">Alternativer Titel</label>
-            <InputText
+            <UInput
                 id="alt-title"
                 placeholder="z. B. Frohsinn und Freude"
                 v-model="filters['alt-title']"
-                fluid
+                class="w-full"
             />
           </div>
 
           <div class="grid grid-cols-1">
             <label for="series" class="text-xs font-bold ">Reihe</label>
-            <InputText
+            <UInput
                 id="series"
                 v-model="filters.series"
-                fluid
+                class="w-full"
             />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div class="flex flex-col gap-1">
               <label for="volume" class="text-xs font-bold ">Jahrgang</label>
-              <InputNumber
+              <UInputNumber
                   id="volume"
                   placeholder="z. B. 12"
-                  v-model="filters.volume"
+                  v-model.optional="filters.volume"
                   :min="0"
-                  :useGrouping="false"
-                  fluid
+                  :format-options="{ useGrouping: false }"
+                  :increment="false"
+                  :decrement="false"
+                  class="w-full"
               />
             </div>
 
             <div class="flex flex-col gap-1">
               <label for="issue" class="text-xs font-bold ">Ausgabe</label>
-              <InputNumber
+              <UInputNumber
                   id="issue"
                   placeholder="z. B. 3"
-                  v-model="filters.issue"
+                  v-model.optional="filters.issue"
                   :min="0"
-                  :useGrouping="false"
-                  fluid
+                  :format-options="{ useGrouping: false }"
+                  :increment="false"
+                  :decrement="false"
+                  class="w-full"
               />
             </div>
           </div>
 
           <div class="grid grid-cols-1">
             <label for="publication-date" class="text-xs font-bold ">Publikationsdatum</label>
-            <InputText
+            <UInput
                 id="publication-date"
                 placeholder="z. B. 01.08.1936"
                 v-model="filters['publication-date']"
-                fluid
+                class="w-full"
             />
           </div>
 
@@ -130,31 +130,28 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="pub-medium-id" class="text-xs font-bold ">Publikationsmedium</label>
             <PaginatedSelect
                 :fetch-function="pubMediumApi.searchPaginated"
-                :cull-function="pm => ({ id: pm.id, title: pm.title })"
+                :get-value="pm => pm.id"
+                :get-label="pm => pm.title"
                 sort="title,asc"
                 id="pub-medium-id"
                 placeholder="Medium wählen"
                 v-model="filters['pub-medium-id']"
-                option-value="id"
-                :optionLabel="(p)=> p.title"
-                showClear
-                fluid
                 />
           </div>
 
 
           <div class="grid grid-cols-1">
             <label for="location-id" class="text-xs font-bold ">Fundort</label>
-            <Select
+            <USelectMenu
                 id="location-id"
                 placeholder="Ort wählen"
-                v-model="filters['location-id']"
-                option-value="id"
-                optionLabel="name"
-                :options="locations"
-                filter
-                showClear
-                fluid
+                :model-value="filters['location-id']"
+                @update:model-value="filters['location-id'] = $event ?? undefined"
+                value-key="id"
+                label-key="name"
+                :items="locations"
+                clear
+                class="w-full"
             />
           </div>
 
@@ -162,15 +159,12 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="author-id" class="text-xs font-bold ">Autor:in</label>
             <PaginatedSelect
                 :fetch-function="personApi.searchPaginated"
-                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
+                :get-value="p => p.id"
+                :get-label="getPersonOptionLabel"
                 sort="firstName,asc"
                 id="author-id"
                 placeholder="Autor:in suchen / wählen"
                 v-model="filters['author-id']"
-                option-value="id"
-                :optionLabel="getPersonOptionLabel"
-                showClear
-                fluid
             />
           </div>
 
@@ -178,15 +172,12 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
             <PaginatedSelect
                 :fetch-function="personApi.searchPaginated"
-                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
+                :get-value="p => p.id"
+                :get-label="getPersonOptionLabel"
                 sort="firstName,asc"
                 id="photographer-id"
                 placeholder="Fotograf:in suchen / wählen"
                 v-model="filters['photographer-id']"
-                option-value="id"
-                :optionLabel="getPersonOptionLabel"
-                showClear
-                fluid
             />
           </div>
 
@@ -194,15 +185,12 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
             <PaginatedSelect
                 :fetch-function="personApi.searchPaginated"
-                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
+                :get-value="p => p.id"
+                :get-label="getPersonOptionLabel"
                 sort="firstName,asc"
                 id="depicted-person-id"
                 placeholder="Abgebildete Person wählen"
                 v-model="filters['depicted-person-id']"
-                option-value="id"
-                :optionLabel="getPersonOptionLabel"
-                showClear
-                fluid
             />
           </div>
 
@@ -210,15 +198,12 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
             <PaginatedSelect
                 :fetch-function="personApi.searchPaginated"
-                :cull-function="p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })"
+                :get-value="p => p.id"
+                :get-label="getPersonOptionLabel"
                 sort="firstName,asc"
                 id="contributor-id"
                 placeholder="Mitwirkende Person wählen"
                 v-model="filters['contributor-id']"
-                option-value="id"
-                :optionLabel="getPersonOptionLabel"
-                showClear
-                fluid
             />
           </div>
 
@@ -226,15 +211,12 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="theme-id" class="text-xs font-bold ">Thematik</label>
             <PaginatedSelect
                 :fetch-function="keywordApi.searchPaginated"
-                :cull-function="k => ({ id: k.id, value: k.value })"
+                :get-value="k => k.id"
+                :get-label="k => k.value"
                 sort="value,asc"
                 id="theme-id"
                 placeholder="Thema wählen"
                 v-model="filters['theme-id']"
-                option-value="id"
-                optionLabel="value"
-                showClear
-                fluid
             />
           </div>
 
@@ -242,73 +224,67 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
             <label for="image-motif-id" class="text-xs font-bold ">Bildmotiv</label>
             <PaginatedSelect
                 :fetch-function="keywordApi.searchPaginated"
-                :cull-function="(k) => ({ id: k.id, value: k.value })"
+                :get-value="k => k.id"
+                :get-label="k => k.value"
                 sort="value,asc"
                 id="image-motif-id"
                 v-model="filters['image-motif-id']"
-                option-value="id"
                 placeholder="Motiv wählen"
-                optionLabel="value"
-                showClear
-                fluid
             />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div class="flex flex-col gap-1">
               <label for="copyright-image-id" class="text-xs font-bold ">Copyright Bild</label>
-              <Select
+              <USelectMenu
+                  :search-input="false"
                   id="copyright-image-id"
                   placeholder="Status"
-                  v-model="filters['copyright-image-id']"
-                  optionLabel="value"
-                  optionValue="id"
-                  :options="copyrightStatuses"
-                  showClear
-                  fluid
+                  :model-value="filters['copyright-image-id']"
+                  @update:model-value="filters['copyright-image-id'] = $event ?? undefined"
+                  label-key="value"
+                  value-key="id"
+                  :items="copyrightStatuses"
+                  clear
+                  class="w-full"
               />
             </div>
 
             <div class="flex flex-col gap-1">
               <label for="copyright-text-id" class="text-xs font-bold ">Copyright Text</label>
-              <Select
+              <USelectMenu
+                  :search-input="false"
                   id="copyright-text-id"
                   placeholder="Status"
-                  v-model="filters['copyright-text-id']"
-                  optionLabel="value"
-                  optionValue="id"
-                  :options="copyrightStatuses"
-                  showClear
-                  fluid
+                  :model-value="filters['copyright-text-id']"
+                  @update:model-value="filters['copyright-text-id'] = $event ?? undefined"
+                  label-key="value"
+                  value-key="id"
+                  :items="copyrightStatuses"
+                  clear
+                  class="w-full"
               />
             </div>
           </div>
 
           <div class="grid grid-cols-1">
             <label for="language-id" class="text-xs font-bold ">Sprache</label>
-            <Select
+            <USelectMenu
                 id="language-id"
                 placeholder="Sprache wählen"
-                v-model="filters['language-id']"
-                optionLabel="name"
-                optionValue="id"
-                :options="languages"
-                filter
-                showClear
-                fluid
+                :model-value="filters['language-id']"
+                @update:model-value="filters['language-id'] = $event ?? undefined"
+                label-key="name"
+                value-key="id"
+                :items="languages"
+                clear
+                class="w-full"
             />
           </div>
-          <button
-              type="button"
-              class="flex items-center justify-center w-full min-h-9 rounded-md border px-3 py-2 text-sm text-primary cursor-pointer shadow-sm hover:shadow-md"
-              @click="emit('reset-filters')"
-          >
-            <i class="pi pi-refresh mr-2" />
-            <span class="text-center">Alle Eingaben zurücksetzen</span>
-          </button>
+          <UButton type="button" variant="outline" icon="i-lucide-rotate-cw" class="w-full justify-center"
+              @click="emit('reset-filters')">Alle Eingaben zurücksetzen</UButton>
         </div>
-      </AccordionContent>
-    </AccordionPanel>
-  </Accordion>
+    </template>
+  </UAccordion>
 
 </template>

@@ -1,99 +1,121 @@
-<script setup lang="ts" generic="TItem">
-import Select, { type SelectProps } from 'primevue/select';
-
-interface Props extends /* @vue-ignore */ SelectProps {
+<script setup lang="ts" generic="TItem, TValue extends string | number">
+const props = withDefaults(defineProps<{
   fetchFunction: (query: string, pageable: Pageable) => Promise<Page<TItem>>;
-  cullFunction: (item: TItem ) =>Partial<TItem>;
+  getValue: (item: TItem) => TValue | null | undefined;
+  getLabel: (item: TItem) => string | null | undefined;
   pageSize?: number;
   sort: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  cullFunction: (item: TItem)=>item,
+  id: string;
+  placeholder: string;
+}>(), {
   pageSize: 10,
-  sort: ''
 });
 
-const options = ref<Partial<TItem> []>([]) as Ref<Partial<TItem>[]>;
+const model = defineModel<TValue | undefined>();
+const options = shallowRef<{ label: string; value: TValue }[]>([]);
+const searchTerm = ref('');
 const loading = ref(false);
-const currentPage = ref(0);
+const page = ref(0);
 const hasMore = ref(true);
-const currentQuery = ref('');
+const selectedLabel = ref('');
+const menu = ref<{ viewportRef?: HTMLElement | null } | null>(null);
+const optionKey = (value: string | number) => `${typeof value}:${value}`;
+const menuItems = computed(() => options.value.map((item) => ({
+  label: item.label,
+  value: optionKey(item.value),
+})));
+const modelKey = computed(() => model.value == null ? undefined : optionKey(model.value));
+let requestId = 0;
+let searchTimer: ReturnType<typeof setTimeout> | undefined;
 
-const loadData = async (query: string, reset = true) => {
-  if (loading.value && !reset) return;
+async function loadData(query: string, nextPage: number, id: number) {
   loading.value = true;
-
   try {
-    if (reset) {
-      currentPage.value = 0;
-      options.value = [] as Partial<TItem>[];
-    }
-
     const response = await props.fetchFunction(query, {
-      page: currentPage.value,
+      page: nextPage,
       size: props.pageSize,
       sort: props.sort,
     });
+    if (id !== requestId) return;
 
-    const newItems = response.content || [];
-    const itemsCulled: Partial<TItem>[] = newItems.map(props.cullFunction)
-    if (reset) {
-      options.value = itemsCulled;
-    } else {
-      options.value = [...options.value, ...itemsCulled];
-    }
-
-    hasMore.value = currentPage.value + 1 < response.totalPages;
+    const items = response.content.flatMap((item) => {
+      const value = props.getValue(item);
+      return value == null ? [] : [{ value, label: props.getLabel(item) ?? '' }];
+    });
+    options.value = nextPage === 0 ? items : [...options.value, ...items];
+    page.value = nextPage;
+    hasMore.value = nextPage + 1 < response.totalPages;
+    const selected = options.value.find((item) => item.value === model.value);
+    if (selected) selectedLabel.value = selected.label;
   } catch (error) {
-    console.error('Failed to load paginated select options:', error);
+    if (id === requestId) console.error('Failed to load paginated select options:', error);
   } finally {
-    loading.value = false;
+    if (id === requestId) loading.value = false;
   }
-};
+}
 
-const debouncedFetch = useDebounceFn((query: string) => {
-  loadData(query, true);
-}, 300);
-
-const handleFilter = (event: { value: string }) => {
-  currentQuery.value = event.value ?? '';
+watch(searchTerm, (query) => {
+  const id = ++requestId;
+  clearTimeout(searchTimer);
+  options.value = [];
+  hasMore.value = false;
   loading.value = true;
-  debouncedFetch(currentQuery.value);
-};
+  searchTimer = setTimeout(() => loadData(query, 0, id), 300);
+});
 
-const handleScroll = (event: Event) => {
-  const target = event.target as HTMLElement;
-  if (!target) return;
-
-  const isBottom = target.scrollTop + target.clientHeight >= target.scrollHeight - 20;
-
-  if (isBottom && hasMore.value && !loading.value) {
-    currentPage.value++;
-    loadData(currentQuery.value, false);
+function updateSelection(key: string | null | undefined) {
+  if (key == null) {
+    model.value = undefined;
+    return;
   }
-};
+  const selected = options.value.find((item) => optionKey(item.value) === key);
+  if (!selected) {
+    console.error('Selected option is no longer available:', key);
+    return;
+  }
+  selectedLabel.value = selected.label;
+  model.value = selected.value;
+}
 
-onMounted(() => {
-  loadData('', true);
+watch(model, (value) => {
+  if (value == null) selectedLabel.value = '';
+  else {
+    const selected = options.value.find((item) => item.value === value);
+    if (selected) selectedLabel.value = selected.label;
+  }
+});
+
+useEventListener(() => menu.value?.viewportRef, 'scroll', (event: Event) => {
+  const target = event.target as HTMLElement;
+  if (target.scrollTop + target.clientHeight >= target.scrollHeight - 20 && hasMore.value && !loading.value) {
+    loadData(searchTerm.value, page.value + 1, requestId);
+  }
+});
+
+onMounted(() => loadData('', 0, ++requestId));
+onUnmounted(() => {
+  ++requestId;
+  clearTimeout(searchTimer);
 });
 </script>
 
 <template>
-  <Select
-      :options="options"
-      :loading="loading"
-      filter
-      @filter="handleFilter"
-      :pt="{
-        listContainer: {
-          onScroll: handleScroll
-        }
-      }"
-      v-bind="$attrs"
+  <USelectMenu
+    ref="menu"
+    :id="id"
+    :model-value="modelKey"
+    v-model:search-term="searchTerm"
+    :items="menuItems"
+    value-key="value"
+    :placeholder="placeholder"
+    :loading="loading"
+    :search-input="{ placeholder: 'Suchen...' }"
+    ignore-filter
+    clear
+    class="w-full"
+    @update:model-value="updateSelection"
   >
-    <template v-for="(_, name) in $slots" #[name]="slotProps">
-      <slot :name="name" v-bind="slotProps || {}" />
-    </template>
-  </Select>
+    <span v-if="model != null">{{ selectedLabel }}</span>
+    <span v-else>{{ placeholder }}</span>
+  </USelectMenu>
 </template>
