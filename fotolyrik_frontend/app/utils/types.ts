@@ -253,6 +253,12 @@ export interface KeywordDTO extends Auditable {
 export interface KeywordPreviewDTO {
     id: number;
     value: string;
+    gndId: string | null;
+}
+/** Pagination, sorting and optional filters for keyword requests (flat and paginated view). */
+export interface KeywordPageable extends Pageable {
+    value?: string;
+    'gnd-id'?: string;
 }
 
 /**

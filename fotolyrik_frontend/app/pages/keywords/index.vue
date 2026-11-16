@@ -27,9 +27,9 @@ const {
   data: keywords,
   pending: isLoading,
   refresh
-} = useAsyncData<Page<KeywordDTO>>(
+} = useAsyncData<Page<KeywordPreviewDTO>>(
   "keywords-paginated",
-  () => keyword_api.searchPaginated(searchQuery.value, { ...pageParameter })
+  () => keyword_api.fetchPaginated({ ...pageParameter, value: searchQuery.value })
 );
 
 const pageSizeOptions = ref([
