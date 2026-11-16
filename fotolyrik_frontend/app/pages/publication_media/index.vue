@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { FilterMatchMode } from "@primevue/core";
 
 const pubMediumApi = usePubMedium();
-const {data: pubMediumList} = pubMediumApi.getAll();
+const {data: pubMediumList} = await useAsyncData('pubMedium-list', pubMediumApi.fetchAll);
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   title: { value: null, matchMode: FilterMatchMode.STARTS_WITH },

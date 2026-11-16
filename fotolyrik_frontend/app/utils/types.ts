@@ -99,6 +99,28 @@ export interface PersonPageable extends Pageable {
     'death-year-to'?: number | null;
     sex?: 'männlich' | 'weiblich' | null;
 }
+/**
+ * Pagination, sorting and optional filters for publication medium requests (flat and paginated view).
+ * - `query` matches title, subtitle or "title subtitle" combined.
+ * - `title` and `subtitle` filter the fields separately; all filters are combined with AND.
+ */
+export interface PubMediumPageable extends Pageable {
+    query?: string;
+    title?: string;
+    subtitle?: string;
+    'pubplace-id'?: number | null;
+    pubplace?: string;
+    'publisher-id'?: number | null;
+    publisher?: string;
+    'publication-rhythm-id'?: number | null;
+    'publication-rhythm'?: string;
+    'editorial-office'?: string;
+    'start-year'?: number | null;
+    'end-year'?: number | null;
+    'amount-volumes'?: number | null;
+    'amount-issues'?: number | null;
+    'zdb-id'?: string;
+}
 export enum ContributionRole {
     AUTHOR = "AUTHOR",
     PHOTOGRAPHER = "PHOTOGRAPHER",

@@ -17,10 +17,10 @@ const [
   { data: pub_medium_metrics },
   { data: relationsGraph },
 ] = await Promise.all([
-  pub_medium_api.getById(pub_medium_id),
-  pub_medium_api.getNeighborsById(pub_medium_id),
+  useAsyncData(`pubMedium-${pub_medium_id}`, () => pub_medium_api.fetchById(pub_medium_id)),
+  useAsyncData(`pubMedium-${pub_medium_id}-neighbor`, () => pub_medium_api.fetchNeighborsById(pub_medium_id)),
   photopoem_api.getAllFiltered({ 'pubmedium-id': pub_medium_id }),
-  pub_medium_api.getMetricsById(pub_medium_id),
+  useAsyncData(`pubMedium-metrics-${pub_medium_id}`, () => pub_medium_api.fetchMetricsById(pub_medium_id)),
   useAsyncData('pub-medium-same-place-graph', pub_medium_api.fetchSamePlaceGraph),
 ]);
 const photopoemsHavePubDates = computed(() => {

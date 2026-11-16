@@ -44,7 +44,7 @@ const [
   languageApi.getAll(),
   locationApi.getAll(),
   copyrightStatusApi.getAll(),
-  pubMediumApi.getAll(),
+  useAsyncData('pubMedium-list', pubMediumApi.fetchAll),
   fileApi.getAll(),
 ]);
 const publicationMedia = computed<PubMediumPreviewDTO[]>(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })) ?? []);

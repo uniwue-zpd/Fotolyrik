@@ -7,12 +7,13 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
 import de.uniwue.dachs.fotolyrik_backend.repository.PubMediumRepository;
+import de.uniwue.dachs.fotolyrik_backend.specification.PubMediumSearchCriteria;
 import de.uniwue.dachs.fotolyrik_backend.specification.PubMediumSpecification;
+import de.uniwue.dachs.fotolyrik_backend.utils.mapper.GraphMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PlaceMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PubMediumMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublicationRhythmMapper;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
-import de.uniwue.dachs.fotolyrik_backend.utils.mapper.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class PubMediumService {
@@ -46,12 +49,38 @@ public class PubMediumService {
     }
 
     /**
-     * @return a {@link List} of {@link PubMediumDTO} objects
+     * @return a {@link List} of all {@link PubMediumDTO} objects sorted by title
      */
     public List<PubMediumDTO> getAllPubMedia() {
         return pubMediumRepository.findAll(Sort.by(Sort.Direction.ASC, "title"))
                 .stream()
                 .map(pubMediumMapper::PubMediumToPubMediumDTO)
+                .toList();
+    }
+
+    /**
+     * GET a page of publication media matching the given criteria
+     * @param criteria optional filters; unset values are ignored
+     * @param pageable pagination and sorting parameters
+     * @return a {@link Page} of full {@link PubMediumDTO} objects
+     */
+    public Page<PubMediumDTO> searchPaginated(PubMediumSearchCriteria criteria, Pageable pageable) {
+        return pubMediumRepository.findAll(buildSpecification(criteria), pageable)
+                .map(pubMediumMapper::PubMediumToPubMediumDTO);
+    }
+
+    /**
+     * GET an unpaginated list of publication medium previews matching the given criteria
+     * @param criteria optional filters; unset values are ignored
+     * @param sort sort order; falls back to ascending title if unsorted
+     * @return a {@link List} of {@link PubMediumPreviewDTO} objects
+     */
+    public List<PubMediumPreviewDTO> searchFlat(PubMediumSearchCriteria criteria, Sort sort) {
+        Sort effectiveSort = sort != null && sort.isSorted() ? sort : Sort.by("title").ascending();
+        return pubMediumRepository.findAll(buildSpecification(criteria), effectiveSort)
+                .stream()
+                .map(pubMediumMapper::PubMediumToPubMediumPreviewDTO)
+                .filter(Objects::nonNull)
                 .toList();
     }
 
@@ -64,91 +93,22 @@ public class PubMediumService {
     }
 
     /**
-     * Filters {@link PubMedium} entities based on the provided criteria.
-     * @param title refers to the title of the publication medium
-     * @param subtitle refers to the subtitle of the publication medium
-     * @param pubPlaceId refers to the ID of the publication place
-     * @param pubPlace refers to the name of the publication place
-     * @param publisherId refers to the ID of the publisher
-     * @param publisher refers to the name of the publisher
-     * @param pubRhythmId refers to the ID of the publication rhythm
-     * @param pubRhythm refers to the name of the publication rhythm
-     * @param editorialOffice refers to the editorial office of the publication medium
-     * @param startYear refers to the start year of the publication medium
-     * @param endYear refers to the end year of the publication medium
-     * @param amountVolumes refers to the amount of volumes of the publication medium
-     * @param amountIssues refers to the amount of issues of the publication medium
-     * @param zdbId refers to the ZDB ID of the publication medium
-     * @return a {@link List} of filtered {@link PubMediumDTO} objects
+     * GET the next and previous IDs of a pub medium by ID sorted by title ASC, subtitle ASC
+     * @param id of the current pub medium
+     * @return {@link Optional} of {@link IDSliceDTO}
      */
-    public List<PubMediumDTO> filterPubMedia(
-            String title,
-            String subtitle,
-            Long pubPlaceId,
-            String pubPlace,
-            Long publisherId,
-            String publisher,
-            Long pubRhythmId,
-            String pubRhythm,
-            String editorialOffice,
-            Long startYear,
-            Long endYear,
-            Long amountVolumes,
-            Long amountIssues,
-            String zdbId
+    public Optional<IDSliceDTO> getPubMediumNeighborIds(Long id) {
+        var list = pubMediumRepository.findNeighborIdsById(id, 1);
 
-    ) {
-        Specification<PubMedium> spec = Specification.where(null);
+        int currentIndex = list.indexOf(id);
+        if (currentIndex == -1) return Optional.empty();
 
-        if (title != null && !title.isEmpty()) {
-            spec = spec.and(PubMediumSpecification.hasTitle(title));
-        }
-        if (subtitle != null && !subtitle.isEmpty()) {
-            spec = spec.and(PubMediumSpecification.hasSubtitle(subtitle));
-        }
-        if (pubPlaceId != null) {
-            spec = spec.and(PubMediumSpecification.hasPubPlaceId(pubPlaceId));
-        }
-        if (pubPlace != null && !pubPlace.isEmpty()) {
-            spec = spec.and(PubMediumSpecification.hasPubPlace(pubPlace));
-        }
-        if (publisherId != null) {
-            spec = spec.and(PubMediumSpecification.hasPublisherId(publisherId));
-        }
-        if (publisher != null && !publisher.isEmpty()) {
-            spec = spec.and(PubMediumSpecification.hasPublisher(publisher));
-        }
-        if (pubRhythmId != null) {
-            spec = spec.and(PubMediumSpecification.hasPubRhythmId(pubRhythmId));
-        }
-        if (pubRhythm != null && !pubRhythm.isEmpty()) {
-            spec = spec.and(PubMediumSpecification.hasPubRhythm(pubRhythm));
-        }
-        if (editorialOffice != null && !editorialOffice.isEmpty()) {
-            spec = spec.and(PubMediumSpecification.hasEditorialOffice(editorialOffice));
-        }
-        if (startYear != null) {
-            spec = spec.and(PubMediumSpecification.hasStartYear(startYear));
-        }
-        if (endYear != null) {
-            spec = spec.and(PubMediumSpecification.hasEndYear(endYear));
-        }
-        if (amountVolumes != null) {
-            spec = spec.and(PubMediumSpecification.hasAmountVolumes(amountVolumes));
-        }
-        if (amountIssues != null) {
-            spec = spec.and(PubMediumSpecification.hasAmountIssues(amountIssues));
-        }
-        if (zdbId != null && !zdbId.isEmpty()) {
-            spec = spec.and(PubMediumSpecification.hasZdbId(zdbId));
-        }
+        var slice = new IDSliceDTO();
+        slice.setCurrent(id);
+        slice.setPrevious(currentIndex > 0 ? list.get(currentIndex - 1) : null);
+        slice.setNext(currentIndex < list.size() - 1 ? list.get(currentIndex + 1) : null);
 
-        List<PubMedium> result = pubMediumRepository.findAll(spec);
-        return result.stream()
-                .map(pubMediumMapper::PubMediumToPubMediumDTO)
-                .filter(Objects::nonNull)
-                .sorted(Comparator.comparing(PubMediumDTO::getTitle))
-                .toList();
+        return Optional.of(slice);
     }
 
     /**
@@ -195,80 +155,52 @@ public class PubMediumService {
      * @param id ID of the {@link PubMedium} object to be deleted
      */
     @Transactional
-    public void deletePubPlace(Long id) {
+    public void deletePubMedium(Long id) {
         if (!pubMediumRepository.existsById(id)) {
-            throw new EntityNotFoundException("Photopoem with id '" + id + "' does not exist");
+            throw new EntityNotFoundException("PubMedium with id '" + id + "' does not exist");
         }
-        else {
-            pubMediumRepository.deleteById(id);
-        }
+        pubMediumRepository.deleteById(id);
     }
 
     /**
-     * GET metrics of a pub_medium with given ID
-     * @param pubMediumId ID of the person
-     * @return a {@link PubMediumMetricsDTO} with the metrics of the person
+     * GET metrics of a pub medium with given ID
+     * @param pubMediumId ID of the pub medium
+     * @return a {@link PubMediumMetricsDTO} with the metrics of the pub medium
      */
     public PubMediumMetricsDTO getPubMediumMetrics(Long pubMediumId) {
         return pubMediumRepository.getMetricsByPubMedium(pubMediumId);
     }
 
-    /**
-     * GET the next and previous IDs of a pub medium by ID sorted by title ASC, subtitle ASC
-     * @param id of the current pub medium
-     * @return {@link Optional} of {@link IDSliceDTO}
-     */
-    public Optional<IDSliceDTO> getPubMediumNeighborIds(Long id) {
-        var list = pubMediumRepository.findNeighborIdsById(id, 1);
-
-        int currentIndex = list.indexOf(id);
-        if (currentIndex == -1) return Optional.empty();
-
-        var slice = new IDSliceDTO();
-        slice.setCurrent(id);
-        slice.setPrevious(currentIndex > 0 ? list.get(currentIndex - 1) : null);
-        slice.setNext(currentIndex < list.size() - 1 ? list.get(currentIndex + 1) : null);
-
-        return Optional.of(slice);
-    }
-
-    /**
-     * Searches publication media whose title or subtitle matches the given search query.
-     * <p>The search is performed case-insensitively using a partial match. The returned
-     * list contains lightweight preview DTOs intended for search suggestions or
-     * autocomplete components.</p>
-     * @param query the search term to match against publication media titles and subtitles
-     * @return a list of matching {@link PubMediumPreviewDTO} objects, or an empty list if no matches are found
-     */
-    public List<PubMediumPreviewDTO> searchPubMedia(String query) {
-        return pubMediumRepository.searchPubMedia(
-                query,
-                Pageable.unpaged(Sort.by("title").ascending())
-                ).stream()
-                .map(pubMediumMapper::PubMediumToPubMediumPreviewDTO)
-                .filter(Objects::nonNull)
-                .toList();
-    }
-    /**
-     * Searches publication media whose title or subtitle matches the given search query.
-     * <p>The search is performed case-insensitively using a partial match. The returned
-     * list contains lightweight preview DTOs intended for search suggestions or
-     * autocomplete components.</p>
-     * @param query the search term to match against publication media titles and subtitles
-     * @param pageable defining the search slice returned
-     * @return a page of matching {@link PubMediumPreviewDTO} objects, or an empty list if no matches are found
-     */
-    public Page<PubMediumPreviewDTO> searchPubMediaPaginated(Pageable pageable, String query) {
-        Page<PubMedium> result;
-        if (query  == null||  query.trim().length()<2){
-            result =  pubMediumRepository.findAll(pageable);
-        } else {
-            result = pubMediumRepository.searchPubMedia(query, pageable);
-        }
-        return result.map(pubMediumMapper::PubMediumToPubMediumPreviewDTO);
-    }
-
     public GraphDTO getSamePlaceGraph() {
         return graphMapper.fromAdjacencyList(pubMediumRepository.findMediumAdjacencyListByPlace());
+    }
+
+    /**
+     * Builds a {@link Specification} that combines all set criteria with AND.
+     * @param c search criteria; {@code null} values and blank strings are ignored
+     */
+    private Specification<PubMedium> buildSpecification(PubMediumSearchCriteria c) {
+        Specification<PubMedium> spec = Specification.where(null);
+        if (c == null) return spec;
+        if (hasText(c.query())) spec = spec.and(PubMediumSpecification.hasTitleOrSubtitle(c.query()));
+        if (hasText(c.title())) spec = spec.and(PubMediumSpecification.hasTitle(c.title()));
+        if (hasText(c.subtitle())) spec = spec.and(PubMediumSpecification.hasSubtitle(c.subtitle()));
+        if (c.pubPlaceId() != null) spec = spec.and(PubMediumSpecification.hasPubPlaceId(c.pubPlaceId()));
+        if (hasText(c.pubPlace())) spec = spec.and(PubMediumSpecification.hasPubPlace(c.pubPlace()));
+        if (c.publisherId() != null) spec = spec.and(PubMediumSpecification.hasPublisherId(c.publisherId()));
+        if (hasText(c.publisher())) spec = spec.and(PubMediumSpecification.hasPublisher(c.publisher()));
+        if (c.pubRhythmId() != null) spec = spec.and(PubMediumSpecification.hasPubRhythmId(c.pubRhythmId()));
+        if (hasText(c.pubRhythm())) spec = spec.and(PubMediumSpecification.hasPubRhythm(c.pubRhythm()));
+        if (hasText(c.editorialOffice())) spec = spec.and(PubMediumSpecification.hasEditorialOffice(c.editorialOffice()));
+        if (c.startYear() != null) spec = spec.and(PubMediumSpecification.hasStartYear(c.startYear()));
+        if (c.endYear() != null) spec = spec.and(PubMediumSpecification.hasEndYear(c.endYear()));
+        if (c.amountVolumes() != null) spec = spec.and(PubMediumSpecification.hasAmountVolumes(c.amountVolumes()));
+        if (c.amountIssues() != null) spec = spec.and(PubMediumSpecification.hasAmountIssues(c.amountIssues()));
+        if (hasText(c.zdbId())) spec = spec.and(PubMediumSpecification.hasZdbId(c.zdbId()));
+        return spec;
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 }

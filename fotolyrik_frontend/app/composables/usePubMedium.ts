@@ -1,30 +1,35 @@
 export const usePubMedium = () => {
     function fetchAll() {
-        return $fetch<PubMediumDTO[]>('/api/publication_media');
+        return $fetch<PubMediumDTO[]>('/api/publication_media/all');
     }
 
     function fetchById(id: number) {
         return $fetch<PubMediumDTO>(`/api/publication_media/${id}`);
     }
 
-    function fetchPubMediumNeighborsById(id: number) {
+    function fetchNeighborsById(id: number) {
         return $fetch<IDSliceDTO>(`/api/publication_media/${id}/neighbor`);
     }
 
-    function filter(params: Record<string, any>) {
-        return $fetch<PubMediumDTO[]>('/api/publication_media/filter', {
-            query: params
+    /** Removes undefined, null and empty-string values so they are not sent as query parameters. */
+    function cleanQuery(params: Record<string, any>) {
+        return Object.fromEntries(
+            Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
+        );
+    }
+
+    /** Flat view: unpaginated list of lightweight previews. All filters are optional. */
+    function fetchFlat(params: PubMediumPageable = {}) {
+        return $fetch<PubMediumPreviewDTO[]>('/api/publication_media', {
+            query: { ...cleanQuery(params), view: 'flat' }
         });
     }
 
-    function search(query: string) {
-        return $fetch<PubMediumPreviewDTO[]>('/api/publication_media/search', {
-            query: { query }
+    /** Paginated view: page of full publication medium DTOs. All filters are optional. */
+    function fetchPaginated(params: PubMediumPageable = {}) {
+        return $fetch<Page<PubMediumDTO>>('/api/publication_media', {
+            query: { ...cleanQuery(params), view: 'paginated' }
         });
-    }
-
-    function searchPaginated(query: string, pageable: Pageable): Promise<Page<PubMediumPreviewDTO>> {
-        return $fetch<Page<PubMediumPreviewDTO>>(`/api/publication_media/search_paginated`, { query: { query, ...pageable } });
     }
 
     function create(payload: Partial<PubMediumDTO>) {
@@ -48,50 +53,27 @@ export const usePubMedium = () => {
     }
 
     function fetchMetricsById(id: number) {
-        return $fetch<PubMediumMetricsDTO>(`/api/publication_media/${id}/stats/metrics`);
+        return $fetch<PubMediumMetricsDTO>(`/api/publication_media/${id}/stats`, {
+            query: { type: 'metrics' }
+        });
     }
 
-    function fetchSamePlaceGraph(){
-        return $fetch<GraphDTO>(`/api/publication_media/stats/graph/same_place`);
-    }
-
-    function getAll(){
-        return useAsyncData('pubMedium-list', fetchAll);
-    }
-
-    function getById(id: number){
-        return useAsyncData( `pubMedium-${id}`, () => fetchById(id) );
-    }
-
-    function getAllFiltered(params: any){
-        if (Object.keys(params).length !== 1) console.error('provide only one filter')
-        const [key, value] = Object.entries(params)[0]!;
-        return useAsyncData(`pubMedium-${key}-${value}`, ()=>filter(params));
-    }
-
-    function getNeighborsById(id: number) {
-        return useAsyncData( `pubMedium-${id}-neighbor`, () => fetchPubMediumNeighborsById(id));
-    }
-
-    function getMetricsById(id:number){
-        return useAsyncData(`pubMedium-metrics-${id}`, ()=> fetchMetricsById(id));
+    function fetchSamePlaceGraph() {
+        return $fetch<GraphDTO>('/api/publication_media/stats', {
+            query: { type: 'same-place', view: 'graph' }
+        });
     }
 
     return {
         fetchAll,
         fetchById,
-        filter,
-        search,
-        searchPaginated,
+        fetchNeighborsById,
+        fetchFlat,
+        fetchPaginated,
         create,
         update,
         deleteById,
         fetchMetricsById,
         fetchSamePlaceGraph,
-        getAll,
-        getById,
-        getAllFiltered,
-        getNeighborsById,
-        getMetricsById,
     };
 };
