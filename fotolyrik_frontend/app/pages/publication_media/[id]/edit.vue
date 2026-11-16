@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
 import PubMediumForm from "~/components/forms/PubMediumForm.vue";
 
 const route = useRoute();
 const pub_medium_id = Number(route.params.id);
 const pub_medium_api = usePubMedium();
-const {data:pub_medium_item} =pub_medium_api.getById(pub_medium_id)
+const { data: pub_medium_item } = await useAsyncData(`pubMedium-${pub_medium_id}`, () => pub_medium_api.fetchById(pub_medium_id));
 
 </script>
 

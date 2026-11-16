@@ -23,6 +23,7 @@ const emit = defineEmits<{
 const personApi = usePerson();
 const searchPersons = (name: string, pageable: Pageable) => personApi.fetchPaginated({ ...pageable, name });
 const pubMediumApi = usePubMedium();
+const searchPubMedia = (query: string, pageable: Pageable) => pubMediumApi.fetchPaginated({ ...pageable, query });
 const languageApi = useLanguage();
 const copyrightStatusApi = useCopyrightStatus();
 const keywordApi = useKeyword();
@@ -130,8 +131,9 @@ function getPersonOptionLabel(opt: PersonPreviewDTO) {
           <div class="grid grid-cols-1">
             <label for="pub-medium-id" class="text-xs font-bold ">Publikationsmedium</label>
             <PaginatedSelect
-                :fetch-function="pubMediumApi.searchPaginated"
-                :cull-function="pm => ({ id: pm.id, title: pm.title })"
+                :fetch-function="searchPubMedia"
+                :cull-function="pm => ({ id: pm.id, title: pm.title, searchText: [pm.title, pm.subtitle].filter(Boolean).join(' ') })"
+                :filter-fields="['searchText']"
                 sort="title,asc"
                 id="pub-medium-id"
                 placeholder="Medium wählen"

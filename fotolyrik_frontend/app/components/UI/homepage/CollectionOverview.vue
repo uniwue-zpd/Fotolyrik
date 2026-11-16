@@ -22,7 +22,7 @@ const [
   useAsyncData('person-list', person_api.fetchAll),
   photopoem_api.getAll(),
   place_api.getAll(),
-  pub_medium_api.getAll()
+  useAsyncData('pubMedium-list', pub_medium_api.fetchAll)
 ]);
 const keywordCount = computed(()=> keywordList.value?.length);
 const personCount = computed(()=> personList.value?.length);

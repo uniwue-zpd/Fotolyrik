@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import maplibregl, { LngLat } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css"
-import { ref, onMounted } from "vue";
-import type {PlaceDTO, PlaceMetricsDTO} from "~/utils/types";
 import PubMediumPreview from "~/components/UI/PubMediumPreview.vue";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import SkeletonPlaceholder from "~/components/UI/placeholders/SkeletonPlaceholder.vue";
@@ -28,7 +26,7 @@ const [
   { data: relationsGraph },
 ] = await Promise.all([
   place_api.getById(place_id),
-  pubmedium_api.getAllFiltered({ 'pubplace-id': place_id }),
+  useAsyncData(`pubMedium-pubplace-id-${place_id}`, () => pubmedium_api.fetchFlat({ 'pubplace-id': place_id })),
   place_api.getMetricsById(place_id),
   photopoem_api.getAllFiltered({ 'pubplace-id': place_id }),
   useAsyncData('place-same-pub-medium-graph', place_api.fetchSamePubMediumGraph),

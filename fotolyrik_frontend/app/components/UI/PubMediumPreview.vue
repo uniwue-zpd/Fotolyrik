@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  pubmedium: PubMediumDTO
+  pubmedium: PubMediumPreviewDTO
 }>();
 </script>
 
