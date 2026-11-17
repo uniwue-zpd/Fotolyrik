@@ -25,9 +25,9 @@ const [
   { data: place_photopoems },
   { data: relationsGraph },
 ] = await Promise.all([
-  place_api.getById(place_id),
+  useAsyncData(`place-${place_id}`, () => place_api.fetchById(place_id)),
   useAsyncData(`pubMedium-pubplace-id-${place_id}`, () => pubmedium_api.fetchFlat({ 'pubplace-id': place_id })),
-  place_api.getMetricsById(place_id),
+  useAsyncData(`place-${place_id}-metrics`, () => place_api.fetchMetricsById(place_id)),
   photopoem_api.getAllFiltered({ 'pubplace-id': place_id }),
   useAsyncData('place-same-pub-medium-graph', place_api.fetchSamePubMediumGraph),
 ]);

@@ -11,7 +11,7 @@ const publisherApi= usePublisher();
 const pubRhythmApi = usePubRhythm();
 
 const [placeHandle, publisherHandle, pubRhythmHandle] = await Promise.all([
-  placeApi.getAll(),
+  useAsyncData('place-flat', () => placeApi.fetchFlat()),
   publisherApi.getAll(),
   pubRhythmApi.getAll()
 ]);
