@@ -6,7 +6,7 @@ import type { Page, PersonDTO, PersonPageable } from "~/utils/types";
 
 const initialPageParameter: PersonPageable = {
   page: 0,
-  size: 15,
+  size: 10,
   sort: "lastName,asc"
 };
 
