@@ -1,126 +1,99 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useConfirm } from 'primevue/useconfirm';
+import type { DropdownMenuItem } from '@nuxt/ui';
+
+type EntityType = 'person' | 'place' | 'photopoem' | 'pub_medium' | 'keyword' | 'location';
 
 const props = defineProps<{
   id: number;
-  entity_type: 'person' | 'place' | 'photopoem' | 'pub_medium' | 'keyword' | 'location';
+  entity_type: EntityType;
   page_url: string;
 }>();
 
-const person_api = usePerson();
-const photopoem_api = usePhotopoem();
-const pub_medium_api = usePubMedium();
-const keyword_api = useKeyword();
-const place_api = usePlace();
-
-const confirm = useConfirm();
 const router = useRouter();
 const toast = useToast();
-const items = ref([
-  {
-    label: 'Edit',
-    icon: 'pi pi-file-edit',
-    command: () => {
-      router.push(`${props.page_url}/edit`);
-    }
-  },
-  {
-    label: 'Delete',
-    icon: 'pi pi-trash',
-    command: () => {
-      confirm.require({
-        message: 'Möchten Sie diesen Eintrag wirklich löschen?',
-        header: 'Löschvorgang bestätigen',
-        icon: 'pi pi-exclamation-triangle',
-        acceptLabel: 'Ja',
-        rejectLabel: 'Nein',
-        accept: async () => {
-          try {
-            if (props.entity_type === 'person') {
-              await person_api.deleteById(props.id);
-              await refreshNuxtData('person-list');
-            } else if (props.entity_type === 'place') {
-              await place_api.deleteById(props.id);
-              await refreshNuxtData('place-list');
-            } else if (props.entity_type === 'photopoem') {
-              await photopoem_api.deleteById(props.id);
-              await refreshNuxtData('photopoem-list');
-            } else if (props.entity_type === 'pub_medium') {
-              await pub_medium_api.deleteById(props.id);
-              await refreshNuxtData('pubMedium-list');
-            } else if (props.entity_type === 'keyword') {
-              await keyword_api.deleteById(props.id);
-              await refreshNuxtData('keyword-list');
-            }
-            toast.add({ color: 'success', title: 'Gelöscht', description: 'Eintrag erfolgreich gelöscht', duration: 3000 });
-            router.push(props.page_url.substring(0, props.page_url.lastIndexOf('/')));
-          } catch (error) {
-            toast.add({ color: 'error', title: 'Fehler', description: 'Eintrag konnte nicht gelöscht werden', duration: 3000 });
-          }
-        },
-        reject: () => {
-          toast.add({ color: 'info', title: 'Abgebrochen', description: 'Löschvorgang abgebrochen', duration: 3000 });
-        }
-      });
-    }
-  },
-  {
-    label: 'Share',
-    icon: 'pi pi-share-alt',
-    command: () => {
-      navigator.clipboard.writeText(props.page_url);
-      toast.add({ color: 'info', title: 'Hinweis', description: 'Link erfolgreich kopiert!', duration: 3000 });
-    }
-  },
-  {
-    label: 'API',
-    icon: 'pi pi-code',
-    command: () => {
-      window.open(`/api${props.page_url}`, '_blank');
-    }
-  }
+
+const deleters: Record<EntityType, (id: number) => Promise<void>> = {
+  person: usePerson().deleteById,
+  place: usePlace().deleteById,
+  photopoem: usePhotopoem().deleteById,
+  pub_medium: usePubMedium().deleteById,
+  keyword: useKeyword().deleteById,
+  location: useLocation().deleteById,
+};
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.origin + props.page_url);
+  toast.add({ color: 'info', title: 'Hinweis', description: 'Link erfolgreich kopiert!', duration: 3000 });
+}
+
+const items = computed<DropdownMenuItem[][]>(() => [
+  [
+    { label: 'Bearbeiten', icon: 'i-lucide-square-pen', to: `${props.page_url}/edit` },
+    { label: 'Link kopieren', icon: 'i-lucide-link', onSelect: copyLink },
+    { label: 'API', icon: 'i-lucide-code', onSelect: () => window.open(`/api${props.page_url}`, '_blank') },
+  ],
+  [
+    { label: 'Löschen', icon: 'i-lucide-trash-2', color: 'error', onSelect: () => { deleteOpen.value = true; } },
+  ],
 ]);
+
+const deleteOpen = ref(false);
+const deleting = ref(false);
+let deleted = false;
+
+async function deleteEntry() {
+  deleting.value = true;
+  try {
+    await deleters[props.entity_type](props.id);
+    deleted = true;
+    deleteOpen.value = false;
+    // Refresh data after deletion to avoid displaying deleted entry
+    await refreshNuxtData();
+    toast.add({ color: 'success', title: 'Gelöscht', description: 'Eintrag erfolgreich gelöscht', duration: 3000 });
+    router.push(props.page_url.substring(0, props.page_url.lastIndexOf('/')));
+  } catch (error) {
+    toast.add({ color: 'error', title: 'Fehler', description: 'Eintrag konnte nicht gelöscht werden', duration: 3000 });
+  } finally {
+    deleting.value = false;
+  }
+}
+
+watch(deleteOpen, (open) => {
+  if (open) {
+    deleted = false;
+  } else if (!deleted) {
+    toast.add({ color: 'info', title: 'Abgebrochen', description: 'Löschvorgang abgebrochen', duration: 3000 });
+  }
+});
 </script>
 
 <template>
-  <SpeedDial
-      :model="items"
-      direction="left"
-      class="pagetoolbar"
+  <UDropdownMenu
+    :items="items"
+    :modal="false"
+    :content="{ side: 'left', align: 'start', sideOffset: 6, collisionPadding: 8 }"
+    :ui="{ content: 'min-w-48', item: 'cursor-pointer' }"
   >
-    <template #button="{ toggleCallback }">
-      <Button icon="pi pi-bars" @click="toggleCallback" style="color: black"/>
-    </template>
-    <template #item="{ item, toggleCallback }">
-      <div class="px-2 cursor-pointer" @click="toggleCallback">
-        <span :class="item.icon"/>
+    <UButton
+      icon="i-lucide-ellipsis-vertical"
+      color="neutral"
+      variant="ghost"
+      aria-label="Aktionen"
+      class="rounded-full data-[state=open]:bg-elevated"
+    />
+  </UDropdownMenu>
+
+  <UModal
+    v-model:open="deleteOpen"
+    title="Löschvorgang bestätigen"
+    description="Möchten Sie diesen Eintrag wirklich löschen?"
+    :dismissible="!deleting"
+  >
+    <template #footer>
+      <div class="flex justify-end gap-2 w-full">
+        <UButton label="Nein" color="neutral" variant="outline" :disabled="deleting" @click="deleteOpen = false" />
+        <UButton label="Ja, löschen" color="error" icon="i-lucide-trash-2" :loading="deleting" @click="deleteEntry" />
       </div>
     </template>
-  </SpeedDial>
-  <ConfirmDialog class="confirm_deletion"/>
+  </UModal>
 </template>
-
-<style>
-.pagetoolbar > .p-button {
-  background: none;
-  border: none;
-}
-
-.pagetoolbar > .p-button:hover {
-  background: none;
-  border: none;
-}
-
-.confirm_deletion .p-button {
-  background: none;
-  border: none;
-  color: black
-}
-
-.confirm_deletion .p-button:hover {
-  background: none;
-  border: none;
-  color: black;
-}
-</style>
