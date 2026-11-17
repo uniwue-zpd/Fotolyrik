@@ -21,7 +21,7 @@ const [
   useAsyncData('keyword-list', keyword_api.fetchAll),
   useAsyncData('person-list', person_api.fetchAll),
   photopoem_api.getAll(),
-  place_api.getAll(),
+  useAsyncData('place-list', place_api.fetchAll),
   useAsyncData('pubMedium-list', pub_medium_api.fetchAll)
 ]);
 const keywordCount = computed(()=> keywordList.value?.length);

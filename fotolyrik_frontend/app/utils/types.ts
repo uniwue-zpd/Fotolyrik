@@ -261,6 +261,10 @@ export interface KeywordPageable extends Pageable {
     'gnd-id'?: string;
 }
 
+export interface PlacePageable extends Pageable {
+    name?: string;
+}
+
 /**
  * Defines the access levels
  * - PUBLIC: Visible to everyone.
