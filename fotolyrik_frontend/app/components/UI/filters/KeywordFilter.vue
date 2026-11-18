@@ -19,7 +19,7 @@ const syncOpenState = () => {
 onMounted(syncOpenState)
 watch(isMobile, syncOpenState)
 
-const accordionItems = [{ label: 'Filtern nach:', value: 'filters', slot: 'filters' as const }]
+const accordionItems = [{ label: 'Suchen & filtern', value: 'filters', slot: 'filters' as const }]
 </script>
 
 <template>
