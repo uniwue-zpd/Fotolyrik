@@ -34,6 +34,8 @@ async function fetchEditorialOffices(query: string, pageable: Pageable): Promise
 
 </script>
 <template>
+  <UButton type="button" variant="outline" icon="i-lucide-rotate-cw" class="w-full justify-center"
+    @click="emit('reset-filters')">Alle Eingaben zurücksetzen</UButton>
   <UAccordion v-model="activeTab" :items="[{ label: 'Filtern nach:', value: '0' }]" :unmount-on-hide="false">
     <template #body>
         <div class="flex flex-col gap-3">
@@ -98,8 +100,6 @@ async function fetchEditorialOffices(query: string, pageable: Pageable): Promise
               <UInputNumber id="amount-issues" v-model.optional="filters.amountIssues" :min="0" :format-options="{ useGrouping: false }" :increment="false" :decrement="false" class="w-full" />
             </div>
           </div>
-          <UButton type="button" variant="outline" icon="i-lucide-rotate-cw" class="w-full justify-center"
-            @click="emit('reset-filters')">Alle Eingaben zurücksetzen</UButton>
         </div>
     </template>
   </UAccordion>
