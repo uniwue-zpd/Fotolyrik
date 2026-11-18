@@ -48,8 +48,7 @@ const [
   fileApi.getAll(),
 ]);
 const publicationMedia = computed<PubMediumPreviewDTO[]>(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })) ?? []);
-const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName, studioName: p.studioName, pseudonyms: p.pseudonyms, gndId: p.gndId })));
-const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
+const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value, gndId: k.gndId })),)
 const languages = computed(() => languageHandle.data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 const locations = computed(()=> locationHandle.data.value?.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(()=> copyrightStatusHandle.data.value?.map(cs => ({ id: cs.id, value: cs.value })));
@@ -78,10 +77,7 @@ const resolver = ref(
       publicationDate: z.any(),
       publicationMedium: z.any().optional().nullable(),
       foundIn: z.any(),
-      authors: z.any(),
-      photographers: z.any(),
       depictedPeople: z.any(),
-      otherContributors: z.any(),
       themes: z.any(),
       imageMotifs: z.any(),
       form: z.any(),
