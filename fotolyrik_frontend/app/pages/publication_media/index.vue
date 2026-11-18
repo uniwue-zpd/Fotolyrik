@@ -66,7 +66,6 @@ const debouncedRefresh = debounce(() => {
 
 watch(filters, () => debouncedRefresh(), { deep: true });
 watch(pageParameter, () => refresh(), { deep: true });
-watch(publicationMedia, () => console.log(publicationMedia.value));
 
 useHead(() => ({
   title: "Publikationsmedien - Sammlung"
