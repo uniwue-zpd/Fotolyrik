@@ -47,6 +47,7 @@ const [
   useAsyncData('pubMedium-list', pubMediumApi.fetchAll),
   fileApi.getAll(),
 ]);
+
 const publicationMedia = computed<PubMediumPreviewDTO[]>(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })) ?? []);
 const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value, gndId: k.gndId })),)
 const languages = computed(() => languageHandle.data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
