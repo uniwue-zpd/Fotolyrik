@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import type {FullTextSearchResult} from "~/utils/types";
+import ContentCard from "~/components/UI/cards/ContentCard.vue";
 
 const fullTextApi = useFullText();
 const submitted = ref(false);
@@ -33,12 +34,12 @@ const submit = async (formData: { query: string}) => {
         :ui="{
           base: 'rounded-full ps-12',
           trailing: 'pe-1' ,
-          leading: 'bg-primary rounded-full text-white aspect-square justify-end '
+          leading: 'bg-primary rounded-full text-white aspect-square justify-end'
         }"
         v-model="query">
       <template #leading>
         <UButton
-            color="text-white"
+            class="text-white"
             variant="link"
             size="xl"
             icon="i-lucide-search"
@@ -57,35 +58,19 @@ const submit = async (formData: { query: string}) => {
         />
       </template>
     </UInput>
-    <Card v-show="submitted">
-      <template #title>
-        <h2 class="text-2xl outfit-headline font-bold text-primary">Suchergebnisse</h2>
-      </template>
-      <template #content>
-        <div v-if="query_result_status === 'success'">
-          <div class="flex flex-col gap-2">
-            <div class="roboto-plain">Es wurden insgesamt <b>{{ results.length }}</b> Gedichte gefunden</div>
-            <div v-for="(result, index) in results" :key="result.photopoemId">
-              <Panel class="hover:shadow-md">
-                <template #header>
-                  <div class="flex flex-row justify-center space-x-5">
-                    <div class="roboto-plain">{{ index + 1 }}</div>
-                    <NuxtLink
-                        :to="`/photopoems/${ result.photopoemId }`"
-                        class="outfit-headline font-semibold text-primary"
-                    >
-                      {{ result.photopoemTitle }}
-                    </NuxtLink>
-                  </div>
-                </template>
-                <div class="italic" v-html="result.queryResult"/>
-              </Panel>
-            </div>
+    <div v-if="submitted" class="flex gap-2 flex-col">
+      <ContentCard v-for="(fulltext, index) in results" :key="fulltext.photopoemId"
+                   :headerLink="`/photopoems/${fulltext.photopoemId}`" >
+        <template #header>
+          {{console.log(fulltext)}}
+          {{ fulltext.photopoemTitle || "Unbenanntes Fotogedicht" }}
+        </template>
+        <template #subContent>
+          <div v-if="fulltext.queryResult" class="">
+            <div class="gap-2" v-html=" fulltext.queryResult"></div>
           </div>
-        </div>
-        <div v-else-if="query_result_status === 'empty'">Es wurden keine Treffer gefunden</div>
-        <div v-else-if="query_result_status === 'error'">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.</div>
-      </template>
-    </Card>
+        </template>
+      </ContentCard>
+    </div>
   </div>
 </template>
