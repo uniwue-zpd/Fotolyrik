@@ -200,9 +200,6 @@ export interface PlacePreviewDTO {
 export interface PubMediumPreviewDTO {
     id: number;
     title: string;
-    startYear: string | null;
-    endYear: string | null;
-    editorialOffice: string | null;
 }
 export interface LocationDTO extends Auditable {
     name: string;
@@ -411,15 +408,4 @@ export interface PhotopoemPageable extends Pageable {
     'copyright-status-text'?: string;
     'language-id'?: number;
     language?: string;
-}
-
-export interface PubMediumPageable extends Pageable {
-    title?: string;
-    subtitle?: string;
-    'publisher.name'?: string;
-    editorialOffice?: string;
-    startYear?: number;
-    endYear?: number;
-    amountVolumes?: number;
-    amountIssues?: number;
 }

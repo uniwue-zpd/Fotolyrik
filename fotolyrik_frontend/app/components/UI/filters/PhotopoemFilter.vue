@@ -1,16 +1,8 @@
 <script setup lang="ts">
-
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import PaginatedSelect from "~/components/UI/filters/PaginatedSelect.vue";
 
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const isMobile = breakpoints.smaller('lg')
-const activeTab = ref<string | undefined>(undefined)
-watchEffect(() => {
-  activeTab.value = isMobile.value ? undefined : "0"
-})
-
-const props = defineProps<{
+defineProps<{
   filters: PhotopoemPageable
 }>()
 
@@ -18,274 +10,229 @@ const emit = defineEmits<{
   (e: 'reset-filters'): void
 }>()
 
+const isMobile = useBreakpoints(breakpointsTailwind).smaller('lg')
+// Start closed on server and first client render to avoid a hydration mismatch,
+// then open on desktop once the viewport is known.
+const openItem = ref<string | undefined>(undefined)
+const syncOpenState = () => {
+  openItem.value = isMobile.value ? undefined : 'filters'
+}
+onMounted(syncOpenState)
+watch(isMobile, syncOpenState)
 
+const accordionItems = [{ label: 'Suchen & filtern', value: 'filters', slot: 'filters' as const }]
 
 const personApi = usePerson();
 const searchPersons = (name: string, pageable: Pageable) => personApi.fetchPaginated({ ...pageable, name });
 const pubMediumApi = usePubMedium();
 const searchPubMedia = (query: string, pageable: Pageable) => pubMediumApi.fetchPaginated({ ...pageable, query });
-const languageApi = useLanguage();
-const copyrightStatusApi = useCopyrightStatus();
 const keywordApi = useKeyword();
 const searchKeywords = (value: string, pageable: Pageable) => keywordApi.fetchPaginated({ ...pageable, value });
+const languageApi = useLanguage();
 const locationApi = useLocation();
+const copyrightStatusApi = useCopyrightStatus();
 
-const {data: languageList} = await languageApi.getAll();
-const {data: locationList} = await locationApi.getAll();
-const {data: copyrightStatusList} = await copyrightStatusApi.getAll();
+const { data: languageList } = await languageApi.getAll();
+const { data: locationList } = await locationApi.getAll();
+const { data: copyrightStatusList } = await copyrightStatusApi.getAll();
 
-const languages = computed(() => languageList.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name, isoDesignation: l.isoDesignation })));
-const locations = computed(()=> locationList.value?.map(l=>({id: l.id, name: l.name}) ));
-const copyrightStatuses = computed(() => copyrightStatusList.value?.map(cs => ({ id: cs.id, value: cs.value })));
-
+const languages = computed(() => languageList.value?.map((l: LanguageDTO) => ({ id: l.id, name: l.name })) ?? []);
+const locations = computed(() => locationList.value?.map(l => ({ id: l.id, name: l.name })) ?? []);
+const copyrightStatuses = computed(() => copyrightStatusList.value?.map(cs => ({ id: cs.id, value: cs.value })) ?? []);
 
 function getPersonOptionLabel(opt: PersonPreviewDTO) {
   if (!opt) return '';
   return [opt.firstName, opt.lastName].filter(Boolean).join(' ') || (opt.pseudonyms || []).join(', ');
 }
-
-
 </script>
+
 <template>
-  <UButton type="button" variant="outline" icon="i-lucide-rotate-cw" class="w-full justify-center"
-    @click="emit('reset-filters')">Alle Eingaben zurücksetzen</UButton>
-  <UAccordion v-model="activeTab" :items="[{ label: 'Filtern nach:', value: '0' }]" :unmount-on-hide="false">
-    <template #body>
-        <div class="flex flex-col gap-3">
-          <div class="grid grid-cols-1">
-            <label for="title" class="text-xs font-bold ">Titel</label>
-            <UInput
-                id="title"
-                placeholder="z. B. Telephon-Tragödie"
-                v-model="filters.title"
-                class="w-full"
-            />
-          </div>
+  <UAccordion v-model="openItem" :items="accordionItems" :unmount-on-hide="false">
+    <template #filters-body>
+      <div class="flex flex-col gap-3">
+        <UButton
+          block
+          variant="outline"
+          icon="i-lucide-rotate-ccw"
+          label="Alle Eingaben zurücksetzen"
+          @click="emit('reset-filters')"
+        />
 
-          <div class="grid grid-cols-1">
-            <label for="subtitle" class="text-xs font-bold ">Untertitel</label>
-            <UInput
-                id="subtitle"
-                placeholder="z. B. Aschermittwoch"
-                v-model="filters.subtitle"
-                class="w-full"
-            />
-          </div>
+        <UFormField label="Titel" name="title">
+          <UInput v-model="filters.title" icon="i-lucide-search" placeholder="z. B. Telephon-Tragödie" class="w-full">
+            <template v-if="filters.title" #trailing>
+              <UButton color="neutral" variant="link" size="sm" icon="i-lucide-x" aria-label="Titel leeren"
+                @click="filters.title = undefined" />
+            </template>
+          </UInput>
+        </UFormField>
 
-          <div class="grid grid-cols-1">
-            <label for="alt-title" class="text-xs font-bold ">Alternativer Titel</label>
-            <UInput
-                id="alt-title"
-                placeholder="z. B. Frohsinn und Freude"
-                v-model="filters['alt-title']"
-                class="w-full"
-            />
-          </div>
+        <UFormField label="Untertitel" name="subtitle">
+          <UInput v-model="filters.subtitle" placeholder="z. B. Aschermittwoch" class="w-full" />
+        </UFormField>
 
-          <div class="grid grid-cols-1">
-            <label for="series" class="text-xs font-bold ">Reihe</label>
-            <UInput
-                id="series"
-                v-model="filters.series"
-                class="w-full"
-            />
-          </div>
+        <UFormField label="Alternativer Titel" name="alt-title">
+          <UInput v-model="filters['alt-title']" placeholder="z. B. Frohsinn und Freude" class="w-full" />
+        </UFormField>
 
-          <div class="grid grid-cols-2 gap-3">
-            <div class="flex flex-col gap-1">
-              <label for="volume" class="text-xs font-bold ">Jahrgang</label>
-              <UInputNumber
-                  id="volume"
-                  placeholder="z. B. 12"
-                  v-model.optional="filters.volume"
-                  :min="0"
-                  :format-options="{ useGrouping: false }"
-                  :increment="false"
-                  :decrement="false"
-                  class="w-full"
-              />
-            </div>
+        <UFormField label="Reihe" name="series">
+          <UInput v-model="filters.series" class="w-full" />
+        </UFormField>
 
-            <div class="flex flex-col gap-1">
-              <label for="issue" class="text-xs font-bold ">Ausgabe</label>
-              <UInputNumber
-                  id="issue"
-                  placeholder="z. B. 3"
-                  v-model.optional="filters.issue"
-                  :min="0"
-                  :format-options="{ useGrouping: false }"
-                  :increment="false"
-                  :decrement="false"
-                  class="w-full"
-              />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1">
-            <label for="publication-date" class="text-xs font-bold ">Publikationsdatum</label>
-            <UInput
-                id="publication-date"
-                placeholder="z. B. 01.08.1936"
-                v-model="filters['publication-date']"
-                class="w-full"
-            />
-          </div>
-
-          <div class="grid grid-cols-1">
-            <label for="pub-medium-id" class="text-xs font-bold ">Publikationsmedium</label>
-            <PaginatedSelect
-                :fetch-function="searchPubMedia"
-                :get-value="pm => pm.id"
-                :get-label="pm => pm.title"
-                sort="title,asc"
-                id="pub-medium-id"
-                placeholder="Medium wählen"
-                v-model="filters['pubmedium-id']"
-                />
-          </div>
-
-
-          <div class="grid grid-cols-1">
-            <label for="location-id" class="text-xs font-bold ">Fundort</label>
-            <USelectMenu
-                id="location-id"
-                placeholder="Ort wählen"
-                :model-value="filters['location-id']"
-                @update:model-value="filters['location-id'] = $event ?? undefined"
-                value-key="id"
-                label-key="name"
-                :items="locations"
-                clear
-                class="w-full"
-            />
-          </div>
-
-          <div class="grid grid-cols-1">
-            <label for="author-id" class="text-xs font-bold ">Autor:in</label>
-            <PaginatedSelect
-                :fetch-function="searchPersons"
-                :get-value="p => p.id"
-                :get-label="getPersonOptionLabel"
-                sort="firstName,asc"
-                id="author-id"
-                placeholder="Autor:in suchen / wählen"
-                v-model="filters['author-id']"
-            />
-          </div>
-
-          <div class="grid grid-cols-1">
-            <label for="photographer-id" class="text-xs font-bold ">Fotograf:in</label>
-            <PaginatedSelect
-                :fetch-function="searchPersons"
-                :get-value="p => p.id"
-                :get-label="getPersonOptionLabel"
-                sort="firstName,asc"
-                id="photographer-id"
-                placeholder="Fotograf:in suchen / wählen"
-                v-model="filters['photographer-id']"
-            />
-          </div>
-
-          <div class="grid grid-cols-1">
-            <label for="depicted-person-id" class="text-xs font-bold ">Abgebildete Person</label>
-            <PaginatedSelect
-                :fetch-function="searchPersons"
-                :get-value="p => p.id"
-                :get-label="getPersonOptionLabel"
-                sort="firstName,asc"
-                id="depicted-person-id"
-                placeholder="Abgebildete Person wählen"
-                v-model="filters['depicted-person-id']"
-            />
-          </div>
-
-          <div class="grid grid-cols-1">
-            <label for="contributor-id" class="text-xs font-bold ">Sonstige Mitwirkende</label>
-            <PaginatedSelect
-                :fetch-function="searchPersons"
-                :get-value="p => p.id"
-                :get-label="getPersonOptionLabel"
-                sort="firstName,asc"
-                id="contributor-id"
-                placeholder="Mitwirkende Person wählen"
-                v-model="filters['other-contributor-id']"
-            />
-          </div>
-
-          <div class="grid grid-cols-1">
-            <label for="theme-id" class="text-xs font-bold ">Thematik</label>
-            <PaginatedSelect
-                :fetch-function="searchKeywords"
-                :get-value="k => k.id"
-                :get-label="k => k.value"
-                sort="value,asc"
-                id="theme-id"
-                placeholder="Thema wählen"
-                v-model="filters['theme-id']"
-            />
-          </div>
-
-          <div class="grid grid-cols-1">
-            <label for="image-motif-id" class="text-xs font-bold ">Bildmotiv</label>
-            <PaginatedSelect
-                :fetch-function="searchKeywords"
-                :get-value="k => k.id"
-                :get-label="k => k.value"
-                sort="value,asc"
-                id="image-motif-id"
-                v-model="filters['image-motif-id']"
-                placeholder="Motiv wählen"
-            />
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div class="flex flex-col gap-1">
-              <label for="copyright-image-id" class="text-xs font-bold ">Copyright Bild</label>
-              <USelectMenu
-                  :search-input="false"
-                  id="copyright-image-id"
-                  placeholder="Status"
-                  v-model="filters['copyright-status-image-id']"
-                  optionLabel="value"
-                  optionValue="id"
-                  :options="copyrightStatuses"
-                  showClear
-                  fluid
-              />
-            </div>
-
-            <div class="flex flex-col gap-1">
-              <label for="copyright-text-id" class="text-xs font-bold ">Copyright Text</label>
-              <USelectMenu
-                  :search-input="false"
-                  id="copyright-text-id"
-                  placeholder="Status"
-                  v-model="filters['copyright-status-text-id']"
-                  optionLabel="value"
-                  optionValue="id"
-                  :options="copyrightStatuses"
-                  showClear
-                  fluid
-              />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1">
-            <label for="language-id" class="text-xs font-bold ">Sprache</label>
-            <USelectMenu
-                id="language-id"
-                placeholder="Sprache wählen"
-                :model-value="filters['language-id']"
-                @update:model-value="filters['language-id'] = $event ?? undefined"
-                label-key="name"
-                value-key="id"
-                :items="languages"
-                clear
-                class="w-full"
-            />
-          </div>
+        <div class="grid grid-cols-2 gap-3">
+          <UFormField label="Jahrgang" name="volume">
+            <UInputNumber v-model.optional="filters.volume" :min="0" :format-options="{ useGrouping: false }"
+              :increment="false" :decrement="false" placeholder="z. B. 12" class="w-full" />
+          </UFormField>
+          <UFormField label="Ausgabe" name="issue">
+            <UInputNumber v-model.optional="filters.issue" :min="0" :format-options="{ useGrouping: false }"
+              :increment="false" :decrement="false" placeholder="z. B. 3" class="w-full" />
+          </UFormField>
         </div>
+
+        <UFormField label="Publikationsdatum" name="publication-date">
+          <UInput v-model="filters['publication-date']" placeholder="z. B. 01.08.1936" class="w-full" />
+        </UFormField>
+
+        <UFormField label="Publikationsmedium" name="pubmedium-id">
+          <PaginatedSelect
+            id="pubmedium-id"
+            v-model="filters['pubmedium-id']"
+            :fetch-function="searchPubMedia"
+            :get-value="pm => pm.id"
+            :get-label="pm => pm.title"
+            sort="title,asc"
+            placeholder="Medium wählen"
+          />
+        </UFormField>
+
+        <UFormField label="Fundort" name="location-id">
+          <USelectMenu
+            :model-value="filters['location-id']"
+            :items="locations"
+            value-key="id"
+            label-key="name"
+            placeholder="Ort wählen"
+            clear
+            class="w-full"
+            @update:model-value="filters['location-id'] = $event ?? undefined"
+          />
+        </UFormField>
+
+        <UFormField label="Autor:in" name="author-id">
+          <PaginatedSelect
+            id="author-id"
+            v-model="filters['author-id']"
+            :fetch-function="searchPersons"
+            :get-value="p => p.id"
+            :get-label="getPersonOptionLabel"
+            sort="firstName,asc"
+            placeholder="Autor:in suchen / wählen"
+          />
+        </UFormField>
+
+        <UFormField label="Fotograf:in" name="photographer-id">
+          <PaginatedSelect
+            id="photographer-id"
+            v-model="filters['photographer-id']"
+            :fetch-function="searchPersons"
+            :get-value="p => p.id"
+            :get-label="getPersonOptionLabel"
+            sort="firstName,asc"
+            placeholder="Fotograf:in suchen / wählen"
+          />
+        </UFormField>
+
+        <UFormField label="Abgebildete Person" name="depicted-person-id">
+          <PaginatedSelect
+            id="depicted-person-id"
+            v-model="filters['depicted-person-id']"
+            :fetch-function="searchPersons"
+            :get-value="p => p.id"
+            :get-label="getPersonOptionLabel"
+            sort="firstName,asc"
+            placeholder="Abgebildete Person wählen"
+          />
+        </UFormField>
+
+        <UFormField label="Sonstige Mitwirkende" name="other-contributor-id">
+          <PaginatedSelect
+            id="other-contributor-id"
+            v-model="filters['other-contributor-id']"
+            :fetch-function="searchPersons"
+            :get-value="p => p.id"
+            :get-label="getPersonOptionLabel"
+            sort="firstName,asc"
+            placeholder="Mitwirkende Person wählen"
+          />
+        </UFormField>
+
+        <UFormField label="Thematik" name="theme-id">
+          <PaginatedSelect
+            id="theme-id"
+            v-model="filters['theme-id']"
+            :fetch-function="searchKeywords"
+            :get-value="k => k.id"
+            :get-label="k => k.value"
+            sort="value,asc"
+            placeholder="Thema wählen"
+          />
+        </UFormField>
+
+        <UFormField label="Bildmotiv" name="image-motif-id">
+          <PaginatedSelect
+            id="image-motif-id"
+            v-model="filters['image-motif-id']"
+            :fetch-function="searchKeywords"
+            :get-value="k => k.id"
+            :get-label="k => k.value"
+            sort="value,asc"
+            placeholder="Motiv wählen"
+          />
+        </UFormField>
+
+        <div class="grid grid-cols-2 gap-3">
+          <UFormField label="Copyright Bild" name="copyright-status-image-id">
+            <USelectMenu
+              :model-value="filters['copyright-status-image-id']"
+              :items="copyrightStatuses"
+              value-key="id"
+              label-key="value"
+              :search-input="false"
+              placeholder="Status"
+              clear
+              class="w-full"
+              @update:model-value="filters['copyright-status-image-id'] = $event ?? undefined"
+            />
+          </UFormField>
+          <UFormField label="Copyright Text" name="copyright-status-text-id">
+            <USelectMenu
+              :model-value="filters['copyright-status-text-id']"
+              :items="copyrightStatuses"
+              value-key="id"
+              label-key="value"
+              :search-input="false"
+              placeholder="Status"
+              clear
+              class="w-full"
+              @update:model-value="filters['copyright-status-text-id'] = $event ?? undefined"
+            />
+          </UFormField>
+        </div>
+
+        <UFormField label="Sprache" name="language-id">
+          <USelectMenu
+            :model-value="filters['language-id']"
+            :items="languages"
+            value-key="id"
+            label-key="name"
+            placeholder="Sprache wählen"
+            clear
+            class="w-full"
+            @update:model-value="filters['language-id'] = $event ?? undefined"
+          />
+        </UFormField>
+      </div>
     </template>
   </UAccordion>
-
 </template>

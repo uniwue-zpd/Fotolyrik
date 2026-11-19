@@ -32,13 +32,6 @@ export const usePubMedium = () => {
         });
     }
 
-    /** Distinct editorial office names, optionally filtered by `query`. */
-    function fetchEditorialOffices(params: { query?: string } & Pageable = {}) {
-        return $fetch<Page<string>>('/api/publication_media/editorial-offices', {
-            query: cleanQuery(params)
-        });
-    }
-
     function create(payload: Partial<PubMediumDTO>) {
         return $fetch<PubMediumDTO>('/api/publication_media', {
             method: 'POST',
@@ -77,7 +70,6 @@ export const usePubMedium = () => {
         fetchNeighborsById,
         fetchFlat,
         fetchPaginated,
-        fetchEditorialOffices,
         create,
         update,
         deleteById,
