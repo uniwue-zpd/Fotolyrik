@@ -31,11 +31,12 @@ public class PublisherService {
     }
 
     /**
-     * @param pageable paging and sorting information
+     * GET a page of publishers, optionally filtered by name
      * @param query name filter; all publishers are returned if it is shorter than 2 characters
+     * @param pageable paging and sorting information
      * @return a {@link Page} of matching {@link Publisher} as {@link PublisherDTO} objects
      */
-    public Page<PublisherDTO> searchPublishersPaginated(Pageable pageable, String query) {
+    public Page<PublisherDTO> searchPaginated(String query, Pageable pageable) {
         Page<Publisher> result = (query == null || query.trim().length() < 2)
                 ? publisherRepository.findAll(pageable)
                 : publisherRepository.findByNameContainingIgnoreCase(query.trim(), pageable);

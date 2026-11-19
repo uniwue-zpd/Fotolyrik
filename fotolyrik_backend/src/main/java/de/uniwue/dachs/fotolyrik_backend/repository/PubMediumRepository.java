@@ -3,8 +3,6 @@ package de.uniwue.dachs.fotolyrik_backend.repository;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PubMediumMetricsDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
 import de.uniwue.dachs.fotolyrik_backend.model.PubMedium;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -46,14 +44,14 @@ public interface PubMediumRepository extends JpaRepository<PubMedium, Long>, Jpa
 
     @Query(value = """
     WITH sorted_pub_mediums AS (
-        SELECT 
+        SELECT
             id,
             ROW_NUMBER() OVER (ORDER BY title ASC, subtitle ASC, id ASC) AS rn
         FROM pub_medium
     )
     SELECT pm.id
     FROM sorted_pub_mediums target
-    JOIN sorted_pub_mediums pm 
+    JOIN sorted_pub_mediums pm
       ON pm.rn BETWEEN (target.rn - :padding) AND (target.rn + :padding)
     WHERE target.id = :id
     ORDER BY pm.rn ASC
@@ -70,17 +68,5 @@ public interface PubMediumRepository extends JpaRepository<PubMedium, Long>, Jpa
     GROUP BY pm.id, pm.title
     """, nativeQuery = true)
     List<AdjacencyProjection> findMediumAdjacencyListByPlace();
-
-    @Query(value = """
-    SELECT DISTINCT p.editorialOffice FROM PubMedium p
-    WHERE p.editorialOffice IS NOT NULL AND p.editorialOffice <> ''
-      AND LOWER(p.editorialOffice) LIKE :pattern ESCAPE '\\'
-    """,
-    countQuery = """
-    SELECT COUNT(DISTINCT p.editorialOffice) FROM PubMedium p
-    WHERE p.editorialOffice IS NOT NULL AND p.editorialOffice <> ''
-      AND LOWER(p.editorialOffice) LIKE :pattern ESCAPE '\\'
-    """)
-    Page<String> findDistinctEditorialOffices(@Param("pattern") String pattern, Pageable pageable);
 }
 

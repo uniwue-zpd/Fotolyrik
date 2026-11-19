@@ -25,8 +25,6 @@ public class PubMediumController {
         this.pubMediumService = pubMediumService;
     }
 
-    // ---------- Read: collections ----------
-
     @GetMapping("/all")
     public ResponseEntity<List<PubMediumDTO>> getAllPubMedia() {
         return ResponseEntity.ok(pubMediumService.getAllPubMedia());
@@ -95,17 +93,6 @@ public class PubMediumController {
         return ResponseEntity.ok(pubMediumService.searchFlat(criteria, sort));
     }
 
-    /** Distinct editorial office names, optionally filtered by {@code query}. */
-    @GetMapping("/editorial-offices")
-    public ResponseEntity<Page<String>> getEditorialOffices(
-            @RequestParam(required = false) String query,
-            Pageable pageable
-    ) {
-        return ResponseEntity.ok(pubMediumService.searchEditorialOffices(query, pageable));
-    }
-
-    // ---------- Read: single ----------
-
     @GetMapping("/{id}")
     public ResponseEntity<PubMediumDTO> getPubMediumById(@PathVariable Long id) {
         return pubMediumService.getPubMediumById(id)
@@ -119,8 +106,6 @@ public class PubMediumController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
-    // ---------- Write ----------
 
     @PostMapping
     public ResponseEntity<PubMediumDTO> createPubMedium(@RequestBody PubMediumDTO pubMediumDTO) {
@@ -146,8 +131,6 @@ public class PubMediumController {
             return ResponseEntity.status(404).build();
         }
     }
-
-    // ---------- Stats ----------
 
     @GetMapping(value = "/stats", params = {"type=same-place", "view=graph"})
     public ResponseEntity<GraphDTO> getSamePlaceGraph() {
