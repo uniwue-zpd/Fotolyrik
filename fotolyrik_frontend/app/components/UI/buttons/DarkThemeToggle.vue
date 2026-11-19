@@ -1,8 +1,4 @@
 <script setup lang="ts">
-defineProps<{
-  inPopup?: boolean
-}>()
-
 const colorMode = useColorMode();
 
 const states = {
@@ -25,12 +21,7 @@ const toggle = () => {
 </script>
 
 <template>
-  <div v-if="inPopup"  class="flex items-center gap-2 cursor-pointer" @click="toggle">
-    <UIcon :name="currentIcon" aria-hidden="true" />
-    <span class="outfit-headline">Farbschema</span>
-  </div>
   <UButton
-    v-else
     :icon="currentIcon"
     variant="link"
     aria-label="Farbschema wechseln"
