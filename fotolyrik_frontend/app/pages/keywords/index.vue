@@ -95,44 +95,44 @@ useHead(() => ({
         bearbeiten.
       </p>
     </div>
-    <div class="grid grid-cols-[1fr_auto] gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-between">
-      <UButton to="/keywords/create" icon="i-lucide-square-pen" label="Neu anlegen" color="neutral" variant="outline"
-        size="lg" class="col-span-2 justify-center text-primary hover:shadow-md" />
-      <div class="contents sm:flex sm:gap-2">
-        <USelect v-model="sort" :items="sortOptions" size="lg" class="w-full sm:w-48" />
-        <USelect v-model="pageParameter.size" :items="pageSizeOptions" size="lg" class="sm:w-36" />
-      </div>
-    </div>
     <div class="flex flex-col gap-5 lg:flex-row justify-between">
       <div class="lg:w-1/4">
         <KeywordFilter :filters="filters" @reset-filters="resetFilter" />
       </div>
-      <div class="flex flex-col gap-2 justify-between lg:w-3/4">
-        <p v-if="keywords" class="text-sm text-muted roboto-plain" aria-live="polite">
-          {{ totalCountLabel }}
-        </p>
-        <div v-if="isLoading" class="flex flex-col gap-2">
-          <USkeleton v-for="n in pageParameter.size" :key="n" class="h-13 w-full rounded-md" />
+      <div class="flex flex-col gap-4 lg:w-3/4">
+        <div class="grid grid-cols-[1fr_auto] gap-2 sm:flex sm:flex-wrap sm:justify-end">
+          <UButton to="/keywords/create" icon="i-lucide-square-pen" label="Neu anlegen" color="neutral" variant="outline"
+            size="lg" class="col-span-2 justify-center text-primary hover:shadow-md" />
+          <USelect v-model="sort" :items="sortOptions" size="lg" class="w-full sm:w-48" />
+          <USelect v-model="pageParameter.size" :items="pageSizeOptions" size="lg" class="sm:w-36" />
         </div>
-        <div v-else-if="!keywords || keywords.content.length === 0"
-          class="flex w-full justify-center text-primary text-2xl py-5">
-          Keine Schlagwörter gefunden!
+        <div class="flex flex-col gap-2 justify-between">
+          <p v-if="keywords" class="text-sm text-muted roboto-plain" aria-live="polite">
+            {{ totalCountLabel }}
+          </p>
+          <div v-if="isLoading" class="flex flex-col gap-2">
+            <USkeleton v-for="n in pageParameter.size" :key="n" class="h-13 w-full rounded-md" />
+          </div>
+          <div v-else-if="!keywords || keywords.content.length === 0"
+            class="flex w-full justify-center text-primary text-2xl py-5">
+            Keine Schlagwörter gefunden!
+          </div>
+          <div v-else class="flex flex-col gap-2">
+            <ContentCard v-for="keyword in keywords.content" :key="keyword.id" :headerLink="`/keywords/${keyword.id}`">
+              <template #header>{{ keyword.value }}</template>
+              <template #subContent>
+                <NuxtLink v-if="keyword.gndId" :to="`https://explore.gnd.network/gnd/${keyword.gndId}`" target="_blank"
+                  rel="noopener" title="Im GND-Explorer öffnen"
+                  class="group/gnd inline-flex items-center gap-1 text-sm text-primary outfit-headline font-medium">
+                  <img src="/gnd-logo.png" alt="GND" class="h-4 w-auto shrink-0" />
+                  <span class="group-hover/gnd:underline">{{ keyword.gndId }}</span>
+                  <UIcon name="i-lucide-external-link" class="size-3 shrink-0 opacity-70" />
+                </NuxtLink>
+              </template>
+            </ContentCard>
+          </div>
+          <PageSelection :page-parameter="pageParameter" :total-pages="keywords?.totalPages" />
         </div>
-        <div v-else class="flex flex-col gap-2">
-          <ContentCard v-for="keyword in keywords.content" :key="keyword.id" :headerLink="`/keywords/${keyword.id}`">
-            <template #header>{{ keyword.value }}</template>
-            <template #subContent>
-              <NuxtLink v-if="keyword.gndId" :to="`https://explore.gnd.network/gnd/${keyword.gndId}`" target="_blank"
-                rel="noopener" title="Im GND-Explorer öffnen"
-                class="group/gnd inline-flex items-center gap-1 text-sm text-primary outfit-headline font-medium">
-                <img src="/gnd-logo.png" alt="GND" class="h-4 w-auto shrink-0" />
-                <span class="group-hover/gnd:underline">{{ keyword.gndId }}</span>
-                <UIcon name="i-lucide-external-link" class="size-3 shrink-0 opacity-70" />
-              </NuxtLink>
-            </template>
-          </ContentCard>
-        </div>
-        <PageSelection :page-parameter="pageParameter" :total-pages="keywords?.totalPages" />
       </div>
     </div>
 

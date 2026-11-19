@@ -10,8 +10,6 @@ const emit = defineEmits<{
 }>()
 
 const isMobile = useBreakpoints(breakpointsTailwind).smaller('lg')
-// Start closed on server and first client render to avoid a hydration mismatch,
-// then open on desktop once the viewport is known.
 const openItem = ref<string | undefined>(undefined)
 const syncOpenState = () => {
   openItem.value = isMobile.value ? undefined : 'filters'
@@ -19,7 +17,7 @@ const syncOpenState = () => {
 onMounted(syncOpenState)
 watch(isMobile, syncOpenState)
 
-const accordionItems = [{ label: 'Filtern nach:', value: 'filters', slot: 'filters' as const }]
+const accordionItems = [{ label: 'Suchen & filtern:', value: 'filters', slot: 'filters' as const }]
 </script>
 
 <template>
