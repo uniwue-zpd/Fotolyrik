@@ -17,7 +17,8 @@ const personSuggestions = ref<PersonPreviewDTO[]>([]);
 
 const debouncedSearch = debounce(async (query: string) => {
   loading.value = true;
-  personSuggestions.value = await personApi.search(query);
+  const name = query.trim();
+  personSuggestions.value = name.length < 2 ? [] : await personApi.fetchFlat({ name });
   loading.value = false;
 }, 300);
 
@@ -112,7 +113,7 @@ const contributions = ref<Contribution[]>(
             v-model="contribution.contributor"
             :suggestions="personSuggestions"
             @complete="onPersonComplete"
-            :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
+            :optionLabel="(opt) => [opt.firstName, opt.lastName].filter(Boolean).join(' ') || opt.pseudonyms?.[0] || opt.studioName"
             showClear fluid
         />
         <AutoComplete

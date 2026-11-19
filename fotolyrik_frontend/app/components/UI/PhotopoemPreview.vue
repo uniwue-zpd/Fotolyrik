@@ -4,7 +4,7 @@ import {useFiles} from "~/composables/useFiles";
 const file_api = useFiles();
 
 const props = defineProps<{
-  photopoem: PhotoPoemDTO
+  photopoem: PhotoPoemPreviewDTO
 }>();
 
 const photopoem = props.photopoem;
@@ -13,7 +13,7 @@ const image_path = ref<string | null>(null);
 
 async function loadFirstImage() {
   try {
-    if (photopoem && photopoem.images.length > 0 && photopoem.images[0] !== undefined &&
+    if (photopoem && photopoem.images && photopoem.images.length > 0 && photopoem.images[0] !== undefined &&
         photopoem.imagesVisible === AccessLevel.PUBLIC) {
       image_path.value = await file_api.getContent(photopoem.images[0].id);
       return;

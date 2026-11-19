@@ -11,24 +11,27 @@ const keyword_api = useKeyword();
 const darkModeTextColor = computed(()=>{return useColorMode().value == 'dark'? 'white':'black'});
 
 
+// Only totalElements is needed, so request the smallest possible page
+const countPage = { page: 0, size: 1 };
+
 const [
-  { data: keywordList },
-  { data: personList },
-  { data: photopoemList },
-  { data: placeList },
-  { data: pubMediumList }
+  { data: keywordPage },
+  { data: personPage },
+  { data: photopoemPage },
+  { data: placePage },
+  { data: pubMediumPage }
 ] = await Promise.all([
-  keyword_api.getAll(),
-  person_api.getAll(),
-  photopoem_api.getAll(),
-  place_api.getAll(),
-  pub_medium_api.getAll()
+  useAsyncData('keyword-count', () => keyword_api.fetchPaginated(countPage)),
+  useAsyncData('person-count', () => person_api.fetchPaginated(countPage)),
+  useAsyncData('photopoem-count', () => photopoem_api.fetchPaginated(countPage)),
+  useAsyncData('place-count', () => place_api.fetchPaginated(countPage)),
+  useAsyncData('pubMedium-count', () => pub_medium_api.fetchPaginated(countPage))
 ]);
-const keywordCount = computed(()=> keywordList.value?.length);
-const personCount = computed(()=> personList.value?.length);
-const photopoemCount = computed(() => photopoemList.value?.length);
-const placeCount = computed(() => placeList.value?.length);
-const pubmediaCount = computed(() => pubMediumList.value?.length);
+const keywordCount = computed(() => keywordPage.value?.totalElements ?? 0);
+const personCount = computed(() => personPage.value?.totalElements ?? 0);
+const photopoemCount = computed(() => photopoemPage.value?.totalElements ?? 0);
+const placeCount = computed(() => placePage.value?.totalElements ?? 0);
+const pubmediaCount = computed(() => pubMediumPage.value?.totalElements ?? 0);
 
 
 const setChartData = () => {

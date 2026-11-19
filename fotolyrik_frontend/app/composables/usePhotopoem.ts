@@ -13,9 +13,17 @@ export const usePhotopoem = () => {
         return $fetch<PhotoPoemDTO>('/api/photopoems/highlight');
     }
 
+    /** Removes undefined, null and empty-string values so they are not sent as query parameters. */
+    function cleanQuery(params: Record<string, any>) {
+        return Object.fromEntries(
+            Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
+        );
+    }
+
+    /** Flat view: unpaginated list of lightweight previews. At least one filter is required. */
     function filter(params: Record<string, any>) {
-        return $fetch<PhotoPoemDTO[]>('/api/photopoems/filter', {
-            query: params
+        return $fetch<PhotoPoemPreviewDTO[]>('/api/photopoems', {
+            query: { ...cleanQuery(params), view: 'flat' }
         });
     }
 
@@ -39,8 +47,11 @@ export const usePhotopoem = () => {
         });
     }
 
+    /** Paginated view: page of full photopoem DTOs. All filters are optional. */
     function fetchPaginated(params: PhotopoemPageable) {
-        return $fetch<Page<PhotoPoemDTO>>('/api/photopoems', { query: params });
+        return $fetch<Page<PhotoPoemDTO>>('/api/photopoems', {
+            query: { ...cleanQuery(params), view: 'paginated' }
+        });
     }
 
     function getAll(){

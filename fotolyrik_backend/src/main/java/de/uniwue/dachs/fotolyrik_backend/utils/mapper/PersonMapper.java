@@ -29,9 +29,11 @@ public class PersonMapper {
         if (person == null) return null;
         PersonPreviewDTO personPreviewDTO = new PersonPreviewDTO();
         personPreviewDTO.setId(person.getId());
-        personPreviewDTO.setFullName(person.getFullName());
+        personPreviewDTO.setFirstName(person.getFirstName());
+        personPreviewDTO.setLastName(person.getLastName());
         personPreviewDTO.setStudioName(person.getStudioName());
         personPreviewDTO.setPseudonyms(person.getPseudonyms());
+        personPreviewDTO.setGndId(person.getGndId());
         return personPreviewDTO;
     }
 

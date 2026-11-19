@@ -6,16 +6,16 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.PlaceDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PersonPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.KeywordCountDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.PersonMetricsDTO;
-import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjection;
 import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.GraphDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.PersonService;
+import de.uniwue.dachs.fotolyrik_backend.specification.PersonSearchCriteria;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.events.Event;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import java.util.List;
 
 @RestController
@@ -27,10 +27,63 @@ public class PersonController {
         this.personService = personService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<PersonDTO>> getAllPersons() {
         List<PersonDTO> persons = personService.getAllPersons();
         return ResponseEntity.ok(persons);
+    }
+
+    /**
+     * Default view of the person search: a paginated list of full {@link PersonDTO} objects.
+     * Handles requests without a {@code view} parameter or with {@code view=paginated}. All filters are optional.
+     */
+    @GetMapping
+    public ResponseEntity<Page<PersonDTO>> getPaginatedPersons(
+            Pageable pageable,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false, value = "studio-name") String studioName,
+            @RequestParam(required = false) String pseudonym,
+            @RequestParam(required = false, value = "gnd-id") String gndId,
+            @RequestParam(required = false) String sex,
+            @RequestParam(required = false, value = "birth-year") Integer birthYear,
+            @RequestParam(required = false, value = "birth-year-from") Integer birthYearFrom,
+            @RequestParam(required = false, value = "birth-year-to") Integer birthYearTo,
+            @RequestParam(required = false, value = "death-year") Integer deathYear,
+            @RequestParam(required = false, value = "death-year-from") Integer deathYearFrom,
+            @RequestParam(required = false, value = "death-year-to") Integer deathYearTo
+    ) {
+        PersonSearchCriteria criteria = new PersonSearchCriteria(
+                name, studioName, pseudonym, gndId, sex,
+                birthYear, birthYearFrom, birthYearTo, deathYear, deathYearFrom, deathYearTo
+        );
+        return ResponseEntity.ok(personService.searchPaginated(criteria, pageable));
+    }
+
+    /**
+     * Flat view of the person search ({@code view=flat}): an unpaginated list of lightweight
+     * {@link PersonPreviewDTO} objects. At least one filter is required; use {@code /all} for an unfiltered list.
+     */
+    @GetMapping(params = "view=flat")
+    public ResponseEntity<List<PersonPreviewDTO>> getFlatPersons(
+            Sort sort,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false, value = "studio-name") String studioName,
+            @RequestParam(required = false) String pseudonym,
+            @RequestParam(required = false, value = "gnd-id") String gndId,
+            @RequestParam(required = false) String sex,
+            @RequestParam(required = false, value = "birth-year") Integer birthYear,
+            @RequestParam(required = false, value = "birth-year-from") Integer birthYearFrom,
+            @RequestParam(required = false, value = "birth-year-to") Integer birthYearTo,
+            @RequestParam(required = false, value = "death-year") Integer deathYear,
+            @RequestParam(required = false, value = "death-year-from") Integer deathYearFrom,
+            @RequestParam(required = false, value = "death-year-to") Integer deathYearTo
+    ) {
+        PersonSearchCriteria criteria = new PersonSearchCriteria(
+                name, studioName, pseudonym, gndId, sex,
+                birthYear, birthYearFrom, birthYearTo, deathYear, deathYearFrom, deathYearTo
+        );
+        if (criteria.isEmpty()) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(personService.searchFlat(criteria, sort));
     }
 
     @GetMapping("/{id}")
@@ -74,11 +127,12 @@ public class PersonController {
         }
     }
 
-    @GetMapping("/stats/graph/worked_with")
+    @GetMapping(value = "/stats", params = {"type=worked-with", "view=graph"})
     public ResponseEntity<GraphDTO> getWorkedWithGraph() {
         return ResponseEntity.ok(personService.getWorkedWithGraph());
     }
-    @GetMapping("/{id}/stats/contribution_places")
+
+    @GetMapping(value = "/{id}/stats", params = "type=contribution-places")
     public ResponseEntity<List<PlaceDTO>> getContributionPlacesByPersonId(@PathVariable Long id) {
         try {
             var contributionPlaces = personService.getContributionPlaces(id);
@@ -88,7 +142,7 @@ public class PersonController {
         }
     }
 
-    @GetMapping("/{id}/stats/themes")
+    @GetMapping(value = "/{id}/stats", params = "type=themes")
     public ResponseEntity<List<KeywordCountDTO>> getThemesByAuthor(
             @PathVariable Long id,
             @RequestParam(required = false, defaultValue = "10") Long limit) {
@@ -96,7 +150,7 @@ public class PersonController {
         return ResponseEntity.ok(themes);
     }
 
-    @GetMapping("/{id}/stats/image-motifs")
+    @GetMapping(value = "/{id}/stats", params = "type=image-motifs")
     public ResponseEntity<List<KeywordCountDTO>> getImageMotifsByAuthor(
             @PathVariable Long id,
             @RequestParam(required = false, defaultValue = "10") Long limit) {
@@ -104,21 +158,9 @@ public class PersonController {
         return ResponseEntity.ok(imageMotifs);
     }
 
-    @GetMapping("/{id}/stats/metrics")
+    @GetMapping(value = "/{id}/stats", params = "type=metrics")
     public ResponseEntity<PersonMetricsDTO> getPersonMetrics(@PathVariable Long id) {
         PersonMetricsDTO metrics = personService.getPersonMetrics(id);
         return ResponseEntity.ok(metrics);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<PersonPreviewDTO>> searchPeople(@RequestParam String query) {
-        if (query == null || query.trim().length() < 2) return ResponseEntity.ok(List.of());
-        List<PersonPreviewDTO> persons = personService.searchPeople(query);
-        return ResponseEntity.ok(persons);
-    }
-    @GetMapping("/search_paginated")
-    public ResponseEntity<Page<PersonPreviewDTO>> searchPeoplePaginated(Pageable pageable, @RequestParam String query) {
-        Page<PersonPreviewDTO> persons = personService.searchPeoplePaginated(pageable, query);
-        return ResponseEntity.ok(persons);
     }
 }

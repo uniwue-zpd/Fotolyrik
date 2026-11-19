@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
 const email = 'email@uni-wuerzburg.de';
@@ -9,7 +8,7 @@ const date = ref(new Date().getFullYear());
 
 function copy_to_clipboard(copy_item: string) {
   navigator.clipboard.writeText(copy_item)
-  toast.add({detail: 'In die Zwischenablage kopiert', life: 3000})
+  toast.add({ description: 'In die Zwischenablage kopiert', duration: 3000 })
 }
 </script>
 
@@ -27,12 +26,10 @@ function copy_to_clipboard(copy_item: string) {
           <div class="flex flex-col gap-2">
             <p class="text-xl outfit-headline">Kontakt</p>
             <div class="space-x-2">
-              <Toast />
               <a v-bind:href="'mailto:' + email" class="text-white">{{ email }}</a>
               <i class="pi pi-clone hover:cursor-pointer" @click="copy_to_clipboard(email)"></i>
             </div>
             <div class="space-x-2">
-              <Toast />
               <a v-bind:href="'tel:' + phone" class="text-white">{{ phone }}</a>
               <i class="pi pi-clone hover:cursor-pointer" @click="copy_to_clipboard(phone)"></i>
             </div>

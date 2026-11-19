@@ -6,15 +6,14 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.visualization.graph.AdjacencyProjec
 import de.uniwue.dachs.fotolyrik_backend.model.Person;
 import de.uniwue.dachs.fotolyrik_backend.model.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Repository
-public interface PersonRepository extends JpaRepository<Person, Long> {
+public interface PersonRepository extends JpaRepository<Person, Long>, JpaSpecificationExecutor<Person> {
     @Query(value = """
         WITH sorted_persons AS (
             SELECT 
@@ -98,27 +97,13 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     """, nativeQuery = true)
     PersonMetricsDTO getMetricsByPerson(Long personId);
 
-    @Query("""
-    SELECT DISTINCT p FROM Person p
-        LEFT JOIN p.pseudonyms pseudonym
-        WHERE
-        LOWER(CONCAT(COALESCE(p.firstName, ''), ' ', COALESCE(p.lastName, '')))
-            LIKE LOWER(CONCAT('%', :query, '%'))
-        OR LOWER(COALESCE(p.firstName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        OR LOWER(COALESCE(p.lastName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        OR LOWER(COALESCE(p.studioName, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        OR LOWER(COALESCE(pseudonym, '')) LIKE LOWER(CONCAT('%', :query, '%'))
-        ORDER BY p.lastName ASC NULLS LAST
-    """)
-    Page<Person> searchPeople(@Param("query") String query, Pageable pageable);
-
     @Query(value = """
     SELECT
         c1.contributor_id AS id,
         TRIM(CONCAT(p.last_name, ' ', p.first_name)) AS name,
         ARRAY_AGG(DISTINCT c2.contributor_id) AS targets
     FROM contribution c1
-    JOIN contribution c2 ON c1.photopoem_id = c2.photopoem_id 
+    JOIN contribution c2 ON c1.photopoem_id = c2.photopoem_id
                          AND c1.contributor_id != c2.contributor_id
     JOIN person p ON c1.contributor_id = p.id
     WHERE (p.first_name IS NOT NULL AND TRIM(p.first_name) != '')

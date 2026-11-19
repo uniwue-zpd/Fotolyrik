@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { FullTextDTO } from "~/utils/types";
-import { useToast } from "primevue/usetoast";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 import {useFullText} from "~/composables/useFullText";
@@ -40,15 +39,15 @@ const onFormSubmit = async (e: any) => {
     try {
       if (props.action === "create") {
         await fullTextApi.create(e.values);
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
         e.reset();
       } else if (props.action === "edit" && props.fulltext?.id) {
         await fullTextApi.update(props.fulltext.id, e.values);
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich upgedated", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich upgedated", duration: 3000 });
       }
     } catch (error) {
       console.log(error);
-      toast.add({severity: "error", summary: "Fehler", detail: "Fehler beim Senden der Nachricht", life: 3000});
+      toast.add({ color: "error", title: "Fehler", description: "Fehler beim Senden der Nachricht", duration: 3000 });
     }
   }
 };

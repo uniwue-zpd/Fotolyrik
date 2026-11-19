@@ -1,10 +1,13 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.KeywordPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.KeywordService;
+import de.uniwue.dachs.fotolyrik_backend.specification.KeywordSearchCriteria;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +22,38 @@ public class KeywordController {
         this.keywordService = keywordService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<KeywordDTO>> getAllKeywords() {
-        List<KeywordDTO> keywords = keywordService.getAllKeywords();
-        return ResponseEntity.ok(keywords);
+        return ResponseEntity.ok(keywordService.getAllKeywords());
+    }
+
+    /**
+     * Default view of the keyword search: a paginated list of {@link KeywordPreviewDTO} objects
+     * (id, value, GND ID). Handles requests without a {@code view} parameter or with {@code view=paginated}.
+     * All filters are optional.
+     */
+    @GetMapping
+    public ResponseEntity<Page<KeywordPreviewDTO>> getPaginatedKeywords(
+            Pageable pageable,
+            @RequestParam(required = false) String value,
+            @RequestParam(required = false, value = "gnd-id") String gndId
+    ) {
+        KeywordSearchCriteria criteria = new KeywordSearchCriteria(value, gndId);
+        return ResponseEntity.ok(keywordService.searchPaginated(criteria, pageable));
+    }
+
+    /**
+     * Flat view of the keyword search ({@code view=flat}): an unpaginated list of lightweight
+     * {@link KeywordPreviewDTO} objects. Accepts the same filters as the paginated view; all are optional.
+     */
+    @GetMapping(params = "view=flat")
+    public ResponseEntity<List<KeywordPreviewDTO>> getFlatKeywords(
+            Sort sort,
+            @RequestParam(required = false) String value,
+            @RequestParam(required = false, value = "gnd-id") String gndId
+    ) {
+        KeywordSearchCriteria criteria = new KeywordSearchCriteria(value, gndId);
+        return ResponseEntity.ok(keywordService.searchFlat(criteria, sort));
     }
 
     @GetMapping("/{id}")
@@ -41,8 +72,7 @@ public class KeywordController {
     @PutMapping("/{id}")
     public ResponseEntity<KeywordDTO> updateKeyword(@PathVariable Long id, @RequestBody KeywordDTO keywordDTO) {
         try {
-            KeywordDTO updatedKeyword = keywordService.updateKeyword(id, keywordDTO);
-            return ResponseEntity.status(201).body(updatedKeyword);
+            return ResponseEntity.ok(keywordService.updateKeyword(id, keywordDTO));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
         }
@@ -56,10 +86,5 @@ public class KeywordController {
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
-    }
-    @GetMapping("/search_paginated")
-    public ResponseEntity<Page<KeywordDTO>> searchKeywordPaginated(Pageable pageable, @RequestParam String query) {
-        Page<KeywordDTO> keywords = keywordService.searchKeywordsPaginated(pageable, query);
-        return ResponseEntity.ok(keywords);
     }
 }

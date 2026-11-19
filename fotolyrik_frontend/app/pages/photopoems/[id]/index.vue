@@ -197,7 +197,7 @@ const roleText = {
                                   class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
                               >
                                 <span class="font-medium">
-                                  {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                  {{ [person.firstName, person.lastName].filter(Boolean).join(' ') || `${person.pseudonyms[0]} (Pseudonym)` }}
                                 </span>
                                 <span v-if="person.pseudonym" class="font-light italic">als {{  person.pseudonym }}</span>
                               </NuxtLink>
@@ -215,7 +215,7 @@ const roleText = {
                                   class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
                               >
                                 <span class="font-medium">
-                                  {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                  {{ [person.firstName, person.lastName].filter(Boolean).join(' ') || `${person.pseudonyms[0]} (Pseudonym)` }}
                                 </span>
                                 <span v-if="person.pseudonym" class="font-light italic">als {{  person.pseudonym }}</span>
                               </NuxtLink>
@@ -233,7 +233,7 @@ const roleText = {
                                   class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
                               >
                                 <span class="font-medium">
-                                  {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                  {{ [person.firstName, person.lastName].filter(Boolean).join(' ') || `${person.pseudonyms[0]} (Pseudonym)` }}
                                 </span>
                                 <span v-if="person.pseudonym" class="font-light italic">als {{  person.pseudonym }}</span>
                               </NuxtLink>
@@ -251,7 +251,7 @@ const roleText = {
                                   class="flex flex-row space-x-2 p-1.5 bg-gray-accent rounded-md shadow-sm hover:shadow-md"
                               >
                                 <span class="font-medium">
-                                  {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                  {{ [person.firstName, person.lastName].filter(Boolean).join(' ') || `${person.pseudonyms[0]} (Pseudonym)` }}
                                 </span>
                                 <span v-if="person.pseudonym" class="font-light italic">als {{  person.pseudonym }}</span>
                               </NuxtLink>
@@ -268,7 +268,7 @@ const roleText = {
                                   :to="`/persons/${person.id}`"
                                   class="inline-block p-1.5 bg-surface-100 rounded-md shadow-sm hover:shadow-md font-medium"
                               >
-                                {{ person.fullName || `${person.pseudonyms[0]} (Pseudonym)` }}
+                                {{ [person.firstName, person.lastName].filter(Boolean).join(' ') || `${person.pseudonyms[0]} (Pseudonym)` }}
                               </NuxtLink>
                             </span>
                         </div>

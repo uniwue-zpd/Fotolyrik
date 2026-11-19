@@ -1,116 +1,151 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { FilterMatchMode } from "@primevue/core";
+import ContentCard from "~/components/UI/cards/ContentCard.vue";
+import PageSelection from "~/components/UI/buttons/PageSelection.vue";
+import PersonFilter from "~/components/UI/filters/PersonFilter.vue";
+import type { Page, PersonDTO, PersonPageable } from "~/utils/types";
 
-const person_api = usePerson();
-const {data: personList} = await person_api.getAll();
-const persons = computed(() => {
-  return personList.value?.map(person => ({
-    ...person,
-    pseudonyms: person.pseudonyms.sort().join(', ')
-  }));
-})
+const initialPageParameter: PersonPageable = {
+  page: 0,
+  size: 10,
+  sort: "lastName,asc"
+};
 
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  fullName: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+const initialFilters: PersonPageable = {
+  name: undefined,
+  'studio-name': undefined,
+  pseudonym: undefined,
+  'gnd-id': undefined,
+  'birth-year': undefined,
+  'birth-year-from': undefined,
+  'birth-year-to': undefined,
+  'death-year': undefined,
+  'death-year-from': undefined,
+  'death-year-to': undefined,
+  sex: null
+};
+
+const pageParameter = reactive<PersonPageable>({ ...initialPageParameter });
+const filters = reactive<PersonPageable>({ ...initialFilters });
+
+const resetFilter = () => {
+  Object.assign(pageParameter, initialPageParameter);
+  Object.assign(filters, initialFilters);
+};
+
+const sortOptions = ref([
+  { label: "Name aufsteigend", value: "lastName,asc" },
+  { label: "Name absteigend", value: "lastName,desc" }
+]);
+
+const sort = computed({
+  get: () => String(pageParameter.sort ?? initialPageParameter.sort),
+  set: (value: string) => { pageParameter.sort = value; }
 });
+
+const pageSizeOptions = ref([
+  { label: "5 pro Seite", value: 5 },
+  { label: "10 pro Seite", value: 10 },
+  { label: "15 pro Seite", value: 15 },
+  { label: "30 pro Seite", value: 30 },
+  { label: "50 pro Seite", value: 50 }
+]);
+
+const personApi = usePerson();
+
+const {
+  data: persons,
+  pending: isLoading,
+  refresh
+} = useAsyncData<Page<PersonDTO>>(
+  "persons-paginated",
+  () => personApi.fetchPaginated({ ...pageParameter, ...filters })
+);
+
+const debouncedRefresh = debounce(() => {
+  if (pageParameter.page === 0) {
+    refresh();
+  } else {
+    pageParameter.page = 0;
+  }
+}, 300);
+
+watch(filters, () => debouncedRefresh(), { deep: true });
+watch(pageParameter, () => refresh(), { deep: true });
+
+const isFiltered = computed(() => Object.values(filters).some(v => v !== undefined && v !== null && v !== ''));
+const totalCount = computed(() => persons.value?.totalElements ?? 0);
+const totalCountLabel = computed(() =>
+  `${totalCount.value.toLocaleString('de-DE')} ${totalCount.value === 1 ? 'Person' : 'Personen'}`
+  + (isFiltered.value ? ' gefunden' : ' insgesamt')
+);
+
+useHead(() => ({
+  title: 'Personen - Übersicht'
+}));
 </script>
 
 <template>
-  <Card>
-    <template #title>
-      <h1 class="text-3xl font-bold text-primary outfit-headline">Personen</h1>
-    </template>
-    <template #content>
-      <DataTable
-          v-model:filters="filters"
-          filter-display="row"
-          :global-filter-fields="['fullName', 'sex', 'birthYear', 'deathYear', 'pseudonyms']"
-          :value="persons"
-          stripedRows paginator :rows="10"
-      >
-        <template #header>
-          <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
-            <div class="p-2 border border-solid rounded-md hover:shadow-md text-center">
-              <NuxtLink to="/persons/create" class="flex items-center justify-center">
-                <i class="pi pi-pen-to-square mr-2"/>
-                <div class="text-primary roboto-plain">Neu anlegen</div>
-              </NuxtLink>
-            </div>
-            <IconField>
-              <InputIcon>
-                <i class="pi pi-search"/>
-              </InputIcon>
-              <InputText
-                  v-model="filters['global'].value"
-                  type="text"
-                  placeholder="Tabelle durchsuchen"
-                  class="w-full"
-              />
-            </IconField>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <h1 class="text-3xl font-bold outfit-headline text-primary">Personen</h1>
+      <p class="roboto-plain">
+        Eine Übersicht aller Personen in der Datenbank. Klicken Sie auf eine Person, um Details anzuzeigen oder zu
+        bearbeiten.
+      </p>
+    </div>
+    <div class="flex flex-col gap-5 lg:flex-row justify-between">
+      <div class="lg:w-1/4">
+        <PersonFilter :filters="filters" @reset-filters="resetFilter" />
+      </div>
+      <div class="flex flex-col gap-4 lg:w-3/4">
+        <div class="grid grid-cols-[1fr_auto] gap-2 sm:flex sm:flex-wrap sm:justify-end">
+          <UButton to="/persons/create" icon="i-lucide-square-pen" label="Neu anlegen" color="neutral" variant="outline"
+            size="lg" class="col-span-2 justify-center text-primary hover:shadow-md" />
+          <USelect v-model="sort" :items="sortOptions" size="lg" class="w-full sm:w-48" />
+          <USelect v-model="pageParameter.size" :items="pageSizeOptions" size="lg" class="sm:w-36" />
+        </div>
+        <div class="flex flex-col gap-2 justify-between">
+          <p v-if="persons" class="text-sm text-muted roboto-plain" aria-live="polite">
+            {{ totalCountLabel }}
+          </p>
+          <div v-if="isLoading" class="flex flex-col gap-2 items-center py-5">
+            <ProgressSpinner />
+            <div class="roboto-plain text-primary font-semibold text-lg">Inhalte werden geladen</div>
           </div>
-        </template>
-        <Column field="fullName" header="Name" sortable>
-          <template #body="slotProps">
-            <NuxtLink
-                :to="`/persons/${slotProps.data.id}`"
-                class="roboto-plain font-semibold"
-            >
-              {{ slotProps.data.fullName || `Person mit ID: ${slotProps.data.id}` }}
-            </NuxtLink>
-          </template>
-          <template #filter="{ filterModel, filterCallback }">
-            <InputText
-                v-model="filterModel.value"
-                type="text" @input="filterCallback()"
-                placeholder="Nach Namen suchen"
-            />
-          </template>
-        </Column>
-        <Column field="firstName" header="Vorname" class="roboto-plain" :sortable="true"/>
-        <Column field="lastName" header="Nachname" class="roboto-plain" :sortable="true"/>
-        <Column field="pseudonyms" header="Pseudonyme" class="roboto-plain" :sortable="true">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.pseudonyms">
-              <div class="roboto-plain">{{ slotProps.data.pseudonyms }}</div>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-        <Column field="birthYear" header="Geburtsjahr" :sortable="true">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.birthYear != null">
-              <div class="roboto-plain">{{ slotProps.data.birthYear }}</div>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-        <Column field="deathYear" header="Sterbejahr" :sortable="true">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.deathYear != null">
-              <div class="roboto-plain">{{ slotProps.data.deathYear }}</div>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-        <Column field="sex" header="Geschlecht" :sortable="true">
-          <template #body="slotProps">
-            <div v-if="slotProps.data.sex != null">
-              <div class="roboto-plain">{{ slotProps.data.sex === 'männlich' ? "männlich" : "weiblich" }}</div>
-            </div>
-            <div v-else>
-              <span class="roboto-italic text-gray-500">Unbekannt</span>
-            </div>
-          </template>
-        </Column>
-      </DataTable>
-    </template>
-  </Card>
+          <div v-else-if="!persons || persons.content.length === 0"
+            class="flex w-full justify-center text-primary text-2xl py-5">
+            Keine Personen gefunden!
+          </div>
+          <div v-else class="flex flex-col gap-2">
+              <ContentCard v-for="{ id, fullName, studioName, birthYear, deathYear, pseudonyms, gndId } in persons.content" :key="id"
+                :headerLink="`/persons/${id}`">
+                <template #header>
+                  <template v-if="fullName?.trim() || studioName?.trim()">
+                    {{ fullName?.trim() || studioName?.trim() }}
+                  </template>
+                  <span v-else class="text-muted font-medium">Name unbekannt</span>
+                </template>
+                <template #subContent>
+                  <div v-if="birthYear || deathYear || pseudonyms.length > 0 || gndId"
+                    class="flex flex-row flex-wrap gap-x-2 text-sm text-primary outfit-headline font-medium">
+                    <span v-if="birthYear || deathYear">({{ birthYear ?? '?' }} - {{ deathYear ?? '?' }})</span>
+                    <span v-if="pseudonyms.length > 0" class="whitespace-normal">
+                      aka. {{ pseudonyms.map(p => `"${p}"`).join(', ') }}
+                    </span>
+                    <NuxtLink v-if="gndId" :to="`https://explore.gnd.network/gnd/${gndId}`" target="_blank" rel="noopener"
+                      title="Im GND-Explorer öffnen"
+                      class="group/gnd inline-flex items-center gap-1 text-sm text-primary outfit-headline font-medium">
+                      <img src="/gnd-logo.png" alt="GND" class="h-4 w-auto shrink-0" />
+                      <span class="group-hover/gnd:underline">{{ gndId }}</span>
+                      <UIcon name="i-lucide-external-link" class="size-3 shrink-0 opacity-70" />
+                    </NuxtLink>
+                  </div>
+                </template>
+              </ContentCard>
+          </div>
+          <PageSelection :page-parameter="pageParameter" :total-pages="persons?.totalPages" />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

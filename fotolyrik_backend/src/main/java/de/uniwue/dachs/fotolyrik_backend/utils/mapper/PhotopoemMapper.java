@@ -115,11 +115,14 @@ public class PhotopoemMapper {
     }
 
     public PhotopoemPreviewDTO PhotopoemToPhotopoemPreviewDTO(Photopoem photopoem) {
+        if (photopoem == null) return null;
         PhotopoemPreviewDTO photopoemPreviewDTO = new PhotopoemPreviewDTO();
         photopoemPreviewDTO.setId(photopoem.getId());
         photopoemPreviewDTO.setTitle(photopoem.getTitle());
         photopoemPreviewDTO.setAltTitle(photopoem.getAltTitle());
+        photopoemPreviewDTO.setPublicationDate(publicationDateMapper.DateToDateWithoutDashes(photopoem.getPublicationDate()));
+        photopoemPreviewDTO.setImages(fileMapper.FilesToFileDTOs(photopoem.getImages()));
+        photopoemPreviewDTO.setImagesVisible(photopoem.getImagesVisible());
         return photopoemPreviewDTO;
-
     }
 }

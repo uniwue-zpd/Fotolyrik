@@ -26,17 +26,17 @@ const onFormSubmit = async (e: any) => {
       if (props.action === "create") {
         await locationApi.create(e.values);
         await refreshNuxtData('location-list');
-        toast.add({ severity: "success", summary: "Erfolg", detail: "Ort erfolgreich erstellt", life: 3000 });
+        toast.add({ color: "success", title: "Erfolg", description: "Ort erfolgreich erstellt", duration: 3000 });
         e.reset();
       } else if (props.action === "edit" && props.location?.id) {
         await locationApi.update(props.location.id, e.values);
         await Promise.all([refreshNuxtData('location-list'), refreshNuxtData(`location-${props.location.id}`)])
-        toast.add({ severity: "success", summary: "Erfolg", detail: "Ort erfolgreich aktualisiert", life: 3000 });
+        toast.add({ color: "success", title: "Erfolg", description: "Ort erfolgreich aktualisiert", duration: 3000 });
         navigateTo(`/locations/${props.location?.id}`);
       }
     } catch (error) {
       console.error(error);
-      toast.add({ severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000 });
+      toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
     }
   }
 };

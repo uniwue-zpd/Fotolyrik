@@ -26,17 +26,17 @@ const onFormSubmit = async (e: any) => {
       if (props.action === "create") {
         await publisherApi.create(e.values);
         await refreshNuxtData('publisher-list');
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
         e.reset();
       } else if (props.action === "edit" && props.publisher?.id) {
         await publisherApi.update(props.publisher.id, e.values);
         await Promise.all( [refreshNuxtData('publisher-list'), await refreshNuxtData(`publisher-${props.publisher.id}`)])
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
         navigateTo(`/keywords/${props.publisher?.id}`);
       }
     } catch (error) {
       console.log(error);
-      toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
+      toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
     }
   }
 };

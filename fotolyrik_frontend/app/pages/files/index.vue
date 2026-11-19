@@ -36,10 +36,10 @@ watch(
 watch(error, (newError) => {
   if (newError) {
     toast.add({
-      severity: "error",
-      summary: "Fehler beim Laden",
-      detail: "Die Dateien konnten nicht geladen werden.",
-      life: 3000
+      color: "error",
+      title: "Fehler beim Laden",
+      description: "Die Dateien konnten nicht geladen werden.",
+      duration: 3000
     });
   }
 });
@@ -49,11 +49,11 @@ const onFileSelect = async (e: any) => {
     if (e.files && e.files.length > 0) {
       await fileApi.upload(e.files);
       await refresh();
-      toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich hinzugefügt", life: 3000});
+      toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich hinzugefügt", duration: 3000 });
     }
   } catch (error) {
     console.log(error);
-    toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
+    toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
   }
 }
 

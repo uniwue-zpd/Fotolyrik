@@ -69,6 +69,7 @@ export interface PersonDTO extends Auditable {
     deathYear: number | null;
     sex: "weiblich" | "männlich" | null;
     gndId: string | null;
+    notes: string | null;
     image: FileDTO | null;
 }
 export interface IDSliceDTO{
@@ -79,9 +80,46 @@ export interface IDSliceDTO{
 
 export interface PersonPreviewDTO {
     id: number;
-    fullName: string | null;
+    firstName: string | null;
+    lastName: string | null;
     studioName: string | null;
     pseudonyms: [string] | [];
+    gndId: string | null;
+}
+export interface PersonPageable extends Pageable {
+    name?: string;
+    'studio-name'?: string;
+    pseudonym?: string;
+    'gnd-id'?: string;
+    'birth-year'?: number | null;
+    'birth-year-from'?: number | null;
+    'birth-year-to'?: number | null;
+    'death-year'?: number | null;
+    'death-year-from'?: number | null;
+    'death-year-to'?: number | null;
+    sex?: 'männlich' | 'weiblich' | null;
+}
+/**
+ * Pagination, sorting and optional filters for publication medium requests (flat and paginated view).
+ * - `query` matches title, subtitle or "title subtitle" combined.
+ * - `title` and `subtitle` filter the fields separately; all filters are combined with AND.
+ */
+export interface PubMediumPageable extends Pageable {
+    query?: string;
+    title?: string;
+    subtitle?: string;
+    'pubplace-id'?: number | null;
+    pubplace?: string;
+    'publisher-id'?: number | null;
+    publisher?: string;
+    'publication-rhythm-id'?: number | null;
+    'publication-rhythm'?: string;
+    'editorial-office'?: string;
+    'start-year'?: number | null;
+    'end-year'?: number | null;
+    'amount-volumes'?: number | null;
+    'amount-issues'?: number | null;
+    'zdb-id'?: string;
 }
 export enum ContributionRole {
     AUTHOR = "AUTHOR",
@@ -131,6 +169,9 @@ export interface PhotoPoemPreviewDTO {
     id: number;
     title: string | null;
     altTitle: string | null;
+    publicationDate: string | null;
+    images?: FileDTO[] | [];
+    imagesVisible?: AccessLevel;
 }
 enum DepictedRole {
     DEPICTED = "DEPICTED"
@@ -212,6 +253,16 @@ export interface KeywordDTO extends Auditable {
 export interface KeywordPreviewDTO {
     id: number;
     value: string;
+    gndId: string | null;
+}
+/** Pagination, sorting and optional filters for keyword requests (flat and paginated view). */
+export interface KeywordPageable extends Pageable {
+    value?: string;
+    'gnd-id'?: string;
+}
+
+export interface PlacePageable extends Pageable {
+    name?: string;
 }
 
 /**
@@ -333,16 +384,28 @@ export interface PhotopoemPageable extends Pageable {
     volume?: number;
     issue?: number;
     'publication-date'?: string;
-    'pub-medium-id'?: number;
-    'pub-place-id'?: number;
+    'pubmedium-id'?: number;
+    pubmedium?: string;
+    'pubplace-id'?: number;
     'location-id'?: number;
     'author-id'?: number;
+    author?: string;
     'photographer-id'?: number;
+    photographer?: string;
     'depicted-person-id'?: number;
-    'contributor-id'?: number;
+    'depicted-person'?: string;
+    'participant-id'?: number;
+    participant?: string;
+    'other-contributor-id'?: number;
+    'other-contributor'?: string;
     'theme-id'?: number;
+    theme?: string;
     'image-motif-id'?: number;
-    'copyright-image-id'?: number;
-    'copyright-text-id'?: number;
+    'image-motif'?: string;
+    'copyright-status-image-id'?: number;
+    'copyright-status-image'?: string;
+    'copyright-status-text-id'?: number;
+    'copyright-status-text'?: string;
     'language-id'?: number;
+    language?: string;
 }

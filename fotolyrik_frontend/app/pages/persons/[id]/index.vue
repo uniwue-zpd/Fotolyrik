@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import type { PersonDTO } from "~/utils/types";
 import PageToolbar from "~/components/UI/pagetools/PageToolbar.vue";
 import PhotopoemPreview from "~/components/UI/PhotopoemPreview.vue";
 import MultiPlaceMap from "~/components/visualizations/MultiPlaceMap.vue";
@@ -56,8 +55,8 @@ const [
   { data: person_item },
   { data: person_neighbors }
 ] = await Promise.all([
-  person_api.getById(person_id),
-  person_api.getNeighborsById(person_id)
+  useAsyncData(`person-${person_id}`, () => person_api.fetchById(person_id)),
+  useAsyncData(`person-${person_id}-neighbor`, () => person_api.fetchNeighborsById(person_id))
 ]);
 
 onMounted(async () => {
@@ -115,6 +114,16 @@ useHead(() => {
           <tr v-if="person_item.deathYear">
             <td class="px-6 py-4 whitespace-nowrap font-semibold">Sterbejahr</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ person_item.deathYear }}</td>
+          </tr>
+          <tr v-if="person_item.gndId">
+            <td class="px-6 py-4 whitespace-nowrap font-semibold">GND</td>
+            <td class="px-6 py-4 whitespace-nowrap"><NuxtLink :to="`https://explore.gnd.network/gnd/${person_item.gndId}`" target="_blank" rel="noopener"
+                    title="Im GND-Explorer öffnen"
+                    class="group/gnd inline-flex items-center gap-1 text-base text-primary outfit-headline font-medium">
+                    <img src="/gnd-logo.png" alt="GND" class="h-5 w-auto shrink-0" />
+                    <span class="group-hover/gnd:underline">{{ person_item.gndId }}</span>
+                    <UIcon name="i-lucide-external-link" class="size-4 shrink-0 opacity-70" />
+                  </NuxtLink></td>
           </tr>
           <tr v-if="person_item.pseudonyms.length > 0">
             <td class="px-6 py-4 whitespace-nowrap font-semibold">Pseudonyme</td>

@@ -1,35 +1,38 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import type { Page } from "~/utils/types";
+import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
+import KeywordFilter from "~/components/UI/filters/KeywordFilter.vue";
+import type { KeywordPageable, KeywordPreviewDTO, Page } from "~/utils/types";
 
-const { width } = useWindowSize();
-
-const searchFocused = ref(false);
-const searchQuery = ref("");
-
-function getKeywordColor(id: number): string {
-  const hue = (id * 137.508) % 360;
-  return `hsla(${hue}, 80%, 70%, 0.4)`;
-}
-
-const initialPageParameter = {
+const initialPageParameter: KeywordPageable = {
   page: 0,
   size: 10,
   sort: "value,asc"
 };
-const pageParameter = reactive<Pageable>({ ...initialPageParameter });
 
-const keyword_api = useKeyword();
+const initialFilters: KeywordPageable = {
+  value: undefined,
+  'gnd-id': undefined
+};
 
-const {
-  data: keywords,
-  pending: isLoading,
-  refresh
-} = useAsyncData<Page<KeywordDTO>>(
-  "keywords-paginated",
-  () => keyword_api.searchPaginated(searchQuery.value, { ...pageParameter })
-);
+const pageParameter = reactive<KeywordPageable>({ ...initialPageParameter });
+const filters = reactive<KeywordPageable>({ ...initialFilters });
+
+const resetFilter = () => {
+  Object.assign(pageParameter, initialPageParameter);
+  Object.assign(filters, initialFilters);
+};
+
+const sortOptions = ref([
+  { label: "Schlagwort A–Z", value: "value,asc" },
+  { label: "Schlagwort Z–A", value: "value,desc" }
+]);
+
+const sort = computed({
+  get: () => String(pageParameter.sort ?? initialPageParameter.sort),
+  set: (value: string) => { pageParameter.sort = value; }
+});
 
 const pageSizeOptions = ref([
   { label: "5 pro Seite", value: 5 },
@@ -39,120 +42,129 @@ const pageSizeOptions = ref([
   { label: "50 pro Seite", value: 50 }
 ]);
 
-watch(searchQuery, () => {
-  if (pageParameter.page !== 0) {
-    pageParameter.page = 0;
-    return;
-  }
-  refresh();
-});
+const keywordApi = useKeyword();
 
+const {
+  data: keywords,
+  pending: isLoading,
+  refresh
+} = useAsyncData<Page<KeywordPreviewDTO>>(
+  "keywords-paginated",
+  () => keywordApi.fetchPaginated({ ...pageParameter, ...filters })
+);
+
+const debouncedRefresh = debounce(() => {
+  if (pageParameter.page === 0) {
+    refresh();
+  } else {
+    pageParameter.page = 0;
+  }
+}, 300);
+
+watch(filters, () => debouncedRefresh(), { deep: true });
 watch(pageParameter, () => refresh(), { deep: true });
+
+const totalCount = computed(() => keywords.value?.totalElements ?? 0);
+const totalCountLabel = computed(() =>
+  `${totalCount.value.toLocaleString('de-DE')} ${totalCount.value === 1 ? 'Schlagwort' : 'Schlagwörter'}`
+  + (filters.value || filters['gnd-id'] ? ' gefunden' : ' insgesamt')
+);
+
+// Keyword cloud
+// function getKeywordColor(id: number): string {
+//   const hue = (id * 137.508) % 360;
+//   return `hsla(${hue}, 80%, 70%, 0.4)`;
+// }
+// const cloudSizes = ["text-sm", "text-base", "text-lg", "text-base"];
+//
+// const hash = (id: number) => Math.abs((id * 2654435761) | 0);
+// const cloudSize = (id: number) => cloudSizes[(hash(id) >> 3) % cloudSizes.length];
+// const skeletonWidths = ["w-16", "w-24", "w-20", "w-28", "w-14", "w-32"];
+
+useHead(() => ({
+  title: 'Schlagwörter - Übersicht'
+}));
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <h1 class="text-2xl outfit-headline text-primary font-bold">Schlagwörter</h1>
-    <p class="roboto-plain">
-      Eine Übersicht aller Schlagwörter in der Datenbank. Klicken Sie auf ein Schlagwort, um Details anzuzeigen oder zu
-      bearbeiten.
-    </p>
-    <Tabs value="0">
-      <TabList>
-        <Tab value="0">
-          <p class="roboto-plain font-bold">Tabellarische Übersicht</p>
-        </Tab>
-        <Tab value="1">
-          <p class="roboto-plain font-bold">Tag-Ansicht</p>
-        </Tab>
-      </TabList>
-      <div class="flex flex-row justify-between items-stretch gap-2 mx-4 mt-4">
-        <div v-if="width > 600 || !searchFocused" class="p-2 border border-solid rounded-md hover:shadow-md">
-          <NuxtLink to="/keywords/create" class="flex items-center">
-            <i class="pi pi-pen-to-square mr-2" />
-            <div class="text-primary roboto-plain">Neu {{ width > 600 ? 'anlegen' : '' }}</div>
-          </NuxtLink>
-        </div>
-        <Select v-if="width > 600 || !searchFocused" v-model="pageParameter.size" :options="pageSizeOptions"
-          :optionLabel="width > 600 ? 'label' : 'value'" optionValue="value" />
-        <IconField class="search-field" :class="{ 'is-expanded': width <= 600 && searchFocused }">
-          <InputIcon>
-            <i class="pi pi-search" />
-          </InputIcon>
-          <InputText v-model="searchQuery" type="text" placeholder="Suchen" class="search-input"
-            @focus="searchFocused = true" @blur="searchFocused = false" />
-        </IconField>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <h1 class="text-3xl font-bold outfit-headline text-primary">Schlagwörter</h1>
+      <p class="roboto-plain">
+        Eine Übersicht aller Schlagwörter in der Datenbank. Klicken Sie auf ein Schlagwort, um Details anzuzeigen oder zu
+        bearbeiten.
+      </p>
+    </div>
+    <div class="flex flex-col gap-5 lg:flex-row justify-between">
+      <div class="lg:w-1/4">
+        <KeywordFilter :filters="filters" @reset-filters="resetFilter" />
       </div>
-      <span v-if="!keywords || keywords?.totalElements === 0"
-        class="flex w-full justify-center text-primary text-2xl py-5">Keine Schlagwörter gefunden!</span>
-      <TabPanels v-else-if="keywords" class="min-h-30">
-        <TabPanel value="0" class="flex flex-col">
-          <div class="flex flex-col gap-2 justify-between">
-            <div class="flex flex-col gap-2">
-              <div v-if="isLoading" v-for="_ in pageParameter.size"
-                class="border-2 border-primary rounded-md p-2 shadow-md animate-pulse">
-                <div class="flex flex-col gap-1">
-                  <div class="w-fit text-lg outfit-headline font-semibold text-transparent">Placeholder</div>
-                  <div class="flex flex-row gap-2">
-                    <span class="text-sm roboto-plain text-transparent">GND-ID:</span>
-                    <div class="text-sm outfit-headline font-medium text-transparent">Placeholder</div>
-                  </div>
-                </div>
-              </div>
-              <div v-else-if="keywords" v-for="keyword in keywords.content" :key="keyword.id"
-                class="border-2 border-primary rounded-md p-2 shadow-md">
-                <div class="flex flex-col gap-1">
-                  <NuxtLink :to="`/keywords/${keyword.id}`"
-                    class="text-lg group relative w-fit outfit-headline font-semibold text-primary">
-                    {{ keyword.value }}
-                    <span
-                      class="absolute bottom-0 left-0 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
-                  </NuxtLink>
+      <div class="flex flex-col gap-4 lg:w-3/4">
+        <div class="grid grid-cols-[1fr_auto] gap-2 sm:flex sm:flex-wrap sm:justify-end">
+          <UButton to="/keywords/create" icon="i-lucide-square-pen" label="Neu anlegen" color="neutral" variant="outline"
+            size="lg" class="col-span-2 justify-center text-primary hover:shadow-md" />
+          <USelect v-model="sort" :items="sortOptions" size="lg" class="w-full sm:w-48" />
+          <USelect v-model="pageParameter.size" :items="pageSizeOptions" size="lg" class="sm:w-36" />
+        </div>
+        <div class="flex flex-col gap-2 justify-between">
+          <p v-if="keywords" class="text-sm text-muted roboto-plain" aria-live="polite">
+            {{ totalCountLabel }}
+          </p>
+          <div v-if="isLoading" class="flex flex-col gap-2">
+            <USkeleton v-for="n in pageParameter.size" :key="n" class="h-13 w-full rounded-md" />
+          </div>
+          <div v-else-if="!keywords || keywords.content.length === 0"
+            class="flex w-full justify-center text-primary text-2xl py-5">
+            Keine Schlagwörter gefunden!
+          </div>
+          <div v-else class="flex flex-col gap-2">
+            <ContentCard v-for="keyword in keywords.content" :key="keyword.id" :headerLink="`/keywords/${keyword.id}`">
+              <template #header>{{ keyword.value }}</template>
+              <template #subContent>
+                <NuxtLink v-if="keyword.gndId" :to="`https://explore.gnd.network/gnd/${keyword.gndId}`" target="_blank"
+                  rel="noopener" title="Im GND-Explorer öffnen"
+                  class="group/gnd inline-flex items-center gap-1 text-sm text-primary outfit-headline font-medium">
+                  <img src="/gnd-logo.png" alt="GND" class="h-4 w-auto shrink-0" />
+                  <span class="group-hover/gnd:underline">{{ keyword.gndId }}</span>
+                  <UIcon name="i-lucide-external-link" class="size-3 shrink-0 opacity-70" />
+                </NuxtLink>
+              </template>
+            </ContentCard>
+          </div>
+          <PageSelection :page-parameter="pageParameter" :total-pages="keywords?.totalPages" />
+        </div>
+      </div>
+    </div>
 
-                  <div v-if="keyword" class="flex flex-row gap-2">
-                    <span class="text-sm roboto-plain">GND-ID:</span>
-                    <NuxtLink :to="`https://explore.gnd.network/gnd/${keyword.gndId}`" title="Zum GND-Explorer wechseln"
-                      target="_blank">
-                      <div class="text-sm text-primary outfit-headline font-medium hover:underline">
-                        {{ keyword.gndId }}
-                      </div>
-                    </NuxtLink>
-                  </div>
-                </div>
-              </div>
+    <!--
+      Keyword cloud
+        <div class="rounded-xl border border-default bg-elevated/50 p-6">
+          <div v-if="isLoading" class="flex flex-wrap justify-center gap-2.5">
+            <USkeleton v-for="n in pageParameter.size" :key="n"
+              :class="['h-8 rounded-full', skeletonWidths[n % skeletonWidths.length]]" />
+          </div>
+          <div v-else-if="!keywords || keywords.content.length === 0"
+            class="flex w-full justify-center text-primary text-2xl py-5">
+            Keine Schlagwörter gefunden!
+          </div>
+          <div v-else>
+            <div class="flex flex-wrap items-center justify-center gap-2.5">
+              <NuxtLink v-for="keyword in keywords.content" :key="keyword.id" :to="`/keywords/${keyword.id}`"
+                no-prefetch
+                :title="keyword.gndId ? `GND: ${keyword.gndId}` : keyword.value"
+                :class="[
+                  'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 outfit-headline font-medium',
+                  'transition duration-200 hover:-translate-y-0.5 hover:shadow-md',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                  cloudSize(keyword.id)
+                ]"
+                :style="{ background: getKeywordColor(keyword.id) }">
+                {{ keyword.value }}
+                <img v-if="keyword.gndId" src="/gnd-logo.png" alt="GND" class="h-3.5 w-auto opacity-80" />
+              </NuxtLink>
             </div>
           </div>
-        </TabPanel>
-        <TabPanel value="1">
-          <div class="flex flex-wrap gap-3">
-            <NuxtLink v-if="keywords" v-for="keyword in keywords.content" :to="`/keywords/${keyword.id}`"
-              class="font-medium roboto-plain p-1 rounded-lg transition-transform hover:scale-105 shadow-md hover:shadow-lg"
-              :style="[{ background: getKeywordColor(keyword.id) }]">
-              {{ keyword.value }}
-            </NuxtLink>
-          </div>
-        </TabPanel>
-      </TabPanels>
-      <PageSelection :pageParameter :totalPages="keywords?.totalPages" />
-    </Tabs>
+        </div>
+    -->
   </div>
 </template>
-
-<style scoped>
-@media (max-width: 600px) {
-  .search-field {
-    flex: 0 1 8rem;
-    min-width: 0;
-    transition: flex-grow 250ms ease;
-  }
-
-  .search-field.is-expanded {
-    flex-grow: 1;
-  }
-
-  .search-input {
-    width: 100%;
-    min-width: 0;
-  }
-}
-</style>

@@ -22,7 +22,8 @@ const personSuggestions = ref<PersonPreviewDTO[]>([]);
 
 const debouncedSearch = debounce(async (query: string) => {
   personLoading.value = true;
-  personSuggestions.value = await personApi.search(query);
+  const name = query.trim();
+  personSuggestions.value = name.length < 2 ? [] : await personApi.fetchFlat({ name });
   personLoading.value = false;
 }, 300);
 
@@ -38,17 +39,17 @@ const [
   pubMediumHandle,
   {data: files}
 ] = await Promise.all([
-  personApi.getAll(),
-  keywordApi.getAll(),
+  useAsyncData('person-list', personApi.fetchAll),
+  useAsyncData('keyword-list', keywordApi.fetchAll),
   languageApi.getAll(),
   locationApi.getAll(),
   copyrightStatusApi.getAll(),
-  pubMediumApi.getAll(),
+  useAsyncData('pubMedium-list', pubMediumApi.fetchAll),
   fileApi.getAll(),
 ]);
+
 const publicationMedia = computed<PubMediumPreviewDTO[]>(() => pubMediumHandle.data.value?.map(pm => ({ id: pm.id, title: pm.title })) ?? []);
-const persons = computed(() => personHandle.data.value?.map(p => ({ id: p.id, fullName: p.fullName, studioName: p.studioName, pseudonyms: p.pseudonyms })));
-const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value })),)
+const keywords = computed( () => keywordHandle.data.value?.map((k: KeywordDTO) => ({ id: k.id, value: k.value, gndId: k.gndId })),)
 const languages = computed(() => languageHandle.data.value?.map((l:LanguageDTO) => ({ id: l.id, name: l.name })));
 const locations = computed(()=> locationHandle.data.value?.map(l=>({id: l.id, name: l.name}) ));
 const copyrightStatuses = computed(()=> copyrightStatusHandle.data.value?.map(cs => ({ id: cs.id, value: cs.value })));
@@ -77,10 +78,7 @@ const resolver = ref(
       publicationDate: z.any(),
       publicationMedium: z.any().optional().nullable(),
       foundIn: z.any(),
-      authors: z.any(),
-      photographers: z.any(),
       depictedPeople: z.any(),
-      otherContributors: z.any(),
       themes: z.any(),
       imageMotifs: z.any(),
       form: z.any(),
@@ -102,9 +100,9 @@ async function handleRefresh() {
   try {
 
     await Promise.all([personHandle.refresh , keywordHandle.refresh, languageHandle.refresh, locationHandle.refresh, copyrightStatusHandle.refresh, pubMediumHandle.refresh])
-    toast.add({severity: 'success', summary: 'Erfolg', detail: 'Datenbankdaten erfolgreich aktualisiert', life: 2000});
+    toast.add({ color: 'success', title: 'Erfolg', description: 'Datenbankdaten erfolgreich aktualisiert', duration: 2000 });
   } catch (err) {
-    toast.add({severity: 'error', summary: 'Fehler', detail: 'Fehler beim Aktualisieren der Datenbankdaten', life: 2000});
+    toast.add({ color: 'error', title: 'Fehler', description: 'Fehler beim Aktualisieren der Datenbankdaten', duration: 2000 });
   } finally {
     data_refreshing.value = false;
   }
@@ -118,17 +116,17 @@ const onFormSubmit = async (e: any) => {
       if (props.action === "create") {
         await photopoemApi.create(e.values);
         await refreshNuxtData('photopoem-list');
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich erstellt", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
         navigateTo("/photopoems")
       } else if (props.action === "edit" && props.photopoem?.id) {
         await photopoemApi.update(props.photopoem.id, e.values);
         await Promise.all([refreshNuxtData('photopoem-list'), await refreshNuxtData(`photopoem-${props.photopoem.id}`)]);
-        toast.add({severity: "success", summary: "Erfolg", detail: "Erfolgreich aktualisiert", life: 3000});
+        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
         navigateTo(`/photopoems/${props.photopoem?.id}`);
       }
     } catch (error) {
       console.log(error);
-      toast.add({severity: "error", summary: "Fehler", detail: "Ein Fehler ist aufgetreten", life: 3000});
+      toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
     }
     contributionsForm.value?.checkRefetch();
   }
@@ -373,7 +371,7 @@ const onFormSubmit = async (e: any) => {
               placeholder="Abgebildete Personen auswählen"
               :suggestions="personSuggestions"
               @complete="onPersonComplete"
-              :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms[0] || opt.studioName)"
+              :optionLabel="(opt) => [opt.firstName, opt.lastName].filter(Boolean).join(' ') || opt.pseudonyms?.[0] || opt.studioName"
               showClear fluid multiple
               :loading="personLoading"
           />
@@ -381,69 +379,10 @@ const onFormSubmit = async (e: any) => {
             {{ $form.depictedPeople.error.message }}
           </Message>
         </FormField>
-        <Divider align="center">
-          <b class="px-2 text-red-500">Personen (deprecated)</b>
-        </Divider>
         <div class="flex flex-row gap-4">
           <NuxtLink to="/persons/create" target="_blank">
             <Button icon="pi pi-plus" severity="secondary" aria-label="Add" label="Person erstellen"/>
           </NuxtLink>
-        </div>
-        <div class="flex flex-row space-x-3">
-          <FormField v-slot="$field" name="authors" class="flex flex-col gap-1 w-full">
-            <label for="authors" class="font-bold">Autor:innen</label>
-            <MultiSelect
-                inputId="authors"
-                placeholder="Autor:innen auswählen"
-                selectedItemsLabel="{0} Personen ausgewählt"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-                :maxSelectedLabels="2"
-                :options="persons"
-                :key="persons?.length"
-                :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid disabled
-            />
-            <Message v-if="$form.authors?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.authors.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="photographers" class="flex flex-col gap-1 w-full">
-            <label for="photographers" class="font-bold">Fotograf:innen</label>
-            <MultiSelect
-                inputId="photographers"
-                placeholder="Fotograf:innen auswählen"
-                selectedItemsLabel="{0} Personen ausgewählt"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-                :maxSelectedLabels="2"
-                :options="persons"
-                :key="persons?.length"
-                :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid disabled
-            />
-            <Message v-if="$form.photographers?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.photographers.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="otherContributors" class="flex flex-col gap-1 w-full">
-            <label for="otherContributors" class="font-bold">Sonstige Mitwirkende</label>
-            <MultiSelect
-                inputId="otherContributors"
-                placeholder="Sonstige Mitwirkende auswählen"
-                selectedItemsLabel="{0} Personen ausgewählt"
-                :optionLabel="(opt) => opt.fullName ? opt.fullName : (opt.pseudonyms || []).join(', ')"
-                :optionValue="opt => ({id: opt.id, fullName: opt.fullName, studioName: opt.studioName, pseudonyms: opt.pseudonyms})"
-                :maxSelectedLabels="2"
-                :options="persons"
-                :key="persons?.length"
-                :virtual-scroller-options="{ itemSize: 50 }"
-                filter fluid disabled
-            />
-            <Message v-if="$form.otherContributors?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.otherContributors.error.message }}
-            </Message>
-          </FormField>
         </div>
         <Divider align="center">
           <b class="px-2">Mitwirkende</b>

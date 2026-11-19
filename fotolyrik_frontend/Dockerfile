@@ -1,4 +1,4 @@
-FROM node:lts-alpine AS build
+FROM node:26-alpine AS build
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY . .
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
-FROM node:lts-alpine
+FROM node:26-alpine
 
 WORKDIR /app
 

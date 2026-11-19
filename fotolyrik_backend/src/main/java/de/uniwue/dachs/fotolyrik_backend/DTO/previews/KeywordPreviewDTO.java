@@ -8,4 +8,5 @@ import lombok.Setter;
 public class KeywordPreviewDTO{
     private Long id;
     private String value;
+    private String gndId;
 }

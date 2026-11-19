@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import type { PersonDTO } from "~/utils/types";
 import PersonForm from "~/components/forms/PersonForm.vue";
 
 const route = useRoute();
 const person_id = Number(route.params.id);
 const person_api = usePerson();
-const { data: person_item } =await person_api.getById(person_id);
+const { data: person_item } = await useAsyncData(`person-${person_id}`, () => person_api.fetchById(person_id));
 </script>
 
 <template>
