@@ -38,7 +38,7 @@ watch(() => route.fullPath, () => { mobileMenuOpen.value = false; });
       <NuxtLink to="/" class="shrink-0">
         <img class="h-[32px] sm:h-[40px] w-auto" src="/fl_wortmarke-blaugrau.svg" alt="logo">
       </NuxtLink>
-      <div class="flex flex-row items-center space-x-2">
+      <div class="hidden md:flex flex-row items-center space-x-2">
         <GeneralSearch />
 
         <NuxtLink to="/project" class="hidden md:inline outfit-headline text-white">Projekt</NuxtLink>

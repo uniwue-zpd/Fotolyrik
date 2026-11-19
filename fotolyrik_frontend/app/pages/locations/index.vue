@@ -46,6 +46,7 @@ const filters = ref({
                 v-model="filters['global'].value"
                 type="text"
                 placeholder="Alles durchsuchen"
+                class="w-full"
             />
           </IconField>
         </div>

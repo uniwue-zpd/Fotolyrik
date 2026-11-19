@@ -88,7 +88,7 @@ const deleteFile = async (id:number) =>{
         :totalRecords="25"
       >
         <template #header>
-          <div class="flex flex-row justify-between items-center">
+          <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
             <FileUpload
                 mode="basic"
                 name="upload[]"
@@ -100,7 +100,7 @@ const deleteFile = async (id:number) =>{
                 :multiple="true"
                 @select="onFileSelect"
                 auto
-                :pt="{ pcChooseButton: { root: { class: 'p-button-secondary p-button-outlined' } } }"
+                :pt="{ pcChooseButton: { root: { class: 'p-button-secondary p-button-outlined w-full sm:w-auto justify-center' } } }"
             />
             <IconField>
               <InputIcon>
@@ -110,6 +110,7 @@ const deleteFile = async (id:number) =>{
                   v-model="filter['global'].value"
                   type="text"
                   placeholder="Dateisuche"
+                  class="w-full"
               />
             </IconField>
           </div>

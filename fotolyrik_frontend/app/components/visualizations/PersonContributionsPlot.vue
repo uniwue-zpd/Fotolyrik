@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import TimelinePlot from "./TimelinePlot.vue";
-import type {PhotoPoemPublicationDateDTO} from "~/utils/types";
-
+import type { PhotoPoemPublicationDateDTO } from "~/utils/types";
 
 defineProps<{
   width?: number;
@@ -30,22 +29,71 @@ const getCircleColor = (node: PhotoPoemPublicationDateDTO) => (node.role && colo
 
 <template>
   <div class="contributor-timeline">
-    <div class="legend" :style="{ paddingLeft: '60px', display: 'flex', gap: '20px', marginBottom: '10px' }">
+    <div class="legend">
       <div
           v-for="(color, role) in colors"
           :key="role"
-          style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #333;"
+          class="legend-item"
       >
-        <span :style="{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', backgroundColor: color }"></span>
+        <span class="legend-dot" :style="{ backgroundColor: color }"></span>
         {{ rolesMap[role as PersonRole] }}
       </div>
     </div>
 
-    <TimelinePlot
-        :data="data"
-        :width="width ?? 1000"
-        :height="height ?? 400"
-        :fill-color="getCircleColor"
-    />
+    <div class="timeline-wrapper">
+      <TimelinePlot
+          :data="data"
+          :width="width ?? 1000"
+          :height="height ?? 400"
+          :fill-color="getCircleColor"
+      />
+    </div>
   </div>
 </template>
+
+<style scoped>
+.contributor-timeline {
+  width: 100%;
+  color: currentColor;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  padding-left: 60px;
+  margin-bottom: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: currentColor;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.timeline-wrapper {
+  width: 100%;
+  overflow: visible;
+  padding-bottom: 60px;
+}
+
+@media (max-width: 640px) {
+  .legend {
+    padding-left: 10px;
+  }
+
+  .timeline-wrapper {
+    padding-bottom: 80px;
+  }
+}
+</style>
