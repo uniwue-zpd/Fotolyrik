@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import CreateButton from "~/components/UI/buttons/CreateButton.vue";
 import PageSelection from "~/components/UI/buttons/PageSelection.vue";
 import ContentCard from "~/components/UI/cards/ContentCard.vue";
 import PhotopoemFilter from "~/components/UI/filters/PhotopoemFilter.vue";
@@ -43,9 +41,14 @@ const resetFilter = () => {
 };
 
 const sortOptions = ref([
-  { label: "Aufsteigend (A-Z)", value: "title,asc" },
-  { label: "Absteigend (Z-A)", value: "title,desc" }
+  { label: "Aufsteigend", value: "title,asc" },
+  { label: "Absteigend", value: "title,desc" }
 ]);
+
+const sort = computed({
+  get: () => String(pageParameter.sort ?? initialPageParameter.sort),
+  set: (value: string) => { pageParameter.sort = value; }
+});
 
 const pageSizeOptions = ref([
   { label: "5 pro Seite", value: 5 },
@@ -85,29 +88,37 @@ useHead(() => ({
 
 <template>
   <div class="flex flex-col gap-4">
-    <h1 class="text-3xl outfit-headline text-primary font-bold">Fotogedichte</h1>
-    <p class="roboto-plain">
-      Eine Übersicht aller Fotogedichte in der Datenbank. Klicken Sie auf ein Fotogedicht, um Details
-      anzuzeigen oder zu bearbeiten.
-    </p>
-    <div class="flex flex-row justify-between gap-2">
-      <CreateButton to="/places/create" />
-      <div class="flex flex-row gap-2">
-        <Select v-model="pageParameter.sort" :options="sortOptions" optionLabel="label" optionValue="value" class="h-9 items-center" />
-        <Select v-model="pageParameter.size" :options="pageSizeOptions" optionLabel="label" optionValue="value" class="h-9 items-center" />
-      </div>
+    <div class="flex flex-col gap-2">
+      <h1 class="text-3xl font-bold outfit-headline text-primary">Fotogedichte</h1>
+      <p class="roboto-plain">
+        Eine Übersicht aller Fotogedichte in der Datenbank. Klicken Sie auf ein Fotogedicht, um Details
+        anzuzeigen oder zu bearbeiten.
+      </p>
     </div>
     <div class="flex flex-col gap-5 lg:flex-row justify-between">
       <div class="lg:w-1/4">
         <PhotopoemFilter :filters="filters" @reset-filters="resetFilter" />
       </div>
-      <div class="lg:w-3/4">
-        <div class="flex flex-col gap-2 h-full">
-          <div v-if="isLoading" class="flex flex-col gap-2 items-center">
-            <ProgressSpinner/>
+      <div class="flex flex-col gap-4 lg:w-3/4 min-w-0">
+        <div class="grid grid-cols-[1fr_auto] gap-2 sm:flex sm:flex-wrap sm:justify-end">
+          <UButton to="/photopoems/create" icon="i-lucide-square-pen" label="Neu anlegen" color="neutral"
+            variant="outline" size="lg" class="col-span-2 justify-center text-primary hover:shadow-md" />
+          <USelect v-model="sort" :items="sortOptions" size="lg" class="w-full sm:w-48" />
+          <USelect v-model="pageParameter.size" :items="pageSizeOptions" size="lg" class="sm:w-36" />
+        </div>
+        <div class="flex flex-col gap-2 justify-between">
+          <div v-if="hasError" class="roboto-plain text-red-600">
+            Die Fotogedichte konnten nicht geladen werden.
+          </div>
+          <div v-else-if="isLoading" class="flex flex-col gap-2 items-center py-5">
+            <ProgressSpinner />
             <div class="roboto-plain text-primary font-semibold text-lg">Inhalte werden geladen</div>
           </div>
-          <div v-else-if="photopoems" class="flex flex-col gap-2 justify-between min-h-full">
+          <div v-else-if="!photopoems || photopoems.content.length === 0"
+            class="flex w-full justify-center text-primary text-2xl py-5">
+            Keine Fotogedichte gefunden!
+          </div>
+          <div v-else class="flex flex-col gap-2 min-w-0">
             <div class="flex flex-col gap-2">
               <ContentCard v-for="photopoem in photopoems.content" :key="photopoem.id"
                 :headerLink="`/photopoems/${photopoem.id}`">
@@ -128,13 +139,10 @@ useHead(() => ({
                 </template>
               </ContentCard>
             </div>
-            <PageSelection :pageParameter :totalPages="photopoems?.totalPages" />
           </div>
+          <PageSelection :page-parameter="pageParameter" :total-pages="photopoems?.totalPages" />
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-</style>
