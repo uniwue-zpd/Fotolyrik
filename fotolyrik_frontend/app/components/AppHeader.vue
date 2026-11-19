@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import 'primeicons/primeicons.css';
 import GeneralSearch from "~/components/UI/GeneralSearch.vue";
 import type { NavigationMenuItem } from '@nuxt/ui';
-
-const op = ref();
-const toggle = (event: any) => op.value.toggle(event)
 
 const collectionChildren: NavigationMenuItem[] = [
   { label: 'Fotogedichte', to: '/photopoems', icon: 'i-lucide-images' },
@@ -38,11 +34,9 @@ watch(() => route.fullPath, () => { mobileMenuOpen.value = false; });
       <NuxtLink to="/" class="shrink-0">
         <img class="h-[32px] sm:h-[40px] w-auto" src="/fl_wortmarke-blaugrau.svg" alt="logo">
       </NuxtLink>
-      <div class="hidden md:flex flex-row items-center space-x-2">
+      <div class="flex flex-row items-center space-x-2">
         <GeneralSearch />
-
         <NuxtLink to="/project" class="hidden md:inline outfit-headline text-white">Projekt</NuxtLink>
-        <!-- viewportWrapper needs z-50: the centering translate creates a stacking context below page content -->
         <UNavigationMenu
           :items="collectionMenu"
           content-orientation="vertical"
@@ -57,16 +51,18 @@ watch(() => route.fullPath, () => { mobileMenuOpen.value = false; });
           }"
         />
         <NuxtLink to="/contact" class="hidden md:inline outfit-headline text-white">Kontakt</NuxtLink>
-
-        <div class="card flex justify-center align-middle text-white">
-          <Button type="button" icon="pi pi-user" rounded-sm aria-label="User" variant="link" class="text-white" @click="toggle"/>
-          <Popover ref="op">
-            <div class="card flex justify-center">
-              <div>Hier entsteht der Anmeldebereich</div>
-            </div>
-          </Popover>
-        </div>
-        <UIButtonsDarkThemeToggle></UIButtonsDarkThemeToggle>
+        <UPopover :content="{ align: 'end', sideOffset: 8 }">
+          <UButton
+            icon="i-lucide-user"
+            variant="link"
+            aria-label="Anmeldebereich öffnen"
+            class="text-white hover:text-white cursor-pointer"
+          />
+          <template #content>
+            <div class="p-4 text-sm roboto-plain">Hier entsteht der Anmeldebereich</div>
+          </template>
+        </UPopover>
+        <UIButtonsDarkThemeToggle/>
 
         <USlideover v-model:open="mobileMenuOpen" side="right" title="Menü" class="md:hidden">
           <UButton
@@ -87,13 +83,3 @@ watch(() => route.fullPath, () => { mobileMenuOpen.value = false; });
     </div>
   </header>
 </template>
-
-<style scoped>
-.p-button-link {
-  color: white;
-}
-
-.p-button-link:not(:disabled):hover {
-  color: white;
-}
-</style>
