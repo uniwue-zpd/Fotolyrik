@@ -59,7 +59,7 @@ watch(() => route.fullPath, () => { mobileMenuOpen.value = false; });
         <NuxtLink to="/contact" class="hidden md:inline outfit-headline text-white">Kontakt</NuxtLink>
 
         <div class="card flex justify-center align-middle text-white">
-          <Button type="button" icon="pi pi-user" rounded-sm aria-label="User" variant="link" class="text-white" @click="toggleUser"/>
+          <Button type="button" icon="pi pi-user" rounded-sm aria-label="User" variant="link" class="text-white" @click="toggle"/>
           <Popover ref="op">
             <div class="card flex justify-center">
               <div>Hier entsteht der Anmeldebereich</div>
