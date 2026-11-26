@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form, FormField } from "@primevue/forms";
+import { z } from "zod";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -9,57 +9,85 @@ const props = defineProps<{
   place?: PlaceDTO;
 }>();
 
+const schema = z.object({
+  name: z.string().min(1, { message: "Mindestens ein Zeichen erforderlich" }),
+  description: z.string().nullish(),
+  latitude: z.number().min(-90).max(90).nullish(),
+  longitude: z.number().min(-180).max(180).nullish()
+}).superRefine((d, ctx) => {
+  // Coordinates come in pairs: either both are set or both are empty
+  if (d.latitude != null && d.longitude == null) {
+    ctx.addIssue({ code: "custom", message: "Bitte auch den Längengrad angeben.", path: ["longitude"] });
+  }
+  if (d.latitude == null && d.longitude != null) {
+    ctx.addIssue({ code: "custom", message: "Bitte auch den Breitengrad angeben.", path: ["latitude"] });
+  }
+});
+
+type Schema = z.output<typeof schema>;
+
+const defaults = (): Partial<Schema> => ({
+  name: '',
+  description: null,
+  latitude: null,
+  longitude: null
+});
+
+const state = reactive<Partial<PlaceDTO>>({
+  ...defaults(),
+  ...structuredClone(toRaw(props.place))
+});
+
 const placeApi = usePlace();
 const toast = useToast();
 
-const formRef = ref<any>(null);
+let map: maplibregl.Map | null = null;
+let marker: maplibregl.Marker | null = null;
 
-let map: maplibregl.Map;
-let marker: maplibregl.Marker | null;
+const coords = (): [number, number] | null =>
+    state.latitude != null && state.longitude != null ? [state.longitude, state.latitude] : null;
 
-const lat = ref<number | null>(null);
-const lng = ref<number | null>(null);
-
-const onFormSubmit = async (e: any) => {
-  if (e.valid) {
-    try {
-      if (props.action === 'create') {
-        await placeApi.create(e.values);
-        await refreshNuxtData('place-list');
-        toast.add({ color: 'success', title: 'Erfolg', description: 'Erfolgreich erstellt', duration: 3000 });
-        navigateTo('/places')
-      } else if (props.action === 'edit' && props.place?.id) {
-        await placeApi.update(props.place.id, e.values);
-        await Promise.all([refreshNuxtData('place-list'), await refreshNuxtData(`place-${props.place.id}`)])
-        toast.add({ color: 'success', title: 'Erfolg', description: 'Erfolgreich aktualisiert', duration: 3000 });
-        navigateTo(`/places/${props.place?.id}`);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.add({ color: 'error', title: 'Fehler', description: 'Ein Fehler ist aufgetreten', duration: 3000 });
-    }
-  }
-};
-
-const onCoordinatesUpdate = () => {
-  if (lat.value == null || lng.value == null) return;
-  const coords: [number, number] = [lng.value, lat.value];
-  if (marker) {
-    marker.setLngLat(coords);
+// Sync the marker on the map with the coordinates pair in the state.
+const syncMarker = () => {
+  if (!map) return;
+  const c = coords();
+  if (!c) {
+    marker?.remove();
+    marker = null;
+  } else if (marker) {
+    marker.setLngLat(c);
   } else {
-    marker = new maplibregl.Marker({ color: "#063D79" })
-        .setLngLat(coords)
-        .addTo(map);
+    marker = new maplibregl.Marker({ color: "#063D79" }).setLngLat(c).addTo(map);
   }
-  map.setCenter(coords);
-  map.setZoom(7);
+};
+watch(() => [state.latitude, state.longitude], syncMarker);
+
+const centerMap = () => {
+  const c = coords();
+  if (map && c) map.jumpTo({ center: c, zoom: 7 });
 };
 
-onMounted(async () => {
-  if (props.place?.latitude && props.place?.longitude) {
-    lat.value = props.place.latitude;
-    lng.value = props.place.longitude;
+const onSubmit = async () => {
+  try {
+    if (props.action === 'create') {
+      await placeApi.create(state);
+      await refreshNuxtData('place-list');
+      toast.add({ color: 'success', title: 'Erfolg', description: 'Erfolgreich erstellt', duration: 3000 });
+      await navigateTo('/places');
+    } else if (props.action === 'edit' && props.place?.id) {
+      await placeApi.update(props.place.id, state);
+      await Promise.all([refreshNuxtData('place-list'), refreshNuxtData(`place-${props.place.id}`)]);
+      toast.add({ color: 'success', title: 'Erfolg', description: 'Erfolgreich aktualisiert', duration: 3000 });
+      await navigateTo(`/places/${props.place.id}`);
+    }
+  } catch (error) {
+    console.error(error);
+    toast.add({ color: 'error', title: 'Fehler', description: 'Ein Fehler ist aufgetreten', duration: 3000 });
   }
+};
+
+
+onMounted(() => {
   map = new maplibregl.Map({
     container: "map",
     style: {
@@ -74,7 +102,7 @@ onMounted(async () => {
       },
       layers: [
         {
-          id:'osm-layer',
+          id: 'osm-layer',
           type: 'raster',
           source: 'osm'
         }
@@ -84,137 +112,81 @@ onMounted(async () => {
     zoom: 5
   });
   map.addControl(new maplibregl.NavigationControl(), 'top-right');
-  if (lat.value != null && lng.value != null) {
-    const coords: [number, number] = [lng.value, lat.value];
-    marker = new maplibregl.Marker({ color: "#063D79" })
-        .setLngLat(coords)
-        .addTo(map);
-    map.setCenter(coords);
-    map.setZoom(7);
-  }
+  syncMarker();
+  centerMap();
+  // map -> state: left click sets the coordinates, right click clears them
   map.on('click', (e) => {
-    lat.value = Number(e.lngLat.lat.toFixed(6));
-    lng.value = Number(e.lngLat.lng.toFixed(6));
-    formRef.value.setFieldValue('latitude', lat.value);
-    formRef.value.setFieldValue('longitude', lng.value);
-    if (marker) {
-      marker.setLngLat(e.lngLat);
-    } else {
-      marker = new maplibregl.Marker({ color: "#063D79" })
-          .setLngLat(e.lngLat)
-          .addTo(map);
-    }
+    state.latitude = Number(e.lngLat.lat.toFixed(6));
+    state.longitude = Number(e.lngLat.lng.toFixed(6));
   });
-  map.on('contextmenu', (e) => {
-    lat.value = null;
-    lng.value = null;
-    formRef.value.setFieldValue('latitude', null);
-    formRef.value.setFieldValue('longitude', null);
-    if (marker) {
-      marker.remove();
-      marker = null;
-    }
-  })
+  map.on('contextmenu', () => {
+    state.latitude = null;
+    state.longitude = null;
+  });
 });
+
+onBeforeUnmount(() => map?.remove());
 </script>
 
 <template>
-  <div class="flex flex-col mx-auto w-[70%] gap-4">
+  <div class="flex flex-col md:mx-auto md:w-[70%] gap-4">
     <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
-    <Fieldset legend="Anleitung" class="border-2 border-solid rounded-md overflow-auto">
-      <div class="flex flex-col gap-1 p-2 rounded-md roboto-plain text-black">
+    <UAlert icon="i-lucide-info" title="Anleitung" color="neutral" variant="subtle">
+      <template #description>
         <p>Füllen Sie bitte die untenstehenden Felder aus, um einen Ort zu erstellen oder anzupassen.</p>
-        <p>Sie können die Koordinaten entweder manuell einfügen oder einen Marker <i class="pi pi-map-marker text-primary"/> auf der Karte setzen.</p>
+        <p>Sie können die Koordinaten entweder manuell einfügen oder einen Marker <UIcon name="i-lucide-map-pin" class="text-primary align-middle" /> auf der Karte setzen.</p>
         <p>Falls Sie den Marker löschen wollen, drücken Sie bitte die rechte Maustaste.</p>
-      </div>
-    </Fieldset>
-    <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
-      <Form
-          ref="formRef"
-          v-slot="$form"
-          @submit="onFormSubmit"
-          class="flex flex-col gap-4"
-          :initial-values="props.place ? props.place : {} as PlaceDTO"
-      >
-        <FormField v-slot="$field" name="name" class="flex flex-col gap-1 flex-auto">
-          <label for="name" class="font-bold">Ortsname*</label>
-          <IconField>
-            <InputIcon class="pi pi-map-marker" />
-            <InputText
-                id="name"
-                placeholder="Berlin"
-                v-on:keydown.enter.prevent
-                fluid
-            />
-          </IconField>
-          <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.name.error.message }}
-          </Message>
-        </FormField>
-        <FormField v-slot="$field" name="description" class="flex flex-col gap-1 flex-auto">
-          <label for="description" class="font-bold">Beschreibung</label>
-          <Textarea
-              id="description"
-              placeholder="Hauptstadt Deutschlands"
-              rows="2"
-              autoResize
-              fluid
-          />
-          <Message v-if="$form.description?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.description.error.message }}
-          </Message>
-        </FormField>
-        <div class="flex flex-col gap-1 flex-auto">
-          <label for="map" class="font-bold">Karte</label>
-          <div id="map" class="h-[600px] w-full rounded-md"/>
-        </div>
-        <div class="flex flex-row space-x-3">
-          <FormField v-slot="$field" name="latitude" class="flex flex-col gap-1 flex-1">
-            <label for="latitude" class="font-bold">Breitengrad</label>
-            <IconField>
-              <InputIcon class="pi pi-map" />
-              <InputNumber
-                  id="latitude"
-                  v-model="lat"
-                  placeholder="52.5162"
+      </template>
+    </UAlert>
+    <div class="border-2 border-solid rounded-md p-5">
+      <UForm :schema="schema" :state="state" @submit="onSubmit">
+        <div class="flex flex-col gap-4">
+          <UFormField label="Ortsname" name="name" required>
+            <UInput v-model="state.name" icon="i-lucide-map-pin" placeholder="Berlin" class="w-full" :ui="{ trailing: 'pe-1' }">
+              <template v-if="state.name" #trailing>
+                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.name = ''" />
+              </template>
+            </UInput>
+          </UFormField>
+          <UFormField label="Beschreibung" name="description">
+            <UTextarea v-model.nullable="state.description" placeholder="Hauptstadt Deutschlands" autoresize :rows="2" class="w-full" />
+          </UFormField>
+          <UFormField label="Karte">
+            <div id="map" class="h-150 w-full rounded-md"/>
+          </UFormField>
+          <div class="flex flex-col gap-4 md:flex-row">
+            <UFormField label="Breitengrad" name="latitude" class="flex-1">
+              <UInputNumber
+                  v-model="state.latitude"
+                  :increment="false"
+                  :decrement="false"
+                  :step="0.000001"
                   :min="-90"
                   :max="90"
-                  :useGrouping="false"
-                  :minFractionDigits="0"
-                  :maxFractionDigits="6"
-                  v-on:keydown.enter.prevent
-                  @update:modelValue="onCoordinatesUpdate"
-                  fluid
+                  :format-options="{ useGrouping: false, maximumFractionDigits: 6 }"
+                  placeholder="52.5162"
+                  class="w-full"
+                  @update:model-value="centerMap"
               />
-            </IconField>
-          </FormField>
-          <FormField v-slot="$field" name="longitude" class="flex flex-col gap-1 flex-1">
-            <label for="longitude" class="font-bold">Längengrad</label>
-            <IconField>
-              <InputIcon class="pi pi-map" />
-              <InputNumber
-                  id="longitude"
-                  v-model="lng"
-                  placeholder="13.3777"
+            </UFormField>
+            <UFormField label="Längengrad" name="longitude" class="flex-1">
+              <UInputNumber
+                  v-model="state.longitude"
+                  :increment="false"
+                  :decrement="false"
+                  :step="0.000001"
                   :min="-180"
                   :max="180"
-                  :useGrouping="false"
-                  :minFractionDigits="0"
-                  :maxFractionDigits="6"
-                  v-on:keydown.enter.prevent
-                  @update:modelValue="onCoordinatesUpdate"
-                  fluid
+                  :format-options="{ useGrouping: false, maximumFractionDigits: 6 }"
+                  placeholder="13.3777"
+                  class="w-full"
+                  @update:model-value="centerMap"
               />
-            </IconField>
-          </FormField>
+            </UFormField>
+          </div>
+          <UButton type="submit" :label="props.action === 'create' ? 'Erstellen' : 'Ändern'" class="self-start" />
         </div>
-        <!--
-        <Fieldset legend="Form States" class="h-80 overflow-auto">
-          <pre class="whitespace-pre-wrap">{{ $form }}</pre>
-        </Fieldset>
-        -->
-        <Button type="submit" severity="primary" :label="props.action === 'create' ? 'Erstellen' : 'Ändern'"/>
-      </Form>
+      </UForm>
     </div>
   </div>
 </template>

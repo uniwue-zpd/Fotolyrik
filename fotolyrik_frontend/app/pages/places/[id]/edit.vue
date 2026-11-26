@@ -10,7 +10,7 @@ const {data: place_item} = await useAsyncData(`place-${place_id}`, () => placeAp
 <template>
   <div v-if="!place_item">
     <div class="flex flex-row space-x-2 items-center justify-center p-2 bg-[#F1F2F2] rounded-md">
-      <i class="pi pi-spin pi-spinner"></i>
+      <UIcon name="i-lucide-loader-circle" class="animate-spin" />
       <p class="roboto-plain">Ort wird geladen</p>
     </div>
   </div>
