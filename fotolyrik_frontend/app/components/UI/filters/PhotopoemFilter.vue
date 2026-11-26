@@ -40,7 +40,7 @@ const languages = computed(() => languageList.value?.map((l: LanguageDTO) => ({ 
 const locations = computed(() => locationList.value?.map(l => ({ id: l.id, name: l.name })) ?? []);
 const copyrightStatuses = computed(() => copyrightStatusList.value?.map(cs => ({ id: cs.id, value: cs.value })) ?? []);
 
-function getPersonOptionLabel(opt: PersonPreviewDTO) {
+function getPersonOptionLabel(opt: PersonDTO) {
   if (!opt) return '';
   return [opt.firstName, opt.lastName].filter(Boolean).join(' ') || (opt.pseudonyms || []).join(', ');
 }
