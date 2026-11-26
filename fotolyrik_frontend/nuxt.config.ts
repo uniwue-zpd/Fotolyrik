@@ -66,8 +66,8 @@ export default defineNuxtConfig({
     },
     autoImport: true,
     components: {
-      // Exclude from autoimport in order to avoid collisions with Nuxt UI form components
-      exclude: ['Form', 'FormField']
+      // Exclude from autoimport in order to avoid collisions with Nuxt UI form components.
+      exclude: ['Form', 'FormField', 'Editor', 'Chart']
     }
   },
   formkit: {
