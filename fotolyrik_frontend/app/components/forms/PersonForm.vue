@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { PersonDTO } from "~/utils/types";
-import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
+import type { SelectItem } from "@nuxt/ui";
 
 const toast = useToast();
 const personApi = usePerson();
@@ -12,211 +11,155 @@ const props = defineProps<{
   person?: PersonDTO;
 }>();
 
-const sex = ref([
+const sex = ref<SelectItem[]>([
   { label: "Unbekannt", value: null },
   { label: "Weiblich", value: "weiblich" },
   { label: "Männlich", value: "männlich" }
 ]);
 
-const resolver = ref(
-  zodResolver(
-    z.object({
-      firstName: z.string().optional().nullable(),
-      lastName: z.string().optional().nullable(),
-      studioName: z.string().optional().nullable(),
-      sex: z.string().optional().nullable(),
-      birthYear: z.number().optional().nullable(),
-      deathYear: z.number().optional().nullable(),
-      pseudonyms: z.array(z.string()).optional(),
-      gndId: z.string().optional().nullable(),
-    }).refine(data => {
-      if (typeof data.birthYear === "number" && typeof data.deathYear === "number") return data.birthYear <= data.deathYear
-      return true
-    }, {
-      message: "Das Geburtsjahr muss älter als das Sterbejahr sein.",
-      path: ["deathYear"],
-    })
-  )
-);
+const schema = z.object({
+  firstName: z.string().nullish(),
+  lastName: z.string().nullish(),
+  studioName: z.string().nullish(),
+  sex: z.enum(["weiblich", "männlich"]).nullish(),
+  birthYear: z.number().nullish(),
+  deathYear: z.number().nullish(),
+  pseudonyms: z.array(z.string()).optional(),
+  gndId: z.string().nullish(),
+}).refine(d => d.birthYear == null || d.deathYear == null || d.birthYear <= d.deathYear, {
+  message: "Das Geburtsjahr muss vor dem Sterbejahr liegen.",
+  path: ["deathYear"],
+});
 
-const onFormSubmit = async (e: any) => {
-  if (e.valid) {
-    try {
-      if (props.action === "create") {
-        await personApi.create(e.values);
-        await refreshNuxtData('person-list');
-        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
-        e.reset();
-      } else if (props.action === "edit" && props.person?.id) {
-        await personApi.update( props.person.id , e.values);
-        await Promise.all([refreshNuxtData('person-list'), await refreshNuxtData(`person-${props.person.id}`)])
-        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
-        navigateTo(`/persons/${props.person?.id}`);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
+type Schema = z.output<typeof schema>;
+
+const defaults = (): Partial<Schema> => ({
+  firstName: null,
+  lastName: null,
+  studioName: null,
+  sex: null,
+  birthYear: null,
+  deathYear: null,
+  pseudonyms: [],
+  gndId: null,
+});
+
+const state = reactive<Partial<PersonDTO>>({
+  ...defaults(),
+  ...structuredClone(toRaw(props.person)),
+});
+
+const onSubmit = async () => {
+  try {
+    if (props.action === "create") {
+      await personApi.create(state);
+      await refreshNuxtData("person-list");
+      toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
+      Object.assign(state, defaults());
+    } else if (props.action === "edit" && props.person?.id) {
+      await personApi.update(props.person.id, state);
+      await Promise.all([refreshNuxtData("person-list"), refreshNuxtData(`person-${props.person.id}`)]);
+      toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
+      await navigateTo(`/persons/${props.person.id}`);
     }
+  } catch (error) {
+    console.error(error);
+    toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
   }
 };
 </script>
 
 <template>
-  <div class="flex flex-col mx-auto w-[70%] gap-4">
+  <div class="flex flex-col md:mx-auto md:w-[70%] gap-4">
     <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
     <p class="roboto-plain">
       Füllen Sie bitte die untenstehenden Felder aus, um eine Person zu erstellen oder anzupassen.
     </p>
 
-    <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
-      <Form
-        v-slot="$form"
-        class="flex flex-col gap-4"
-        :resolver
-        :initialValues="props.person ? props.person : {}"
-        :key="props.person ? props.person.id : 'new'"
-        @submit="onFormSubmit"
-      >
-        <div class="flex flex-row gap-6 flex-wrap">
-          <FormField v-slot="$field" name="firstName" class="flex flex-col gap-1 flex-1">
-            <label for="firstName" class="font-bold">Vorname</label>
-            <IconField>
-              <InputIcon class="pi pi-user-edit" />
-              <InputText
-                id="firstName"
-                placeholder="Johann Wolfgang"
-                v-on:keydown.enter.prevent
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.firstName?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.firstName.error.message }}
-            </Message>
-          </FormField>
-
-          <FormField v-slot="$field" name="lastName" class="flex flex-col gap-1 flex-1">
-            <label for="lastName" class="font-bold">Nachname</label>
-            <IconField>
-              <InputIcon class="pi pi-user-edit" />
-              <InputText
-                id="lastName"
-                placeholder="von Goethe"
-                v-on:keydown.enter.prevent
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.lastName?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.lastName.error.message }}
-            </Message>
-          </FormField>
+    <div class="border-2 border-solid rounded-md p-5">
+      <UForm :schema="schema" :state="state" @submit="onSubmit">
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-4 md:flex-row flex-wrap">
+          <UFormField label="Vorname" name="firstName" class="flex-1">
+            <UInput v-model.nullable="state.firstName" placeholder="Johann Wolfgang" class="w-full" :ui="{ trailing: 'pe-1' }">
+              <template v-if="state.firstName" #trailing>
+                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.firstName = null" />
+              </template>
+            </UInput>
+          </UFormField>
+          <UFormField label="Nachname" name="lastName" class="flex-1">
+            <UInput v-model.nullable="state.lastName" placeholder="Goethe" class="w-full" :ui="{ trailing: 'pe-1' }">
+              <template v-if="state.lastName" #trailing>
+                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.lastName = null" />
+              </template>
+            </UInput>
+          </UFormField>
+          </div>
+          <UFormField label="Studio / Agentur" name="studioName">
+            <UInput icon="i-lucide-store" v-model.nullable="state.studioName" placeholder="Studio Name" class="w-full" :ui="{ trailing: 'pe-1' }">
+              <template v-if="state.studioName" #trailing>
+                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.studioName = null" />
+              </template>
+            </UInput>
+          </UFormField>
+          <UFormField label="Geschlecht" name="sex">
+            <USelect icon="i-lucide-venus-and-mars" v-model.nullable="state.sex" :items="sex" placeholder="Unbekannt" class="w-full" />
+          </UFormField>
+          <UFormField label="Pseudonyme" name="pseudonyms" hint="Mit Eingabetaste bestätigen">
+            <UInputTags
+                v-model="state.pseudonyms"
+                placeholder="Pseudonyme"
+                class="w-full"
+                :ui="{ trailing: 'pe-1' }"
+                icon="i-lucide-venetian-mask"
+            >
+              <template v-if="state.pseudonyms?.length" #trailing>
+                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.pseudonyms = []" />
+              </template>
+            </UInputTags>
+          </UFormField>
+          <div class="flex flex-col gap-4 md:flex-row flex-wrap">
+            <UFormField label="Geburtsjahr" name="birthYear" class="flex-1">
+              <div class="flex gap-2">
+                <UInputNumber
+                    v-model="state.birthYear"
+                    :increment="false"
+                    :decrement="false"
+                    :format-options="{ useGrouping: false }"
+                    :min="0"
+                    :max="3000"
+                    placeholder="1749"
+                    class="flex-1"
+                />
+                <UButton icon="i-lucide-circle-x" color="neutral" variant="ghost" aria-label="Eingabe löschen" @click="state.birthYear = null" />
+              </div>
+            </UFormField>
+            <UFormField label="Sterbejahr" name="deathYear" class="flex-1">
+              <div class="flex gap-2">
+                <UInputNumber
+                    v-model="state.deathYear"
+                    :increment="false"
+                    :decrement="false"
+                    :format-options="{ useGrouping: false }"
+                    :min="0"
+                    :max="3000"
+                    placeholder="1832"
+                    class="flex-1"
+                />
+                <UButton icon="i-lucide-circle-x" color="neutral" variant="ghost" aria-label="Eingabe löschen" @click="state.deathYear = null" />
+              </div>
+            </UFormField>
+          </div>
+          <UFormField label="GND-ID" name="gndId">
+            <UInput v-model.nullable="state.gndId" placeholder="118540238" class="w-full" :ui="{ trailing: 'pe-1' }">
+              <template v-if="state.gndId" #trailing>
+                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.gndId = null" />
+              </template>
+            </UInput>
+          </UFormField>
+          <UButton type="submit" :label="props.action === 'create' ? 'Erstellen' : 'Bearbeiten'" class="self-start" />
         </div>
-        <FormField v-slot="$field" name="studioName" class="flex flex-col gap-1 flex-1">
-          <label for="studioName" class="font-bold">Studio / Agentur</label>
-          <IconField>
-            <InputIcon class="pi pi-shop" />
-            <InputText
-                id="studioName"
-                v-on:keydown.enter.prevent
-                fluid
-            />
-          </IconField>
-          <Message v-if="$form.studioName?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.studioName.error.message }}
-          </Message>
-        </FormField>
-        <div class="flex flex-row gap-6 flex-wrap">
-          <FormField v-slot="$field" name="sex" class="flex flex-col gap-1 flex-1">
-            <label for="sex" class="font-bold">Geschlecht</label>
-            <IconField>
-              <InputIcon class="pi pi-mars"/>
-              <Select
-                labelId="sex"
-                placeholder="Geschlecht auswählen"
-                class="pl-7"
-                optionLabel="label"
-                optionValue="value"
-                :options="sex"
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.sex?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.sex.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="birthYear" class="flex flex-col gap-1 flex-1">
-            <label for="birthYear" class="font-bold">Geburtsjahr</label>
-            <IconField>
-              <InputIcon class="pi pi-calendar" />
-              <InputNumber
-                id="birthYear"
-                placeholder="1749"
-                :min="0"
-                :max="3000"
-                :useGrouping="false"
-                v-on:keydown.enter.prevent
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.birthYear?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.birthYear.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="deathYear" class="flex flex-col gap-1 flex-1">
-            <label for="deathYear" class="font-bold">Sterbejahr</label>
-            <IconField>
-              <InputIcon class="pi pi-calendar" />
-              <InputNumber
-                id="deathYear"
-                placeholder="1832"
-                :min="0"
-                :max="3000"
-                :useGrouping="false"
-                v-on:keydown.enter.prevent
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.deathYear?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.deathYear.error.message }}
-            </Message>
-          </FormField>
-        </div>
-        <FormField v-slot="$field" name="pseudonyms">
-          <label for="pseudonyms" class="font-bold">Pseudonyme</label>
-          <AutoComplete
-            inputId="pseudonyms"
-            placeholder="Eingabe mit Enter bestätigen"
-            :typeahead="false"
-            multiple
-            fluid
-          />
-          <Message v-if="$form.pseudonyms?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.pseudonyms.error.message }}
-          </Message>
-        </FormField>
-        <FormField v-slot="$field" name="gndId" class="flex flex-col gap-1 flex-auto">
-          <label for="gndId" class="font-bold">GND-ID</label>
-          <IconField>
-            <InputIcon class="pi pi-book" />
-            <InputText
-              id="gndId"
-              placeholder="118540238"
-              v-on:keydown.enter.prevent
-              fluid
-            />
-          </IconField>
-          <Message v-if="$form.gndId?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.gndId.error.message }}
-          </Message>
-        </FormField>
-        <Button type="submit" severity="primary">
-          {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
-        </Button>
-        <!--
-        <Fieldset legend="Form States" class="h-80 overflow-auto">
-          <pre class="whitespace-pre-wrap">{{ $form }}</pre>
-        </Fieldset>
-        -->
-      </Form>
+      </UForm>
     </div>
   </div>
 </template>
