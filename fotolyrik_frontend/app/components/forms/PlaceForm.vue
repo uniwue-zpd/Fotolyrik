@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Form, FormField } from "@primevue/forms";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 

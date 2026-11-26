@@ -64,7 +64,7 @@ export interface PersonDTO extends Auditable {
     lastName: string | null;
     studioName: string | null;
     fullName: string | null;
-    pseudonyms: [string] | [];
+    pseudonyms: string[] | [];
     birthYear: number | null;
     deathYear: number | null;
     sex: "weiblich" | "männlich" | null;

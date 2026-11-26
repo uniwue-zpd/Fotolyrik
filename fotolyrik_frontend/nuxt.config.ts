@@ -64,7 +64,11 @@ export default defineNuxtConfig({
         }
       }
     },
-    autoImport: true
+    autoImport: true,
+    components: {
+      // Exclude from autoimport in order to avoid collisions with Nuxt UI form components
+      exclude: ['Form', 'FormField']
+    }
   },
   formkit: {
     configFile: './formkit.config.ts'

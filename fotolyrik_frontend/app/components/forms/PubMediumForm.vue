@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Form } from "@primevue/forms";
 import type { PubMediumDTO } from "~/utils/types";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
