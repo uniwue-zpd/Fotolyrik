@@ -1,7 +1,9 @@
 package de.uniwue.dachs.fotolyrik_backend.controller;
 
+import de.uniwue.dachs.fotolyrik_backend.DTO.GndSuggestionDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.KeywordPreviewDTO;
+import de.uniwue.dachs.fotolyrik_backend.service.GndLookupService;
 import de.uniwue.dachs.fotolyrik_backend.service.KeywordService;
 import de.uniwue.dachs.fotolyrik_backend.specification.KeywordSearchCriteria;
 import jakarta.persistence.EntityNotFoundException;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 
 import java.util.List;
 
@@ -17,9 +20,11 @@ import java.util.List;
 @RequestMapping("/keywords")
 public class KeywordController {
     private final KeywordService keywordService;
+    private final GndLookupService gndLookupService;
 
-    public KeywordController(KeywordService keywordService) {
+    public KeywordController(KeywordService keywordService, GndLookupService gndLookupService) {
         this.keywordService = keywordService;
+        this.gndLookupService = gndLookupService;
     }
 
     @GetMapping("/all")
@@ -54,6 +59,21 @@ public class KeywordController {
     ) {
         KeywordSearchCriteria criteria = new KeywordSearchCriteria(value, gndId);
         return ResponseEntity.ok(keywordService.searchFlat(criteria, sort));
+    }
+
+    /**
+     * Suggests GND subject headings ("Sachbegriffe") for a term via lobid-gnd.
+     * It uses the lobid-gnd API to find suggestions for the given term.
+     * A suggestion with {@code exactMatch = true} means the term itself is a valid GND keyword.
+     * Returns 502 if lobid is unavailable.
+     */
+    @GetMapping("/gnd-suggestions")
+    public ResponseEntity<List<GndSuggestionDTO>> getGndSuggestions(@RequestParam String term) {
+        try {
+            return ResponseEntity.ok(gndLookupService.getSuggestions(term));
+        } catch (RestClientException e) {
+            return ResponseEntity.status(502).build();
+        }
     }
 
     @GetMapping("/{id}")
