@@ -80,20 +80,20 @@ const onSubmit = async () => {
       <UForm :schema="schema" :state="state" @submit="onSubmit">
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-4 md:flex-row flex-wrap">
-          <UFormField label="Vorname" name="firstName" class="flex-1">
-            <UInput v-model.nullable="state.firstName" placeholder="Johann Wolfgang" class="w-full" :ui="{ trailing: 'pe-1' }">
-              <template v-if="state.firstName" #trailing>
-                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.firstName = null" />
-              </template>
-            </UInput>
-          </UFormField>
-          <UFormField label="Nachname" name="lastName" class="flex-1">
-            <UInput v-model.nullable="state.lastName" placeholder="Goethe" class="w-full" :ui="{ trailing: 'pe-1' }">
-              <template v-if="state.lastName" #trailing>
-                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.lastName = null" />
-              </template>
-            </UInput>
-          </UFormField>
+            <UFormField label="Vorname" name="firstName" class="flex-1">
+              <UInput v-model.nullable="state.firstName" placeholder="Johann Wolfgang" class="w-full" :ui="{ trailing: 'pe-1' }">
+                <template v-if="state.firstName" #trailing>
+                  <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.firstName = null" />
+                </template>
+              </UInput>
+            </UFormField>
+            <UFormField label="Nachname" name="lastName" class="flex-1">
+              <UInput v-model.nullable="state.lastName" placeholder="Goethe" class="w-full" :ui="{ trailing: 'pe-1' }">
+                <template v-if="state.lastName" #trailing>
+                  <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.lastName = null" />
+                </template>
+              </UInput>
+            </UFormField>
           </div>
           <UFormField label="Studio / Agentur" name="studioName">
             <UInput icon="i-lucide-store" v-model.nullable="state.studioName" placeholder="Studio Name" class="w-full" :ui="{ trailing: 'pe-1' }">

@@ -1,27 +1,5 @@
 <script setup lang="ts">
-import { Form } from "@primevue/forms";
-import type { PubMediumDTO } from "~/utils/types";
-import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
-import {FormField} from "@primevue/forms";
-
-const toast = useToast();
-const pubMediumApi = usePubMedium();
-const placeApi = usePlace();
-const publisherApi= usePublisher();
-const pubRhythmApi = usePubRhythm();
-
-const [placeHandle, publisherHandle, pubRhythmHandle] = await Promise.all([
-  useAsyncData('place-flat', () => placeApi.fetchFlat()),
-  publisherApi.getAll(),
-  pubRhythmApi.getAll()
-]);
-
-const publication_places = computed(() => placeHandle.data.value?.map(p => ({id: p.id, name: p.name})));
-const publishers = computed(() => publisherHandle.data.value?.map(pu => ({id: pu.id, name: pu.name})));
-const publication_rhythms = computed(() => pubRhythmHandle.data.value?.map(pr => ({id: pr.id, value: pr.value})));
-
-const data_refreshing = ref(false);
 
 const props = defineProps<{
   action: "create" | "edit";
@@ -29,304 +7,259 @@ const props = defineProps<{
   pub_medium?: PubMediumDTO;
 }>();
 
-const resolver = ref(
-  zodResolver(
-    z.object({
-      title: z.string("Bitte geben Sie einen Titel an."),
-      subtitle: z.string().optional().nullable(),
-      publicationPlaces: z.any(),
-      publisher: z.any().nullable(),
-      pubRhythms: z.any(),
-      editorialOffice: z.string().optional().nullable(),
-      startYear: z.any().optional().nullable(),
-      endYear: z.any().optional().nullable(),
-      amountVolumes: z.number().optional().nullable(),
-      amountIssues: z.number().optional().nullable(),
-      zdbId: z.string().optional().nullable(),
-      notes: z.string().optional().nullable(),
-    })
-  )
+// Related objects (match PlacePreviewDTO, PublisherPreviewDTO, PubRhythmPreviewDTO)
+const placePreview = z.object({ id: z.number(), name: z.string() });
+const publisherPreview = z.object({ id: z.number(), name: z.string().nullable() });
+const pubRhythmPreview = z.object({ id: z.number(), value: z.string().nullable() });
+
+const schema = z.object({
+  title: z.string().min(1, "Bitte geben Sie einen Titel an."),
+  subtitle: z.string().nullish(),
+  publicationPlaces: z.array(placePreview),
+  publisher: publisherPreview.nullish(),
+  pubRhythms: z.array(pubRhythmPreview),
+  editorialOffice: z.string().nullish(),
+  startYear: z.string().regex(/^\d{4}$/, "Bitte ein vierstelliges Jahr angeben.").nullish(),
+  endYear: z.string().regex(/^\d{4}$/, "Bitte ein vierstelliges Jahr angeben.").nullish(),
+  amountVolumes: z.number().int().nonnegative().nullish(),
+  amountIssues: z.number().int().nonnegative().nullish(),
+  zdbId: z.string().nullish(),
+  notes: z.string().nullish(),
+}).superRefine((d, ctx) => {
+  if (d.startYear && d.endYear && Number(d.startYear) > Number(d.endYear)) {
+    ctx.addIssue({ code: "custom", message: "Das Endjahr darf nicht vor dem Startjahr liegen.", path: ["endYear"] });
+  }
+});
+
+type Schema = z.output<typeof schema>;
+
+const defaults = (): Partial<Schema> => ({
+  title: '',
+  subtitle: null,
+  publicationPlaces: [],
+  publisher: null,
+  pubRhythms: [],
+  editorialOffice: null,
+  startYear: null,
+  endYear: null,
+  amountVolumes: null,
+  amountIssues: null,
+  zdbId: null,
+  notes: null,
+});
+
+const state = reactive<Partial<PubMediumDTO>>({
+  ...defaults(),
+  ...structuredClone(toRaw(props.pub_medium)),
+});
+
+const toast = useToast();
+const pubMediumApi = usePubMedium();
+const placeApi = usePlace();
+const publisherApi= usePublisher();
+const pubRhythmApi = usePubRhythm();
+
+const { data: pubRhythms } = await pubRhythmApi.getAll();
+const publication_rhythms = computed(() => pubRhythms.value?.map(pr => ({ id: pr.id, value: pr.value })));
+
+// Publication places: all places without a search term, server-side search with one (GET /api/places?view=flat&name=…)
+const placeSearchTerm = ref('');
+const placeSearchTermDebounced = ref('');
+watch(placeSearchTerm, debounce((term: string) => (placeSearchTermDebounced.value = term), 300));
+
+const { data: placeItems, status: placeStatus, execute: loadPlaces } = useLazyAsyncData(
+  'pub-medium-place-search',
+  () => placeApi.fetchFlat({ name: placeSearchTermDebounced.value.trim() || undefined }),
+  { watch: [placeSearchTermDebounced], immediate: false, default: () => [] }
 );
 
-async function handleRefresh() {
-  data_refreshing.value = true;
-  try {
-    await Promise.all([placeHandle.refresh,publisherHandle.refresh,pubRhythmHandle.refresh])
-    toast.add({ color: 'success', title: 'Erfolg', description: 'Datenbankdaten erfolgreich aktualisiert', duration: 2000 });
-  } catch (err) {
-    toast.add({ color: 'error', title: 'Fehler', description: 'Fehler beim Aktualisieren der Datenbankdaten', duration: 2000 });
-  } finally {
-    data_refreshing.value = false;
-  }
+// Load the full list only when the menu is opened for the first time
+function onPlacesOpen(open: boolean) {
+  if (open && !placeItems.value.length) loadPlaces();
 }
 
-const onFormSubmit = async (e: any) => {
-  if (e.valid) {
-    try {
-      if (props.action === "create") {
-        await pubMediumApi.create(e.values);
-        await refreshNuxtData('pubMedium-list');
-        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
-        navigateTo("/publication_media")
-      } else if (props.action === "edit" && props.pub_medium?.id) {
-        await pubMediumApi.update(props.pub_medium.id,e.values );
-        await  Promise.all([refreshNuxtData('pubMedium-list'), await refreshNuxtData(`pubMedium-${props.pub_medium.id}`)])
-        toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
-        navigateTo(`/publication_media/${props.pub_medium?.id}`);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
+// Publisher: all publishers without a search term, server-side search with one (GET /api/publishers?view=flat&name=…)
+const publisherSearchTerm = ref('');
+const publisherSearchTermDebounced = ref('');
+watch(publisherSearchTerm, debounce((term: string) => (publisherSearchTermDebounced.value = term), 300));
+
+const { data: publisherItems, status: publisherStatus, execute: loadPublishers } = useLazyAsyncData(
+  'pub-medium-publisher-search',
+  () => publisherApi.fetchFlat({ name: publisherSearchTermDebounced.value.trim() || undefined }),
+  { watch: [publisherSearchTermDebounced], immediate: false, default: () => [] }
+);
+
+// Load the full list only when the menu is opened for the first time
+function onPublishersOpen(open: boolean) {
+  if (open && !publisherItems.value.length) loadPublishers();
+}
+
+const onSubmit = async () => {
+  try {
+    if (props.action === "create") {
+      await pubMediumApi.create(state);
+      await refreshNuxtData("pubMedium-list");
+      toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich erstellt", duration: 3000 });
+      await navigateTo("/publication_media");
+    } else if (props.action === "edit" && props.pub_medium?.id) {
+      await pubMediumApi.update(props.pub_medium.id, state);
+      await Promise.all([refreshNuxtData("pubMedium-list"), refreshNuxtData(`pubMedium-${props.pub_medium.id}`)]);
+      toast.add({ color: "success", title: "Erfolg", description: "Erfolgreich aktualisiert", duration: 3000 });
+      await navigateTo(`/publication_media/${props.pub_medium.id}`);
     }
+  } catch (error) {
+    console.error(error);
+    toast.add({ color: "error", title: "Fehler", description: "Ein Fehler ist aufgetreten", duration: 3000 });
   }
 };
+
 </script>
 
 <template>
-  <div class="flex flex-col mx-auto w-[70%] gap-4">
+  <div class="flex flex-col md:mx-auto md:w-[70%] gap-4">
     <h1 class="text-2xl outfit-headline text-primary font-bold">{{ props.header }}</h1>
     <p class="roboto-plain">
       Füllen Sie bitte die untenstehenden Felder aus, um ein Publikationsmedium zu erstellen oder anzupassen.
     </p>
-    <div class="flex flex-col gap-2 border-2 border-solid rounded-md p-5 bg-none">
-      <Button :disabled="data_refreshing" label="Daten aktualisieren" @click="handleRefresh">
-        <div class="flex flex-row space-x-3 items-center">
-          <div class="roboto-plain font-semibold">Datenbankdaten aktualisieren</div>
-          <i v-show="data_refreshing" :class="['pi', data_refreshing ? 'pi-spin pi-spinner' : 'pi-spinner']"/>
-        </div>
-      </Button>
-      <Divider/>
-      <Form 
-        v-slot="$form" 
-        class="flex flex-col gap-4"
-        :resolver 
-        :initialValues="props.pub_medium ? props.pub_medium : {}"
-        :key="props.pub_medium ? props.pub_medium.id : 'new'"
-        @submit="onFormSubmit" 
-      >
-        <div class="flex flex-row gap-6 flex-wrap">
-          <FormField v-slot="$field" name="title" class="flex flex-col gap-1 flex-1">
-            <label for="title" class="font-bold">Titel</label>
-            <IconField>
-              <InputIcon class="pi pi-pen-to-square" />
-              <InputText 
-                id="title" 
-                placeholder="Hamburger Anzeiger" 
-                v-on:keydown.enter.prevent 
-                fluid 
-              />
-            </IconField>
-            <Message v-if="$form.title?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.title.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="subtitle" class="flex flex-col gap-1 flex-1">
-            <label for="subtitle" class="font-bold">Untertitel</label>
-            <IconField class="flex-auto">
-              <InputIcon class="pi pi-pen-to-square" />
-              <InputText 
-                id="subtitle" 
-                placeholder="Illustrierte Wochenbeilage in Tiefdruck" 
-                v-on:keydown.enter.prevent 
-                fluid 
-              />
-            </IconField>
-            <Message v-if="$form.subtitle?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.subtitle.error.message }}
-            </Message>
-          </FormField>
-        </div>
-        <FormField v-slot="$field" name="publicationPlaces" class="flex flex-col gap-1 flex-1">
-          <label for="publicationPlaces" class="font-bold">Publikationsorte</label>
-          <div class="flex flex-row gap-4 flex-nowrap">
-            <MultiSelect
-              inputId="publicationPlaces"
-              placeholder="Orte auswählen"
-              selectedItemsLabel="{0} Orte ausgewählt"
-              class="flex-1 min-w-0"
-              optionLabel="name"
-              :options="publication_places"
-              :key="publication_places?.length"
-              :maxSelectedLabels="2"
-              filter
-              fluid
-            />
-            <NuxtLink to="/places/create" target="_blank">
-              <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
-            </NuxtLink>
+    <div class="border-2 border-solid rounded-md p-5">
+      <UForm :schema="schema" :state="state" @submit="onSubmit">
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-4 md:flex-row flex-wrap">
+            <UFormField label="Titel" name="title" class="flex-1">
+              <UInput v-model.nullable="state.title" placeholder="Augsburger Allgemeine" class="w-full" :ui="{ trailing: 'pe-1' }">
+                <template v-if="state.title" #trailing>
+                  <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.title = ''"/>
+                </template>
+              </UInput>
+            </UFormField>
+            <UFormField label="Untertitel" name="subtitle" class="flex-1">
+              <UInput v-model.nullable="state.subtitle" placeholder="Das Wochenblatt" class="w-full" :ui="{ trailing: 'pe-1' }">
+                <template v-if="state.subtitle" #trailing>
+                  <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.subtitle = null"/>
+                </template>
+              </UInput>
+            </UFormField>
           </div>
-          <Message v-if="$form.publicationPlaces?.invalid" severity="error" size="small" variant="simple" class="flex-auto">
-            {{ $form.publicationPlaces.error.message }}
-          </Message>
-        </FormField>
-        <div class="flex flex-row gap-6 flex-wrap">
-          <FormField v-slot="$field" name="publisher" class="flex flex-col gap-1">
-            <label for="publisher" class="font-bold">Herausgeber</label>
-            <div class="flex flex-row gap-4 flex-nowrap">
-              <IconField class="flex-1 min-w-0">
-                <InputIcon class="pi pi-book"/>
-                <Select
-                    labelId="publisher"
-                    placeholder="Herausgeber auswählen"
-                    class="pl-7"
-                    optionLabel="name"
-                    :options="publishers"
-                    :key="publishers?.length"
-                    editable
-                    showClear
-                    fluid
-                />
-              </IconField>
-              <NuxtLink to="/publishers/create" target="_blank">
-                <Button icon="pi pi-plus" severity="secondary" aria-label="Add" />
-              </NuxtLink>
+          <UFormField label="Publikationsorte" name="publicationPlaces">
+            <div class="flex gap-2">
+            <UInputMenu
+                v-model="state.publicationPlaces"
+                v-model:search-term="placeSearchTerm"
+                :items="placeItems"
+                :loading="placeStatus === 'pending'"
+                label-key="name"
+                by="id"
+                multiple
+                virtualize
+                ignore-filter
+                icon="i-lucide-map-pin"
+                placeholder="Publikationsorte suchen"
+                class="w-full"
+                @update:open="onPlacesOpen"
+            />
+              <UButton icon="i-lucide-plus" color="neutral" variant="outline" to="/places/create" target="_blank" aria-label="Neuen Ort anlegen" />
             </div>
-            <Message v-if="$form.publicationMedium?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.publicationMedium.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="pubRhythms" class="flex flex-col gap-1 flex-1">
-            <label for="pubRhythms" class="font-bold">Publikationsrhythmen</label>
-            <MultiSelect
-                inputId="pubRhythms"
-                placeholder="Rhythmen auswählen"
-                selectedItemsLabel="{0} Rhythmen ausgewählt"
-                class="flex-1 min-w-0"
-                optionLabel="value"
-                :options="publication_rhythms"
-                :key="publication_rhythms?.length"
-                :maxSelectedLabels="2"
-                filter
-                fluid
-            />
-            <Message v-if="$form.pubRhythms?.invalid" severity="error" size="small" variant="simple" class="flex-auto">
-              {{ $form.pubRhythms.error.message }}
-            </Message>
-          </FormField>
+          </UFormField>
+          <div class="flex flex-col gap-4 md:flex-row flex-wrap">
+            <UFormField label="Verlag" name="publisher" class="flex-1">
+              <div class="flex gap-2">
+                <UInputMenu
+                    v-model="state.publisher"
+                    v-model:search-term="publisherSearchTerm"
+                    :items="publisherItems"
+                    :loading="publisherStatus === 'pending'"
+                    label-key="name"
+                    by="id"
+                    virtualize
+                    ignore-filter
+                    icon="i-lucide-book-open"
+                    placeholder="Verlag suchen"
+                    clear
+                    class="flex-1"
+                    @update:open="onPublishersOpen"
+                />
+                <UButton icon="i-lucide-plus" color="neutral" variant="outline" to="/publishers/create" target="_blank" aria-label="Neuen Verlag anlegen" />
+              </div>
+            </UFormField>
+            <UFormField label="Publikationsrhythmen" name="pubRhythms" class="flex-1">
+              <USelectMenu
+                  v-model="state.pubRhythms"
+                  :items="publication_rhythms ?? []"
+                  label-key="value"
+                  by="id"
+                  multiple
+                  icon="i-lucide-calendar-sync"
+                  placeholder="Rhythmen auswählen"
+                  class="w-full"
+              />
+            </UFormField>
+          </div>
+          <UFormField label="Schriftleitung" name="editorialOffice">
+            <UInput v-model.nullable="state.editorialOffice" class="w-full" :ui="{ trailing: 'pe-1' }">
+              <template v-if="state.editorialOffice" #trailing>
+                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.editorialOffice = null"/>
+              </template>
+            </UInput>
+          </UFormField>
+          <div class="flex flex-col gap-4 md:flex-row flex-wrap">
+            <UFormField label="Startjahr" name="startYear" class="flex-1">
+              <UInput v-model.nullable="state.startYear" inputmode="numeric" maxlength="4" icon="i-lucide-calendar" placeholder="1924" class="w-full" :ui="{ trailing: 'pe-1' }">
+                <template v-if="state.startYear" #trailing>
+                  <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.startYear = null"/>
+                </template>
+              </UInput>
+            </UFormField>
+            <UFormField label="Endjahr" name="endYear" class="flex-1">
+              <UInput v-model.nullable="state.endYear" inputmode="numeric" maxlength="4" icon="i-lucide-calendar" placeholder="1938" class="w-full" :ui="{ trailing: 'pe-1' }">
+                <template v-if="state.endYear" #trailing>
+                  <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.endYear = null"/>
+                </template>
+              </UInput>
+            </UFormField>
+          </div>
+          <div class="flex flex-col gap-4 md:flex-row flex-wrap">
+            <UFormField label="Anzahl Jahrgänge" name="amountVolumes" class="flex-1">
+              <div class="flex gap-2">
+                <UInputNumber
+                    v-model="state.amountVolumes"
+                    :increment="false"
+                    :decrement="false"
+                    :min="0"
+                    :format-options="{ useGrouping: false }"
+                    placeholder="18"
+                    class="flex-1"
+                />
+                <UButton icon="i-lucide-circle-x" color="neutral" variant="ghost" aria-label="Eingabe löschen" @click="state.amountVolumes = null" />
+              </div>
+            </UFormField>
+            <UFormField label="Anzahl Ausgaben" name="amountIssues" class="flex-1">
+              <div class="flex gap-2">
+                <UInputNumber
+                    v-model="state.amountIssues"
+                    :increment="false"
+                    :decrement="false"
+                    :min="0"
+                    :format-options="{ useGrouping: false }"
+                    placeholder="100"
+                    class="flex-1"
+                />
+                <UButton icon="i-lucide-circle-x" color="neutral" variant="ghost" aria-label="Eingabe löschen" @click="state.amountIssues = null" />
+              </div>
+            </UFormField>
+          </div>
+          <UFormField label="ZDB-ID" name="zdbId">
+            <UInput v-model.nullable="state.zdbId" placeholder="2650224-0" class="w-full" :ui="{ trailing: 'pe-1' }">
+              <template v-if="state.zdbId" #trailing>
+                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-circle-x" aria-label="Eingabe löschen" @click="state.zdbId = null"/>
+              </template>
+            </UInput>
+          </UFormField>
+          <UFormField label="Notizen" name="notes">
+            <UTextarea v-model.nullable="state.notes" autoresize :rows="3" class="w-full" />
+          </UFormField>
+          <UButton type="submit" :label="props.action === 'create' ? 'Erstellen' : 'Bearbeiten'" class="self-start" />
         </div>
-        <FormField v-slot="$field" name="editorialOffice" class="flex flex-col gap-1 flex-1">
-          <label for="editorialOffice" class="font-bold">Schriftleitung</label>
-          <IconField>
-            <InputIcon class="pi pi-pen-to-square" />
-            <InputText
-                id="editorialOffice"
-                v-on:keydown.enter.prevent
-                fluid
-            />
-          </IconField>
-          <Message v-if="$form.editorialOffice?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.editorialOffice.error.message }}
-          </Message>
-        </FormField>
-        <div class="flex flex-row gap-6 flex-wrap">
-          <FormField v-slot="$field" name="startYear" class="flex flex-col gap-1 flex-1">
-            <label for="startYear" class="font-bold">Startjahr</label>
-            <IconField>
-              <InputIcon class="pi pi-calendar" />
-              <InputNumber 
-                id="startYear"
-                placeholder="1924"
-                :min="0" 
-                :max="3000" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.startYear?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.startYear.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="endYear" class="flex flex-col gap-1 flex-1">
-            <label for="endYear" class="font-bold">Endjahr</label>
-            <IconField>
-              <InputIcon class="pi pi-calendar" />
-              <InputNumber 
-                id="endYear" 
-                placeholder="1938"
-                :min="0" 
-                :max="3000" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.endYear?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.endYear.error.message }}
-            </Message>
-          </FormField>
-        </div>
-        <div class="flex flex-row gap-6 flex-wrap">
-          <FormField v-slot="$field" name="amountVolumes" class="flex flex-col gap-1 flex-1">
-            <label for="amountVolumes" class="font-bold">Anzahl Jahrgänge</label>
-            <IconField>
-              <InputIcon class="pi pi-book" />
-              <InputNumber 
-                id="amountVolumes"
-                placeholder="18"
-                :min="0" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.amountVolumes?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.amountVolumes.error.message }}
-            </Message>
-          </FormField>
-          <FormField v-slot="$field" name="amountIssues" class="flex flex-col gap-1 flex-1">
-            <label for="amountIssues" class="font-bold">Anzahl Ausgaben</label>
-            <IconField>
-              <InputIcon class="pi pi-book" />
-              <InputNumber 
-                id="amountIssues" 
-                placeholder="100"
-                :min="0" 
-                :useGrouping="false" 
-                v-on:keydown.enter.prevent 
-                fluid
-              />
-            </IconField>
-            <Message v-if="$form.amountIssues?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.amountIssues.error.message }}
-            </Message>
-          </FormField>
-        </div>
-        <FormField v-slot="$field" name="zdbId" class="flex flex-col gap-1 flex-auto">
-          <label for="zdbId" class="font-bold">ZDB-ID</label>
-          <IconField>
-            <InputIcon class="pi pi-pen-to-square" />
-            <InputText 
-              id="zdbId" 
-              placeholder="2650224-0" 
-              v-on:keydown.enter.prevent 
-              fluid 
-            />
-          </IconField>
-          <Message v-if="$form.zdbId?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.zdbId.error.message }}
-          </Message>
-        </FormField>
-        <FormField v-slot="$field" name="notes" class="flex flex-col gap-1 flex-1">
-          <label for="notes" class="font-bold">Notizen</label>
-          <Textarea
-              id="notes"
-              autoResize
-              fluid
-          />
-          <Message v-if="$form.notes?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.notes.error.message }}
-          </Message>
-        </FormField>
-        <Button type="submit" severity="primary">
-          {{ (props.action === "create") ? "Erstellen" : "Bearbeiten" }}
-        </Button>
-        <!--
-        <Fieldset legend="Form States" class="h-80 overflow-auto">
-          <pre class="whitespace-pre-wrap">{{ $form }}</pre>
-        </Fieldset>
-        -->
-      </Form>
+      </UForm>
     </div>
   </div>
 </template>
