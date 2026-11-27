@@ -261,6 +261,18 @@ export interface KeywordPageable extends Pageable {
     'gnd-id'?: string;
 }
 
+/**
+ * This interface represents a suggestion object for a GND entry.
+ * @param gndId - The unique identifier for the GND entry.
+ * @param preferredName - The preferred name associated with the GND entry.
+ * @param exactMatch - A boolean indicating whether the suggestion is an exact match.
+ */
+export interface GndSuggestionDTO {
+    gndId: string;
+    preferredName: string;
+    exactMatch: boolean;
+}
+
 export interface PlacePageable extends Pageable {
     name?: string;
 }
