@@ -14,10 +14,17 @@ export const usePublisher = () => {
         );
     }
 
-    /** Paginated view: page of publishers, optionally filtered by name via `query`. */
-    function fetchPaginated(params: { query?: string } & Pageable = {}) {
+    /** Flat view: unpaginated list of publisher previews. All filters are optional. */
+    function fetchFlat(params: PublisherPageable = {}) {
+        return $fetch<PublisherPreviewDTO[]>('/api/publishers', {
+            query: { ...cleanQuery(params), view: 'flat' }
+        });
+    }
+
+    /** Paginated view: page of full publisher DTOs. All filters are optional. */
+    function fetchPaginated(params: PublisherPageable = {}) {
         return $fetch<Page<PublisherDTO>>('/api/publishers', {
-            query: cleanQuery(params)
+            query: { ...cleanQuery(params), view: 'paginated' }
         });
     }
 
@@ -51,6 +58,7 @@ export const usePublisher = () => {
     return {
         fetchAll,
         fetchById,
+        fetchFlat,
         fetchPaginated,
         create,
         update,
