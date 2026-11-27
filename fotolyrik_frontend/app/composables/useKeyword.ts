@@ -48,6 +48,12 @@ export const useKeyword = () => {
         });
     }
 
+    function getGNDSuggestions(term: string): Promise<GndSuggestionDTO[]> {
+        return $fetch<GndSuggestionDTO[]>(`/api/keywords/gnd-suggestions`, {
+            query: { term }
+        });
+    }
+
     return {
         fetchAll,
         fetchById,
@@ -56,5 +62,6 @@ export const useKeyword = () => {
         create,
         update,
         deleteById,
+        getGNDSuggestions
     };
 };

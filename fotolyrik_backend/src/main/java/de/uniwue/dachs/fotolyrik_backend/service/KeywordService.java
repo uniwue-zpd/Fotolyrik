@@ -10,6 +10,7 @@ import de.uniwue.dachs.fotolyrik_backend.model.Photopoem;
 import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
 import de.uniwue.dachs.fotolyrik_backend.repository.PhotopoemRepository;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.KeywordMapper;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,9 +45,12 @@ public class KeywordService {
         return keywordRepository.findById(id).map(keywordMapper::KeywordToKeywordDTO);
     }
 
-    // POST create new keyword
+    // POST create new keyword; throws EntityExistsException if a keyword with the same value already exists
     @Transactional
     public KeywordDTO createKeyword(KeywordDTO keywordDTO) {
+        if (keywordRepository.existsByValue(keywordDTO.getValue())) {
+            throw new EntityExistsException("Keyword '" + keywordDTO.getValue() + "' already exists");
+        }
         var entity = keywordMapper.KeywordDTOToKeyword(keywordDTO);
         var savedEntity = keywordRepository.save(entity);
         return keywordMapper.KeywordToKeywordDTO(savedEntity);
@@ -57,6 +61,11 @@ public class KeywordService {
     public KeywordDTO updateKeyword(Long id, KeywordDTO updatedKeyword) {
         return keywordRepository.findById(id)
                 .map(existingKeyword -> {
+                    // Only check for duplicates if the value changes, otherwise the keyword would find itself
+                    if (!existingKeyword.getValue().equals(updatedKeyword.getValue())
+                            && keywordRepository.existsByValue(updatedKeyword.getValue())) {
+                        throw new EntityExistsException("Keyword '" + updatedKeyword.getValue() + "' already exists");
+                    }
                     existingKeyword.updateBaseEntityNotes(updatedKeyword);
                     existingKeyword.setValue(updatedKeyword.getValue());
                     existingKeyword.setGndId(updatedKeyword.getGndId());

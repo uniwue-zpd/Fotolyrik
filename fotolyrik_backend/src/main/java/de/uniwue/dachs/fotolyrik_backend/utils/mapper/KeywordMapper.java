@@ -1,11 +1,14 @@
 package de.uniwue.dachs.fotolyrik_backend.utils.mapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import de.uniwue.dachs.fotolyrik_backend.DTO.GndSuggestionDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.KeywordDTO;
 import de.uniwue.dachs.fotolyrik_backend.DTO.previews.KeywordPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Keyword;
 import de.uniwue.dachs.fotolyrik_backend.repository.KeywordRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -78,6 +81,34 @@ public class KeywordMapper {
     }
     public List<KeywordPreviewDTO> KeywordsToKeywordPreviewDTOs(List<Keyword> keywords) {
         return MapperUtils.mapList(keywords, this::KeywordToKeywordPreviewDTO);
+    }
+
+    /**
+     * Maps a single lobid-gnd search hit to a {@link GndSuggestionDTO}
+     * @param member one entry of the {@code member} array of a lobid-gnd search response
+     * @param term the search term; {@code exactMatch} is set if the preferred name equals it (case-insensitive)
+     */
+    public GndSuggestionDTO GndMemberToGndSuggestionDTO(JsonNode member, String term) {
+        if (member == null) return null;
+        GndSuggestionDTO gndSuggestionDTO = new GndSuggestionDTO();
+        gndSuggestionDTO.setGndId(member.path("gndIdentifier").asText());
+        gndSuggestionDTO.setPreferredName(member.path("preferredName").asText());
+        gndSuggestionDTO.setExactMatch(gndSuggestionDTO.getPreferredName().equalsIgnoreCase(term.trim()));
+        return gndSuggestionDTO;
+    }
+
+    /**
+     * Maps a lobid-gnd search response to a list of {@link GndSuggestionDTO} objects, keeping lobid's order
+     * @param response the lobid-gnd search response ({@code format=json})
+     * @param term the search term
+     */
+    public List<GndSuggestionDTO> GndResponseToGndSuggestionDTOs(JsonNode response, String term) {
+        List<GndSuggestionDTO> gndSuggestionDTOs = new ArrayList<>();
+        if (response == null) return gndSuggestionDTOs;
+        for (JsonNode member : response.path("member")) {
+            gndSuggestionDTOs.add(GndMemberToGndSuggestionDTO(member, term));
+        }
+        return gndSuggestionDTOs;
     }
 
 }
