@@ -93,7 +93,7 @@ const onSubmit = async () => {
               description="Vorschlag auswählen, um Begriff und GND-ID vorauszufüllen – beide Felder bleiben editierbar."
           >
             <UInputMenu
-                v-model="gndSelection"
+                v-model.nullable="gndSelection"
                 v-model:search-term="gndSearchTerm"
                 :items="gndItems"
                 :loading="gndStatus === 'pending'"
