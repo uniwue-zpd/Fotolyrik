@@ -265,6 +265,10 @@ export interface PlacePageable extends Pageable {
     name?: string;
 }
 
+export interface PublisherPageable extends Pageable {
+    name?: string;
+}
+
 /**
  * Defines the access levels
  * - PUBLIC: Visible to everyone.

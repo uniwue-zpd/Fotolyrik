@@ -1,12 +1,17 @@
 package de.uniwue.dachs.fotolyrik_backend.service;
 
 import de.uniwue.dachs.fotolyrik_backend.DTO.PublisherDTO;
+import de.uniwue.dachs.fotolyrik_backend.DTO.previews.PublisherPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.model.Publisher;
 import de.uniwue.dachs.fotolyrik_backend.repository.PublisherRepository;
+import de.uniwue.dachs.fotolyrik_backend.specification.PublisherSearchCriteria;
+import de.uniwue.dachs.fotolyrik_backend.specification.PublisherSpecification;
 import de.uniwue.dachs.fotolyrik_backend.utils.mapper.PublisherMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,16 +36,41 @@ public class PublisherService {
     }
 
     /**
-     * GET a page of publishers, optionally filtered by name
-     * @param query name filter; all publishers are returned if it is shorter than 2 characters
+     * GET a page of publishers matching the given criteria
+     * @param criteria optional filters; unset values are ignored
      * @param pageable paging and sorting information
      * @return a {@link Page} of matching {@link Publisher} as {@link PublisherDTO} objects
      */
-    public Page<PublisherDTO> searchPaginated(String query, Pageable pageable) {
-        Page<Publisher> result = (query == null || query.trim().length() < 2)
-                ? publisherRepository.findAll(pageable)
-                : publisherRepository.findByNameContainingIgnoreCase(query.trim(), pageable);
-        return result.map(publisherMapper::PublisherToPublisherDTO);
+    public Page<PublisherDTO> searchPaginated(PublisherSearchCriteria criteria, Pageable pageable) {
+        return publisherRepository.findAll(buildSpecification(criteria), pageable)
+                .map(publisherMapper::PublisherToPublisherDTO);
+    }
+
+    /**
+     * GET an unpaginated list of publisher previews matching the given criteria
+     * @param criteria optional filters; unset values are ignored
+     * @param sort sort order; falls back to ascending name if unsorted
+     * @return a {@link List} of matching {@link Publisher} as {@link PublisherPreviewDTO} objects
+     */
+    public List<PublisherPreviewDTO> searchFlat(PublisherSearchCriteria criteria, Sort sort) {
+        Sort effectiveSort = sort != null && sort.isSorted() ? sort : Sort.by("name").ascending();
+        return publisherMapper.PublishersToPublisherPreviewDTOs(
+                publisherRepository.findAll(buildSpecification(criteria), effectiveSort));
+    }
+
+    /**
+     * Builds a {@link Specification} that combines all set criteria with AND.
+     * @param c search criteria; {@code null} values and blank strings are ignored
+     */
+    private Specification<Publisher> buildSpecification(PublisherSearchCriteria c) {
+        Specification<Publisher> spec = Specification.where(null);
+        if (c == null) return spec;
+        if (hasText(c.name())) spec = spec.and(PublisherSpecification.hasName(c.name()));
+        return spec;
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 
     /**

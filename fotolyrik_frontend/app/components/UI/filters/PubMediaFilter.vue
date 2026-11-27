@@ -25,7 +25,7 @@ const accordionItems = [{ label: 'Suchen & filtern', value: 'filters', slot: 'fi
 const publisherApi = usePublisher()
 
 const searchPublishers = (query: string, pageable: Pageable) =>
-  publisherApi.fetchPaginated({ ...pageable, query })
+  publisherApi.fetchPaginated({ ...pageable, name: query })
 </script>
 
 <template>
