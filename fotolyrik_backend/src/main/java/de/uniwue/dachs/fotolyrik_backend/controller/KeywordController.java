@@ -6,6 +6,7 @@ import de.uniwue.dachs.fotolyrik_backend.DTO.previews.KeywordPreviewDTO;
 import de.uniwue.dachs.fotolyrik_backend.service.GndLookupService;
 import de.uniwue.dachs.fotolyrik_backend.service.KeywordService;
 import de.uniwue.dachs.fotolyrik_backend.specification.KeywordSearchCriteria;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -85,8 +86,11 @@ public class KeywordController {
 
     @PostMapping
     public ResponseEntity<KeywordDTO> createKeyword(@RequestBody KeywordDTO keywordDTO) {
-        KeywordDTO createdKeyword = keywordService.createKeyword(keywordDTO);
-        return ResponseEntity.status(201).body(createdKeyword);
+        try {
+            return ResponseEntity.status(201).body(keywordService.createKeyword(keywordDTO));
+        } catch (EntityExistsException e) {
+            return ResponseEntity.status(409).build();
+        }
     }
 
     @PutMapping("/{id}")
@@ -95,6 +99,8 @@ public class KeywordController {
             return ResponseEntity.ok(keywordService.updateKeyword(id, keywordDTO));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
+        } catch (EntityExistsException e) {
+            return ResponseEntity.status(409).build();
         }
     }
 
